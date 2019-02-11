@@ -1,0 +1,54 @@
+buildscript {
+    ext {
+        kotlinVersion = "1.3.21"
+        gdxVersion = "1.9.9"
+        ktxVersion = "1.9.9-b1"
+        junitVersion = "4.12"
+        engineVersion = "0.0.1"
+    }
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+    }
+}
+
+apply plugin: "kotlin"
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    jcenter()
+    maven { url { "https://oss.sonatype.org/content/repositories/snapshots/"}}
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    implementation "org.jetbrains.kotlin:kotlin-test:$kotlinVersion"
+    
+    implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+    
+    implementation "io.github.libktx:ktx-actors:$ktxVersion"
+    implementation "io.github.libktx:ktx-collections:$ktxVersion"
+    implementation "io.github.libktx:ktx-math:$ktxVersion"
+    implementation "io.github.libktx:ktx-log:$ktxVersion"
+
+    testImplementation("junit:junit:$junitVersion")
+}
+
+sourceSets {
+    getByName("main") {
+        java.srcDirs("src/main/kotlin")
+    }
+    getByName("test") {
+        java.srcDirs("src/test/kotlin")
+    }
+}
+buildDir = "build/"
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_6
+    targetCompatibility = JavaVersion.VERSION_1_6
+}
