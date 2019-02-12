@@ -282,6 +282,9 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
     /** Returns the index of a card actor in the container, `-1` if not found. */
     fun findIndexOfCardActor(actor: CardActor) = actors.indexOf(actor)
 
+    /** Returns the index at which a card should be inserted from container coordinates. */
+    abstract fun findInsertPositionForCoordinates(x: Float, y: Float): Int
+
     /** Apply an [action] on all card actors. */
     fun applyOnAllCards(action: (CardActor) -> Unit) {
         for (actor in actors) {

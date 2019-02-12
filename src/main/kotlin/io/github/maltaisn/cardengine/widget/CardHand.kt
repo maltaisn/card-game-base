@@ -111,9 +111,11 @@ class CardHand(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
             if (!sorter.transitive) {
                 sorter.initialize(cards)
             }
-            // FIXME Use a parallel sort? Useless sorting twice.
-            cards.sortWith(sorter)
             actors.sortWith(Comparator { o1, o2 -> sorter.compare(o1.card, o2.card) })
+            cards.clear()
+            for (actor in actors) {
+                cards += actor.card
+            }
         }
     }
 
@@ -128,6 +130,18 @@ class CardHand(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
         val sorter = sorter as Card.Sorter<Card>
         val i = cards.binarySearch(card, sorter)
         return if (i < 0) i.inv() else i
+    }
+
+    override fun findInsertPositionForCoordinates(x: Float, y: Float): Int {
+        val positions = computeActorsPosition()
+        val py = if (horizontal) y else y - cardHeight
+        for (i in 0..positions.lastIndex) {
+            val pos = positions[i]
+            if (horizontal && x < pos.x || !horizontal && py > pos.y) {
+                return i
+            }
+        }
+        return size
     }
 
     /**

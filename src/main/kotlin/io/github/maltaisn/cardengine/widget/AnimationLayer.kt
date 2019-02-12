@@ -155,10 +155,11 @@ class AnimationLayer : WidgetGroup() {
      * when touch is dragged and on touch up.
      */
     fun dragCards(vararg cards: CardActor): CardDragListener? {
-        if (draggedCards != null || cards.isEmpty()) return null
-
-        require(!cardsMoved && !animationRunning) {
-            "Cannot drag card while animation is running or pending."
+        if (draggedCards != null || cards.isEmpty()
+                || cardsMoved || animationRunning) {
+            // Can't drag card if animation is running or pending
+            // or if cards are already being dragged.
+            return null
         }
 
         val container = cards.first().parent as CardContainer

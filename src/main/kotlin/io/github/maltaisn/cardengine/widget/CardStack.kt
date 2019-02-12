@@ -55,6 +55,8 @@ class CardStack(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
         updateActorVisibility()
     }
 
+    override fun findInsertPositionForCoordinates(x: Float, y: Float) = size
+
     override fun computeActorsPosition(): Array<Vector2> {
         // Recompute minimum size
         computeSize()
