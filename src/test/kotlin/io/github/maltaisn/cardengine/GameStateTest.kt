@@ -74,7 +74,6 @@ internal class GameStateTest {
         override fun doMove(move: BaseMove) {
             playerToMove = getPlayerNextTo(playerToMove)
         }
-
         override fun getResult(): Nothing? = null
         override fun isGameDone() = false
         override fun clone() = GameState(this)

@@ -43,10 +43,8 @@ class CardStack(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
 
     override fun drawChildren(batch: Batch, parentAlpha: Float) {
         if (drawSlot && children.isEmpty) {
-            drawSprite(
-                batch, cardLoader.getSprite(CardSpriteLoader.SLOT),
-                cardScale, 0f, parentAlpha
-            )
+            drawSprite(batch, cardLoader.getSprite(CardSpriteLoader.SLOT),
+                    cardScale, 0f, parentAlpha)
         }
 
         super.drawChildren(batch, parentAlpha)

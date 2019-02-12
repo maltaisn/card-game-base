@@ -91,22 +91,16 @@ internal class PCardTest {
     @Test
     fun parseDeck() {
         val deck1 = PCard.parseDeck("A♦", "10♥", "*B")
-        val deck2 = Deck(
-            mutableListOf(
-                PCard.get(PCard.ACE, PCard.DIAMOND),
-                PCard.get(10, PCard.HEART), PCard.BLACK_JOKER
-            )
-        )
+        val deck2 = Deck(mutableListOf(PCard.get(PCard.ACE, PCard.DIAMOND),
+                PCard.get(10, PCard.HEART), PCard.BLACK_JOKER))
         assertEquals(deck1, deck2)
     }
 
     @Test
     fun sort() {
         // Transitive
-        val sorter1 = PCard.Sorter(
-            PCard.Sorter.BY_SUIT, PCard.Sorter.ASCENDING, true,
-            intArrayOf(PCard.HEART, PCard.SPADE, PCard.DIAMOND, PCard.CLUB, PCard.BLACK, PCard.RED), false
-        )
+        val sorter1 = PCard.Sorter(PCard.Sorter.BY_SUIT, PCard.Sorter.ASCENDING, true,
+                intArrayOf(PCard.HEART, PCard.SPADE, PCard.DIAMOND, PCard.CLUB, PCard.BLACK, PCard.RED), false)
         val deck1 = PCard.parseDeck("2♥", "3♥", "A♥", "3♠", "A♠", "2♣", "K♣", "*B", "*R")
         val deck1shuffled = deck1.clone()
         deck1shuffled.shuffle()
@@ -114,10 +108,8 @@ internal class PCardTest {
         assertEquals(deck1, deck1shuffled)
 
         // Non-transitive 1
-        val sorter2 = PCard.Sorter(
-            PCard.Sorter.BY_SUIT, PCard.Sorter.ASCENDING, true,
-            intArrayOf(PCard.HEART, PCard.SPADE, PCard.DIAMOND, PCard.CLUB, PCard.BLACK, PCard.RED), true
-        )
+        val sorter2 = PCard.Sorter(PCard.Sorter.BY_SUIT, PCard.Sorter.ASCENDING, true,
+                intArrayOf(PCard.HEART, PCard.SPADE, PCard.DIAMOND, PCard.CLUB, PCard.BLACK, PCard.RED), true)
         val deck2 = PCard.parseDeck("2♥", "3♥", "A♥", "K♣", "3♦", "A♦", "2♦")
         val deck2shuffled = deck2.clone()
         deck2shuffled.shuffle()

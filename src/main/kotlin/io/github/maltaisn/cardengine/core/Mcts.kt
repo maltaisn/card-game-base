@@ -89,10 +89,8 @@ class Mcts {
         return rootNode.childNodes.maxBy { it.visits }!!.move!!
     }
 
-    private class Node(
-        val move: BaseMove?, val parent: Node?, val playerThatMoved: Int,
-        val explorationParam: Double
-    ) {
+    private class Node(val move: BaseMove?, val parent: Node?, val playerThatMoved: Int,
+                       val explorationParam: Double) {
 
         val childNodes = ArrayList<Node>()
 

@@ -163,8 +163,7 @@ class CardActor(private val cardLoader: CardSpriteLoader, var card: Card) : Acto
         // Trigger long click if held long enough
         val heldDuration = System.currentTimeMillis() - lastTouchDownTime
         if (longClickListeners.isNotEmpty() && lastTouchDownTime != 0L
-            && heldDuration > LONG_CLICK_DELAY && enabled && !animated
-        ) {
+                && heldDuration > LONG_CLICK_DELAY && enabled && !animated) {
             longClicked = true
             for (listener in ArrayList(longClickListeners)) {
                 listener.onCardActorLongClicked(this@CardActor)
@@ -201,28 +200,22 @@ class CardActor(private val cardLoader: CardSpriteLoader, var card: Card) : Acto
         val scale = size / cardSprite.width
 
         // Draw shadow
-        drawSprite(
-            batch, cardLoader.getSprite(CardSpriteLoader.SHADOW),
-            scale, cardLoader.shadowOffset, parentAlpha
-        )
+        drawSprite(batch, cardLoader.getSprite(CardSpriteLoader.SHADOW),
+                scale, cardLoader.shadowOffset, parentAlpha)
 
         // Draw card
         drawSprite(batch, cardSprite, scale, 0f, parentAlpha)
 
         // Draw shadow
         if (hoverAlpha != 0f) {
-            drawSprite(
-                batch, cardLoader.getSprite(CardSpriteLoader.HOVER),
-                scale, cardLoader.hoverOffset, hoverAlpha * parentAlpha
-            )
+            drawSprite(batch, cardLoader.getSprite(CardSpriteLoader.HOVER),
+                    scale, cardLoader.hoverOffset, hoverAlpha * parentAlpha)
         }
 
         // Draw selection
         if (selectionAlpha != 0f) {
-            drawSprite(
-                batch, cardLoader.getSprite(CardSpriteLoader.SELECTION),
-                scale, 0f, selectionAlpha * parentAlpha
-            )
+            drawSprite(batch, cardLoader.getSprite(CardSpriteLoader.SELECTION),
+                    scale, 0f, selectionAlpha * parentAlpha)
         }
     }
 

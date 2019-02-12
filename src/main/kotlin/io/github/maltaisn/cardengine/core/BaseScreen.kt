@@ -24,7 +24,7 @@ import io.github.maltaisn.cardengine.CardGame
 
 
 abstract class BaseScreen(val game: CardGame) :
-    Stage(ExtendViewport(960f, 540f)), Screen {
+        Stage(ExtendViewport(960f, 540f)), Screen {
 
     override fun show() {
         Gdx.input.inputProcessor = this

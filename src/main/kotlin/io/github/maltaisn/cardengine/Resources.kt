@@ -16,16 +16,10 @@
 
 package io.github.maltaisn.cardengine
 
-import com.badlogic.gdx.assets.AssetManager
 
+object Resources {
 
-/**
- * Loader class for loading and accessing [PCard] sprites.
- */
-class PCardSpriteLoader(assetManager: AssetManager) :
-        CardSpriteLoader(assetManager, Resources.PCARD) {
-
-    override val shadowOffset = -20f
-    override val hoverOffset = -30f
+    const val BACKGROUND = "engine/background.png"
+    const val PCARD = "engine/pcard/pcard.atlas"
 
 }

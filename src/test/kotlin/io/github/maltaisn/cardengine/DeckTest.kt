@@ -17,9 +17,9 @@
 package io.github.maltaisn.cardengine
 
 import io.github.maltaisn.cardengine.core.PCard
-import org.junit.Assert.assertNotEquals
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
 

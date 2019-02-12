@@ -26,10 +26,8 @@ import ktx.collections.lastIndex
  * The base class for loading and accessing cards. Must be disposed.
  * The loader loads all the sprites when created.
  */
-abstract class CardSpriteLoader(
-    private val assetManager: AssetManager,
-    private val atlasPath: String
-) {
+abstract class CardSpriteLoader(private val assetManager: AssetManager,
+                                private val atlasPath: String) {
 
     // Sprites
     private lateinit var cardSprites: Array<Sprite>

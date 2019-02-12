@@ -35,7 +35,8 @@ import ktx.math.minus
 
 /**
  * The base class for a widget group that contains card actors.
- * All card containers support animations with [CardAnimationLayer].
+ * All card containers support animations with the [AnimationLayer],
+ * however the container must be in a [CardGameScreen] stage to support animations.
  */
 abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : WidgetGroup() {
 
@@ -101,8 +102,8 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
     }
 
     /** The input listener set on all actors in this container */
-    private val actorListener = object : InputListener() {
-        private var cardDragListener: CardAnimationLayer.CardDragListener? = null
+    private val internalInputListener = object : InputListener() {
+        private var cardDragListener: AnimationLayer.CardDragListener? = null
         private var startPos = Vector2()
 
         override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
@@ -113,8 +114,7 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
         override fun touchDragged(event: InputEvent, x: Float, y: Float, pointer: Int) {
             val pos = Vector2(event.stageX, event.stageY)
             if (pointer == Input.Buttons.LEFT && (cardDragListener != null ||
-                        dragListener != null && (pos - startPos).len() > MIN_DRAG_DISTANCE)
-            ) {
+                            dragListener != null && (pos - startPos).len() > MIN_DRAG_DISTANCE)) {
                 // Start dragging only when touch has been dragged for a minimum distance
                 if (cardDragListener == null) {
                     cardDragListener = dragListener!!.onCardDragged(event.listenerActor as CardActor)
@@ -132,14 +132,15 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
     }
 
     override fun setStage(stage: Stage?) {
-        if (stage !is CardGameScreen?) {
-            throw IllegalStateException("CardContainer can only be added to a CardGameScreen.")
-        }
-
         if (stage != null) {
-            stage.animationLayer.containers += this
+            if (stage is CardGameScreen) {
+                stage.animationLayer.containers += this
+            }
         } else if (super.getStage() != null) {
-            (super.getStage() as CardGameScreen).animationLayer.containers -= this
+            val prevStage = super.getStage()
+            if (prevStage is CardGameScreen) {
+                prevStage.animationLayer.containers -= this
+            }
         }
         super.setStage(stage)
     }
@@ -220,13 +221,13 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
     }
 
     fun setDragListener(listener: DragListener?) {
-        if (listener == null) {
+        if (dragListener != null && listener == null) {
             for (actor in actors) {
-                actor.removeListener(actorListener)
+                actor.removeListener(internalInputListener)
             }
-        } else {
+        } else if (dragListener == null && listener != null) {
             for (actor in actors) {
-                actor.addListener(actorListener)
+                actor.addListener(internalInputListener)
             }
         }
         dragListener = listener
@@ -256,7 +257,7 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
             val actor = actors.removeAt(actors.lastIndex)
             if (clickListeners.isNotEmpty()) actor.clickListeners -= internalClickListener
             if (longClickListeners.isNotEmpty()) actor.longClickListeners -= internalLongClickListener
-            if (dragListener != null) actor.listeners.removeValue(actorListener, true)
+            if (dragListener != null) actor.listeners.removeValue(internalInputListener, true)
         }
 
         // Add new actors if there aren't enough.
@@ -264,7 +265,7 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
             val actor = CardActor(cardLoader, cards[actors.size])
             if (clickListeners.isNotEmpty()) actor.clickListeners += internalClickListener
             if (longClickListeners.isNotEmpty()) actor.longClickListeners += internalLongClickListener
-            if (dragListener != null) actor.listeners.add(actorListener)
+            if (dragListener != null) actor.listeners.add(internalInputListener)
             actors.add(actor)
         }
     }
@@ -278,7 +279,7 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
     /** Returns the card actor at an [index]. */
     fun getCardActorAt(index: Int) = actors[index]
 
-    /** Returns the index of a card actor in the container, -1 if not found. */
+    /** Returns the index of a card actor in the container, `-1` if not found. */
     fun findIndexOfCardActor(actor: CardActor) = actors.indexOf(actor)
 
     /** Apply an [action] on all card actors. */
@@ -319,10 +320,10 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
             private var elapsed = 0f
             override fun act(delta: Float): Boolean {
                 elapsed += delta
-                val progress = Interpolation.smooth.applyBounded(elapsed / APPEAR_DURATION)
+                val progress = Interpolation.smooth.applyBounded(elapsed / TRANSITION_DURATION)
                 setColor(1f, 1f, 1f, startOpacity + (endOpacity - startOpacity) * progress)
 
-                val done = elapsed >= APPEAR_DURATION
+                val done = elapsed >= TRANSITION_DURATION
                 if (!visible && done) {
                     isVisible = false
                 }
@@ -363,13 +364,11 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
 
             override fun act(delta: Float): Boolean {
                 elapsed += delta
-                val progress = Interpolation.smooth.applyBounded(elapsed / APPEAR_DURATION)
-                setPosition(
-                    startX + (endX - startX) * progress,
-                    startY + (endY - startY) * progress
-                )
+                val progress = Interpolation.smooth.applyBounded(elapsed / TRANSITION_DURATION)
+                setPosition(startX + (endX - startX) * progress,
+                        startY + (endY - startY) * progress)
 
-                val done = elapsed >= APPEAR_DURATION
+                val done = elapsed >= TRANSITION_DURATION
                 if (!visible && done) {
                     isVisible = false
                     setPosition(startX, startY)
@@ -387,7 +386,7 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
         for (actor in oldActors!!) {
             actor.clickListeners.clear()
             actor.longClickListeners.clear()
-            actor.listeners.removeValue(actorListener, true)
+            actor.listeners.removeValue(internalInputListener, true)
             actor.enabled = true
             actor.highlighted = false
             actor.highlightable = true
@@ -407,7 +406,7 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
         for (actor in actors) {
             if (clickListeners.isNotEmpty()) actor.clickListeners += internalClickListener
             if (longClickListeners.isNotEmpty()) actor.longClickListeners += internalLongClickListener
-            actor.listeners.add(actorListener)
+            actor.listeners.add(internalInputListener)
         }
     }
 
@@ -473,10 +472,10 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
     interface DragListener {
         /**
          * Called when a card in this container is dragged.
-         * Can return an input listener provided by [CardAnimationLayer.dragCards] to
+         * Can return an input listener provided by [AnimationLayer.dragCards] to
          * drag the card, or can return `null` to not drag the card.
          */
-        fun onCardDragged(actor: CardActor): CardAnimationLayer.CardDragListener?
+        fun onCardDragged(actor: CardActor): AnimationLayer.CardDragListener?
     }
 
     interface PlayListener {
@@ -494,7 +493,12 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
     }
 
     enum class Visibility {
-        ALL, NONE, MIXED
+        /** Automatically show all cards. */
+        ALL,
+        /** Automatically hide all cards. */
+        NONE,
+        /** Must manually set cards shown state. */
+        MIXED
     }
 
     enum class Side {
@@ -502,7 +506,7 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
     }
 
     companion object {
-        private const val APPEAR_DURATION = 0.5f
+        private const val TRANSITION_DURATION = 0.5f
         private const val MIN_DRAG_DISTANCE = 10f
     }
 

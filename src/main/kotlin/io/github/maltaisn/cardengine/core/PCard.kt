@@ -116,9 +116,7 @@ class PCard private constructor(val rank: Int, val suit: Int, value: Int) : Card
             } else if (rank in RANK_RANGE && suit in SUIT_RANGE) {
                 card = cards[suit * 13 + (rank - 1)]
             }
-            if (card == null) {
-                throw IllegalArgumentException("No playing card exist with this rank and suit.")
-            }
+            requireNotNull(card) { "No playing card exist with this rank and suit." }
             return card
         }
 
@@ -128,9 +126,7 @@ class PCard private constructor(val rank: Int, val suit: Int, value: Int) : Card
         fun parse(cardStr: String): PCard {
             val suit = SUIT_STR.indexOf(cardStr.last())
             val rank = RANK_STR.indexOf(cardStr.dropLast(1)) + 1
-            if (suit == -1 || rank == -1) {
-                throw IllegalArgumentException("No playing card exist for '$cardStr'.")
-            }
+            require(suit != -1 && rank != -1) { "No playing card exist for '$cardStr'." }
             return get(rank, suit)
         }
 
@@ -199,13 +195,9 @@ class PCard private constructor(val rank: Int, val suit: Int, value: Int) : Card
             return deck
         }
 
-        val DEFAULT_SORTER = Sorter(
-            BY_SUIT, ASCENDING, true,
-            intArrayOf(
-                HEART, SPADE, DIAMOND,
-                CLUB, BLACK, RED
-            ), true
-        )
+        val DEFAULT_SORTER = Sorter(BY_SUIT, ASCENDING, true,
+                intArrayOf(HEART, SPADE, DIAMOND,
+                        CLUB, BLACK, RED), true)
     }
 
     /**
@@ -220,22 +212,18 @@ class PCard private constructor(val rank: Int, val suit: Int, value: Int) : Card
      * @property separateColors If true, the sorter will avoid placing two suits of the same color
      * next to each other. For this, sorter must sort by suit and [suitOrder] must alternate colors.
      */
-    class Sorter(
-        private val order: Int,
-        private val rankOrder: Int,
-        private val aceHigh: Boolean,
-        private var suitOrder: IntArray,
-        private val separateColors: Boolean
-    ) :
-        Card.Sorter<PCard>, Comparator<PCard> {
+    class Sorter(private val order: Int,
+                 private val rankOrder: Int,
+                 private val aceHigh: Boolean,
+                 private var suitOrder: IntArray,
+                 private val separateColors: Boolean) :
+            Card.Sorter<PCard>, Comparator<PCard> {
 
         override val transitive = !(separateColors && order == BY_SUIT)
         private val originalSuitOrder = suitOrder.clone()
 
         init {
-            if (suitOrder.size != 6) {
-                throw IllegalArgumentException("Suit order array must have length of 6.")
-            }
+            require(suitOrder.size == 6) { "Suit order array must have length of 6." }
         }
 
         override fun initialize(cards: List<PCard>) {

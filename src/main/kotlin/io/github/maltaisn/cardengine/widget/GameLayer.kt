@@ -20,6 +20,7 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import io.github.maltaisn.cardengine.Resources
 
 
 class GameLayer(private val assetManager: AssetManager) : Table() {
@@ -27,23 +28,19 @@ class GameLayer(private val assetManager: AssetManager) : Table() {
     private lateinit var backgroundTexture: Texture
 
     init {
-        assetManager.load(BACKGROUND_TEXTURE, Texture::class.java)
+        assetManager.load(Resources.BACKGROUND, Texture::class.java)
     }
 
     override fun drawChildren(batch: Batch, parentAlpha: Float) {
         if (::backgroundTexture.isInitialized) {
             batch.draw(backgroundTexture, 0f, 0f, width, height)
         } else {
-            if (assetManager.isLoaded(BACKGROUND_TEXTURE)) {
-                backgroundTexture = assetManager.get(BACKGROUND_TEXTURE)
+            if (assetManager.isLoaded(Resources.BACKGROUND)) {
+                backgroundTexture = assetManager.get(Resources.BACKGROUND)
             }
         }
 
         super.drawChildren(batch, parentAlpha)
-    }
-
-    companion object {
-        private const val BACKGROUND_TEXTURE = "engine/background.png"
     }
 
 }

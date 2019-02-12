@@ -163,12 +163,12 @@ class CardHand(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
         if (size > 1) {
             if (horizontal) {
                 cardSpacing = ((width - cardWidth) / (size - 1))
-                    .coerceIn(minCardSpacing, maxCardSpacing)
+                        .coerceIn(minCardSpacing, maxCardSpacing)
                 reqWidth = cardSpacing * (size - 1) + cardWidth
                 reqHeight = prefHeight
             } else {
                 cardSpacing = ((height - cardHeight) / (size - 1))
-                    .coerceIn(minCardSpacing, maxCardSpacing)
+                        .coerceIn(minCardSpacing, maxCardSpacing)
                 reqWidth = prefWidth
                 reqHeight = cardSpacing * (size - 1) + cardHeight
             }
@@ -259,8 +259,8 @@ class CardHand(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
         super.computeSize()
 
         // Find clip and highlight sizes
-        if (clipPercent.absoluteValue != 0f && alignment == Align.center) {
-            throw IllegalStateException("Cannot clip a CardHand with center alignement.")
+        require(alignment != Align.center || clipPercent.absoluteValue == 0f) {
+            "Cannot clip a CardHand with center alignement."
         }
 
         val cardSize = if (horizontal) cardHeight else cardWidth
@@ -293,23 +293,15 @@ class CardHand(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
             // Do the highlight animation.
             val restPos = if (horizontal) actor.y else actor.x
             if (actor.highlighted) {
-                actor.addAction(
-                    HighlightAction(
-                        restPos, highlightSize,
-                        horizontal, true, 0f
-                    )
-                )
+                actor.addAction(HighlightAction(restPos, highlightSize,
+                        horizontal, true, 0f))
             } else {
                 val action = actor.actions.find { it is HighlightAction } as HighlightAction?
                 if (action != null) {
                     action.highlighted = false
                 } else {
-                    actor.addAction(
-                        HighlightAction(
-                            restPos - highlightSize, highlightSize,
-                            horizontal, false, HIGHLIGHT_DURATION
-                        )
-                    )
+                    actor.addAction(HighlightAction(restPos - highlightSize, highlightSize,
+                            horizontal, false, HIGHLIGHT_DURATION))
                 }
             }
         }
@@ -319,11 +311,9 @@ class CardHand(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
      * An action to translate a card actor from its resting
      * position to the highlight position or the opposite.
      */
-    private class HighlightAction(
-        private val restPos: Float, private val translate: Float,
-        private val horizontal: Boolean, var highlighted: Boolean,
-        var elapsed: Float
-    ) : Action() {
+    private class HighlightAction(private val restPos: Float, private val translate: Float,
+                                  private val horizontal: Boolean, var highlighted: Boolean,
+                                  var elapsed: Float) : Action() {
         override fun act(delta: Float): Boolean {
             val actor = actor as CardActor
             elapsed += if (highlighted) delta else -delta

@@ -31,7 +31,7 @@ import ktx.math.minus
 import ktx.math.times
 
 
-class CardAnimationLayer : WidgetGroup() {
+class AnimationLayer : WidgetGroup() {
 
     /** The list of all card containers on the stage.
      * It's update by the container themselves when they are added to the stage. */
@@ -92,10 +92,8 @@ class CardAnimationLayer : WidgetGroup() {
      * Move a card from a container to another container.
      * This can be animated later with [update].
      */
-    fun moveCard(
-        src: CardContainer, dst: CardContainer,
-        srcIndex: Int, dstIndex: Int
-    ) {
+    fun moveCard(src: CardContainer, dst: CardContainer,
+                 srcIndex: Int, dstIndex: Int) {
         assert(src !== dst)
 
         if (src.oldActors == null) {
@@ -120,11 +118,9 @@ class CardAnimationLayer : WidgetGroup() {
      * The indexes are the ones at the moment of the move, not at the moment of this call.
      * @param callback Called when the card is moved.
      */
-    fun moveCardDelayed(
-        src: CardContainer, dst: CardContainer,
-        srcIndex: Int, dstIndex: Int, delay: Float,
-        callback: (() -> Unit)? = null
-    ) {
+    fun moveCardDelayed(src: CardContainer, dst: CardContainer,
+                        srcIndex: Int, dstIndex: Int, delay: Float,
+                        callback: (() -> Unit)? = null) {
         if (delay <= 0f) {
             // No delay, call immediately.
             moveCard(src, dst, srcIndex, dstIndex)
@@ -138,20 +134,16 @@ class CardAnimationLayer : WidgetGroup() {
      * Animate the dealing of [count] cards from a source container to a destination container.
      * @param callback Called after each card is passed.
      */
-    fun deal(
-        src: CardContainer, dst: CardContainer, count: Int,
-        callback: (() -> Unit)? = null
-    ) {
+    fun deal(src: CardContainer, dst: CardContainer, count: Int,
+             callback: (() -> Unit)? = null) {
         assert(src !== dst)
         assert(src.size >= count)
 
         val srcStartSize = src.size
         val dstStartSize = dst.size
         for (i in 0 until count) {
-            moveCardDelayed(
-                src, dst, srcStartSize - i - 1,
-                dstStartSize + i, i * DEAL_DELAY
-            ) {
+            moveCardDelayed(src, dst, srcStartSize - i - 1,
+                    dstStartSize + i, i * DEAL_DELAY) {
                 callback?.invoke()
                 update()
             }
@@ -162,20 +154,16 @@ class CardAnimationLayer : WidgetGroup() {
      * Start dragging a card actor. Returns a listener with methods to be called
      * when touch is dragged and on touch up.
      */
-    fun dragCards(vararg cards: CardActor): CardDragListener {
-        if (draggedCards != null) {
-            throw IllegalStateException("Cannot drag card while another one is being dragged.")
-        } else if (cards.isEmpty()) {
-            throw IllegalArgumentException("At least one card must be dragged.")
-        } else if (cardsMoved || animationRunning) {
-            throw IllegalArgumentException("Cannot drag card while animation is running or pending.")
+    fun dragCards(vararg cards: CardActor): CardDragListener? {
+        if (draggedCards != null || cards.isEmpty()) return null
+
+        require(!cardsMoved && !animationRunning) {
+            "Cannot drag card while animation is running or pending."
         }
 
         val container = cards.first().parent as CardContainer
-        for (card in cards) {
-            if (card.parent !== container) {
-                throw IllegalArgumentException("All cards dragged must be of the same container.")
-            }
+        require(cards.all { it.parent === container }) {
+            "All cards dragged must be of the same container."
         }
 
         @Suppress("UNCHECKED_CAST")
@@ -204,11 +192,8 @@ class CardAnimationLayer : WidgetGroup() {
         }
 
         // Find the actor offset to the mouse position.
-        val mousePos = stage.screenToStageCoordinates(
-            Vector2(
-                Gdx.input.x.toFloat(), Gdx.input.y.toFloat()
-            )
-        )
+        val mousePos = stage.screenToStageCoordinates(Vector2(
+                Gdx.input.x.toFloat(), Gdx.input.y.toFloat()))
         val offsets = Array(cards.size) { cards[it].stageToLocalCoordinates(mousePos.cpy()) }
 
         container.oldActors = ArrayList(container.actors)
@@ -302,8 +287,7 @@ class CardAnimationLayer : WidgetGroup() {
                 // For the card stack, only show the topmost card that doesn't move.
                 // Hide others. This prevents useless overdrawing.
                 if (container is CardStack && MathUtils.isEqual(distance.x, 0f)
-                    && MathUtils.isEqual(distance.y, 0f)
-                ) {
+                        && MathUtils.isEqual(distance.y, 0f)) {
                     actor.isVisible = false
                     lastUnmovedActor = actor
                 } else {
@@ -322,7 +306,7 @@ class CardAnimationLayer : WidgetGroup() {
                     if (oldDistance != 0f && newDistance != 0f && remaining > 0.1f) {
                         // Extrapolate new duration from new to old distance ratio
                         duration = (newDistance / oldDistance * remaining)
-                            .coerceIn(0.2f, UPDATE_DURATION)
+                                .coerceIn(0.2f, UPDATE_DURATION)
                     }
                 }
 
@@ -406,11 +390,10 @@ class CardAnimationLayer : WidgetGroup() {
     }
 
     private inner class MoveCardAction(
-        private val cardActor: CardActor,
-        val distance: Vector2,
-        val containerEndPos: Vector2,
-        val duration: Float
-    ) : Action() {
+            private val cardActor: CardActor,
+            val distance: Vector2,
+            val containerEndPos: Vector2,
+            val duration: Float) : Action() {
 
         var elapsed = 0f
 
@@ -425,14 +408,10 @@ class CardAnimationLayer : WidgetGroup() {
         init {
             // Compute the distance between the center of the src and dst containers
             if (src !== dst) {
-                srcPos = src.localToActorCoordinates(
-                    this@CardAnimationLayer,
-                    Vector2(src.width / 2, src.height / 2)
-                )
-                val dstPos = dst.localToActorCoordinates(
-                    this@CardAnimationLayer,
-                    Vector2(dst.width / 2, dst.height / 2)
-                )
+                srcPos = src.localToActorCoordinates(this@AnimationLayer,
+                        Vector2(src.width / 2, src.height / 2))
+                val dstPos = dst.localToActorCoordinates(this@AnimationLayer,
+                        Vector2(dst.width / 2, dst.height / 2))
                 containerDistance = (dstPos - srcPos).len()
                 changeLayer()
             } else {
@@ -464,10 +443,8 @@ class CardAnimationLayer : WidgetGroup() {
             if (src === dst) return
 
             // Compute distance to source container
-            val pos = cardActor.localToActorCoordinates(
-                this@CardAnimationLayer,
-                Vector2(cardActor.width / 2, cardActor.height / 2)
-            )
+            val pos = cardActor.localToActorCoordinates(this@AnimationLayer,
+                    Vector2(cardActor.width / 2, cardActor.height / 2))
             if ((pos - srcPos).len() < containerDistance / 2) {
                 return
             }
@@ -508,17 +485,15 @@ class CardAnimationLayer : WidgetGroup() {
 
     /** A delayed card move between two containers. */
     private class DelayedCardMove(
-        val src: CardContainer, val dst: CardContainer,
-        val srcIndex: Int, val dstIndex: Int, var timeLeft: Float,
-        val callback: (() -> Unit)?
-    )
+            val src: CardContainer, val dst: CardContainer,
+            val srcIndex: Int, val dstIndex: Int, var timeLeft: Float,
+            val callback: (() -> Unit)?)
 
 
     inner class CardDragListener(
-        private val container: CardContainer,
-        private val cardActors: Array<CardActor>,
-        private val offsets: Array<Vector2>
-    ) {
+            private val container: CardContainer,
+            private val cardActors: Array<CardActor>,
+            private val offsets: Array<Vector2>) {
 
         private var dst = container
 
@@ -529,8 +504,7 @@ class CardAnimationLayer : WidgetGroup() {
                 if (ctn.isVisible && ctn !== container && ctn.playListener != null) {
                     val pos = ctn.stageToLocalCoordinates(stagePos.cpy())
                     if (ctn.withinBounds(pos.x, pos.y) &&
-                        ctn.playListener!!.canCardsBePlayed(cardActors, container)
-                    ) {
+                            ctn.playListener!!.canCardsBePlayed(cardActors, container)) {
                         // Mouse is in this container and card can be played.
                         newDst = ctn
                         break
