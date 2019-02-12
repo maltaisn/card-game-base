@@ -35,15 +35,16 @@ dependencies {
     implementation "io.github.libktx:ktx-math:$ktxVersion"
     implementation "io.github.libktx:ktx-log:$ktxVersion"
 
-    testImplementation("junit:junit:$junitVersion")
+    testImplementation "junit:junit:$junitVersion"
 }
 
 sourceSets {
-    getByName("main") {
-        java.srcDirs("src/main/kotlin")
+    main {
+        java.srcDirs = ["src/main/kotlin"]
+        resources.srcDirs = ["assets"]
     }
-    getByName("test") {
-        java.srcDirs("src/test/kotlin")
+    test {
+        java.srcDirs = ["src/test/kotlin"]
     }
 }
 buildDir = "build/"
