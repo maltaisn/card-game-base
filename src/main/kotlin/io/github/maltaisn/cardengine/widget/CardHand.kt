@@ -23,6 +23,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack
 import com.badlogic.gdx.utils.Align
+import io.github.maltaisn.cardengine.Animation
 import io.github.maltaisn.cardengine.CardSpriteLoader
 import io.github.maltaisn.cardengine.applyBounded
 import io.github.maltaisn.cardengine.core.Card
@@ -322,7 +323,7 @@ class CardHand(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
                     action.highlighted = false
                 } else {
                     actor.addAction(HighlightAction(restPos - highlightSize, highlightSize,
-                            horizontal, false, HIGHLIGHT_DURATION))
+                            horizontal, false, Animation.HIGHLIGHT_DURATION))
                 }
             }
         }
@@ -339,14 +340,14 @@ class CardHand(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
             val actor = actor as CardActor
             elapsed += if (highlighted) delta else -delta
 
-            val pos = Interpolation.smooth.applyBounded(elapsed / HIGHLIGHT_DURATION) * translate + restPos
+            val pos = Interpolation.smooth.applyBounded(elapsed / Animation.HIGHLIGHT_DURATION) * translate + restPos
             if (horizontal) {
                 actor.y = pos
             } else {
                 actor.x = pos
             }
 
-            return elapsed < 0 || elapsed > HIGHLIGHT_DURATION
+            return elapsed < 0 || elapsed > Animation.HIGHLIGHT_DURATION
         }
     }
 
@@ -357,10 +358,6 @@ class CardHand(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
          * be blocked. If therre are many listeners, only one needs to return false.
          */
         fun onCardActorHighlighted(actor: CardActor, highlighted: Boolean): Boolean
-    }
-
-    companion object {
-        private const val HIGHLIGHT_DURATION = 0.1f
     }
 
 }

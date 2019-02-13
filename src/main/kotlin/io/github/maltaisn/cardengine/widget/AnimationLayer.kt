@@ -24,6 +24,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.*
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup
 import com.oracle.util.Checksums.update
+import io.github.maltaisn.cardengine.Animation
 import io.github.maltaisn.cardengine.applyBounded
 import io.github.maltaisn.cardengine.withinBounds
 import ktx.math.div
@@ -55,8 +56,7 @@ class AnimationLayer : WidgetGroup() {
             override fun keyUp(event: InputEvent, keycode: Int): Boolean {
                 if (keycode == Input.Keys.ESCAPE) {
                     // Stop all animations with escape.
-                    dispatchDelayedCardMoves()
-                    completeAnimation()
+                    completeAnimation(true)
                     return true
                 }
                 return false
@@ -91,11 +91,11 @@ class AnimationLayer : WidgetGroup() {
     /**
      * Move a card from a container to another container.
      * This can be animated later with [update].
-     * @param insert Whether to insert the card in destination or replace it.
-     * If replacing, the card at the destination index must be null.
+     * @param replaceSrc If true, the card in source at [srcIndex] will be replaced with null.
+     * @param replaceDst If true, the null card in destination at [dstIndex] will be replaced.
      */
-    fun moveCard(src: CardContainer, dst: CardContainer,
-                 srcIndex: Int, dstIndex: Int, insert: Boolean = false) {
+    fun moveCard(src: CardContainer, dst: CardContainer, srcIndex: Int, dstIndex: Int,
+                 replaceSrc: Boolean = false, replaceDst: Boolean = false) {
         assert(src !== dst)
 
         if (src.oldActors == null) {
@@ -108,9 +108,15 @@ class AnimationLayer : WidgetGroup() {
         // Move card and actor
         val card = src.cards.removeAt(srcIndex)
         val actor = src.actors.removeAt(srcIndex)
-        if (insert) {
+        if (replaceSrc) {
+            src.cards.add(srcIndex, null)
+            src.actors.add(srcIndex, null)
+        }
+        if (replaceDst) {
             val replaced = dst.cards[dstIndex]
-            require(replaced == null) { "Replaced card must be null, but is '$replaced'." }
+            require(replaced == null) {
+                "Card must replaced a null card in destination, found '$replaced' instead."
+            }
             dst.cards[dstIndex] = card
             dst.actors[dstIndex] = actor
         } else {
@@ -127,10 +133,11 @@ class AnimationLayer : WidgetGroup() {
      * @param callback Called when the card is moved.
      * @see moveCard
      */
-    fun moveCardDelayed(src: CardContainer, dst: CardContainer,
-                        srcIndex: Int, dstIndex: Int, insert: Boolean, delay: Float,
-                        callback: (() -> Unit)? = null) {
-        val move = DelayedCardMove(src, dst, srcIndex, dstIndex, insert, delay, callback)
+    fun moveCardDelayed(src: CardContainer, dst: CardContainer, srcIndex: Int, dstIndex: Int,
+                        replaceSrc: Boolean = false, replaceDst: Boolean = false,
+                        delay: Float, callback: (() -> Unit)? = null) {
+        val move = DelayedCardMove(src, dst, srcIndex, dstIndex,
+                replaceSrc, replaceDst, delay, callback)
         if (delay <= 0f) {
             // No delay, call immediately.
             move.doMove(this)
@@ -142,8 +149,11 @@ class AnimationLayer : WidgetGroup() {
     /**
      * Animate the dealing of [count] cards from a source container to a destination container.
      * @param callback Called after each card is passed.
+     * @param replaceSrc If true, cards removed from source will be replaced with null.
+     * @param replaceDst If true, cards will replace null cards in destination.
      */
     fun deal(src: CardContainer, dst: CardContainer, count: Int,
+             replaceSrc: Boolean = false, replaceDst: Boolean = false,
              callback: (() -> Unit)? = null) {
         assert(src !== dst)
         assert(src.size >= count)
@@ -151,8 +161,10 @@ class AnimationLayer : WidgetGroup() {
         val srcStartSize = src.size
         val dstStartSize = dst.size
         for (i in 0 until count) {
-            moveCardDelayed(src, dst, srcStartSize - i - 1,
-                    dstStartSize + i, false, i * DEAL_DELAY) {
+            val srcIndex = if (replaceSrc) i else srcStartSize - i - 1
+            val dstIndex = if (replaceDst) i else dstStartSize + i
+            moveCardDelayed(src, dst, srcIndex, dstIndex,
+                    replaceSrc, replaceDst, i * Animation.DEAL_DELAY) {
                 callback?.invoke()
                 update()
             }
@@ -307,7 +319,7 @@ class AnimationLayer : WidgetGroup() {
                     actor.isVisible = true
                 }
 
-                var duration = UPDATE_DURATION
+                var duration = Animation.UPDATE_DURATION
 
                 // If actor was already moving and its animation still has some time left,
                 // recycle the action by assigning a new duration.
@@ -319,7 +331,7 @@ class AnimationLayer : WidgetGroup() {
                     if (oldDistance != 0f && newDistance != 0f && remaining > 0.1f) {
                         // Extrapolate new duration from new to old distance ratio
                         duration = (newDistance / oldDistance * remaining)
-                                .coerceIn(0.2f, UPDATE_DURATION)
+                                .coerceIn(0.2f, Animation.UPDATE_DURATION)
                     }
                 }
 
@@ -339,10 +351,21 @@ class AnimationLayer : WidgetGroup() {
 
     /**
      * Complete all animations and send the card actors to their final position and container.
-     * If there was any delayed card moves, they are also completed.
+     * @param dispatchDelayedMoves If true and there was any delayed card moves, they are also completed.
      */
-    fun completeAnimation() {
+    fun completeAnimation(dispatchDelayedMoves: Boolean = false) {
         if (!animationRunning) return
+
+        if (dispatchDelayedMoves && delayedCardMoves.isNotEmpty()) {
+            // Dispatch all delayed card moves if there are any.
+            for (move in delayedCardMoves) {
+                move.doMove(this)
+            }
+            delayedCardMoves.clear()
+
+            // Restart animation to update end positions and destinations
+            startAnimation()
+        }
 
         // Add animated actors to their container, keeping the same position on screen.
         for (container in containers) {
@@ -354,6 +377,7 @@ class AnimationLayer : WidgetGroup() {
             if (container.oldActors == null) continue
             container.oldActors = null
 
+            assert(container.children.isEmpty)
             for (actor in container.actors) {
                 actor?.apply {
                     assert(actions.size == 1)
@@ -375,31 +399,11 @@ class AnimationLayer : WidgetGroup() {
             container.onAnimationEnd()
         }
 
-        assert(children.size == 0)
+        clearChildren()  // Removes marker actors
 
         animationPending = false
         animationRunning = false
         animationTimeLeft = 0f
-    }
-
-    /**
-     * Dispatch all delayed card moves if there are any.
-     */
-    fun dispatchDelayedCardMoves() {
-        if (delayedCardMoves.isNotEmpty()) {
-            for (move in delayedCardMoves) {
-                move.doMove(this)
-            }
-            delayedCardMoves.clear()
-
-            // Invalidate animated containers
-            for (container in containers) {
-                if (container.oldActors != null) {
-                    container.invalidate()
-                }
-            }
-            return
-        }
     }
 
     private inner class MoveCardAction(
@@ -499,11 +503,12 @@ class AnimationLayer : WidgetGroup() {
     /** A delayed card move between two containers. */
     private class DelayedCardMove(
             private val src: CardContainer, private val dst: CardContainer,
-            private val srcIndex: Int, private val dstIndex: Int, private val insert: Boolean,
+            private val srcIndex: Int, private val dstIndex: Int,
+            private val replaceSrc: Boolean = false, private val replaceDst: Boolean = false,
             var timeLeft: Float, private val callback: (() -> Unit)?) {
 
         fun doMove(animationLayer: AnimationLayer) {
-            animationLayer.moveCard(src, dst, srcIndex, dstIndex, insert)
+            animationLayer.moveCard(src, dst, srcIndex, dstIndex, replaceSrc, replaceDst)
             callback?.invoke()
         }
     }
@@ -550,9 +555,10 @@ class AnimationLayer : WidgetGroup() {
 
                         override fun act(delta: Float): Boolean {
                             elapsed += delta
-                            val progress = Interpolation.smooth.applyBounded(elapsed / DRAG_SIZE_CHANGE_DURATION)
+                            val progress = Interpolation.smooth.applyBounded(
+                                    elapsed / Animation.DRAG_SIZE_CHANGE_DURATION)
                             cardActor.size = startSize + progress * (endSize - startSize)
-                            return elapsed >= DRAG_SIZE_CHANGE_DURATION
+                            return elapsed >= Animation.DRAG_SIZE_CHANGE_DURATION
                         }
                     })
                 }
@@ -579,15 +585,7 @@ class AnimationLayer : WidgetGroup() {
     }
 
     companion object {
-        /** The duration of the update animation. */
-        const val UPDATE_DURATION = 0.4f
 
-        /** The duration between each card dealt in [deal].
-         *  Values less than the update duration look worse. */
-        const val DEAL_DELAY = 0.4f
-
-        /** The duration of the card size animation when the dragged card hovers a container */
-        const val DRAG_SIZE_CHANGE_DURATION = 0.25f
     }
 
 }

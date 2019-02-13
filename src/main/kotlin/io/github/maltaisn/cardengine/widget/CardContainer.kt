@@ -25,10 +25,12 @@ import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup
 import com.badlogic.gdx.utils.Align
+import io.github.maltaisn.cardengine.Animation
 import io.github.maltaisn.cardengine.CardGameScreen
 import io.github.maltaisn.cardengine.CardSpriteLoader
 import io.github.maltaisn.cardengine.applyBounded
 import io.github.maltaisn.cardengine.core.Card
+import ktx.collections.isNotEmpty
 import ktx.math.minus
 import java.util.*
 
@@ -114,7 +116,7 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
         override fun touchDragged(event: InputEvent, x: Float, y: Float, pointer: Int) {
             val pos = Vector2(event.stageX, event.stageY)
             if (pointer == Input.Buttons.LEFT && (cardDragListener != null ||
-                            dragListener != null && (pos - startPos).len() > MIN_DRAG_DISTANCE)) {
+                            dragListener != null && (pos - startPos).len() > Animation.MIN_DRAG_DISTANCE)) {
                 // Start dragging only when touch has been dragged for a minimum distance
                 if (cardDragListener == null) {
                     cardDragListener = dragListener!!.onCardDragged(event.listenerActor as CardActor)
@@ -154,8 +156,10 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
         sizeInvalid = true
     }
 
-    override fun layout() {
-        // Clear and re-add all actors to have the correct Z-index
+    /**
+     * Re-add all actors to the container, with the correct Z-indexé
+     */
+    private fun update() {
         clearChildren()
         for (actor in actors) {
             if (actor != null) {
@@ -168,11 +172,15 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
                 addActor(actor)
             }
         }
+    }
 
-        val positions = computeActorsPosition()
-        for (i in actors.indices) {
-            val pos = positions[i]
-            actors[i]?.setPosition(pos.x, pos.y)
+    override fun layout() {
+        if (children.isNotEmpty()) {
+            val positions = computeActorsPosition()
+            for (i in actors.indices) {
+                val pos = positions[i]
+                actors[i]?.setPosition(pos.x, pos.y)
+            }
         }
     }
 
@@ -241,7 +249,6 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
 
     /**
      * Change the cards in this container to new cards.
-     * This change cannot be animated, so [invalidate] must be called.
      */
     open fun setCards(newCards: Iterable<Card?>) {
         cards.clear()
@@ -289,6 +296,8 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
                 actors.add(null)
             }
         }
+
+        update()
     }
 
     /** Clones and returns the list of the cards in this container. */
@@ -349,10 +358,10 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
             private var elapsed = 0f
             override fun act(delta: Float): Boolean {
                 elapsed += delta
-                val progress = Interpolation.smooth.applyBounded(elapsed / TRANSITION_DURATION)
+                val progress = Interpolation.smooth.applyBounded(elapsed / Animation.TRANSITION_DURATION)
                 setColor(1f, 1f, 1f, startOpacity + (endOpacity - startOpacity) * progress)
 
-                val done = elapsed >= TRANSITION_DURATION
+                val done = elapsed >= Animation.TRANSITION_DURATION
                 if (!visible && done) {
                     isVisible = false
                 }
@@ -393,11 +402,11 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
 
             override fun act(delta: Float): Boolean {
                 elapsed += delta
-                val progress = Interpolation.smooth.applyBounded(elapsed / TRANSITION_DURATION)
+                val progress = Interpolation.smooth.applyBounded(elapsed / Animation.TRANSITION_DURATION)
                 setPosition(startX + (endX - startX) * progress,
                         startY + (endY - startY) * progress)
 
-                val done = elapsed >= TRANSITION_DURATION
+                val done = elapsed >= Animation.TRANSITION_DURATION
                 if (!visible && done) {
                     isVisible = false
                     setPosition(startX, startY)
@@ -537,11 +546,6 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
 
     enum class Side {
         LEFT, RIGHT, TOP, BOTTOM
-    }
-
-    companion object {
-        private const val TRANSITION_DURATION = 0.5f
-        private const val MIN_DRAG_DISTANCE = 10f
     }
 
 }

@@ -21,11 +21,8 @@ import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
-import io.github.maltaisn.cardengine.CardSpriteLoader
-import io.github.maltaisn.cardengine.applyBounded
+import io.github.maltaisn.cardengine.*
 import io.github.maltaisn.cardengine.core.Card
-import io.github.maltaisn.cardengine.drawSprite
-import io.github.maltaisn.cardengine.withinBounds
 
 
 /**
@@ -126,7 +123,7 @@ class CardActor(private val cardLoader: CardSpriteLoader, var card: Card) : Acto
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 if (enabled) {
                     selected = false
-                    selectionElapsed = SELECTION_FADE_DURATION * selectionAlpha
+                    selectionElapsed = Animation.SELECTION_FADE_DURATION * selectionAlpha
                     lastTouchDownTime = 0
 
                     if (!animated && !longClicked && withinBounds(x, y)) {
@@ -151,7 +148,7 @@ class CardActor(private val cardLoader: CardSpriteLoader, var card: Card) : Acto
             override fun exit(event: InputEvent, x: Float, y: Float, pointer: Int, toActor: Actor?) {
                 if (enabled && pointer == -1) {
                     hovered = false
-                    hoverElapsed = HOVER_FADE_DURATION * hoverAlpha
+                    hoverElapsed = Animation.HOVER_FADE_DURATION * hoverAlpha
                 }
             }
         })
@@ -161,9 +158,9 @@ class CardActor(private val cardLoader: CardSpriteLoader, var card: Card) : Acto
         super.act(delta)
 
         // Trigger long click if held long enough
-        val heldDuration = System.currentTimeMillis() - lastTouchDownTime
+        val heldDuration = (System.currentTimeMillis() - lastTouchDownTime) / 1000f
         if (longClickListeners.isNotEmpty() && lastTouchDownTime != 0L
-                && heldDuration > LONG_CLICK_DELAY && enabled && !animated) {
+                && heldDuration > Animation.LONG_CLICK_DELAY && enabled && !animated) {
             longClicked = true
             for (listener in ArrayList(longClickListeners)) {
                 listener.onCardActorLongClicked(this@CardActor)
@@ -171,21 +168,21 @@ class CardActor(private val cardLoader: CardSpriteLoader, var card: Card) : Acto
         }
 
         // Update selection alpha
-        if (selected && selectionElapsed < SELECTION_FADE_DURATION) {
+        if (selected && selectionElapsed < Animation.SELECTION_FADE_DURATION) {
             selectionElapsed += delta
-            selectionAlpha = Interpolation.smooth.applyBounded(selectionElapsed / SELECTION_FADE_DURATION)
+            selectionAlpha = Interpolation.smooth.applyBounded(selectionElapsed / Animation.SELECTION_FADE_DURATION)
         } else if (!selected && selectionElapsed > 0f) {
             selectionElapsed -= delta
-            selectionAlpha = Interpolation.smooth.applyBounded(selectionElapsed / SELECTION_FADE_DURATION)
+            selectionAlpha = Interpolation.smooth.applyBounded(selectionElapsed / Animation.SELECTION_FADE_DURATION)
         }
 
         // Update hover alpha
-        if (hovered && hoverElapsed < SELECTION_FADE_DURATION) {
+        if (hovered && hoverElapsed < Animation.SELECTION_FADE_DURATION) {
             hoverElapsed += delta
-            hoverAlpha = Interpolation.circleOut.applyBounded(hoverElapsed / HOVER_FADE_DURATION)
+            hoverAlpha = Interpolation.circleOut.applyBounded(hoverElapsed / Animation.HOVER_FADE_DURATION)
         } else if (!hovered && hoverElapsed > 0f) {
             hoverElapsed -= delta
-            hoverAlpha = Interpolation.smooth.applyBounded(hoverElapsed / HOVER_FADE_DURATION)
+            hoverAlpha = Interpolation.smooth.applyBounded(hoverElapsed / Animation.HOVER_FADE_DURATION)
         }
     }
 
@@ -244,10 +241,6 @@ class CardActor(private val cardLoader: CardSpriteLoader, var card: Card) : Acto
         const val CARD_SIZE_NORMAL = 120f
         const val CARD_SIZE_BIG = 150f
         const val CARD_SIZE_HUGE = 200f
-
-        private const val HOVER_FADE_DURATION = 0.3f
-        private const val SELECTION_FADE_DURATION = 0.3f
-        private const val LONG_CLICK_DELAY = 500
     }
 
 }
