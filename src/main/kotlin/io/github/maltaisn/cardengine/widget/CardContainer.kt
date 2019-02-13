@@ -29,8 +29,8 @@ import io.github.maltaisn.cardengine.CardGameScreen
 import io.github.maltaisn.cardengine.CardSpriteLoader
 import io.github.maltaisn.cardengine.applyBounded
 import io.github.maltaisn.cardengine.core.Card
-import io.github.maltaisn.cardengine.core.Deck
 import ktx.math.minus
+import java.util.*
 
 
 /**
@@ -41,15 +41,15 @@ import ktx.math.minus
 abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : WidgetGroup() {
 
     /** The cards in this container. When a card is moved, this list is immediately updated. */
-    internal val cards = Deck<Card>()
+    internal val cards = ArrayList<Card?>()
 
     /** The actors for the cards. When a card is moved, this list is immediately updated. */
-    internal val actors = ArrayList<CardActor>()
+    internal val actors = ArrayList<CardActor?>()
 
     /** The actors that were in the container before any card was moved. Null if no card was moved. */
-    internal var oldActors: ArrayList<CardActor>? = null
+    internal var oldActors: ArrayList<CardActor?>? = null
 
-    /** The number of cards in this container. */
+    /** The number of cards in this container, including `null` cards. */
     val size: Int
         get() = cards.size
 
@@ -158,19 +158,21 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
         // Clear and re-add all actors to have the correct Z-index
         clearChildren()
         for (actor in actors) {
-            actor.size = cardSize
-            if (visibility == Visibility.ALL) {
-                actor.shown = true
-            } else if (visibility == Visibility.NONE) {
-                actor.shown = false
+            if (actor != null) {
+                actor.size = cardSize
+                if (visibility == Visibility.ALL) {
+                    actor.shown = true
+                } else if (visibility == Visibility.NONE) {
+                    actor.shown = false
+                }
+                addActor(actor)
             }
-            addActor(actor)
         }
 
         val positions = computeActorsPosition()
         for (i in actors.indices) {
             val pos = positions[i]
-            actors[i].setPosition(pos.x, pos.y)
+            actors[i]?.setPosition(pos.x, pos.y)
         }
     }
 
@@ -187,7 +189,7 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
     fun addClickListener(listener: ClickListener) {
         if (clickListeners.isEmpty()) {
             for (actor in actors) {
-                actor.clickListeners += internalClickListener
+                actor?.clickListeners?.add(internalClickListener)
             }
         }
         clickListeners += listener
@@ -197,7 +199,7 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
         clickListeners -= listener
         if (clickListeners.isEmpty()) {
             for (actor in actors) {
-                actor.clickListeners -= internalClickListener
+                actor?.clickListeners?.remove(internalClickListener)
             }
         }
     }
@@ -205,7 +207,7 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
     fun addLongClickListener(listener: LongClickListener) {
         if (longClickListeners.isEmpty()) {
             for (actor in actors) {
-                actor.longClickListeners += internalLongClickListener
+                actor?.longClickListeners?.add(internalLongClickListener)
             }
         }
         longClickListeners += listener
@@ -215,7 +217,7 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
         longClickListeners -= listener
         if (longClickListeners.isEmpty()) {
             for (actor in actors) {
-                actor.longClickListeners -= internalLongClickListener
+                actor?.longClickListeners?.remove(internalLongClickListener)
             }
         }
     }
@@ -223,11 +225,11 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
     fun setDragListener(listener: DragListener?) {
         if (dragListener != null && listener == null) {
             for (actor in actors) {
-                actor.removeListener(internalInputListener)
+                actor?.removeListener(internalInputListener)
             }
         } else if (dragListener == null && listener != null) {
             for (actor in actors) {
-                actor.addListener(internalInputListener)
+                actor?.addListener(internalInputListener)
             }
         }
         dragListener = listener
@@ -239,44 +241,63 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
 
     /**
      * Change the cards in this container to new cards.
-     * To update from this change, [invalidate] must be called.
+     * This change cannot be animated, so [invalidate] must be called.
      */
-    open fun setCards(newCards: List<Card>) {
+    open fun setCards(newCards: Iterable<Card?>) {
         cards.clear()
         cards += newCards
 
         // Bind existing actors to new cards
-        for (i in actors.indices) {
-            val actor = actors[i]
-            actor.card = cards[i]
-            actor.highlighted = false
+        val oldActors = LinkedList<CardActor>()
+        for (actor in actors) {
+            if (actor != null) {
+                oldActors += actor
+            }
+        }
+        actors.clear()
+
+        for (card in cards) {
+            if (card != null) {
+                if (oldActors.isEmpty()) {
+                    break
+                }
+                val actor = oldActors.removeLast()
+                actor.card = card
+                actor.highlighted = false
+            } else {
+                actors.add(null)
+            }
         }
 
-        // Remove actors if there are too many.
-        while (actors.size > size) {
-            val actor = actors.removeAt(actors.lastIndex)
+        // Remove listeners from unused old actors.
+        for (actor in oldActors) {
             if (clickListeners.isNotEmpty()) actor.clickListeners -= internalClickListener
             if (longClickListeners.isNotEmpty()) actor.longClickListeners -= internalLongClickListener
             if (dragListener != null) actor.listeners.removeValue(internalInputListener, true)
         }
 
         // Add new actors if there aren't enough.
-        while (actors.size < size) {
-            val actor = CardActor(cardLoader, cards[actors.size])
-            if (clickListeners.isNotEmpty()) actor.clickListeners += internalClickListener
-            if (longClickListeners.isNotEmpty()) actor.longClickListeners += internalLongClickListener
-            if (dragListener != null) actor.listeners.add(internalInputListener)
-            actors.add(actor)
+        while (actors.size < cards.size) {
+            val card = cards[actors.size]
+            if (card != null) {
+                val actor = CardActor(cardLoader, card)
+                if (clickListeners.isNotEmpty()) actor.clickListeners += internalClickListener
+                if (longClickListeners.isNotEmpty()) actor.longClickListeners += internalLongClickListener
+                if (dragListener != null) actor.listeners.add(internalInputListener)
+                actors += actor
+            } else {
+                actors.add(null)
+            }
         }
     }
 
     /** Clones and returns the list of the cards in this container. */
-    fun getCards(): Deck<out Card> = cards.clone()
+    fun getCards(): MutableList<Card?> = cards.toMutableList()
 
-    /** Returns the card at an [index]. */
+    /** Returns the card at an [index], or `null` if there isn't one. */
     fun getCardAt(index: Int) = cards[index]
 
-    /** Returns the card actor at an [index]. */
+    /** Returns the card actor at an [index], or `null` if there isn't one. */
     fun getCardActorAt(index: Int) = actors[index]
 
     /** Returns the index of a card actor in the container, `-1` if not found. */
@@ -288,15 +309,20 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
     /** Apply an [action] on all card actors. */
     fun applyOnAllCards(action: (CardActor) -> Unit) {
         for (actor in actors) {
-            action(actor)
+            if (actor != null) {
+                action(actor)
+            }
         }
     }
 
-    /** Apply an [action] on the actors of a list of [cards]. */
+    /**
+     * Apply an [action] on the actors of a list of [cards].
+     * If multiple card actors have the same card, the first one found is used.
+     */
     fun applyOnCards(vararg cards: Card, action: (CardActor) -> Unit) {
         for (card in cards) {
             for (actor in actors) {
-                if (actor.card == card) {
+                if (actor != null && actor.card == card) {
                     action(actor)
                     break
                 }
@@ -387,35 +413,40 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
 
         // Reset old actors
         for (actor in oldActors!!) {
-            actor.clickListeners.clear()
-            actor.longClickListeners.clear()
-            actor.listeners.removeValue(internalInputListener, true)
-            actor.enabled = true
-            actor.highlighted = false
-            actor.highlightable = true
+            actor?.apply {
+                clickListeners.clear()
+                longClickListeners.clear()
+                listeners.removeValue(internalInputListener, true)
+                enabled = true
+                highlighted = false
+                highlightable = true
+            }
         }
 
         // Apply this container visibility to the new actors
         for (actor in actors) {
             if (visibility == Visibility.ALL) {
-                actor.shown = true
+                actor?.shown = true
             } else if (visibility == Visibility.NONE) {
-                actor.shown = false
+                actor?.shown = false
             }
         }
     }
 
     internal open fun onAnimationEnd() {
         for (actor in actors) {
-            if (clickListeners.isNotEmpty()) actor.clickListeners += internalClickListener
-            if (longClickListeners.isNotEmpty()) actor.longClickListeners += internalLongClickListener
-            actor.listeners.add(internalInputListener)
+            if (actor != null) {
+                if (clickListeners.isNotEmpty()) actor.clickListeners += internalClickListener
+                if (longClickListeners.isNotEmpty()) actor.longClickListeners += internalLongClickListener
+                actor.listeners.add(internalInputListener)
+            }
         }
     }
 
     /**
      * Returns an array of the positions of the actors in this container.
      * The array is indexed like the cards and actors list.
+     * Should returns position for null cards too.
      */
     internal abstract fun computeActorsPosition(): Array<Vector2>
 

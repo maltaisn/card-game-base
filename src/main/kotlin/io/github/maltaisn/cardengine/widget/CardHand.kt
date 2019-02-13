@@ -32,7 +32,8 @@ import kotlin.math.min
 
 
 /**
- * A card container that displays a list of card actors to form a hand.
+ * A card container that displays a list of card actors to form a hand, that can be sorted.
+ * When using [setCards], sort is not immediately called.
  */
 class CardHand(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
 
@@ -95,26 +96,24 @@ class CardHand(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
         })
     }
 
-    override fun setCards(newCards: List<Card>) {
-        super.setCards(newCards)
-        sort()
-    }
-
     /**
      * Sort the cards in the group if there's a [sorter] set.
+     * If the hand contains null cards, it cannot be sorted.
      */
-    @Suppress("UNCHECKED_CAST")
     fun sort() {
+        assertCanBeSorted()
+
         if (sorter != null && size > 1) {
             // Apply new sorting order.
+            @Suppress("UNCHECKED_CAST")
             val sorter = sorter as Card.Sorter<Card>
             if (!sorter.transitive) {
-                sorter.initialize(cards)
+                sorter.initialize(cards.requireNoNulls())
             }
-            actors.sortWith(Comparator { o1, o2 -> sorter.compare(o1.card, o2.card) })
+            actors.sortWith(Comparator { o1, o2 -> sorter.compare(o1!!.card, o2!!.card) })
             cards.clear()
             for (actor in actors) {
-                cards += actor.card
+                cards += actor!!.card
             }
         }
     }
@@ -123,13 +122,23 @@ class CardHand(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
      * Find the index for adding a [card] in sorted order to the group. This can only be used if the
      * group is already sorted or it will produce unpredictible results.
      * If [sorter] is not transitive, [sort] must be called after insertions to keep the order.
+     * The hand must not contain any null card.
      */
-    @Suppress("UNCHECKED_CAST")
     fun findSortedInsertionPos(card: Card): Int {
         if (sorter == null) return 0
+        assertCanBeSorted()
+
+        @Suppress("UNCHECKED_CAST")
         val sorter = sorter as Card.Sorter<Card>
-        val i = cards.binarySearch(card, sorter)
+        val i = cards.requireNoNulls().binarySearch(card, sorter)
         return if (i < 0) i.inv() else i
+    }
+
+    private fun assertCanBeSorted() {
+        // Check if there are any null cards. If there are, the hand cannot be sorted.
+        for (card in cards) {
+            checkNotNull(card) { "Card hand cannot be sorted if it contains null cards." }
+        }
     }
 
     override fun findInsertPositionForCoordinates(x: Float, y: Float): Int {
@@ -149,10 +158,8 @@ class CardHand(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
      */
     fun highlightCards(highlighted: Boolean, vararg cards: Card) {
         for (card in cards) {
-            val actor = actors.find { it.card == card }
-            if (actor != null) {
-                highlightActor(actor, highlighted)
-            }
+            val actor = actors.find { it?.card == card } ?: continue
+            highlightActor(actor, highlighted)
         }
     }
 
@@ -161,7 +168,7 @@ class CardHand(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
      */
     fun highlightAllCards(highlighted: Boolean) {
         for (actor in actors) {
-            highlightActor(actor, highlighted)
+            highlightActor(actor ?: continue, highlighted)
         }
     }
 
@@ -213,7 +220,7 @@ class CardHand(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
             // Translate for highlighting
             var dx = 0f
             var dy = 0f
-            if (actor.highlighted) {
+            if (actor != null && actor.highlighted) {
                 if (horizontal) {
                     dy = highlightSize
                 } else {

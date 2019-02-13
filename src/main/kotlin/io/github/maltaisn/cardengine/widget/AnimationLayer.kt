@@ -55,6 +55,7 @@ class AnimationLayer : WidgetGroup() {
             override fun keyUp(event: InputEvent, keycode: Int): Boolean {
                 if (keycode == Input.Keys.ESCAPE) {
                     // Stop all animations with escape.
+                    dispatchDelayedCardMoves()
                     completeAnimation()
                     return true
                 }
@@ -72,8 +73,7 @@ class AnimationLayer : WidgetGroup() {
             move.timeLeft -= delta
             if (move.timeLeft < 0) {
                 delayedCardMoves.removeAt(i)
-                moveCard(move.src, move.dst, move.srcIndex, move.dstIndex)
-                move.callback?.invoke()
+                move.doMove(this)
             }
         }
 
@@ -91,9 +91,11 @@ class AnimationLayer : WidgetGroup() {
     /**
      * Move a card from a container to another container.
      * This can be animated later with [update].
+     * @param insert Whether to insert the card in destination or replace it.
+     * If replacing, the card at the destination index must be null.
      */
     fun moveCard(src: CardContainer, dst: CardContainer,
-                 srcIndex: Int, dstIndex: Int) {
+                 srcIndex: Int, dstIndex: Int, insert: Boolean = false) {
         assert(src !== dst)
 
         if (src.oldActors == null) {
@@ -103,12 +105,18 @@ class AnimationLayer : WidgetGroup() {
             dst.oldActors = ArrayList(dst.actors)
         }
 
-        // Move card
-        dst.cards.add(dstIndex, src.cards.removeAt(srcIndex))
-
-        // Move actor
+        // Move card and actor
+        val card = src.cards.removeAt(srcIndex)
         val actor = src.actors.removeAt(srcIndex)
-        dst.actors.add(dstIndex, actor)
+        if (insert) {
+            val replaced = dst.cards[dstIndex]
+            require(replaced == null) { "Replaced card must be null, but is '$replaced'." }
+            dst.cards[dstIndex] = card
+            dst.actors[dstIndex] = actor
+        } else {
+            dst.cards.add(dstIndex, card)
+            dst.actors.add(dstIndex, actor)
+        }
 
         cardsMoved = true
     }
@@ -117,17 +125,18 @@ class AnimationLayer : WidgetGroup() {
      * Move a card after a [delay] in seconds.
      * The indexes are the ones at the moment of the move, not at the moment of this call.
      * @param callback Called when the card is moved.
+     * @see moveCard
      */
     fun moveCardDelayed(src: CardContainer, dst: CardContainer,
-                        srcIndex: Int, dstIndex: Int, delay: Float,
+                        srcIndex: Int, dstIndex: Int, insert: Boolean, delay: Float,
                         callback: (() -> Unit)? = null) {
+        val move = DelayedCardMove(src, dst, srcIndex, dstIndex, insert, delay, callback)
         if (delay <= 0f) {
             // No delay, call immediately.
-            moveCard(src, dst, srcIndex, dstIndex)
-            callback?.invoke()
-            return
+            move.doMove(this)
+        } else {
+            delayedCardMoves += move
         }
-        delayedCardMoves += DelayedCardMove(src, dst, srcIndex, dstIndex, delay, callback)
     }
 
     /**
@@ -143,7 +152,7 @@ class AnimationLayer : WidgetGroup() {
         val dstStartSize = dst.size
         for (i in 0 until count) {
             moveCardDelayed(src, dst, srcStartSize - i - 1,
-                    dstStartSize + i, i * DEAL_DELAY) {
+                    dstStartSize + i, false, i * DEAL_DELAY) {
                 callback?.invoke()
                 update()
             }
@@ -173,18 +182,20 @@ class AnimationLayer : WidgetGroup() {
         // Add all actors of this container to the animation layer
         val actors = container.actors
         for (actor in actors) {
-            val pos = actor.localToActorCoordinates(this, Vector2())
-            addActor(actor)
-            actor.x = pos.x
-            actor.y = pos.y
-            isVisible = true
+            if (actor != null) {
+                val pos = actor.localToActorCoordinates(this, Vector2())
+                addActor(actor)
+                actor.x = pos.x
+                actor.y = pos.y
+                actor.isVisible = true
+            }
         }
 
         if (container is CardStack) {
             // If container is a stack, only show the dragged and top cards.
             var topCard: CardActor? = null
             for (actor in actors) {
-                if (actor !in cards) {
+                if (actor != null && actor !in cards) {
                     topCard = actor
                     actor.isVisible = false
                 }
@@ -193,8 +204,8 @@ class AnimationLayer : WidgetGroup() {
         }
 
         // Find the actor offset to the mouse position.
-        val mousePos = stage.screenToStageCoordinates(Vector2(
-                Gdx.input.x.toFloat(), Gdx.input.y.toFloat()))
+        val mousePos = stage.screenToStageCoordinates(
+                Vector2(Gdx.input.x.toFloat(), Gdx.input.y.toFloat()))
         val offsets = Array(cards.size) { cards[it].stageToLocalCoordinates(mousePos.cpy()) }
 
         container.oldActors = ArrayList(container.actors)
@@ -230,7 +241,7 @@ class AnimationLayer : WidgetGroup() {
             // Add the animated flag for all cards, even the ones not animated.
             // This temporily disable the actor so it can't be interacted with.
             for (actor in container.actors) {
-                actor.animated = true
+                actor?.animated = true
             }
 
             if (container.oldActors == null) continue
@@ -241,7 +252,7 @@ class AnimationLayer : WidgetGroup() {
             val oldActors = container.oldActors!!
             val positions = Array(oldActors.size) { Vector2() }
             for (i in oldActors.indices) {
-                val actor = oldActors[i]
+                val actor = oldActors[i] ?: continue
                 val pos = positions[i]
                 if (actor.parent != null) {
                     // Find coordinates on the animation layer of actor in container.
@@ -259,7 +270,7 @@ class AnimationLayer : WidgetGroup() {
 
             // Add all actors to the animation layer
             for (i in oldActors.indices) {
-                val actor = oldActors[i]
+                val actor = oldActors[i] ?: continue
                 val pos = positions[i]
                 addActor(actor)
                 actor.src = container
@@ -278,7 +289,8 @@ class AnimationLayer : WidgetGroup() {
             val newActors = container.actors
             var lastUnmovedActor: CardActor? = null
             for (i in newActors.indices) {
-                val actor = newActors[i]
+                val actor = newActors[i] ?: continue
+
                 actor.dst = container
 
                 val containerEndPos = endPositions[i]
@@ -320,10 +332,8 @@ class AnimationLayer : WidgetGroup() {
                 }
             }
 
-            if (lastUnmovedActor != null) {
-                // Show only the topmost card that doesn't move.
-                lastUnmovedActor.isVisible = true
-            }
+            // Show only the topmost card that doesn't move.
+            lastUnmovedActor?.isVisible = true
         }
     }
 
@@ -334,17 +344,53 @@ class AnimationLayer : WidgetGroup() {
     fun completeAnimation() {
         if (!animationRunning) return
 
-        // Complete all delayed card moves if there are any
+        // Add animated actors to their container, keeping the same position on screen.
+        for (container in containers) {
+            // Remove the animated flag on all actors
+            for (actor in container.actors) {
+                actor?.animated = false
+            }
+
+            if (container.oldActors == null) continue
+            container.oldActors = null
+
+            for (actor in container.actors) {
+                actor?.apply {
+                    assert(actions.size == 1)
+                    assert(parent === this@AnimationLayer)
+
+                    val action = actions.first() as MoveCardAction
+                    container.addActor(this)
+                    src = null
+                    dst = null
+                    x = action.containerEndPos.x
+                    y = action.containerEndPos.y
+                    size = container.cardSize
+                    clearActions()
+                }
+
+            }
+
+            container.invalidateHierarchy()
+            container.onAnimationEnd()
+        }
+
+        assert(children.size == 0)
+
+        animationPending = false
+        animationRunning = false
+        animationTimeLeft = 0f
+    }
+
+    /**
+     * Dispatch all delayed card moves if there are any.
+     */
+    fun dispatchDelayedCardMoves() {
         if (delayedCardMoves.isNotEmpty()) {
             for (move in delayedCardMoves) {
-                moveCard(move.src, move.dst, move.srcIndex, move.dstIndex)
-                move.callback?.invoke()
+                move.doMove(this)
             }
             delayedCardMoves.clear()
-
-            // Start and immediately stop animation
-            startAnimation()
-            completeAnimation()
 
             // Invalidate animated containers
             for (container in containers) {
@@ -354,40 +400,6 @@ class AnimationLayer : WidgetGroup() {
             }
             return
         }
-
-        // Add animated actors to their container, keeping the same position on screen.
-        for (container in containers) {
-            // Remove the animated flag on all actors
-            for (actor in container.actors) {
-                actor.animated = false
-            }
-
-            if (container.oldActors == null) continue
-            container.oldActors = null
-
-            for (actor in container.actors) {
-                assert(actor.actions.size == 1)
-                assert(actor.parent === this)
-
-                val action = actor.actions.first() as MoveCardAction
-                container.addActor(actor)
-                actor.src = null
-                actor.dst = null
-                actor.x = action.containerEndPos.x
-                actor.y = action.containerEndPos.y
-                actor.size = container.cardSize
-                actor.clearActions()
-            }
-            container.invalidateHierarchy()
-
-            container.onAnimationEnd()
-        }
-
-        assert(children.size == 0)
-
-        animationPending = false
-        animationRunning = false
-        animationTimeLeft = 0f
     }
 
     private inner class MoveCardAction(
@@ -486,9 +498,15 @@ class AnimationLayer : WidgetGroup() {
 
     /** A delayed card move between two containers. */
     private class DelayedCardMove(
-            val src: CardContainer, val dst: CardContainer,
-            val srcIndex: Int, val dstIndex: Int, var timeLeft: Float,
-            val callback: (() -> Unit)?)
+            private val src: CardContainer, private val dst: CardContainer,
+            private val srcIndex: Int, private val dstIndex: Int, private val insert: Boolean,
+            var timeLeft: Float, private val callback: (() -> Unit)?) {
+
+        fun doMove(animationLayer: AnimationLayer) {
+            animationLayer.moveCard(src, dst, srcIndex, dstIndex, insert)
+            callback?.invoke()
+        }
+    }
 
 
     inner class CardDragListener(
