@@ -36,11 +36,11 @@ class AnimationLayer : WidgetGroup() {
 
     /** The list of all card containers on the stage.
      * It's update by the container themselves when they are added to the stage. */
-    internal val containers = ArrayList<CardContainer>()
+    internal val containers = mutableListOf<CardContainer>()
 
-    private val delayedCardMoves = ArrayList<DelayedCardMove>()
+    private val delayedCardMoves = mutableListOf<DelayedCardMove>()
 
-    private var draggedCards: Array<CardActor>? = null
+    private var draggedCards: List<CardActor>? = null
 
     private var cardsMoved = false
     private var animationPending = false
@@ -168,8 +168,7 @@ class AnimationLayer : WidgetGroup() {
             "All cards dragged must be of the same container."
         }
 
-        @Suppress("UNCHECKED_CAST")
-        draggedCards = cards as Array<CardActor>
+        draggedCards = cards.toList()
 
         // Add all actors of this container to the animation layer
         val actors = container.actors
@@ -198,12 +197,12 @@ class AnimationLayer : WidgetGroup() {
         // Find the actor offset to the mouse position.
         val mousePos = stage.screenToStageCoordinates(
                 Vector2(Gdx.input.x.toFloat(), Gdx.input.y.toFloat()))
-        val offsets = Array(cards.size) { cards[it].stageToLocalCoordinates(mousePos.cpy()) }
+        val offsets = List(cards.size) { cards[it].stageToLocalCoordinates(mousePos.cpy()) }
 
-        container.oldActors = ArrayList(container.actors)
+        container.oldActors = container.actors.toMutableList()
         container.onAnimationStart()
 
-        return CardDragger(container, cards, offsets)
+        return CardDragger(container, draggedCards!!, offsets)
     }
 
     /**
@@ -242,7 +241,7 @@ class AnimationLayer : WidgetGroup() {
 
             // Find the start position of all actors of the container, in this group.
             val oldActors = container.oldActors!!
-            val positions = Array(oldActors.size) { Vector2() }
+            val positions = List(oldActors.size) { Vector2() }
             for (i in oldActors.indices) {
                 val actor = oldActors[i] ?: continue
                 val pos = positions[i]
@@ -486,8 +485,8 @@ class AnimationLayer : WidgetGroup() {
     /** A class that manages the dragging of one or multiple cards in the animation layer. */
     inner class CardDragger(
             private val container: CardContainer,
-            private val cardActors: Array<CardActor>,
-            private val offsets: Array<Vector2>) {
+            private val cardActors: List<CardActor>,
+            private val offsets: List<Vector2>) {
 
         /**
          * Whether the cards dragged can be rearranged in the source container.
@@ -512,7 +511,7 @@ class AnimationLayer : WidgetGroup() {
             // Check if the container containing the mouse changed
             var newDst = container
             for (ctn in containers) {
-                if (ctn.isVisible && ctn !== container && ctn.playListener != null) {
+                if (ctn.isVisible && ctn.enabled && ctn !== container && ctn.playListener != null) {
                     val pos = ctn.stageToLocalCoordinates(stagePos.cpy())
                     if (ctn.withinBounds(pos.x, pos.y) &&
                             ctn.playListener!!.canCardsBePlayed(cardActors, container)) {
@@ -604,7 +603,7 @@ class AnimationLayer : WidgetGroup() {
             draggedCards = null
 
             // Call play listener of destination container
-            if (dst !== container) {
+            if (dst !== container && dst.enabled) {
                 val dstPos = dst.stageToLocalCoordinates(stagePos)
                 dst.playListener?.onCardsPlayed(cardActors, container, dstPos)
             }

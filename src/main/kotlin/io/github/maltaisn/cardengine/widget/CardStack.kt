@@ -59,12 +59,12 @@ class CardStack(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
 
     override fun findInsertPositionForCoordinates(x: Float, y: Float) = size
 
-    override fun computeActorsPosition(): Array<Vector2> {
+    override fun computeActorsPosition(): List<Vector2> {
         // Recompute minimum size
         computeSize()
 
         cardsPosition = computeAlignmentOffset(cardWidth, cardHeight)
-        return Array(actors.size) { cardsPosition.cpy() }
+        return List(actors.size) { cardsPosition.cpy() }
     }
 
     override fun computeSize() {

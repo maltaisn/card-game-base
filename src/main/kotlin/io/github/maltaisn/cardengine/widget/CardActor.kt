@@ -82,13 +82,13 @@ class CardActor(private val cardLoader: CardSpriteLoader, var card: Card) : Acto
      * Click listeners, called when the actor is clicked. Clicks must end within the bounds.
      * The listeners are not called when the actor is disabled or animated.
      */
-    internal val clickListeners = ArrayList<ClickListener>()
+    val clickListeners = mutableListOf<ClickListener>()
 
     /**
      * Click listeners, called when the actor is long clicked.
      * The listeners are not called when the actor is disabled or animated.
      */
-    internal val longClickListeners = ArrayList<LongClickListener>()
+    val longClickListeners = mutableListOf<LongClickListener>()
     private var lastTouchDownTime = 0L
     private var longClicked = false
 
@@ -124,7 +124,7 @@ class CardActor(private val cardLoader: CardSpriteLoader, var card: Card) : Acto
                     if (!animated && !longClicked && withinBounds(x, y)) {
                         // Click ended in actor, call listeners.
                         // The list is copied so changes to it don't lead to concurrent modification errors.
-                        for (listener in ArrayList(clickListeners)) {
+                        for (listener in clickListeners.toMutableList()) {
                             listener.onCardActorClicked(this@CardActor)
                         }
                     }
@@ -157,7 +157,7 @@ class CardActor(private val cardLoader: CardSpriteLoader, var card: Card) : Acto
         if (longClickListeners.isNotEmpty() && lastTouchDownTime != 0L
                 && heldDuration > Animation.LONG_CLICK_DELAY && enabled && !animated) {
             longClicked = true
-            for (listener in ArrayList(longClickListeners)) {
+            for (listener in longClickListeners.toMutableList()) {
                 listener.onCardActorLongClicked(this@CardActor)
             }
         }

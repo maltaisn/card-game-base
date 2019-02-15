@@ -45,7 +45,7 @@ class CardHand(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
 
     /**
      * Whether the cards highlight state can be changed by clicking on them.
-     * When a card is highlighted, the [highlightListeners] are called.
+     * When a card is highlighted, the [highlightListener] are called.
      */
     var highlightable = false
 
@@ -82,8 +82,17 @@ class CardHand(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
     private var clipSize = 0f  // Size of the displayed portion of the card.
 
 
-    /** Listener triggered if user clicks on a highlightable card actor. */
-    val highlightListener: HighlightListener? = null
+    /**
+     * Listener triggered if user clicks on a highlightable card actor.
+     * Setting this listener will automatically make the hand [highlightable].
+     */
+    var highlightListener: HighlightListener? = null
+        set(value) {
+            field = value
+            if (value != null) {
+                highlightable = true
+            }
+        }
 
 
     init {
@@ -157,7 +166,7 @@ class CardHand(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
         }
     }
 
-    override fun computeActorsPosition(): Array<Vector2> {
+    override fun computeActorsPosition(): List<Vector2> {
         // Recompute minimum size
         computeSize()
 
@@ -197,7 +206,7 @@ class CardHand(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
         }
 
         // Find the card positions.
-        val positions = Array(actors.size) { Vector2() }
+        val positions = List(actors.size) { Vector2() }
         for (i in actors.indices) {
             val actor = actors[i]
             val pos = positions[i]
@@ -333,7 +342,7 @@ class CardHand(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
                 actor.x = pos
             }
 
-            return elapsed < 0 || elapsed > Animation.HIGHLIGHT_DURATION
+            return elapsed <= 0 || elapsed >= Animation.HIGHLIGHT_DURATION
         }
     }
 

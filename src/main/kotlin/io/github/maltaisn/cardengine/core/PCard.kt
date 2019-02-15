@@ -78,13 +78,13 @@ class PCard private constructor(val rank: Int, val suit: Int, value: Int) : Card
         const val BLACK = 4
         const val RED = 5
 
-        val SUITS_COLOR = intArrayOf(RED, BLACK, RED, BLACK, BLACK, RED)
+        val SUITS_COLOR = listOf(RED, BLACK, RED, BLACK, BLACK, RED)
 
         val BLACK_JOKER = PCard(JOKER, BLACK, 52)
         val RED_JOKER = PCard(JOKER, RED, 53)
 
-        val RANK_STR = arrayOf("A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "*")
-        val SUIT_STR = charArrayOf('♥', '♠', '♦', '♣', 'B', 'R')
+        val RANK_STR = listOf("A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "*")
+        val SUIT_STR = listOf('♥', '♠', '♦', '♣', 'B', 'R')
 
         val RANK_RANGE = 1..13
         val SUIT_RANGE = 0..3

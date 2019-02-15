@@ -92,7 +92,7 @@ class Mcts {
     private class Node(val move: BaseMove?, val parent: Node?, val playerThatMoved: Int,
                        val explorationParam: Double) {
 
-        val childNodes = ArrayList<Node>()
+        val childNodes = mutableListOf<Node>()
 
         // Number of times this node lead to a win
         var wins = 0.0

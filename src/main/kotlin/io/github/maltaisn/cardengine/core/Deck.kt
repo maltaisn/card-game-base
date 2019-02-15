@@ -23,6 +23,7 @@ import java.util.*
  * Base class for a list of cards that can be sorted, shuffled and compared.
  * @param T Type of card in the deck
  */
+@Suppress("EqualsOrHashCode")
 open class Deck<T : Card> : ArrayList<T> {
 
     /**

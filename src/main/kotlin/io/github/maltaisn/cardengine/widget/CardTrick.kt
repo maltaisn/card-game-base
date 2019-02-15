@@ -81,13 +81,13 @@ class CardTrick(cardLoader: CardSpriteLoader, capacity: Int) : CardContainer(car
         super.updateCards(newCards)
     }
 
-    override fun computeActorsPosition(): Array<Vector2> {
+    override fun computeActorsPosition(): List<Vector2> {
         // Recompute minimum size
         computeSize()
 
         // Find the card positions
         // They are placed in a circle at equal angles.
-        val positions = Array(actors.size) { Vector2() }
+        val positions = List(actors.size) { Vector2() }
         for (i in actors.indices) {
             val pos = positions[i]
             var angle = i.toFloat() / size * PI2 - startAngle
