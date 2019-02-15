@@ -166,7 +166,7 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
     /**
      * Re-add all actors to the container, with the correct Z-indexé
      */
-    private fun update() {
+    protected fun update() {
         clearChildren()
         for (actor in actors) {
             if (actor != null) {

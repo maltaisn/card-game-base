@@ -19,6 +19,7 @@ package io.github.maltaisn.cardengine.widget
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.math.MathUtils
+import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.*
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup
@@ -264,7 +265,6 @@ class AnimationLayer : WidgetGroup() {
                 val actor = oldActors[i] ?: continue
                 val pos = positions[i]
                 addActor(actor)
-                actor.src = container
                 actor.x = pos.x
                 actor.y = pos.y
             }
@@ -281,8 +281,6 @@ class AnimationLayer : WidgetGroup() {
             var lastUnmovedActor: CardActor? = null
             for (i in newActors.indices) {
                 val actor = newActors[i] ?: continue
-
-                actor.dst = container
 
                 val containerEndPos = endPositions[i]
                 val stageEndPos = container.localToActorCoordinates(this, containerEndPos.cpy())
@@ -314,7 +312,7 @@ class AnimationLayer : WidgetGroup() {
                     }
                 }
 
-                val action = MoveCardAction(actor, distance, containerEndPos, duration)
+                val action = MoveCardAction(actor, container, distance, containerEndPos, duration)
                 actor.clearActions()
                 actor.addAction(action)
 
@@ -364,8 +362,6 @@ class AnimationLayer : WidgetGroup() {
 
                     val action = actions.first() as MoveCardAction
                     container.addActor(this)
-                    src = null
-                    dst = null
                     x = action.containerEndPos.x
                     y = action.containerEndPos.y
                     size = container.cardSize
@@ -387,33 +383,24 @@ class AnimationLayer : WidgetGroup() {
 
     private inner class MoveCardAction(
             private val cardActor: CardActor,
+            private val container: CardContainer,
             val distance: Vector2,
             val containerEndPos: Vector2,
             val duration: Float) : Action() {
 
         var elapsed = 0f
-
-        private var src = cardActor.src!!
-        private val dst = cardActor.dst!!
         private val startX = cardActor.x
         private val startY = cardActor.y
         private val startSize = cardActor.size
-        private val srcPos: Vector2
-        private val containerDistance: Float
+
+        private var containerRect: Rectangle? = null
 
         init {
-            // Compute the distance between the center of the src and dst containers
-            if (src !== dst) {
-                srcPos = src.localToActorCoordinates(this@AnimationLayer,
-                        Vector2(src.width / 2, src.height / 2))
-                val dstPos = dst.localToActorCoordinates(this@AnimationLayer,
-                        Vector2(dst.width / 2, dst.height / 2))
-                containerDistance = (dstPos - srcPos).len()
-                changeLayer()
-            } else {
-                srcPos = Vector2.Zero
-                containerDistance = 0f
-            }
+            // Compute the dst container rectangle bounds.
+            val start = container.localToActorCoordinates(this@AnimationLayer, Vector2())
+            val end = container.localToActorCoordinates(this@AnimationLayer, Vector2(container.width, container.height))
+            containerRect = Rectangle(start.x, start.y, end.x - start.x, end.y - start.y)
+            changeLayer()
         }
 
         override fun act(delta: Float): Boolean {
@@ -423,7 +410,7 @@ class AnimationLayer : WidgetGroup() {
             val progress = Animation.UPDATE_INTERPOLATION.applyBounded(elapsed / duration)
             cardActor.x = startX + progress * distance.x
             cardActor.y = startY + progress * distance.y
-            cardActor.size = startSize + progress * (dst.cardSize - startSize)
+            cardActor.size = startSize + progress * (container.cardSize - startSize)
 
             changeLayer()
 
@@ -436,12 +423,12 @@ class AnimationLayer : WidgetGroup() {
          * if src and different from dst and if half the distance between the two was travelled.
          */
         fun changeLayer() {
-            if (src === dst) return
+            if (containerRect == null) return
 
-            // Compute distance to source container
-            val pos = cardActor.localToActorCoordinates(this@AnimationLayer,
+            // Check if the card actor's center is within the destination container rectangle bounds.
+            val cardCenter = cardActor.localToActorCoordinates(this@AnimationLayer,
                     Vector2(cardActor.width / 2, cardActor.height / 2))
-            if ((pos - srcPos).len() < containerDistance / 2) {
+            if (cardCenter !in containerRect!!) {
                 return
             }
 
@@ -450,9 +437,9 @@ class AnimationLayer : WidgetGroup() {
             var newIndex = -1
             for (j in 0 until children.size) {
                 val child = children[j]
-                if (child is MarkerActor && child.container === dst) {
+                if (child is MarkerActor && child.container === container) {
                     newIndex = j + 1
-                    for (a in dst.actors) {
+                    for (a in container.actors) {
                         if (newIndex >= children.size) {
                             break
                         } else if (a === children[newIndex]) {
@@ -466,7 +453,7 @@ class AnimationLayer : WidgetGroup() {
             }
             children.insert(newIndex, cardActor)
 
-            src = dst  // Prevent changing layer in the future
+            containerRect = null
         }
     }
 
@@ -590,8 +577,6 @@ class AnimationLayer : WidgetGroup() {
                         if (actor != null && actor !in cardActors) {
                             val startPos = Vector2(actor.x, actor.y)
                             val distance = cardPositions[i] - startPos
-                            actor.src = container
-                            actor.dst = container
                             actor.clearActions()
                             actor.addAction(object : Action() {
                                 private var elapsed = 0f

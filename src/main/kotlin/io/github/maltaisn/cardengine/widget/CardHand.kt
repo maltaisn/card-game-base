@@ -96,6 +96,12 @@ class CardHand(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
         })
     }
 
+    override fun updateCards(newCards: List<Card?>) {
+        super.updateCards(newCards)
+        sort()
+        update()
+    }
+
     /**
      * Sort the cards in the group if there's a [sorter] set.
      * If the hand contains null cards, it cannot be sorted.

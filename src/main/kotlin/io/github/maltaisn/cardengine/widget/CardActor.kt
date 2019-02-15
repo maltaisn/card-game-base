@@ -78,10 +78,6 @@ class CardActor(private val cardLoader: CardSpriteLoader, var card: Card) : Acto
      */
     internal var animated = false
 
-    // Used when animating to set the source and destination containers on a moved card.
-    internal var src: CardContainer? = null
-    internal var dst: CardContainer? = null
-
     /**
      * Click listeners, called when the actor is clicked. Clicks must end within the bounds.
      * The listeners are not called when the actor is disabled or animated.
