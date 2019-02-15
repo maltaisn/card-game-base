@@ -17,7 +17,6 @@
 package io.github.maltaisn.cardengine.widget
 
 import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
@@ -170,19 +169,19 @@ class CardActor(private val cardLoader: CardSpriteLoader, var card: Card) : Acto
         // Update selection alpha
         if (selected && selectionElapsed < Animation.SELECTION_FADE_DURATION) {
             selectionElapsed += delta
-            selectionAlpha = Interpolation.smooth.applyBounded(selectionElapsed / Animation.SELECTION_FADE_DURATION)
+            selectionAlpha = Animation.SELECTION_IN_INTERPOLATION.applyBounded(selectionElapsed / Animation.SELECTION_FADE_DURATION)
         } else if (!selected && selectionElapsed > 0f) {
             selectionElapsed -= delta
-            selectionAlpha = Interpolation.smooth.applyBounded(selectionElapsed / Animation.SELECTION_FADE_DURATION)
+            selectionAlpha = Animation.SELECTION_OUT_INTERPOLATION.applyBounded(selectionElapsed / Animation.SELECTION_FADE_DURATION)
         }
 
         // Update hover alpha
         if (hovered && hoverElapsed < Animation.SELECTION_FADE_DURATION) {
             hoverElapsed += delta
-            hoverAlpha = Interpolation.circleOut.applyBounded(hoverElapsed / Animation.HOVER_FADE_DURATION)
+            hoverAlpha = Animation.HOVER_IN_INTERPOLATION.applyBounded(hoverElapsed / Animation.HOVER_FADE_DURATION)
         } else if (!hovered && hoverElapsed > 0f) {
             hoverElapsed -= delta
-            hoverAlpha = Interpolation.smooth.applyBounded(hoverElapsed / Animation.HOVER_FADE_DURATION)
+            hoverAlpha = Animation.HOVER_OUT_INTERPOLATION.applyBounded(hoverElapsed / Animation.HOVER_FADE_DURATION)
         }
     }
 

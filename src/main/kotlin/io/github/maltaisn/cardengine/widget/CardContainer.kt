@@ -17,7 +17,6 @@
 package io.github.maltaisn.cardengine.widget
 
 import com.badlogic.gdx.Input
-import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.InputEvent
@@ -358,7 +357,8 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
             private var elapsed = 0f
             override fun act(delta: Float): Boolean {
                 elapsed += delta
-                val progress = Interpolation.smooth.applyBounded(elapsed / Animation.TRANSITION_DURATION)
+                val progress = Animation.TRANSITION_INTERPOLATION
+                        .applyBounded(elapsed / Animation.TRANSITION_DURATION)
                 setColor(1f, 1f, 1f, startOpacity + (endOpacity - startOpacity) * progress)
 
                 val done = elapsed >= Animation.TRANSITION_DURATION
@@ -402,7 +402,8 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
 
             override fun act(delta: Float): Boolean {
                 elapsed += delta
-                val progress = Interpolation.smooth.applyBounded(elapsed / Animation.TRANSITION_DURATION)
+                val progress = Animation.TRANSITION_INTERPOLATION
+                        .applyBounded(elapsed / Animation.TRANSITION_DURATION)
                 setPosition(startX + (endX - startX) * progress,
                         startY + (endY - startY) * progress)
 

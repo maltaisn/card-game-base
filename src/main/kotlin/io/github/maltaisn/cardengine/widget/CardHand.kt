@@ -17,7 +17,6 @@
 package io.github.maltaisn.cardengine.widget
 
 import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Action
@@ -320,7 +319,8 @@ class CardHand(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
             val actor = actor as CardActor
             elapsed += if (highlighted) delta else -delta
 
-            val pos = Interpolation.smooth.applyBounded(elapsed / Animation.HIGHLIGHT_DURATION) * translate + restPos
+            val pos = Animation.HIGHLIGHT_INTERPOLATION.applyBounded(
+                    elapsed / Animation.HIGHLIGHT_DURATION) * translate + restPos
             if (horizontal) {
                 actor.y = pos
             } else {

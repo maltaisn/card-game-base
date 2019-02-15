@@ -16,6 +16,8 @@
 
 package io.github.maltaisn.cardengine
 
+import com.badlogic.gdx.math.Interpolation
+import com.badlogic.gdx.math.Interpolation.*
 import io.github.maltaisn.cardengine.widget.AnimationLayer
 import io.github.maltaisn.cardengine.widget.CardHand
 
@@ -55,5 +57,17 @@ internal object Animation {
 
     /** The delay before long click is triggered in a card actor. */
     const val LONG_CLICK_DELAY = 0.5f
+
+
+    // Interpolation
+    val SELECTION_IN_INTERPOLATION: Interpolation = smooth
+    val SELECTION_OUT_INTERPOLATION: Interpolation = smooth
+    val HOVER_IN_INTERPOLATION: Interpolation = circleOut
+    val HOVER_OUT_INTERPOLATION: Interpolation = smooth
+    val UPDATE_INTERPOLATION: Interpolation = smooth
+    val DRAG_SIZE_INTERPOLATION: Interpolation = pow2Out
+    val REARRANGE_INTERPOLATION: Interpolation = pow2Out
+    val TRANSITION_INTERPOLATION: Interpolation = smooth
+    val HIGHLIGHT_INTERPOLATION: Interpolation = smooth
 
 }

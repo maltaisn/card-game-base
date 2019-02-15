@@ -18,7 +18,6 @@ package io.github.maltaisn.cardengine.widget
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
-import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.*
@@ -421,7 +420,7 @@ class AnimationLayer : WidgetGroup() {
             elapsed += delta
 
             // Change position and size
-            val progress = Interpolation.smooth.applyBounded(elapsed / duration)
+            val progress = Animation.UPDATE_INTERPOLATION.applyBounded(elapsed / duration)
             cardActor.x = startX + progress * distance.x
             cardActor.y = startY + progress * distance.y
             cardActor.size = startSize + progress * (dst.cardSize - startSize)
@@ -556,7 +555,7 @@ class AnimationLayer : WidgetGroup() {
 
                         override fun act(delta: Float): Boolean {
                             elapsed += delta
-                            val progress = Interpolation.smooth.applyBounded(
+                            val progress = Animation.DRAG_SIZE_INTERPOLATION.applyBounded(
                                     elapsed / Animation.DRAG_SIZE_CHANGE_DURATION)
                             cardActor.size = startSize + progress * (endSize - startSize)
                             return elapsed >= Animation.DRAG_SIZE_CHANGE_DURATION
@@ -598,7 +597,7 @@ class AnimationLayer : WidgetGroup() {
                                 private var elapsed = 0f
                                 override fun act(delta: Float): Boolean {
                                     elapsed += delta
-                                    val progress = Interpolation.pow2Out.applyBounded(
+                                    val progress = Animation.REARRANGE_INTERPOLATION.applyBounded(
                                             elapsed / Animation.DRAG_REARRANGE_DURATION)
                                     actor.x = startPos.x + progress * distance.x
                                     actor.y = startPos.y + progress * distance.y
