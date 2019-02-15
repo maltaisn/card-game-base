@@ -62,10 +62,11 @@ class CardStack(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
         computeSize()
 
         cardsPosition = computeAlignmentOffset(cardWidth, cardHeight)
-        return Array(actors.size) { Vector2(cardsPosition) }
+        return Array(actors.size) { cardsPosition.cpy() }
     }
 
     override fun computeSize() {
+        if (!sizeInvalid) return
         super.computeSize()
 
         computedWidth = cardWidth

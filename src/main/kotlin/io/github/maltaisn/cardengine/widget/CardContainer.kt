@@ -65,7 +65,7 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
     var alignment = Align.center
     protected var computedWidth = 0f
     protected var computedHeight = 0f
-    private var sizeInvalid = true
+    protected var sizeInvalid = true
 
     // Card metrics
     protected var cardWidth = 0f
@@ -250,7 +250,7 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
     /**
      * Change the cards in this container to new cards.
      */
-    open fun setCards(newCards: Iterable<Card?>) {
+    open fun setCards(newCards: Collection<Card?>) {
         cards.clear()
         cards += newCards
 

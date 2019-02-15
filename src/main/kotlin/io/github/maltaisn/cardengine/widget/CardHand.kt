@@ -278,6 +278,7 @@ class CardHand(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
     }
 
     override fun computeSize() {
+        if (!sizeInvalid) return
         super.computeSize()
 
         // Find clip and highlight sizes

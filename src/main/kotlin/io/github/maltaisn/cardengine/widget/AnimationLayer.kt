@@ -98,6 +98,10 @@ class AnimationLayer : WidgetGroup() {
                  replaceSrc: Boolean = false, replaceDst: Boolean = false) {
         assert(src !== dst)
 
+        require((replaceSrc || src !is CardTrick) && (replaceDst || dst !is CardTrick)) {
+            "Cards cannot be inserted or removed from a card trick, they must be replaced."
+        }
+
         if (src.oldActors == null) {
             src.oldActors = ArrayList(src.actors)
         }
