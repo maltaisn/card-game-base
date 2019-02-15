@@ -36,7 +36,7 @@ class CardTrick(cardLoader: CardSpriteLoader, capacity: Int) : CardContainer(car
     var capacity = 0
         set(value) {
             field = value
-            setCards(MutableList(value) { null })
+            cards = MutableList(value) { null }
         }
 
     /**
@@ -60,14 +60,7 @@ class CardTrick(cardLoader: CardSpriteLoader, capacity: Int) : CardContainer(car
         this.capacity = capacity
     }
 
-    override fun setCards(newCards: Collection<Card?>) {
-        require(newCards.size == capacity) {
-            "Must set the same number of cards on trick as its capacity"
-        }
-        super.setCards(newCards)
-    }
-
-    override fun findInsertPositionForCoordinates(x: Float, y: Float): Int {
+    override fun findCardPositionForCoordinates(x: Float, y: Float): Int {
         // Find the angle of the coordinates relative to the center
         var angle = atan2(y - center.y, x - center.x) - startAngle
         if (clockwisePlacement) angle = -angle
@@ -75,6 +68,17 @@ class CardTrick(cardLoader: CardSpriteLoader, capacity: Int) : CardContainer(car
         // Find the index of the card at the angle
         val index = (angle / PI2 * capacity).roundToInt()
         return (index % capacity + capacity) % capacity
+    }
+
+    /** Returns the same as [findCardPositionForCoordinates] since no cards can only be replaced in a trick. */
+    override fun findInsertPositionForCoordinates(x: Float, y: Float) =
+            findCardPositionForCoordinates(x, y)
+
+    override fun updateCards(newCards: List<Card?>) {
+        require(newCards.size == capacity) {
+            "Must set the same number of cards on trick as its capacity"
+        }
+        super.updateCards(newCards)
     }
 
     override fun computeActorsPosition(): Array<Vector2> {

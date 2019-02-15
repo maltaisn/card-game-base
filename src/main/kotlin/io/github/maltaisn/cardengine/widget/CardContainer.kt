@@ -33,6 +33,7 @@ import io.github.maltaisn.cardengine.core.Card
 import ktx.collections.isNotEmpty
 import ktx.math.minus
 import java.util.*
+import kotlin.math.min
 
 
 /**
@@ -42,18 +43,25 @@ import java.util.*
  */
 abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : WidgetGroup() {
 
-    /** The cards in this container. When a card is moved, this list is immediately updated. */
-    internal val cards = ArrayList<Card?>()
+    private val _actors = ArrayList<CardActor?>()
 
-    /** The actors for the cards. When a card is moved, this list is immediately updated. */
-    internal val actors = ArrayList<CardActor?>()
+    /** The actors for the cards. When an actor is moved, this list is immediately updated. */
+    val actors: List<CardActor?>
+        get() = _actors
+
+    /** The cards in this container. When a card is moved, this list is immediately updated. */
+    var cards: List<Card?>
+        get() = actors.map { it?.card }
+        set(value) {
+            updateCards(value)
+        }
 
     /** The actors that were in the container before any card was moved. Null if no card was moved. */
     internal var oldActors: ArrayList<CardActor?>? = null
 
     /** The number of cards in this container, including `null` cards. */
-    val size: Int
-        get() = cards.size
+    inline val size: Int
+        get() = actors.size
 
     /** Whether the cards in this container are shown. */
     var visibility = Visibility.ALL
@@ -63,14 +71,6 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
 
     /** Alignment of the container's content. */
     var alignment = Align.center
-    protected var computedWidth = 0f
-    protected var computedHeight = 0f
-    protected var sizeInvalid = true
-
-    // Card metrics
-    protected var cardWidth = 0f
-    protected var cardHeight = 0f
-    protected var cardScale = 0f
 
     /** Listener called when a card is clicked, or `null` for none. */
     private val clickListeners = ArrayList<ClickListener>()
@@ -83,6 +83,14 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
 
     /** Listener called when a card is played on this container, or `null` if not playable. */
     internal var playListener: PlayListener? = null
+
+    // Size properties
+    protected var sizeInvalid = true
+    protected var computedWidth = 0f
+    protected var computedHeight = 0f
+    protected var cardWidth = 0f
+    protected var cardHeight = 0f
+    protected var cardScale = 0f
 
 
     private val internalClickListener = object : CardActor.ClickListener {
@@ -105,7 +113,7 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
 
     /** The input listener set on all actors in this container */
     private val internalInputListener = object : InputListener() {
-        private var cardDragListener: AnimationLayer.CardDragListener? = null
+        private var cardDragger: AnimationLayer.CardDragger? = null
         private var startPos = Vector2()
 
         override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
@@ -115,20 +123,20 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
 
         override fun touchDragged(event: InputEvent, x: Float, y: Float, pointer: Int) {
             val pos = Vector2(event.stageX, event.stageY)
-            if (pointer == Input.Buttons.LEFT && (cardDragListener != null ||
+            if (pointer == Input.Buttons.LEFT && (cardDragger != null ||
                             dragListener != null && (pos - startPos).len() > Animation.MIN_DRAG_DISTANCE)) {
                 // Start dragging only when touch has been dragged for a minimum distance
-                if (cardDragListener == null) {
-                    cardDragListener = dragListener!!.onCardDragged(event.listenerActor as CardActor)
+                if (cardDragger == null) {
+                    cardDragger = dragListener!!.onCardDragged(event.listenerActor as CardActor)
                 }
-                cardDragListener?.touchDragged(pos)
+                cardDragger?.touchDragged(pos)
             }
         }
 
         override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
-            if (cardDragListener != null && pointer == Input.Buttons.LEFT) {
-                cardDragListener?.touchUp(Vector2(event.stageX, event.stageY))
-                cardDragListener = null
+            if (cardDragger != null && pointer == Input.Buttons.LEFT) {
+                cardDragger?.touchUp(Vector2(event.stageX, event.stageY))
+                cardDragger = null
             }
         }
     }
@@ -250,10 +258,7 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
     /**
      * Change the cards in this container to new cards.
      */
-    open fun setCards(newCards: Collection<Card?>) {
-        cards.clear()
-        cards += newCards
-
+    protected open fun updateCards(newCards: List<Card?>) {
         // Bind existing actors to new cards
         val oldActors = LinkedList<CardActor>()
         for (actor in actors) {
@@ -261,9 +266,9 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
                 oldActors += actor
             }
         }
-        actors.clear()
+        _actors.clear()
 
-        for (card in cards) {
+        for (card in newCards) {
             if (card != null) {
                 if (oldActors.isEmpty()) {
                     break
@@ -272,7 +277,7 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
                 actor.card = card
                 actor.highlighted = false
             } else {
-                actors.add(null)
+                _actors.add(null)
             }
         }
 
@@ -284,35 +289,30 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
         }
 
         // Add new actors if there aren't enough.
-        while (actors.size < cards.size) {
-            val card = cards[actors.size]
+        while (actors.size < newCards.size) {
+            val card = newCards[actors.size]
             if (card != null) {
                 val actor = CardActor(cardLoader, card)
                 if (clickListeners.isNotEmpty()) actor.clickListeners += internalClickListener
                 if (longClickListeners.isNotEmpty()) actor.longClickListeners += internalLongClickListener
                 if (dragListener != null) actor.listeners.add(internalInputListener)
-                actors += actor
+                _actors += actor
             } else {
-                actors.add(null)
+                _actors.add(null)
             }
         }
 
         update()
     }
 
-    /** Clones and returns the list of the cards in this container. */
-    fun getCards(): MutableList<Card?> = cards.toMutableList()
+    protected fun sortWith(comparator: Comparator<CardActor?>) {
+        _actors.sortWith(comparator)
+    }
 
-    /** Returns the card at an [index], or `null` if there isn't one. */
-    fun getCardAt(index: Int) = cards[index]
+    /** Returns the index of the card nearest container coordinates, ([x], [y]), in the range `0..size-1`. */
+    abstract fun findCardPositionForCoordinates(x: Float, y: Float): Int
 
-    /** Returns the card actor at an [index], or `null` if there isn't one. */
-    fun getCardActorAt(index: Int) = actors[index]
-
-    /** Returns the index of a card actor in the container, `-1` if not found. */
-    fun findIndexOfCardActor(actor: CardActor) = actors.indexOf(actor)
-
-    /** Returns the index at which a card should be inserted from container coordinates. */
+    /** Returns the index at which a card should be inserted from container coordinates, ([x], [y]), in the range `0..size`. */
     abstract fun findInsertPositionForCoordinates(x: Float, y: Float): Int
 
     /** Apply an [action] on all card actors. */
@@ -414,6 +414,53 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
                 return done
             }
         })
+    }
+
+    internal fun moveCardTo(dst: CardContainer, srcIndex: Int, dstIndex: Int,
+                            replaceSrc: Boolean = false, replaceDst: Boolean = false) {
+        if (oldActors == null) {
+            oldActors = ArrayList(actors)
+        }
+        if (dst.oldActors == null) {
+            dst.oldActors = ArrayList(dst.actors)
+        }
+
+        // Move card and actor
+        val actor = _actors.removeAt(srcIndex)
+        if (replaceSrc) {
+            _actors.add(srcIndex, null)
+        }
+        if (replaceDst) {
+            val replaced = dst.actors[dstIndex]
+            require(replaced == null) {
+                "Card must replaced a null card in destination, found '$replaced' instead."
+            }
+            dst._actors[dstIndex] = actor
+        } else {
+            dst._actors.add(dstIndex, actor)
+        }
+    }
+
+    /**
+     * Move the smallest sublist of [actors] containing all of [cardActors] to a new index.
+     */
+    internal fun moveCards(cardActors: MutableList<CardActor>, toIndex: Int) {
+        if (cardActors.size == size) return  // If moving all actors, cannot change anything.
+
+        var low = size
+        var high = -1
+        for (actor in cardActors) {
+            val index = actors.indexOf(actor)
+            if (index < low) low = index
+            if (index > high) high = index
+        }
+
+        if (low == toIndex) return  // No move necessary
+
+        val moved = _actors.subList(low, high + 1)
+        val copy = moved.toMutableList()
+        moved.clear()
+        _actors.addAll(min(actors.size, toIndex), copy)
     }
 
     internal open fun onAnimationStart() {
@@ -518,7 +565,7 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
          * Can return an input listener provided by [AnimationLayer.dragCards] to
          * drag the card, or can return `null` to not drag the card.
          */
-        fun onCardDragged(actor: CardActor): AnimationLayer.CardDragListener?
+        fun onCardDragged(actor: CardActor): AnimationLayer.CardDragger?
     }
 
     interface PlayListener {

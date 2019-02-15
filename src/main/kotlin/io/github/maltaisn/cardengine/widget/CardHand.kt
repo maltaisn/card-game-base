@@ -102,45 +102,24 @@ class CardHand(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
      * If the hand contains null cards, it cannot be sorted.
      */
     fun sort() {
-        assertCanBeSorted()
-
         if (sorter != null && size > 1) {
+            // Check if there are any null cards. If there are, the hand cannot be sorted.
+            for (actor in actors) {
+                checkNotNull(actor) { "Card hand cannot be sorted if it contains null cards." }
+            }
+
             // Apply new sorting order.
             @Suppress("UNCHECKED_CAST")
             val sorter = sorter as Card.Sorter<Card>
             if (!sorter.transitive) {
-                sorter.initialize(cards.requireNoNulls())
+                sorter.initialize(actors.map { it!!.card })
             }
-            actors.sortWith(Comparator { o1, o2 -> sorter.compare(o1!!.card, o2!!.card) })
-            cards.clear()
-            for (actor in actors) {
-                cards += actor!!.card
-            }
+            sortWith(Comparator { o1, o2 -> sorter.compare(o1!!.card, o2!!.card) })
         }
     }
 
-    /**
-     * Find the index for adding a [card] in sorted order to the group. This can only be used if the
-     * group is already sorted or it will produce unpredictible results.
-     * If [sorter] is not transitive, [sort] must be called after insertions to keep the order.
-     * The hand must not contain any null card.
-     */
-    fun findSortedInsertionPos(card: Card): Int {
-        if (sorter == null) return 0
-        assertCanBeSorted()
-
-        @Suppress("UNCHECKED_CAST")
-        val sorter = sorter as Card.Sorter<Card>
-        val i = cards.requireNoNulls().binarySearch(card, sorter)
-        return if (i < 0) i.inv() else i
-    }
-
-    private fun assertCanBeSorted() {
-        // Check if there are any null cards. If there are, the hand cannot be sorted.
-        for (card in cards) {
-            checkNotNull(card) { "Card hand cannot be sorted if it contains null cards." }
-        }
-    }
+    override fun findCardPositionForCoordinates(x: Float, y: Float) =
+            min(size, findInsertPositionForCoordinates(x, y))
 
     override fun findInsertPositionForCoordinates(x: Float, y: Float): Int {
         val positions = computeActorsPosition()
@@ -282,7 +261,7 @@ class CardHand(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
         super.computeSize()
 
         // Find clip and highlight sizes
-        require(alignment != Align.center || clipPercent.absoluteValue == 0f) {
+        check(alignment != Align.center || clipPercent.absoluteValue == 0f) {
             "Cannot clip a CardHand with center alignement."
         }
 

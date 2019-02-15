@@ -102,31 +102,7 @@ class AnimationLayer : WidgetGroup() {
             "Cards cannot be inserted or removed from a card trick, they must be replaced."
         }
 
-        if (src.oldActors == null) {
-            src.oldActors = ArrayList(src.actors)
-        }
-        if (dst.oldActors == null) {
-            dst.oldActors = ArrayList(dst.actors)
-        }
-
-        // Move card and actor
-        val card = src.cards.removeAt(srcIndex)
-        val actor = src.actors.removeAt(srcIndex)
-        if (replaceSrc) {
-            src.cards.add(srcIndex, null)
-            src.actors.add(srcIndex, null)
-        }
-        if (replaceDst) {
-            val replaced = dst.cards[dstIndex]
-            require(replaced == null) {
-                "Card must replaced a null card in destination, found '$replaced' instead."
-            }
-            dst.cards[dstIndex] = card
-            dst.actors[dstIndex] = actor
-        } else {
-            dst.cards.add(dstIndex, card)
-            dst.actors.add(dstIndex, actor)
-        }
+        src.moveCardTo(dst, srcIndex, dstIndex, replaceSrc, replaceDst)
 
         cardsMoved = true
     }
@@ -179,7 +155,7 @@ class AnimationLayer : WidgetGroup() {
      * Start dragging a card actor. Returns a listener with methods to be called
      * when touch is dragged and on touch up.
      */
-    fun dragCards(vararg cards: CardActor): CardDragListener? {
+    fun dragCards(vararg cards: CardActor): CardDragger? {
         if (draggedCards != null || cards.isEmpty()
                 || cardsMoved || animationRunning) {
             // Can't drag card if animation is running or pending
@@ -227,7 +203,7 @@ class AnimationLayer : WidgetGroup() {
         container.oldActors = ArrayList(container.actors)
         container.onAnimationStart()
 
-        return CardDragListener(container, cards, offsets)
+        return CardDragger(container, cards, offsets)
     }
 
     /**
@@ -310,7 +286,7 @@ class AnimationLayer : WidgetGroup() {
                 actor.dst = container
 
                 val containerEndPos = endPositions[i]
-                val stageEndPos = container.localToActorCoordinates(this, Vector2(containerEndPos))
+                val stageEndPos = container.localToActorCoordinates(this, containerEndPos.cpy())
                 val distance = Vector2(stageEndPos.x - actor.x, stageEndPos.y - actor.y)
 
                 // For the card stack, only show the topmost card that doesn't move.
@@ -445,7 +421,7 @@ class AnimationLayer : WidgetGroup() {
             elapsed += delta
 
             // Change position and size
-            val progress = Interpolation.smooth.applyBounded((elapsed / duration))
+            val progress = Interpolation.smooth.applyBounded(elapsed / duration)
             cardActor.x = startX + progress * distance.x
             cardActor.y = startY + progress * distance.y
             cardActor.size = startSize + progress * (dst.cardSize - startSize)
@@ -506,10 +482,14 @@ class AnimationLayer : WidgetGroup() {
 
     /** A delayed card move between two containers. */
     private class DelayedCardMove(
-            private val src: CardContainer, private val dst: CardContainer,
-            private val srcIndex: Int, private val dstIndex: Int,
-            private val replaceSrc: Boolean = false, private val replaceDst: Boolean = false,
-            var timeLeft: Float, private val callback: (() -> Unit)?) {
+            private val src: CardContainer,
+            private val dst: CardContainer,
+            private val srcIndex: Int,
+            private val dstIndex: Int,
+            private val replaceSrc: Boolean = false,
+            private val replaceDst: Boolean = false,
+            var timeLeft: Float,
+            private val callback: (() -> Unit)?) {
 
         fun doMove(animationLayer: AnimationLayer) {
             animationLayer.moveCard(src, dst, srcIndex, dstIndex, replaceSrc, replaceDst)
@@ -517,13 +497,30 @@ class AnimationLayer : WidgetGroup() {
         }
     }
 
-
-    inner class CardDragListener(
+    /** A class that manages the dragging of one or multiple cards in the animation layer. */
+    inner class CardDragger(
             private val container: CardContainer,
             private val cardActors: Array<CardActor>,
             private val offsets: Array<Vector2>) {
 
+        /**
+         * Whether the cards dragged can be rearranged in the source container.
+         * If many cards are being dragged, the smallest chunk of cards containing them all will be moved.
+         * This is not applicable if the container is a card stack.
+         */
+        var rearrangeable = false
+            set(value) {
+                require(container !is CardStack) { "A card stack cannot be rearranged by dragging." }
+                field = value
+            }
+
         private var dst = container
+
+        private val cardPositions = container.computeActorsPosition().also {
+            for (pos in it) {
+                container.localToStageCoordinates(pos)
+            }
+        }
 
         fun touchDragged(stagePos: Vector2) {
             // Check if the container containing the mouse changed
@@ -568,6 +565,51 @@ class AnimationLayer : WidgetGroup() {
                 }
             }
 
+            // Rearrange cards in container if needed
+            if (rearrangeable) {
+                val containerPos = container.stageToLocalCoordinates(stagePos.cpy())
+                val newPos = container.findCardPositionForCoordinates(containerPos.x, containerPos.y)
+                val oldPos = container.actors.indexOf(cardActors.first())
+                if (newPos != oldPos) {
+                    val actors = container.actors
+
+                    // Rearrange actors and cards lists
+                    container.moveCards(cardActors.toMutableList(), newPos)
+
+                    // Re-add all actors to fix the Z-index
+                    clearChildren()
+                    for (actor in actors) {
+                        if (actor != null) {
+                            addActor(actor)
+                            // Actor position is persisted through the re-add
+                        }
+                    }
+
+                    // Animate undragged actors to their new position
+                    for (i in actors.indices) {
+                        val actor = actors[i]
+                        if (actor != null && actor !in cardActors) {
+                            val startPos = Vector2(actor.x, actor.y)
+                            val distance = cardPositions[i] - startPos
+                            actor.src = container
+                            actor.dst = container
+                            actor.clearActions()
+                            actor.addAction(object : Action() {
+                                private var elapsed = 0f
+                                override fun act(delta: Float): Boolean {
+                                    elapsed += delta
+                                    val progress = Interpolation.pow2Out.applyBounded(
+                                            elapsed / Animation.DRAG_REARRANGE_DURATION)
+                                    actor.x = startPos.x + progress * distance.x
+                                    actor.y = startPos.y + progress * distance.y
+                                    return progress >= 1
+                                }
+                            })
+                        }
+                    }
+                }
+            }
+
             dst = newDst
         }
 
@@ -586,10 +628,6 @@ class AnimationLayer : WidgetGroup() {
             // Update the animation layer to put the card in its container.
             update()
         }
-    }
-
-    companion object {
-
     }
 
 }

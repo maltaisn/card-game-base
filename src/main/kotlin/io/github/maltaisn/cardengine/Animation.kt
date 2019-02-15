@@ -35,6 +35,9 @@ internal object Animation {
     /** The duration of the card size animation when the dragged card hovers a container */
     const val DRAG_SIZE_CHANGE_DURATION = 0.25f
 
+    /** The duration of rearrangement animation when cards are dragged.  */
+    const val DRAG_REARRANGE_DURATION: Float = 0.3f
+
     /** The duration of card container's transitions, slide and fade */
     const val TRANSITION_DURATION = 0.5f
 
