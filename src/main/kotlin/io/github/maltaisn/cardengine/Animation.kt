@@ -65,7 +65,7 @@ internal object Animation {
     val HOVER_IN_INTERPOLATION: Interpolation = circleOut
     val HOVER_OUT_INTERPOLATION: Interpolation = smooth
     val UPDATE_INTERPOLATION: Interpolation = smooth
-    val DRAG_SIZE_INTERPOLATION: Interpolation = pow2Out
+    val DRAG_SIZE_INTERPOLATION: Interpolation = smooth
     val REARRANGE_INTERPOLATION: Interpolation = pow2Out
     val TRANSITION_INTERPOLATION: Interpolation = smooth
     val HIGHLIGHT_INTERPOLATION: Interpolation = smooth

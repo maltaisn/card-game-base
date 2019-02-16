@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package io.github.maltaisn.cardengine.core
+package io.github.maltaisn.cardengine
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.ExtendViewport
-import io.github.maltaisn.cardengine.CardGame
 
 
 abstract class BaseScreen(val game: CardGame) :

@@ -20,9 +20,6 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.ui.Container
-import com.badlogic.gdx.scenes.scene2d.ui.Stack
-import io.github.maltaisn.cardengine.core.BaseScreen
 import io.github.maltaisn.cardengine.widget.AnimationLayer
 import io.github.maltaisn.cardengine.widget.GameLayer
 
@@ -35,9 +32,7 @@ abstract class CardGameScreen(game: CardGame) : BaseScreen(game) {
     val animationLayer = AnimationLayer()
 
     init {
-        val container = Container(Stack(gameLayer, animationLayer))
-        container.fill().setFillParent(true)
-        addActor(container)
+        addActor(CardGameContainer(gameLayer, animationLayer))
     }
 
     final override fun addActor(actor: Actor?) = super.addActor(actor)
