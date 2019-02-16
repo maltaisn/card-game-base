@@ -19,7 +19,6 @@ package io.github.maltaisn.cardengine.widget
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Vector2
 import io.github.maltaisn.cardengine.CardSpriteLoader
-import io.github.maltaisn.cardengine.drawSprite
 import ktx.collections.lastIndex
 
 
@@ -43,8 +42,16 @@ class CardStack(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
 
     override fun drawChildren(batch: Batch, parentAlpha: Float) {
         if (drawSlot && children.isEmpty) {
-            drawSprite(batch, cardLoader.getSprite(CardSpriteLoader.SLOT),
-                    cardScale, 0f, parentAlpha)
+            // Draw the slot if there's no cards in the stack.
+            val sprite = cardLoader.getSprite(CardSpriteLoader.SLOT)
+            val offset = computeAlignmentOffset(cardWidth, cardHeight)
+            val oldScaleX = sprite.scaleX
+            val oldScaleY = sprite.scaleY
+            sprite.setScale(cardScale)
+            sprite.translate(offset.x, offset.y)
+            sprite.draw(batch, parentAlpha)
+            sprite.setScale(oldScaleX, oldScaleY)
+            sprite.translate(-offset.x, -offset.y)
         }
 
         super.drawChildren(batch, parentAlpha)

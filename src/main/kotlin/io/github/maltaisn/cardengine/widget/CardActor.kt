@@ -17,16 +17,21 @@
 package io.github.maltaisn.cardengine.widget
 
 import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
-import io.github.maltaisn.cardengine.*
+import io.github.maltaisn.cardengine.Animation
+import io.github.maltaisn.cardengine.CardSpriteLoader
+import io.github.maltaisn.cardengine.applyBounded
 import io.github.maltaisn.cardengine.core.Card
+import io.github.maltaisn.cardengine.withinBounds
 
 
 /**
  * An actor that draws a card.
- * @property cardLoader card sprite loader for loading the card texture.
+ * @property cardLoader Card sprite loader for loading the card texture.
+ * @property card Card shown by the actor, its sprite must be loadable with the [cardLoader].
  */
 class CardActor(private val cardLoader: CardSpriteLoader, var card: Card) : Actor() {
 
@@ -212,6 +217,22 @@ class CardActor(private val cardLoader: CardSpriteLoader, var card: Card) : Acto
             drawSprite(batch, cardLoader.getSprite(CardSpriteLoader.SELECTION),
                     scale, 0f, selectionAlpha * parentAlpha)
         }
+    }
+
+    /**
+     * Draw a scaled and offset [sprite] on a [batch] with an [alpha] value for transparency.
+     */
+    private fun drawSprite(batch: Batch, sprite: Sprite, scale: Float, offset: Float, alpha: Float) {
+        val oldScaleX = sprite.scaleX
+        val oldScaleY = sprite.scaleY
+        val offsetScaled = offset * scale
+        val tx = x + offsetScaled
+        val ty = y + offsetScaled
+        sprite.setScale(scale)
+        sprite.translate(tx, ty)
+        sprite.draw(batch, alpha)
+        sprite.setScale(oldScaleX, oldScaleY)
+        sprite.translate(-tx, -ty)
     }
 
     private fun updateSize() {

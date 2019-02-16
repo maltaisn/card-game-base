@@ -16,27 +16,9 @@
 
 package io.github.maltaisn.cardengine
 
-import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Actor
 
-
-/**
- * Draw a scaled and offset [sprite] on a [batch] with an [alpha] value for transparency.
- */
-internal fun Actor.drawSprite(batch: Batch, sprite: Sprite, scale: Float, offset: Float, alpha: Float) {
-    val oldScaleX = sprite.scaleX
-    val oldScaleY = sprite.scaleY
-    val offsetScaled = offset * scale
-    val tx = x + offsetScaled
-    val ty = y + offsetScaled
-    sprite.setScale(scale)
-    sprite.translate(tx, ty)
-    sprite.draw(batch, alpha)
-    sprite.setScale(oldScaleX, oldScaleY)
-    sprite.translate(-tx, -ty)
-}
 
 /**
  * Returns whether a point ([x], [y]) in the actor's coordinates is within its bounds.

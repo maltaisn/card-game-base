@@ -79,7 +79,8 @@ abstract class CardSpriteLoader(private val assetManager: AssetManager,
         HOVER -> hoverSprite
         SELECTION -> selectionSprite
         SLOT -> slotSprite
-        else -> cardSprites[value]
+        in cardSprites.indices -> cardSprites[value]
+        else -> throw IllegalArgumentException("Cannot find card sprite for value '$value'.")
     }
 
     // Methods to get the size of a card sprite.
