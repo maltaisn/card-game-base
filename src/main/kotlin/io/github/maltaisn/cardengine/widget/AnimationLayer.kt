@@ -265,6 +265,7 @@ class AnimationLayer : WidgetGroup() {
                 val actor = oldActors[i] ?: continue
                 val pos = positions[i]
                 addActor(actor)
+                actor.src = container
                 actor.x = pos.x
                 actor.y = pos.y
             }
@@ -281,6 +282,7 @@ class AnimationLayer : WidgetGroup() {
             var lastUnmovedActor: CardActor? = null
             for (i in newActors.indices) {
                 val actor = newActors[i] ?: continue
+                actor.dst = container
 
                 val containerEndPos = endPositions[i]
                 val stageEndPos = container.localToActorCoordinates(this, containerEndPos.cpy())
@@ -312,7 +314,7 @@ class AnimationLayer : WidgetGroup() {
                     }
                 }
 
-                val action = MoveCardAction(actor, container, distance, containerEndPos, duration)
+                val action = MoveCardAction(actor, distance, containerEndPos, duration)
                 actor.clearActions()
                 actor.addAction(action)
 
@@ -362,6 +364,8 @@ class AnimationLayer : WidgetGroup() {
 
                     val action = actions.first() as MoveCardAction
                     container.addActor(this)
+                    src = null
+                    dst = null
                     x = action.containerEndPos.x
                     y = action.containerEndPos.y
                     size = container.cardSize
@@ -383,7 +387,6 @@ class AnimationLayer : WidgetGroup() {
 
     private inner class MoveCardAction(
             private val cardActor: CardActor,
-            private val container: CardContainer,
             val distance: Vector2,
             val containerEndPos: Vector2,
             val duration: Float) : Action() {
@@ -393,14 +396,18 @@ class AnimationLayer : WidgetGroup() {
         private val startY = cardActor.y
         private val startSize = cardActor.size
 
+        private val src = cardActor.src!!
+        private val dst = cardActor.dst!!
         private var containerRect: Rectangle? = null
 
         init {
             // Compute the dst container rectangle bounds.
-            val start = container.localToActorCoordinates(this@AnimationLayer, Vector2())
-            val end = container.localToActorCoordinates(this@AnimationLayer, Vector2(container.width, container.height))
-            containerRect = Rectangle(start.x, start.y, end.x - start.x, end.y - start.y)
-            changeLayer()
+            if (src !== dst) {
+                val start = dst.localToActorCoordinates(this@AnimationLayer, Vector2())
+                val end = dst.localToActorCoordinates(this@AnimationLayer, Vector2(dst.width, dst.height))
+                containerRect = Rectangle(start.x, start.y, end.x - start.x, end.y - start.y)
+                changeLayer()
+            } // else, card container wasn't changed so initial Z-index stays correct.
         }
 
         override fun act(delta: Float): Boolean {
@@ -410,7 +417,7 @@ class AnimationLayer : WidgetGroup() {
             val progress = Animation.UPDATE_INTERPOLATION.applyBounded(elapsed / duration)
             cardActor.x = startX + progress * distance.x
             cardActor.y = startY + progress * distance.y
-            cardActor.size = startSize + progress * (container.cardSize - startSize)
+            cardActor.size = startSize + progress * (dst.cardSize - startSize)
 
             changeLayer()
 
@@ -419,8 +426,7 @@ class AnimationLayer : WidgetGroup() {
         }
 
         /**
-         * Change the Z-index of the actor to the correct Z-index in its destination container,
-         * if src and different from dst and if half the distance between the two was travelled.
+         * Change the Z-index of the actor to the correct Z-index in its destination container.
          */
         fun changeLayer() {
             if (containerRect == null) return
@@ -437,9 +443,9 @@ class AnimationLayer : WidgetGroup() {
             var newIndex = -1
             for (j in 0 until children.size) {
                 val child = children[j]
-                if (child is MarkerActor && child.container === container) {
+                if (child is MarkerActor && child.container === dst) {
                     newIndex = j + 1
-                    for (a in container.actors) {
+                    for (a in dst.actors) {
                         if (newIndex >= children.size) {
                             break
                         } else if (a === children[newIndex]) {
@@ -602,6 +608,12 @@ class AnimationLayer : WidgetGroup() {
                 cardActor.clearActions()
             }
             draggedCards = null
+
+            if (rearrangeable && dst === container) {
+                // Set old actors, again. It was set when dragCards was called, but order of the
+                // cards may have changed and correct order is needed for correct Z-index.
+                container.oldActors = container.actors.toMutableList()
+            }
 
             // Call play listener of destination container
             if (dst !== container && dst.enabled) {

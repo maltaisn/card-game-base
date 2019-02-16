@@ -73,12 +73,6 @@ class CardActor(private val cardLoader: CardSpriteLoader, var card: Card) : Acto
         }
 
     /**
-     * Internal flag used by the animation layer to indicate when a card is being animated.
-     * An animated card doesn't fire click and long click events.
-     */
-    internal var animated = false
-
-    /**
      * Click listeners, called when the actor is clicked. Clicks must end within the bounds.
      * The listeners are not called when the actor is disabled or animated.
      */
@@ -100,6 +94,15 @@ class CardActor(private val cardLoader: CardSpriteLoader, var card: Card) : Acto
     private var selectionAlpha = 0f
     private var hoverAlpha = 0f
 
+    /**
+     * Internal flag used by the animation layer to indicate when a card is being animated.
+     * An animated card doesn't fire click and long click events.
+     */
+    internal var animated = false
+
+    // Used when animating to set the source and destination containers on a moved card.
+    internal var src: CardContainer? = null
+    internal var dst: CardContainer? = null
 
     init {
         updateSize()
