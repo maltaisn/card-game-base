@@ -21,9 +21,11 @@ package io.github.maltaisn.cardengine
  * Stores the paths of engine resources.
  * Project should use a Gradle task to copy the engine assets to an `engine/` folder under their assets.
  */
-internal object Resources {
+object Resources {
 
     const val BACKGROUND = "engine/background.png"
-    const val PCARD = "engine/pcard/pcard.atlas"
+
+    const val PCARD_ATLAS = "engine/pcard/pcard.atlas"
+    const val PCARD_SKIN = "engine/pcard/pcard.skin"
 
 }

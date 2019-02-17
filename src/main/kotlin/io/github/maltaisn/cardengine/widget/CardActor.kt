@@ -17,12 +17,13 @@
 package io.github.maltaisn.cardengine.widget
 
 import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.badlogic.gdx.scenes.scene2d.ui.Widget
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import io.github.maltaisn.cardengine.Animation
-import io.github.maltaisn.cardengine.CardSpriteLoader
 import io.github.maltaisn.cardengine.applyBounded
 import io.github.maltaisn.cardengine.core.Card
 import io.github.maltaisn.cardengine.withinBounds
@@ -30,10 +31,9 @@ import io.github.maltaisn.cardengine.withinBounds
 
 /**
  * An actor that draws a card.
- * @property cardLoader Card sprite loader for loading the card texture.
- * @property card Card shown by the actor, its sprite must be loadable with the [cardLoader].
+ * @property card Card shown by the actor.
  */
-class CardActor(private val cardLoader: CardSpriteLoader, var card: Card) : Actor() {
+class CardActor(val style: CardStyle, var card: Card) : Widget() {
 
     /**
      * Whether the card value is displayed.
@@ -74,7 +74,7 @@ class CardActor(private val cardLoader: CardSpriteLoader, var card: Card) : Acto
     var size = CARD_SIZE_NORMAL
         set(value) {
             field = value
-            updateSize()
+            setSize(prefWidth, prefHeight)
         }
 
     /**
@@ -109,8 +109,16 @@ class CardActor(private val cardLoader: CardSpriteLoader, var card: Card) : Acto
     internal var src: CardContainer? = null
     internal var dst: CardContainer? = null
 
+
+    constructor(skin: Skin, card: Card) :
+            this(skin.get(CardStyle::class.java), card)
+
+    constructor(skin: Skin, styleName: String, card: Card) :
+            this(skin.get(styleName, CardStyle::class.java), card)
+
+
     init {
-        updateSize()
+        setSize(prefWidth, prefHeight)
 
         addListener(object : InputListener() {
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
@@ -191,59 +199,43 @@ class CardActor(private val cardLoader: CardSpriteLoader, var card: Card) : Acto
 
 
     override fun draw(batch: Batch, parentAlpha: Float) {
-        // Get the card sprite and scale
-        val cardSprite = if (shown) {
-            cardLoader.getSprite(card.value)
-        } else {
-            cardLoader.getSprite(CardSpriteLoader.BACK)
-        }
-        val scale = size / cardSprite.width
+        val colorBefore = batch.color.cpy()
+
+        val scale = size / style.cardWidth
+        batch.setColor(1f, 1f, 1f, parentAlpha)
 
         // Draw shadow
-        drawSprite(batch, cardLoader.getSprite(CardSpriteLoader.SHADOW),
-                scale, cardLoader.shadowOffset, parentAlpha)
+        val shadow = style.shadow
+        shadow.draw(batch, x + style.shadowOffsetX * scale, y + style.shadowOffsetY * scale,
+                shadow.minWidth * scale, shadow.minHeight * scale)
 
         // Draw card
-        drawSprite(batch, cardSprite, scale, 0f, parentAlpha)
+        val card = if (shown) style.cards[card.value] else style.back
+        card.draw(batch, x, y, card.minWidth * scale, card.minHeight * scale)
 
-        // Draw shadow
+        // Draw hover
         if (hoverAlpha != 0f) {
-            drawSprite(batch, cardLoader.getSprite(CardSpriteLoader.HOVER),
-                    scale, cardLoader.hoverOffset, hoverAlpha * parentAlpha)
+            val hover = style.hover
+            batch.setColor(1f, 1f, 1f, parentAlpha * hoverAlpha)
+            hover.draw(batch, x + style.hoverOffsetX * scale, y + style.hoverOffsetY * scale,
+                    hover.minWidth * scale, hover.minHeight * scale)
         }
 
         // Draw selection
         if (selectionAlpha != 0f) {
-            drawSprite(batch, cardLoader.getSprite(CardSpriteLoader.SELECTION),
-                    scale, 0f, selectionAlpha * parentAlpha)
+            val selection = style.selection
+            batch.setColor(1f, 1f, 1f, parentAlpha * selectionAlpha)
+            selection.draw(batch, x, y, selection.minWidth * scale, selection.minHeight * scale)
         }
+
+        batch.color = colorBefore
     }
 
-    /**
-     * Draw a scaled and offset [sprite] on a [batch] with an [alpha] value for transparency.
-     */
-    private fun drawSprite(batch: Batch, sprite: Sprite, scale: Float, offset: Float, alpha: Float) {
-        val oldScaleX = sprite.scaleX
-        val oldScaleY = sprite.scaleY
-        val offsetScaled = offset * scale
-        val tx = x + offsetScaled
-        val ty = y + offsetScaled
-        sprite.setScale(scale)
-        sprite.translate(tx, ty)
-        sprite.draw(batch, alpha)
-        sprite.setScale(oldScaleX, oldScaleY)
-        sprite.translate(-tx, -ty)
-    }
+    override fun getPrefWidth() = size
 
-    private fun updateSize() {
-        val width = cardLoader.getCardWidth()
-        val height = cardLoader.getCardHeight()
-        val scale = size / width
-        setSize(width * scale, height * scale)
-    }
+    override fun getPrefHeight() = size / style.cardWidth * style.cardHeight
 
     override fun toString() = "[card: $card, ${if (shown) "shown" else "hidden"}]"
-
 
     interface ClickListener {
         fun onCardActorClicked(actor: CardActor)
@@ -251,6 +243,24 @@ class CardActor(private val cardLoader: CardSpriteLoader, var card: Card) : Acto
 
     interface LongClickListener {
         fun onCardActorLongClicked(actor: CardActor)
+    }
+
+    /**
+     * The style for cards drawn with a [CardActor], must match the [card] type.
+     */
+    class CardStyle {
+        lateinit var cards: Array<Drawable>
+        lateinit var back: Drawable
+        lateinit var shadow: Drawable
+        lateinit var hover: Drawable
+        lateinit var selection: Drawable
+        lateinit var slot: Drawable
+        var cardWidth: Float = 0f
+        var cardHeight: Float = 0f
+        var shadowOffsetX: Float = 0f
+        var shadowOffsetY: Float = 0f
+        var hoverOffsetX: Float = 0f
+        var hoverOffsetY: Float = 0f
     }
 
     companion object {

@@ -18,14 +18,14 @@ package io.github.maltaisn.cardengine.widget
 
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Vector2
-import io.github.maltaisn.cardengine.CardSpriteLoader
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import ktx.collections.lastIndex
 
 
 /**
  * A card container that stacks a list of cards.
  */
-class CardStack(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
+class CardStack : CardContainer {
 
     /**
      * Whether a slot should be drawn under all cards.
@@ -35,6 +35,14 @@ class CardStack(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
 
     private var cardsPosition = Vector2()
 
+
+    constructor(skin: Skin) : super(skin)
+
+    constructor(skin: Skin, styleName: String) : super(skin, styleName)
+
+    constructor(style: CardActor.CardStyle) : super(style)
+
+
     override fun layout() {
         super.layout()
         updateActorVisibility()
@@ -43,15 +51,9 @@ class CardStack(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
     override fun drawChildren(batch: Batch, parentAlpha: Float) {
         if (drawSlot && children.isEmpty) {
             // Draw the slot if there's no cards in the stack.
-            val sprite = cardLoader.getSprite(CardSpriteLoader.SLOT)
+            val slot = style.slot
             val offset = computeAlignmentOffset(cardWidth, cardHeight)
-            val oldScaleX = sprite.scaleX
-            val oldScaleY = sprite.scaleY
-            sprite.setScale(cardScale)
-            sprite.translate(offset.x, offset.y)
-            sprite.draw(batch, parentAlpha)
-            sprite.setScale(oldScaleX, oldScaleY)
-            sprite.translate(-offset.x, -offset.y)
+            slot.draw(batch, offset.x, offset.y, slot.minWidth * cardScale, slot.minHeight * cardScale)
         }
 
         super.drawChildren(batch, parentAlpha)

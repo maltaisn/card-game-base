@@ -20,10 +20,10 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Action
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack
 import com.badlogic.gdx.utils.Align
 import io.github.maltaisn.cardengine.Animation
-import io.github.maltaisn.cardengine.CardSpriteLoader
 import io.github.maltaisn.cardengine.applyBounded
 import io.github.maltaisn.cardengine.core.Card
 import kotlin.math.absoluteValue
@@ -35,7 +35,7 @@ import kotlin.math.min
  * A card container that displays a list of card actors to form a hand, that can be sorted.
  * When using [setCards], sort is not immediately called.
  */
-class CardHand(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
+class CardHand : CardContainer {
 
     /**
      * Sorter to use for sorting the group before displaying. Use `null` for no sorting.
@@ -94,7 +94,6 @@ class CardHand(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
             }
         }
 
-
     init {
         addClickListener(object : ClickListener {
             override fun onCardClicked(actor: CardActor, index: Int) {
@@ -104,6 +103,14 @@ class CardHand(cardLoader: CardSpriteLoader) : CardContainer(cardLoader) {
             }
         })
     }
+
+
+    constructor(skin: Skin) : super(skin)
+
+    constructor(skin: Skin, styleName: String) : super(skin, styleName)
+
+    constructor(style: CardActor.CardStyle) : super(style)
+
 
     override fun updateCards(newCards: List<Card?>) {
         super.updateCards(newCards)

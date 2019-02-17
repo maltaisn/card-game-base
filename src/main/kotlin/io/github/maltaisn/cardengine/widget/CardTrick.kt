@@ -19,7 +19,7 @@ package io.github.maltaisn.cardengine.widget
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
-import io.github.maltaisn.cardengine.CardSpriteLoader
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import io.github.maltaisn.cardengine.core.Card
 import kotlin.math.*
 
@@ -27,7 +27,7 @@ import kotlin.math.*
 /**
  * A card container that displays cards along a circle path.
  */
-class CardTrick(cardLoader: CardSpriteLoader, capacity: Int) : CardContainer(cardLoader) {
+class CardTrick : CardContainer {
 
     /**
      * The number of cards this trick can have.
@@ -56,9 +56,18 @@ class CardTrick(cardLoader: CardSpriteLoader, capacity: Int) : CardContainer(car
     private var center = Vector2()
 
 
-    init {
+    constructor(skin: Skin, capacity: Int) : super(skin) {
         this.capacity = capacity
     }
+
+    constructor(skin: Skin, styleName: String, capacity: Int) : super(skin, styleName) {
+        this.capacity = capacity
+    }
+
+    constructor(style: CardActor.CardStyle, capacity: Int) : super(style) {
+        this.capacity = capacity
+    }
+
 
     override fun findCardPositionForCoordinates(x: Float, y: Float): Int {
         // Find the angle of the coordinates relative to the center

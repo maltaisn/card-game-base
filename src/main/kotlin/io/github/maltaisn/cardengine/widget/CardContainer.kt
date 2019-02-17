@@ -22,11 +22,11 @@ import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup
 import com.badlogic.gdx.utils.Align
 import io.github.maltaisn.cardengine.Animation
 import io.github.maltaisn.cardengine.CardGameScreen
-import io.github.maltaisn.cardengine.CardSpriteLoader
 import io.github.maltaisn.cardengine.applyBounded
 import io.github.maltaisn.cardengine.core.Card
 import ktx.collections.isNotEmpty
@@ -39,8 +39,10 @@ import kotlin.math.min
  * The base class for a widget group that contains card actors.
  * All card containers support animations with the [AnimationLayer],
  * however the container must be in a [CardGameScreen] stage to support animations.
+ *
+ * @property style Style of the created card actors.
  */
-abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : WidgetGroup() {
+abstract class CardContainer(val style: CardActor.CardStyle) : WidgetGroup() {
 
     private val _actors = mutableListOf<CardActor?>()
 
@@ -151,6 +153,12 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
             }
         }
     }
+
+
+    constructor(skin: Skin) : this(skin.get(CardActor.CardStyle::class.java))
+
+    constructor(skin: Skin, styleName: String) : this(skin.get(styleName, CardActor.CardStyle::class.java))
+
 
     override fun setStage(stage: Stage?) {
         if (stage != null) {
@@ -305,7 +313,7 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
         while (actors.size < newCards.size) {
             val card = newCards[actors.size]
             if (card != null) {
-                val actor = CardActor(cardLoader, card)
+                val actor = CardActor(style, card)
                 actor.enabled = enabled
                 if (clickListeners.isNotEmpty()) actor.clickListeners += internalClickListener
                 if (longClickListeners.isNotEmpty()) actor.longClickListeners += internalLongClickListener
@@ -528,11 +536,9 @@ abstract class CardContainer(protected val cardLoader: CardSpriteLoader) : Widge
         if (!sizeInvalid) return
         sizeInvalid = false
 
-        val width = cardLoader.getCardWidth()
-        val height = cardLoader.getCardHeight()
-        cardScale = cardSize / width
-        cardWidth = width * cardScale
-        cardHeight = height * cardScale
+        cardScale = cardSize / style.cardWidth
+        cardWidth = style.cardWidth * cardScale
+        cardHeight = style.cardHeight * cardScale
     }
 
     /**

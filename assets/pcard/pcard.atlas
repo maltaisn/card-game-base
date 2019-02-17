@@ -1,341 +1,340 @@
-
 pcard.png
 size: 2048,2048
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-0
-  rotate: false
-  xy: 1454, 1016
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-1
-  rotate: false
-  xy: 1696, 1016
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-10
-  rotate: false
-  xy: 728, 1354
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-11
-  rotate: false
-  xy: 970, 1354
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-12
-  rotate: false
-  xy: 1212, 1354
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-13
-  rotate: false
-  xy: 1454, 1354
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-14
-  rotate: false
-  xy: 1696, 1354
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-15
-  rotate: false
-  xy: 2, 1016
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-16
-  rotate: false
-  xy: 244, 1016
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-17
-  rotate: false
-  xy: 486, 1016
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-18
-  rotate: false
-  xy: 728, 1016
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-19
-  rotate: false
-  xy: 970, 1016
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-2
-  rotate: false
-  xy: 2, 678
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-20
-  rotate: false
-  xy: 2, 340
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-21
-  rotate: false
-  xy: 244, 340
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-22
-  rotate: false
-  xy: 486, 340
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-23
-  rotate: false
-  xy: 728, 340
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-24
-  rotate: false
-  xy: 970, 340
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-25
-  rotate: false
-  xy: 1212, 340
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-26
-  rotate: false
-  xy: 1454, 340
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-27
-  rotate: false
-  xy: 1696, 340
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-28
-  rotate: false
-  xy: 2, 2
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-29
-  rotate: false
-  xy: 244, 2
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-3
-  rotate: false
-  xy: 244, 678
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-30
-  rotate: false
-  xy: 486, 2
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-31
-  rotate: false
-  xy: 728, 2
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-32
-  rotate: false
-  xy: 970, 2
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-33
+back
   rotate: false
   xy: 1212, 2
   size: 240, 336
   orig: 240, 336
   offset: 0, 0
   index: -1
-34
-  rotate: false
-  xy: 1454, 2
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-35
-  rotate: false
-  xy: 1696, 2
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-4
-  rotate: false
-  xy: 486, 678
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-44
+card
   rotate: false
   xy: 2, 1692
   size: 240, 336
   orig: 240, 336
   offset: 0, 0
-  index: -1
-45
+  index: 40
+card
   rotate: false
   xy: 244, 1692
   size: 240, 336
   orig: 240, 336
   offset: 0, 0
-  index: -1
-46
+  index: 41
+card
   rotate: false
   xy: 486, 1692
   size: 240, 336
   orig: 240, 336
   offset: 0, 0
-  index: -1
-47
+  index: 42
+card
   rotate: false
   xy: 728, 1692
   size: 240, 336
   orig: 240, 336
   offset: 0, 0
-  index: -1
-48
+  index: 43
+card
   rotate: false
   xy: 970, 1692
   size: 240, 336
   orig: 240, 336
   offset: 0, 0
-  index: -1
-49
+  index: 44
+card
   rotate: false
   xy: 1212, 1692
   size: 240, 336
   orig: 240, 336
   offset: 0, 0
-  index: -1
-5
-  rotate: false
-  xy: 728, 678
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-50
-  rotate: false
-  xy: 1696, 1692
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-51
-  rotate: false
-  xy: 2, 1354
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-52
-  rotate: false
-  xy: 244, 1354
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-53
-  rotate: false
-  xy: 486, 1354
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-6
-  rotate: false
-  xy: 970, 678
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-7
-  rotate: false
-  xy: 1212, 678
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-8
-  rotate: false
-  xy: 1454, 678
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-9
-  rotate: false
-  xy: 1696, 678
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-selection
+  index: 45
+card
   rotate: false
   xy: 1454, 1692
   size: 240, 336
   orig: 240, 336
   offset: 0, 0
-  index: -1
-slot
+  index: 46
+card
+  rotate: false
+  xy: 1696, 1692
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 47
+card
+  rotate: false
+  xy: 2, 1354
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 48
+card
+  rotate: false
+  xy: 244, 1354
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 49
+card
+  rotate: false
+  xy: 728, 1354
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 50
+card
+  rotate: false
+  xy: 970, 1354
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 51
+card
+  rotate: false
+  xy: 1212, 1354
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 52
+card
+  rotate: false
+  xy: 1454, 1354
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 53
+card
+  rotate: false
+  xy: 1696, 1354
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 10
+card
+  rotate: false
+  xy: 2, 1016
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 11
+card
+  rotate: false
+  xy: 244, 1016
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 12
+card
+  rotate: false
+  xy: 486, 1016
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 13
+card
+  rotate: false
+  xy: 728, 1016
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 14
+card
+  rotate: false
+  xy: 970, 1016
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 15
+card
   rotate: false
   xy: 1212, 1016
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 16
+card
+  rotate: false
+  xy: 1454, 1016
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 17
+card
+  rotate: false
+  xy: 1696, 1016
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 18
+card
+  rotate: false
+  xy: 2, 678
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 19
+card
+  rotate: false
+  xy: 244, 678
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 0
+card
+  rotate: false
+  xy: 486, 678
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 1
+card
+  rotate: false
+  xy: 728, 678
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 2
+card
+  rotate: false
+  xy: 970, 678
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 3
+card
+  rotate: false
+  xy: 1212, 678
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 4
+card
+  rotate: false
+  xy: 1454, 678
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 5
+card
+  rotate: false
+  xy: 1696, 678
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 6
+card
+  rotate: false
+  xy: 2, 340
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 7
+card
+  rotate: false
+  xy: 244, 340
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 8
+card
+  rotate: false
+  xy: 486, 340
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 9
+card
+  rotate: false
+  xy: 728, 340
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 20
+card
+  rotate: false
+  xy: 970, 340
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 21
+card
+  rotate: false
+  xy: 1212, 340
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 22
+card
+  rotate: false
+  xy: 1454, 340
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 23
+card
+  rotate: false
+  xy: 1696, 340
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 24
+card
+  rotate: false
+  xy: 2, 2
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 25
+card
+  rotate: false
+  xy: 244, 2
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 26
+card
+  rotate: false
+  xy: 486, 2
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 27
+card
+  rotate: false
+  xy: 728, 2
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 28
+card
+  rotate: false
+  xy: 970, 2
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 29
+card
+  rotate: false
+  xy: 1454, 2
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 30
+card
+  rotate: false
+  xy: 1696, 2
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 31
+selection
+  rotate: false
+  xy: 486, 1354
   size: 240, 336
   orig: 240, 336
   offset: 0, 0
@@ -346,69 +345,62 @@ size: 2048,1024
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-36
+card
   rotate: false
   xy: 304, 440
   size: 240, 336
   orig: 240, 336
   offset: 0, 0
-  index: -1
-37
+  index: 32
+card
   rotate: false
   xy: 546, 440
   size: 240, 336
   orig: 240, 336
   offset: 0, 0
-  index: -1
-38
+  index: 33
+card
   rotate: false
   xy: 788, 440
   size: 240, 336
   orig: 240, 336
   offset: 0, 0
-  index: -1
-39
+  index: 34
+card
   rotate: false
   xy: 1030, 440
   size: 240, 336
   orig: 240, 336
   offset: 0, 0
-  index: -1
-40
-  rotate: false
-  xy: 1514, 440
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-41
-  rotate: false
-  xy: 1756, 440
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-42
-  rotate: false
-  xy: 284, 42
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-43
-  rotate: false
-  xy: 526, 102
-  size: 240, 336
-  orig: 240, 336
-  offset: 0, 0
-  index: -1
-back
+  index: 35
+card
   rotate: false
   xy: 1272, 440
   size: 240, 336
   orig: 240, 336
   offset: 0, 0
-  index: -1
+  index: 36
+card
+  rotate: false
+  xy: 1514, 440
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 37
+card
+  rotate: false
+  xy: 1756, 440
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 38
+card
+  rotate: false
+  xy: 284, 42
+  size: 240, 336
+  orig: 240, 336
+  offset: 0, 0
+  index: 39
 hover
   rotate: false
   xy: 2, 380
@@ -421,5 +413,12 @@ shadow
   xy: 2, 2
   size: 280, 376
   orig: 280, 376
+  offset: 0, 0
+  index: -1
+slot
+  rotate: false
+  xy: 526, 102
+  size: 240, 336
+  orig: 240, 336
   offset: 0, 0
   index: -1
