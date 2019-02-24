@@ -1,0 +1,29 @@
+{
+  io.github.maltaisn.cardengine.widget.GameLayer$GameLayerStyle: {
+    default: {
+      background: background,
+      border: background-border,
+      borderMargin: 15
+    }
+  }
+  io.github.maltaisn.cardengine.widget.Popup$PopupStyle: {
+    default: {
+      body: popup,
+      scale: 0.6,
+      bodyOffsetX: 0,
+      bodyOffsetY: 8,
+      topTip: popup-tip-top,
+      bottomTip: popup-tip-bottom,
+      leftTip: popup-tip-left,
+      rightTip: popup-tip-right,
+      bottomTipOffsetX: -20,
+      bottomTipOffsetY: -4,
+      topTipOffsetX: -20,
+      topTipOffsetY: -3,
+      leftTipOffsetX: -21,
+      leftTipOffsetY: -20,
+      rightTipOffsetX: -2,
+      rightTipOffsetY: -20,
+    }
+  }
+}

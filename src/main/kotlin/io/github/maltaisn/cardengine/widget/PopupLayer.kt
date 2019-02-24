@@ -14,19 +14,26 @@
  * limitations under the License.
  */
 
-package io.github.maltaisn.cardengine
+package io.github.maltaisn.cardengine.widget
+
+import com.badlogic.gdx.scenes.scene2d.Touchable
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup
+import com.badlogic.gdx.scenes.scene2d.utils.Layout
 
 
-/**
- * Stores the paths of engine resources.
- * Project should use a Gradle task to copy the engine assets to an `engine/` folder under their assets.
- */
-object Resources {
+class PopupLayer : WidgetGroup() {
 
-    const val PCARD_SKIN = "engine/pcard/pcard.skin"
-    const val PCARD_SKIN_ATLAS = "engine/pcard/pcard.atlas"
+    init {
+        touchable = Touchable.childrenOnly
+    }
 
-    internal const val CORE_SKIN = "engine/core.skin"
-    internal const val CORE_SKIN_ATLAS = "engine/core.atlas"
+    override fun layout() {
+        for (child in children) {
+            if (child is Layout) {
+                child.setSize(child.prefWidth, child.prefHeight)
+                child.validate()
+            }
+        }
+    }
 
 }

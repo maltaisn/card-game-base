@@ -27,6 +27,7 @@ import io.github.maltaisn.cardengine.widget.CardHand
  */
 internal object Animation {
 
+    // ANIMATION LAYER
     /** The duration of the update animation for [AnimationLayer.update] */
     const val UPDATE_DURATION = 0.4f
 
@@ -40,15 +41,26 @@ internal object Animation {
     /** The duration of rearrangement animation when cards are dragged.  */
     const val DRAG_REARRANGE_DURATION: Float = 0.3f
 
-    /** The duration of card container's transitions, slide and fade */
-    const val TRANSITION_DURATION = 0.5f
+    val UPDATE_INTERPOLATION: Interpolation = smooth
+    val DRAG_SIZE_INTERPOLATION: Interpolation = smooth
+    val REARRANGE_INTERPOLATION: Interpolation = pow2Out
 
-    /** The duration of the highlight animation for [CardHand]. */
-    const val HIGHLIGHT_DURATION = 0.1f
+    // CARD CONTAINER
+    /** The duration of card container's transitions, slide and fade */
+    const val CONTAINER_TRANSITION_DURATION = 0.5f
 
     /** The minimum dragging distance in pixels for a card to be effectively dragged. */
     const val MIN_DRAG_DISTANCE = 10f
 
+    val CONTAINER_TRANSITION_INTERPOLATION: Interpolation = smooth
+
+    // CARD HAND
+    /** The duration of the highlight animation for [CardHand]. */
+    const val HIGHLIGHT_DURATION = 0.1f
+
+    val HIGHLIGHT_INTERPOLATION: Interpolation = smooth
+
+    // CARD ACTOR
     /** The duration of the hover fade for a card actor. */
     const val HOVER_FADE_DURATION = 0.3f
 
@@ -58,16 +70,18 @@ internal object Animation {
     /** The delay before long click is triggered in a card actor. */
     const val LONG_CLICK_DELAY = 0.5f
 
-
-    // Interpolation
     val SELECTION_IN_INTERPOLATION: Interpolation = smooth
     val SELECTION_OUT_INTERPOLATION: Interpolation = smooth
     val HOVER_IN_INTERPOLATION: Interpolation = circleOut
     val HOVER_OUT_INTERPOLATION: Interpolation = smooth
-    val UPDATE_INTERPOLATION: Interpolation = smooth
-    val DRAG_SIZE_INTERPOLATION: Interpolation = smooth
-    val REARRANGE_INTERPOLATION: Interpolation = pow2Out
-    val TRANSITION_INTERPOLATION: Interpolation = smooth
-    val HIGHLIGHT_INTERPOLATION: Interpolation = smooth
+
+    // POPUP
+    /** The duration a popup's show and hide transition. */
+    const val POPUP_TRANSITION_DURATION = 0.3f
+
+    /** The distance in pixels the popup is translated up when shown and down when hidden. */
+    const val POPUP_TRANSITION_DISTANCE = 30f
+
+    val POPUP_TRANSITION_INTERPOLATION: Interpolation = smooth
 
 }

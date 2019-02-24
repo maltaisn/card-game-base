@@ -22,7 +22,6 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.*
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup
 import com.oracle.util.Checksums.update
 import io.github.maltaisn.cardengine.Animation
 import io.github.maltaisn.cardengine.applyBounded
@@ -32,7 +31,7 @@ import ktx.math.minus
 import ktx.math.times
 
 
-class AnimationLayer : WidgetGroup() {
+class AnimationLayer : Group() {
 
     /** The list of all card containers on the stage.
      * It's update by the container themselves when they are added to the stage. */

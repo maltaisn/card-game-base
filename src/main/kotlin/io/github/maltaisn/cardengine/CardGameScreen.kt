@@ -18,21 +18,37 @@ package io.github.maltaisn.cardengine
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.assets.loaders.SkinLoader
 import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import io.github.maltaisn.cardengine.widget.AnimationLayer
 import io.github.maltaisn.cardengine.widget.GameLayer
+import io.github.maltaisn.cardengine.widget.PopupLayer
 
 
 abstract class CardGameScreen(game: CardGame) : BaseScreen(game) {
 
     val assetManager = AssetManager()
+    val coreSkin: Skin
 
-    val gameLayer = GameLayer(assetManager)
-    val animationLayer = AnimationLayer()
+    val gameLayer: GameLayer
+    val animationLayer: AnimationLayer
+    val popupLayer: PopupLayer
 
     init {
-        addActor(CardGameContainer(gameLayer, animationLayer))
+        assetManager.load(Resources.CORE_SKIN_ATLAS, TextureAtlas::class.java)
+        assetManager.load(Resources.CORE_SKIN, Skin::class.java,
+                SkinLoader.SkinParameter(Resources.CORE_SKIN_ATLAS))
+        assetManager.finishLoading()
+
+        coreSkin = assetManager.get(Resources.CORE_SKIN, Skin::class.java)
+        gameLayer = GameLayer(coreSkin)
+        animationLayer = AnimationLayer()
+        popupLayer = PopupLayer()
+
+        addActor(CardGameContainer(gameLayer, animationLayer, popupLayer))
     }
 
     final override fun addActor(actor: Actor?) = super.addActor(actor)

@@ -71,7 +71,7 @@ class CardActor(val style: CardStyle, var card: Card) : Widget() {
 
 
     /** The card's width, in pixels. */
-    var size = CARD_SIZE_NORMAL
+    var size = SIZE_NORMAL
         set(value) {
             field = value
             setSize(prefWidth, prefHeight)
@@ -255,21 +255,21 @@ class CardActor(val style: CardStyle, var card: Card) : Widget() {
         lateinit var hover: Drawable
         lateinit var selection: Drawable
         lateinit var slot: Drawable
-        var cardWidth: Float = 0f
-        var cardHeight: Float = 0f
-        var shadowOffsetX: Float = 0f
-        var shadowOffsetY: Float = 0f
-        var hoverOffsetX: Float = 0f
-        var hoverOffsetY: Float = 0f
+        var cardWidth = 0f
+        var cardHeight = 0f
+        var shadowOffsetX = 0f
+        var shadowOffsetY = 0f
+        var hoverOffsetX = 0f
+        var hoverOffsetY = 0f
     }
 
     companion object {
         // Card sizes presets
-        const val CARD_SIZE_TINY = 80f
-        const val CARD_SIZE_SMALL = 100f
-        const val CARD_SIZE_NORMAL = 120f
-        const val CARD_SIZE_BIG = 150f
-        const val CARD_SIZE_HUGE = 200f
+        const val SIZE_TINY = 80f
+        const val SIZE_SMALL = 100f
+        const val SIZE_NORMAL = 120f
+        const val SIZE_BIG = 150f
+        const val SIZE_HUGE = 200f
     }
 
 }

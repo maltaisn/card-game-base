@@ -16,14 +16,15 @@
 
 package io.github.maltaisn.cardengine.widget
 
-import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import io.github.maltaisn.cardengine.Resources
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 
 
-class GameLayer(private val assetManager: AssetManager) : Table() {
+class GameLayer(skin: Skin) : Table(skin) {
+
+    val style = skin.get(GameLayerStyle::class.java)
 
     /**
      * The size of the tables hidden on each side in pixels.
@@ -45,11 +46,7 @@ class GameLayer(private val assetManager: AssetManager) : Table() {
     val leftTable = Table()
     val rightTable = Table()
 
-    private lateinit var backgroundTexture: Texture
-
     init {
-        assetManager.load(Resources.BACKGROUND, Texture::class.java)
-
         // Make the layout, one table on each side and one in the center.
         add(topTable).height(sideTableSize).colspan(3).growX().row()
         add(leftTable).width(sideTableSize).growY()
@@ -64,15 +61,26 @@ class GameLayer(private val assetManager: AssetManager) : Table() {
     }
 
     override fun drawChildren(batch: Batch, parentAlpha: Float) {
-        if (::backgroundTexture.isInitialized) {
-            batch.draw(backgroundTexture, 0f, 0f, centerTable.width, centerTable.height)
-        } else {
-            if (assetManager.isLoaded(Resources.BACKGROUND)) {
-                backgroundTexture = assetManager.get(Resources.BACKGROUND)
-            }
-        }
+        // Draw the background
+        style.background.draw(batch, 0f, 0f,
+                centerTable.width, centerTable.height)
+
+        // Draw the background border
+        val colorBefore = batch.color.cpy()
+        batch.setColor(1f, 1f, 1f, parentAlpha)
+        val margin = style.borderMargin
+        style.border.draw(batch, margin, margin,
+                centerTable.width - 2 * margin,
+                centerTable.height - 2 * margin)
+        batch.color = colorBefore
 
         super.drawChildren(batch, parentAlpha)
+    }
+
+    class GameLayerStyle {
+        lateinit var background: Drawable
+        lateinit var border: Drawable
+        var borderMargin = 0f
     }
 
 }

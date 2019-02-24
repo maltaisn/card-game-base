@@ -80,7 +80,13 @@ abstract class CardContainer(val style: CardActor.CardStyle) : WidgetGroup() {
         }
 
     /** The size of the card actors in the container. */
-    var cardSize: Float = CardActor.CARD_SIZE_NORMAL
+    var cardSize: Float = CardActor.SIZE_NORMAL
+        set(value) {
+            field = value
+            for (actor in actors) {
+                actor?.size = value
+            }
+        }
 
     /** Alignment of the container's content. */
     var alignment = Align.center
@@ -380,11 +386,11 @@ abstract class CardContainer(val style: CardActor.CardStyle) : WidgetGroup() {
             private var elapsed = 0f
             override fun act(delta: Float): Boolean {
                 elapsed += delta
-                val progress = Animation.TRANSITION_INTERPOLATION
-                        .applyBounded(elapsed / Animation.TRANSITION_DURATION)
+                val progress = Animation.CONTAINER_TRANSITION_INTERPOLATION
+                        .applyBounded(elapsed / Animation.CONTAINER_TRANSITION_DURATION)
                 setColor(1f, 1f, 1f, startOpacity + (endOpacity - startOpacity) * progress)
 
-                val done = elapsed >= Animation.TRANSITION_DURATION
+                val done = elapsed >= Animation.CONTAINER_TRANSITION_DURATION
                 if (!visible && done) {
                     isVisible = false
                 }
@@ -425,12 +431,12 @@ abstract class CardContainer(val style: CardActor.CardStyle) : WidgetGroup() {
 
             override fun act(delta: Float): Boolean {
                 elapsed += delta
-                val progress = Animation.TRANSITION_INTERPOLATION
-                        .applyBounded(elapsed / Animation.TRANSITION_DURATION)
+                val progress = Animation.CONTAINER_TRANSITION_INTERPOLATION
+                        .applyBounded(elapsed / Animation.CONTAINER_TRANSITION_DURATION)
                 setPosition(startX + (endX - startX) * progress,
                         startY + (endY - startY) * progress)
 
-                val done = elapsed >= Animation.TRANSITION_DURATION
+                val done = elapsed >= Animation.CONTAINER_TRANSITION_DURATION
                 if (!visible && done) {
                     isVisible = false
                     setPosition(startX, startY)
