@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import ktx.collections.lastIndex
+import ktx.math.vec2
 
 
 /**
@@ -33,7 +34,7 @@ class CardStack : CardContainer {
      */
     var drawSlot = false
 
-    private var cardsPosition = Vector2()
+    private var cardsPosition = vec2()
 
 
     constructor(skin: Skin) : super(skin)

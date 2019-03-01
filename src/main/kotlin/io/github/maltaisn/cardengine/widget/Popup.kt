@@ -17,7 +17,6 @@
 package io.github.maltaisn.cardengine.widget
 
 import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
@@ -26,6 +25,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
 import io.github.maltaisn.cardengine.Animation
 import io.github.maltaisn.cardengine.applyBounded
+import ktx.actors.plusAssign
+import ktx.math.vec2
 import kotlin.math.max
 
 
@@ -90,7 +91,7 @@ class Popup(val style: PopupStyle) : Table() {
                     dy = -(distance + height)
                 }
             }
-            val actorPos = it.localToActorCoordinates(parent, Vector2())
+            val actorPos = it.localToActorCoordinates(parent, vec2())
             this.x = actorPos.x + dx + offsetX
             this.y = actorPos.y + dy + offsetY
         }
@@ -173,14 +174,14 @@ class Popup(val style: PopupStyle) : Table() {
         invalidateHierarchy()
 
         if (actions.isEmpty) {
-            addAction(TransitionAction())
+            this += TransitionAction()
         }
     }
 
     fun hide() {
         shown = false
         if (actions.isEmpty) {
-            addAction(TransitionAction())
+            this += TransitionAction()
         }
     }
 

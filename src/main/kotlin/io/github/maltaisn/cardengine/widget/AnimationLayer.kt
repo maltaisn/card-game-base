@@ -26,9 +26,12 @@ import com.oracle.util.Checksums.update
 import io.github.maltaisn.cardengine.Animation
 import io.github.maltaisn.cardengine.applyBounded
 import io.github.maltaisn.cardengine.withinBounds
+import ktx.actors.plusAssign
+import ktx.actors.setKeyboardFocus
 import ktx.math.div
 import ktx.math.minus
 import ktx.math.times
+import ktx.math.vec2
 
 
 class AnimationLayer : Group() {
@@ -174,8 +177,8 @@ class AnimationLayer : Group() {
         val actors = container.actors
         for (actor in actors) {
             if (actor != null) {
-                val pos = actor.localToActorCoordinates(this, Vector2())
-                addActor(actor)
+                val pos = actor.localToActorCoordinates(this, vec2())
+                this += actor
                 actor.x = pos.x
                 actor.y = pos.y
                 actor.isVisible = true
@@ -196,7 +199,7 @@ class AnimationLayer : Group() {
 
         // Find the actor offset to the mouse position.
         val mousePos = stage.screenToStageCoordinates(
-                Vector2(Gdx.input.x.toFloat(), Gdx.input.y.toFloat()))
+                vec2(Gdx.input.x.toFloat(), Gdx.input.y.toFloat()))
         val offsets = List(cards.size) { cards[it].stageToLocalCoordinates(mousePos.cpy()) }
 
         container.oldActors = container.actors.toMutableList()
@@ -220,7 +223,7 @@ class AnimationLayer : Group() {
      * are added to the animation layer and animated to their end position.
      */
     private fun startAnimation() {
-        stage.keyboardFocus = this  // For ESC canceling
+        setKeyboardFocus(true)  // For ESC canceling
 
         animationPending = false
         animationRunning = true
@@ -241,7 +244,7 @@ class AnimationLayer : Group() {
 
             // Find the start position of all actors of the container, in this group.
             val oldActors = container.oldActors!!
-            val positions = List(oldActors.size) { Vector2() }
+            val positions = List(oldActors.size) { vec2() }
             for (i in oldActors.indices) {
                 val actor = oldActors[i] ?: continue
                 val pos = positions[i]
@@ -257,13 +260,13 @@ class AnimationLayer : Group() {
             container.clearChildren()
 
             // Add a marker actor to indicate where each container children start and end.
-            addActor(MarkerActor(container))
+            this += MarkerActor(container)
 
             // Add all actors to the animation layer
             for (i in oldActors.indices) {
                 val actor = oldActors[i] ?: continue
                 val pos = positions[i]
-                addActor(actor)
+                this += actor
                 actor.src = container
                 actor.x = pos.x
                 actor.y = pos.y
@@ -285,7 +288,7 @@ class AnimationLayer : Group() {
 
                 val containerEndPos = endPositions[i]
                 val stageEndPos = container.localToActorCoordinates(this, containerEndPos.cpy())
-                val distance = Vector2(stageEndPos.x - actor.x, stageEndPos.y - actor.y)
+                val distance = vec2(stageEndPos.x - actor.x, stageEndPos.y - actor.y)
 
                 // For the card stack, only show the topmost card that doesn't move.
                 // Hide others. This prevents useless overdrawing.
@@ -315,7 +318,7 @@ class AnimationLayer : Group() {
 
                 val action = MoveCardAction(actor, distance, containerEndPos, duration)
                 actor.clearActions()
-                actor.addAction(action)
+                actor += action
 
                 if (duration > animationTimeLeft) {
                     animationTimeLeft = duration
@@ -362,7 +365,7 @@ class AnimationLayer : Group() {
                     assert(parent === this@AnimationLayer)
 
                     val action = actions.first() as MoveCardAction
-                    container.addActor(this)
+                    container += this
                     src = null
                     dst = null
                     x = action.containerEndPos.x
@@ -402,8 +405,8 @@ class AnimationLayer : Group() {
         init {
             // Compute the dst container rectangle bounds.
             if (src !== dst) {
-                val start = dst.localToActorCoordinates(this@AnimationLayer, Vector2())
-                val end = dst.localToActorCoordinates(this@AnimationLayer, Vector2(dst.width, dst.height))
+                val start = dst.localToActorCoordinates(this@AnimationLayer, vec2())
+                val end = dst.localToActorCoordinates(this@AnimationLayer, vec2(dst.width, dst.height))
                 containerRect = Rectangle(start.x, start.y, end.x - start.x, end.y - start.y)
                 changeLayer()
             } // else, card container wasn't changed so initial Z-index stays correct.
@@ -432,7 +435,7 @@ class AnimationLayer : Group() {
 
             // Check if the card actor's center is within the destination container rectangle bounds.
             val cardCenter = cardActor.localToActorCoordinates(this@AnimationLayer,
-                    Vector2(cardActor.width / 2, cardActor.height / 2))
+                    vec2(cardActor.width / 2, cardActor.height / 2))
             if (cardCenter !in containerRect!!) {
                 return
             }
@@ -539,7 +542,7 @@ class AnimationLayer : Group() {
                 if (newDst !== dst) {
                     // It changed, animate card size
                     cardActor.clearActions()
-                    cardActor.addAction(object : Action() {
+                    cardActor += object : Action() {
                         private var elapsed = 0f
                         private var startSize = cardActor.size
                         private var endSize = newDst.cardSize +
@@ -552,7 +555,7 @@ class AnimationLayer : Group() {
                             cardActor.size = startSize + progress * (endSize - startSize)
                             return elapsed >= Animation.DRAG_SIZE_CHANGE_DURATION
                         }
-                    })
+                    }
                 }
             }
 
@@ -571,7 +574,7 @@ class AnimationLayer : Group() {
                     clearChildren()
                     for (actor in actors) {
                         if (actor != null) {
-                            addActor(actor)
+                            this@AnimationLayer += actor
                             // Actor position is persisted through the re-add
                         }
                     }
@@ -580,10 +583,10 @@ class AnimationLayer : Group() {
                     for (i in actors.indices) {
                         val actor = actors[i]
                         if (actor != null && actor !in cardActors) {
-                            val startPos = Vector2(actor.x, actor.y)
+                            val startPos = vec2(actor.x, actor.y)
                             val distance = cardPositions[i] - startPos
                             actor.clearActions()
-                            actor.addAction(object : Action() {
+                            actor += object : Action() {
                                 private var elapsed = 0f
                                 override fun act(delta: Float): Boolean {
                                     elapsed += delta
@@ -593,7 +596,7 @@ class AnimationLayer : Group() {
                                     actor.y = startPos.y + progress * distance.y
                                     return progress >= 1
                                 }
-                            })
+                            }
                         }
                     }
                 }

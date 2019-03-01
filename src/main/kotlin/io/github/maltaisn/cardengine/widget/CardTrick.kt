@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import io.github.maltaisn.cardengine.core.Card
+import ktx.math.vec2
 import kotlin.math.*
 
 
@@ -53,7 +54,7 @@ class CardTrick : CardContainer {
 
 
     private var computedRadius = 0f
-    private var center = Vector2()
+    private var center = vec2()
 
 
     constructor(skin: Skin, capacity: Int) : super(skin) {
@@ -96,7 +97,7 @@ class CardTrick : CardContainer {
 
         // Find the card positions
         // They are placed in a circle at equal angles.
-        val positions = List(actors.size) { Vector2() }
+        val positions = List(actors.size) { vec2() }
         for (i in actors.indices) {
             val pos = positions[i]
             var angle = i.toFloat() / size * PI2 - startAngle

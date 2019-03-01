@@ -29,8 +29,11 @@ import io.github.maltaisn.cardengine.Animation
 import io.github.maltaisn.cardengine.CardGameScreen
 import io.github.maltaisn.cardengine.applyBounded
 import io.github.maltaisn.cardengine.core.Card
+import ktx.actors.alpha
+import ktx.actors.plusAssign
 import ktx.collections.isNotEmpty
 import ktx.math.minus
+import ktx.math.vec2
 import java.util.*
 import kotlin.math.min
 
@@ -133,15 +136,15 @@ abstract class CardContainer(val style: CardActor.CardStyle) : WidgetGroup() {
     /** The input listener set on all actors in this container */
     private val internalInputListener = object : InputListener() {
         private var cardDragger: AnimationLayer.CardDragger? = null
-        private var startPos = Vector2()
+        private var startPos = vec2()
 
         override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-            startPos = Vector2(event.stageX, event.stageY)
+            startPos = vec2(event.stageX, event.stageY)
             return enabled && dragListener != null && pointer == Input.Buttons.LEFT
         }
 
         override fun touchDragged(event: InputEvent, x: Float, y: Float, pointer: Int) {
-            val pos = Vector2(event.stageX, event.stageY)
+            val pos = vec2(event.stageX, event.stageY)
             if (enabled && pointer == Input.Buttons.LEFT && (cardDragger != null ||
                             dragListener != null && (pos - startPos).len() > Animation.MIN_DRAG_DISTANCE)) {
                 // Start dragging only when touch has been dragged for a minimum distance
@@ -154,7 +157,7 @@ abstract class CardContainer(val style: CardActor.CardStyle) : WidgetGroup() {
 
         override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
             if (enabled && cardDragger != null && pointer == Input.Buttons.LEFT) {
-                cardDragger?.touchUp(Vector2(event.stageX, event.stageY))
+                cardDragger?.touchUp(vec2(event.stageX, event.stageY))
                 cardDragger = null
             }
         }
@@ -202,7 +205,7 @@ abstract class CardContainer(val style: CardActor.CardStyle) : WidgetGroup() {
                 } else if (visibility == Visibility.NONE) {
                     actor.shown = false
                 }
-                addActor(actor)
+                this += actor
             }
         }
     }
@@ -380,15 +383,15 @@ abstract class CardContainer(val style: CardActor.CardStyle) : WidgetGroup() {
             startOpacity = 1f
             endOpacity = 0f
         }
-        setColor(1f, 1f, 1f, startOpacity)
+        alpha = startOpacity
 
-        addAction(object : Action() {
+        this += object : Action() {
             private var elapsed = 0f
             override fun act(delta: Float): Boolean {
                 elapsed += delta
                 val progress = Animation.CONTAINER_TRANSITION_INTERPOLATION
                         .applyBounded(elapsed / Animation.CONTAINER_TRANSITION_DURATION)
-                setColor(1f, 1f, 1f, startOpacity + (endOpacity - startOpacity) * progress)
+                alpha = startOpacity + (endOpacity - startOpacity) * progress
 
                 val done = elapsed >= Animation.CONTAINER_TRANSITION_DURATION
                 if (!visible && done) {
@@ -396,7 +399,7 @@ abstract class CardContainer(val style: CardActor.CardStyle) : WidgetGroup() {
                 }
                 return done
             }
-        })
+        }
     }
 
     /**
@@ -426,7 +429,7 @@ abstract class CardContainer(val style: CardActor.CardStyle) : WidgetGroup() {
         }
         setPosition(startX, startY)
 
-        addAction(object : Action() {
+        this += object : Action() {
             private var elapsed = 0f
 
             override fun act(delta: Float): Boolean {
@@ -443,7 +446,7 @@ abstract class CardContainer(val style: CardActor.CardStyle) : WidgetGroup() {
                 }
                 return done
             }
-        })
+        }
     }
 
     internal fun moveCardTo(dst: CardContainer, srcIndex: Int, dstIndex: Int,
@@ -495,7 +498,7 @@ abstract class CardContainer(val style: CardActor.CardStyle) : WidgetGroup() {
 
     internal open fun onAnimationStart() {
         clearActions()
-        setColor(1f, 1f, 1f, 1f)
+        alpha = 1f
 
         // Reset old actors
         for (actor in oldActors!!) {
@@ -565,7 +568,7 @@ abstract class CardContainer(val style: CardActor.CardStyle) : WidgetGroup() {
             else -> 0f
         }
 
-        return Vector2(offsetX, offsetY)
+        return vec2(offsetX, offsetY)
     }
 
     override fun toString() = "[cards: $cards, visibility: ${visibility.toString().toLowerCase()}}]"

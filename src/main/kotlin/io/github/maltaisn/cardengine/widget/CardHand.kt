@@ -26,6 +26,8 @@ import com.badlogic.gdx.utils.Align
 import io.github.maltaisn.cardengine.Animation
 import io.github.maltaisn.cardengine.applyBounded
 import io.github.maltaisn.cardengine.core.Card
+import ktx.actors.plusAssign
+import ktx.math.vec2
 import kotlin.math.absoluteValue
 import kotlin.math.max
 import kotlin.math.min
@@ -213,7 +215,7 @@ class CardHand : CardContainer {
         }
 
         // Find the card positions.
-        val positions = List(actors.size) { Vector2() }
+        val positions = List(actors.size) { vec2() }
         for (i in actors.indices) {
             val actor = actors[i]
             val pos = positions[i]
@@ -316,15 +318,15 @@ class CardHand : CardContainer {
             // Do the highlight animation.
             val restPos = if (horizontal) actor.y else actor.x
             if (actor.highlighted) {
-                actor.addAction(HighlightAction(restPos, highlightSize,
-                        horizontal, true, 0f))
+                actor += HighlightAction(restPos, highlightSize,
+                        horizontal, true, 0f)
             } else {
                 val action = actor.actions.find { it is HighlightAction } as HighlightAction?
                 if (action != null) {
                     action.highlighted = false
                 } else {
-                    actor.addAction(HighlightAction(restPos - highlightSize, highlightSize,
-                            horizontal, false, Animation.HIGHLIGHT_DURATION))
+                    actor += HighlightAction(restPos - highlightSize, highlightSize,
+                            horizontal, false, Animation.HIGHLIGHT_DURATION)
                 }
             }
         }

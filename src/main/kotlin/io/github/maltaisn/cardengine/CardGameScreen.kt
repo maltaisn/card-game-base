@@ -26,6 +26,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import io.github.maltaisn.cardengine.widget.AnimationLayer
 import io.github.maltaisn.cardengine.widget.GameLayer
 import io.github.maltaisn.cardengine.widget.PopupLayer
+import ktx.actors.plusAssign
+import ktx.assets.getAsset
+import ktx.assets.load
 
 
 abstract class CardGameScreen(game: CardGame) : BaseScreen(game) {
@@ -38,17 +41,16 @@ abstract class CardGameScreen(game: CardGame) : BaseScreen(game) {
     val popupLayer: PopupLayer
 
     init {
-        assetManager.load(Resources.CORE_SKIN_ATLAS, TextureAtlas::class.java)
-        assetManager.load(Resources.CORE_SKIN, Skin::class.java,
-                SkinLoader.SkinParameter(Resources.CORE_SKIN_ATLAS))
+        assetManager.load<TextureAtlas>(Resources.CORE_SKIN_ATLAS)
+        assetManager.load<Skin>(Resources.CORE_SKIN, SkinLoader.SkinParameter(Resources.CORE_SKIN_ATLAS))
         assetManager.finishLoading()
 
-        coreSkin = assetManager.get(Resources.CORE_SKIN, Skin::class.java)
+        coreSkin = assetManager.getAsset(Resources.CORE_SKIN)
         gameLayer = GameLayer(coreSkin)
         animationLayer = AnimationLayer()
         popupLayer = PopupLayer()
 
-        addActor(CardGameContainer(gameLayer, animationLayer, popupLayer))
+        this += CardGameContainer(gameLayer, animationLayer, popupLayer)
     }
 
     final override fun addActor(actor: Actor?) = super.addActor(actor)
