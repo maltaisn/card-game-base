@@ -520,7 +520,7 @@ class AnimationLayer : Group() {
                 if (ctn.isVisible && ctn.enabled && ctn !== container && ctn.playListener != null) {
                     val pos = ctn.stageToLocalCoordinates(stagePos.cpy())
                     if (ctn.withinBounds(pos.x, pos.y) &&
-                            ctn.playListener!!.canCardsBePlayed(cardActors, container)) {
+                            ctn.playListener!!.canCardsBePlayed(cardActors, container, pos)) {
                         // Mouse is in this container and card can be played.
                         newDst = ctn
                         break

@@ -601,7 +601,7 @@ abstract class CardContainer(val style: CardActor.CardStyle) : WidgetGroup() {
          * When a card is dragged over this container, returns whether or not it can be played in it.
          * Not called if container is disabled.
          */
-        fun canCardsBePlayed(actors: List<CardActor>, src: CardContainer): Boolean
+        fun canCardsBePlayed(actors: List<CardActor>, src: CardContainer, pos: Vector2): Boolean
 
         /**
          * Called when cards from another container are dragged to this container at
