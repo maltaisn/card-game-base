@@ -68,6 +68,8 @@ abstract class CardGameScreen(game: CardGame) :
         this += CardGameContainer(gameLayer, animationLayer, popupLayer)
 
         updateOffscreenFrameBuffer()
+
+        actionsRequestRendering = true
     }
 
     final override fun addActor(actor: Actor?) = super.addActor(actor)

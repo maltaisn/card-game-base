@@ -17,8 +17,14 @@
 package io.github.maltaisn.cardengine
 
 import com.badlogic.gdx.Game
+import com.badlogic.gdx.Gdx
 
 
 abstract class CardGame : Game() {
+
+    override fun create() {
+        Gdx.graphics.isContinuousRendering = false
+        Gdx.graphics.requestRendering()
+    }
 
 }
