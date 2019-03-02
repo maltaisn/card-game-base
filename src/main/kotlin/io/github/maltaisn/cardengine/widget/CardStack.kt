@@ -19,6 +19,7 @@ package io.github.maltaisn.cardengine.widget
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
 import ktx.collections.lastIndex
 import ktx.math.vec2
 
@@ -37,11 +38,9 @@ class CardStack : CardContainer {
     private var cardsPosition = vec2()
 
 
-    constructor(skin: Skin) : super(skin)
+    constructor(coreSkin: Skin, cardSkin: Skin) : super(coreSkin, cardSkin)
 
-    constructor(skin: Skin, styleName: String) : super(skin, styleName)
-
-    constructor(style: CardActor.CardStyle) : super(style)
+    constructor(coreStyle: GameLayer.CoreStyle, cardStyle: CardActor.CardStyle) : super(coreStyle, cardStyle)
 
 
     override fun layout() {
@@ -52,9 +51,16 @@ class CardStack : CardContainer {
     override fun drawChildren(batch: Batch, parentAlpha: Float) {
         if (drawSlot && children.isEmpty) {
             // Draw the slot if there's no cards in the stack.
-            val slot = style.slot
             val offset = computeAlignmentOffset(cardWidth, cardHeight)
-            slot.draw(batch, offset.x, offset.y, slot.minWidth * cardScale, slot.minHeight * cardScale)
+            val slot = coreStyle.cardSlot as TransformDrawable
+            val colorBefore = batch.color.cpy()
+            batch.setColor(1f, 1f, 1f, parentAlpha)
+            slot.draw(batch, offset.x - slot.leftWidth * cardScale,
+                    offset.y - slot.bottomHeight * cardScale, 0f, 0f,
+                    cardWidth / cardScale + slot.leftWidth + slot.rightWidth,
+                    cardHeight / cardScale + slot.bottomHeight + slot.topHeight,
+                    cardScale, cardScale, 0f)
+            batch.color = colorBefore
         }
 
         super.drawChildren(batch, parentAlpha)

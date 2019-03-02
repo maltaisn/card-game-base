@@ -17,7 +17,8 @@
 package io.github.maltaisn.cardengine
 
 import com.badlogic.gdx.math.Interpolation
-import com.badlogic.gdx.math.Interpolation.*
+import com.badlogic.gdx.math.Interpolation.pow2Out
+import com.badlogic.gdx.math.Interpolation.smooth
 import io.github.maltaisn.cardengine.widget.AnimationLayer
 import io.github.maltaisn.cardengine.widget.CardHand
 
@@ -72,7 +73,7 @@ internal object Animation {
 
     val SELECTION_IN_INTERPOLATION: Interpolation = smooth
     val SELECTION_OUT_INTERPOLATION: Interpolation = smooth
-    val HOVER_IN_INTERPOLATION: Interpolation = circleOut
+    val HOVER_IN_INTERPOLATION: Interpolation = pow2Out
     val HOVER_OUT_INTERPOLATION: Interpolation = smooth
 
     // POPUP

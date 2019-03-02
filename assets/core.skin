@@ -1,9 +1,13 @@
 {
-  io.github.maltaisn.cardengine.widget.GameLayer$GameLayerStyle: {
+  io.github.maltaisn.cardengine.widget.GameLayer$CoreStyle: {
     default: {
       background: background,
       border: background-border,
       borderMargin: 15
+      cardBackground: card-background,
+      cardSelection: card-selection,
+      cardHover: card-hover,
+      cardSlot: card-slot
     }
   }
   io.github.maltaisn.cardengine.widget.Popup$PopupStyle: {

@@ -6,22 +6,58 @@ filter: Linear,Linear
 repeat: none
 background
   rotate: false
-  xy: 2, 130
+  xy: 2, 215
   size: 960, 540
   orig: 960, 540
   offset: 0, 0
   index: -1
 background-border
   rotate: false
-  xy: 964, 623
+  xy: 964, 708
   size: 47, 47
   split: 23, 22, 23, 22
   orig: 47, 47
   offset: 0, 0
   index: -1
-popup
+card-background
   rotate: false
   xy: 2, 51
+  size: 80, 80
+  split: 39, 39, 39, 39
+  pad: 31, 31, 31, 31
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+card-hover
+  rotate: false
+  xy: 2, 133
+  size: 80, 80
+  split: 39, 39, 39, 39
+  pad: 31, 31, 31, 31
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+card-selection
+  rotate: false
+  xy: 45, 25
+  size: 24, 24
+  split: 11, 11, 11, 11
+  pad: 0, 0, 0, 0
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+card-slot
+  rotate: false
+  xy: 84, 102
+  size: 32, 32
+  split: 15, 15, 15, 15
+  pad: 0, 0, 0, 0
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+popup
+  rotate: false
+  xy: 84, 136
   size: 61, 77
   split: 30, 30, 30, 46
   pad: 9, 9, 9, 25
@@ -37,14 +73,14 @@ popup-tip-bottom
   index: -1
 popup-tip-left
   rotate: false
-  xy: 964, 580
+  xy: 964, 665
   size: 23, 41
   orig: 23, 41
   offset: 0, 0
   index: -1
 popup-tip-right
   rotate: false
-  xy: 65, 87
+  xy: 147, 172
   size: 23, 41
   orig: 23, 41
   offset: 0, 0

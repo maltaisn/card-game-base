@@ -57,15 +57,12 @@ class CardTrick : CardContainer {
     private var center = vec2()
 
 
-    constructor(skin: Skin, capacity: Int) : super(skin) {
+    constructor(coreSkin: Skin, cardSkin: Skin, capacity: Int) : super(coreSkin, cardSkin) {
         this.capacity = capacity
     }
 
-    constructor(skin: Skin, styleName: String, capacity: Int) : super(skin, styleName) {
-        this.capacity = capacity
-    }
-
-    constructor(style: CardActor.CardStyle, capacity: Int) : super(style) {
+    constructor(coreStyle: GameLayer.CoreStyle, cardStyle: CardActor.CardStyle,
+                capacity: Int) : super(coreStyle, cardStyle) {
         this.capacity = capacity
     }
 

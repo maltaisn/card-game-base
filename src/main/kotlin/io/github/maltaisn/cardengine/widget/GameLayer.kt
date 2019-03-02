@@ -24,7 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 
 class GameLayer(skin: Skin) : Table(skin) {
 
-    val style = skin.get(GameLayerStyle::class.java)
+    val style = skin.get(CoreStyle::class.java)
 
     /**
      * The size of the tables hidden on each side in pixels.
@@ -77,10 +77,22 @@ class GameLayer(skin: Skin) : Table(skin) {
         super.drawChildren(batch, parentAlpha)
     }
 
-    class GameLayerStyle {
+    class CoreStyle {
+        /** Drawable for the game background */
         lateinit var background: Drawable
+        /** Drawable for the background border. (9-patch) */
         lateinit var border: Drawable
+        /** Margin size for the background border. */
         var borderMargin = 0f
+
+        /** Drawable for the background of a card, including its shadow. Must have the largest padding. (9-patch) */
+        lateinit var cardBackground: Drawable
+        /** Drawable for the hover. (9-patch) */
+        lateinit var cardHover: Drawable
+        /** Drawable for the selection. Must have no padding. (9-patch) */
+        lateinit var cardSelection: Drawable
+        /** Drawable for the slot. Must have no padding. (9-patch) */
+        lateinit var cardSlot: Drawable
     }
 
 }

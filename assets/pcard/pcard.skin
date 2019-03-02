@@ -9,16 +9,8 @@
         card_49, card_50, card_51, card_52, card_53
       ],
       back: back,
-      shadow: shadow,
-      hover: hover,
-      selection: selection,
-      slot: slot,
       cardWidth: 240,
-      cardHeight: 336,
-      shadowOffsetX: -20,
-      shadowOffsetY: -20,
-      hoverOffsetX: -30,
-      hoverOffsetY: -30
+      cardHeight: 336
     }
   }
 }

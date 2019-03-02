@@ -16,12 +16,9 @@
 
 package io.github.maltaisn.cardengine.widget
 
-import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack
 import com.badlogic.gdx.utils.Align
 import io.github.maltaisn.cardengine.Animation
 import io.github.maltaisn.cardengine.applyBounded
@@ -73,7 +70,8 @@ class CardHand : CardContainer {
     var highlightPercent = 0.15f
 
     /**
-     * The percentage of the card that is hidden.
+     * The percentage of the card that is "hidden". No actual clipping is done, cards are only translated.
+     * For this reason the card hand should always be aligned with the edge of the screen.
      * When horizontal, clip starts from the bottom and when vertical, from the left.
      * To invert this direction, use negative values.
      */
@@ -107,11 +105,9 @@ class CardHand : CardContainer {
     }
 
 
-    constructor(skin: Skin) : super(skin)
+    constructor(coreSkin: Skin, cardSkin: Skin) : super(coreSkin, cardSkin)
 
-    constructor(skin: Skin, styleName: String) : super(skin, styleName)
-
-    constructor(style: CardActor.CardStyle) : super(style)
+    constructor(coreStyle: GameLayer.CoreStyle, cardStyle: CardActor.CardStyle) : super(coreStyle, cardStyle)
 
 
     override fun updateCards(newCards: List<Card?>) {
@@ -243,40 +239,6 @@ class CardHand : CardContainer {
         }
 
         return positions
-    }
-
-    override fun drawChildren(batch: Batch, parentAlpha: Float) {
-        // Clip the region to draw if needed
-        val clipped = clipSize.absoluteValue != 0f
-        if (clipped) {
-            val margin = min(highlightSize, 0f) + 100f  // Space for highlighting + card shadow/hover
-            val clip = if (horizontal) {
-                val height = cardHeight - clipSize.absoluteValue + margin
-                if (clipSize > 0) {
-                    Rectangle(-1E9f, 0f, 2E9f, height)
-                } else {
-                    Rectangle(-1E9f, -margin, 2E9f, height)
-                }
-            } else {
-                val width = cardWidth - clipSize.absoluteValue + margin
-                if (clipSize > 0) {
-                    Rectangle(0f, -1E9f, width, 2E9f)
-                } else {
-                    Rectangle(-margin, -1E9f, width, 2E9f)
-                }
-            }
-            val scissors = Rectangle()
-            ScissorStack.calculateScissors(stage.camera, batch.transformMatrix, clip, scissors)
-            ScissorStack.pushScissors(scissors)
-        }
-
-        super.drawChildren(batch, parentAlpha)
-
-        // Unclip
-        if (clipped) {
-            batch.flush()
-            ScissorStack.popScissors()
-        }
     }
 
     override fun computeSize() {
