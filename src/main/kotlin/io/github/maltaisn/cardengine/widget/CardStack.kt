@@ -43,11 +43,6 @@ class CardStack : CardContainer {
     constructor(coreStyle: GameLayer.CoreStyle, cardStyle: CardActor.CardStyle) : super(coreStyle, cardStyle)
 
 
-    override fun layout() {
-        super.layout()
-        updateActorVisibility()
-    }
-
     override fun drawChildren(batch: Batch, parentAlpha: Float) {
         if (drawSlot && children.isEmpty) {
             // Draw the slot if there's no cards in the stack.
@@ -68,6 +63,12 @@ class CardStack : CardContainer {
 
     override fun onAnimationEnd() {
         super.onAnimationEnd()
+        updateActorVisibility()
+    }
+
+    ////////// LAYOUT //////////
+    override fun layout() {
+        super.layout()
         updateActorVisibility()
     }
 

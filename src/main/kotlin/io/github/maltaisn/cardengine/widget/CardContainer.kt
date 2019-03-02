@@ -16,7 +16,10 @@
 
 package io.github.maltaisn.cardengine.widget
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
+import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.InputEvent
@@ -69,6 +72,9 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
     /** Whether the cards in this container are shown. */
     var visibility = Visibility.ALL
 
+    /** Whether the container is shown or not. Like [isVisible] but with the correct value during a transition. */
+    var shown = true
+
     /**
      * Whether this card container is enabled. If disabled, card actors will be too,
      * drag listener and play listener will be disabled.
@@ -112,6 +118,8 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
     protected var cardWidth = 0f
     protected var cardHeight = 0f
     protected var cardScale = 0f
+
+    private var renderToFrameBuffer = false
 
 
     private val internalClickListener = object : CardActor.ClickListener {
@@ -168,17 +176,52 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
                     cardSkin.get(CardActor.CardStyle::class.java))
 
     override fun setStage(stage: Stage?) {
+        require(stage == null || stage is CardGameScreen) {
+            "CardContainer must be added to a CardGameScreen stage."
+        }
+
         if (stage != null) {
-            if (stage is CardGameScreen) {
-                stage.animationLayer.containers += this
-            }
+            (stage as CardGameScreen).animationLayer.containers += this
         } else if (super.getStage() != null) {
-            val prevStage = super.getStage()
-            if (prevStage is CardGameScreen) {
-                prevStage.animationLayer.containers -= this
-            }
+            (super.getStage() as CardGameScreen).animationLayer.containers -= this
         }
         super.setStage(stage)
+    }
+
+    override fun draw(batch: Batch, parentAlpha: Float) {
+        if (renderToFrameBuffer) {
+            val stage = stage as CardGameScreen
+            val fbo = stage.offscreenFbo
+
+            // Change blending function to avoid blending twice: when drawn to FBO and when FBO is drawn to screen
+            // https://gist.github.com/mattdesl/4393861
+            batch.enableBlending()
+            batch.setBlendFunctionSeparate(GL20.GL_SRC_ALPHA,
+                    GL20.GL_ONE_MINUS_SRC_ALPHA, GL20.GL_ONE, GL20.GL_ONE)
+
+            fbo.begin()
+
+            // Clear the frame buffer
+            Gdx.gl.glClearColor(0f, 0f, 0f, 0f)
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+
+            // Draw the table content
+            super.draw(batch, parentAlpha)
+
+            fbo.end()
+
+            // Draw the frame buffer to the screen batch
+            val oldColor = batch.color.cpy()
+            val a = alpha * parentAlpha
+            batch.setColor(a, a, a, a)
+            batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA)  // Premultiplied alpha blending mode
+            batch.draw(stage.offscreenFboRegion, 0f, 0f, stage.width, stage.height)
+            batch.color = oldColor
+            batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)
+
+        } else {
+            super.draw(batch, parentAlpha)
+        }
     }
 
     override fun childrenChanged() {
@@ -191,7 +234,7 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
     }
 
     /**
-     * Re-add all actors to the container, with the correct Z-indexé
+     * Re-add all actors to the container, with the correct Z-index
      */
     protected fun update() {
         clearChildren()
@@ -208,26 +251,7 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
         }
     }
 
-    override fun layout() {
-        if (children.isNotEmpty()) {
-            val positions = computeActorsPosition()
-            for (i in actors.indices) {
-                val pos = positions[i]
-                actors[i]?.setPosition(pos.x, pos.y)
-            }
-        }
-    }
-
-    override fun getPrefWidth(): Float {
-        computeSize()
-        return computedWidth
-    }
-
-    override fun getPrefHeight(): Float {
-        computeSize()
-        return computedHeight
-    }
-
+    ////////// LISTENERS //////////
     fun addClickListener(listener: ClickListener) {
         if (clickListeners.isEmpty()) {
             for (actor in actors) {
@@ -281,6 +305,49 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
         playListener = listener
     }
 
+    interface ClickListener {
+        /**
+         * Called when a card is clicked. Not called if container is disabled.
+         * @param index index of card in container.
+         */
+        fun onCardClicked(actor: CardActor, index: Int)
+    }
+
+    interface LongClickListener {
+        /**
+         * Called when a card is long clicked. Not called if container is disabled.
+         * @param index index of card in container.
+         */
+        fun onCardLongClicked(actor: CardActor, index: Int)
+    }
+
+    interface DragListener {
+        /**
+         * Called when a card in this container is dragged.
+         * Can return an input listener provided by [AnimationLayer.dragCards] to
+         * drag the card, or can return `null` to not drag the card.
+         * Not called if container is disabled.
+         */
+        fun onCardDragged(actor: CardActor): AnimationLayer.CardDragger?
+    }
+
+    interface PlayListener {
+        /**
+         * When a card is dragged over this container, returns whether or not it can be played in it.
+         * Not called if container is disabled.
+         */
+        fun canCardsBePlayed(actors: List<CardActor>, src: CardContainer, pos: Vector2): Boolean
+
+        /**
+         * Called when cards from another container are dragged to this container at
+         * a position in the container coordinates, and [canCardsBePlayed] returned true.
+         * The animation layer is updated automatically afterwards.
+         * Not called if container is disabled.
+         */
+        fun onCardsPlayed(actors: List<CardActor>, src: CardContainer, pos: Vector2)
+    }
+
+    ////////// CARDS //////////
     /**
      * Change the cards in this container to new cards.
      */
@@ -338,12 +405,6 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
         _actors.sortWith(comparator)
     }
 
-    /** Returns the index of the card nearest container coordinates, ([x], [y]), in the range `0..size-1`. */
-    abstract fun findCardPositionForCoordinates(x: Float, y: Float): Int
-
-    /** Returns the index at which a card should be inserted from container coordinates, ([x], [y]), in the range `0..size`. */
-    abstract fun findInsertPositionForCoordinates(x: Float, y: Float): Int
-
     /** Apply an [action] on all card actors. */
     fun applyOnAllCards(action: (CardActor) -> Unit) {
         for (actor in actors) {
@@ -368,85 +429,209 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
         }
     }
 
-    /**
-     * Show or hide the container by fading it.
-     * @param visible New visibility.
-     */
-    fun fade(visible: Boolean) {
-        isVisible = true
+    enum class Visibility {
+        /** Automatically show all cards. */
+        ALL,
+        /** Automatically hide all cards. */
+        NONE,
+        /** Must manually set cards shown state. */
+        MIXED
+    }
 
-        var startOpacity = 0f
-        var endOpacity = 1f
-        if (!visible) {
-            startOpacity = 1f
-            endOpacity = 0f
-        }
-        alpha = startOpacity
-
-        this += object : Action() {
-            private var elapsed = 0f
-            override fun act(delta: Float): Boolean {
-                elapsed += delta
-                val progress = Animation.CONTAINER_TRANSITION_INTERPOLATION
-                        .applyBounded(elapsed / Animation.CONTAINER_TRANSITION_DURATION)
-                alpha = startOpacity + (endOpacity - startOpacity) * progress
-
-                val done = elapsed >= Animation.CONTAINER_TRANSITION_DURATION
-                if (!visible && done) {
-                    isVisible = false
-                }
-                return done
+    ////////// LAYOUT //////////
+    override fun layout() {
+        if (children.isNotEmpty()) {
+            val positions = computeActorsPosition()
+            for (i in actors.indices) {
+                val pos = positions[i]
+                actors[i]?.setPosition(pos.x, pos.y)
             }
         }
     }
 
+    override fun getPrefWidth(): Float {
+        computeSize()
+        return computedWidth
+    }
+
+    override fun getPrefHeight(): Float {
+        computeSize()
+        return computedHeight
+    }
+
     /**
-     * Show or hide the container by sliding it to or from a [side].
-     * @param visible New visibility.
+     * Returns a list of the positions of the actors in this container.
+     * The list is indexed like the actors list. Should return positions for null cards too.
      */
-    fun slide(visible: Boolean, side: Side) {
-        isVisible = true
+    internal abstract fun computeActorsPosition(): List<Vector2>
 
-        var endX = x
-        var endY = y
-        var startX = endX
-        var startY = endY
-        when (side) {
-            Side.LEFT -> startX -= width
-            Side.RIGHT -> startX += width
-            Side.TOP -> startY += height
-            Side.BOTTOM -> startY -= height
+    /** Returns the index of the card nearest container coordinates, ([x], [y]), in the range `0..size-1`. */
+    abstract fun findCardPositionForCoordinates(x: Float, y: Float): Int
+
+    /** Returns the index at which a card should be inserted from container coordinates, ([x], [y]), in the range `0..size`. */
+    abstract fun findInsertPositionForCoordinates(x: Float, y: Float): Int
+
+    /**
+     * Compute the minimum size this container can be.
+     */
+    internal open fun computeSize() {
+        if (!sizeInvalid) return
+        sizeInvalid = false
+
+        cardScale = cardSize / cardStyle.cardWidth
+        cardWidth = cardStyle.cardWidth * cardScale
+        cardHeight = cardStyle.cardHeight * cardScale
+    }
+
+    /**
+     * Returns a vector of the offset needed to respect
+     * the alignment and the padding, given a required size.
+     */
+    protected fun computeAlignmentOffset(requiredWidth: Float, requiredHeight: Float): Vector2 {
+        val offsetX = when {
+            Align.isCenterHorizontal(alignment) || alignment == Align.center -> (width - requiredWidth) / 2
+            Align.isLeft(alignment) -> 0f
+            Align.isRight(alignment) -> width - requiredWidth
+            else -> 0f
         }
-        if (!visible) {
-            val tempX = endX
-            val tempY = endY
-            endX = startX
-            endY = startY
-            startX = tempX
-            startY = tempY
+        val offsetY = when {
+            Align.isCenterVertical(alignment) || alignment == Align.center -> (height - requiredHeight) / 2
+            Align.isTop(alignment) -> height - requiredHeight
+            Align.isBottom(alignment) -> 0f
+            else -> 0f
         }
-        setPosition(startX, startY)
 
-        this += object : Action() {
-            private var elapsed = 0f
+        return vec2(offsetX, offsetY)
+    }
 
-            override fun act(delta: Float): Boolean {
-                elapsed += delta
-                val progress = Animation.CONTAINER_TRANSITION_INTERPOLATION
-                        .applyBounded(elapsed / Animation.CONTAINER_TRANSITION_DURATION)
-                setPosition(startX + (endX - startX) * progress,
-                        startY + (endY - startY) * progress)
+    override fun toString() = "[cards: $cards, visibility: ${visibility.toString().toLowerCase()}}]"
 
-                val done = elapsed >= Animation.CONTAINER_TRANSITION_DURATION
-                if (!visible && done) {
-                    isVisible = false
-                    setPosition(startX, startY)
-                }
-                return done
-            }
+
+    ////////// TRANSITIONS //////////
+    /**
+     * Animate a visibility change by fading in or out.
+     * @param shown New visibility.
+     */
+    fun fade(shown: Boolean) {
+        if (this.shown == shown) return
+
+        completeSlideTransition()
+
+        this.shown = shown
+        if (actions.isEmpty) {
+            this += FadeTransitionAction()
         }
     }
 
+    /**
+     * Animate a visibility change by sliding in or out in a [direction].
+     * @param shown New visibility.
+     */
+    fun slide(shown: Boolean, direction: Direction) {
+        if (this.shown == shown) return
+
+        completeSlideTransition()
+        clearActions()
+
+        this.shown = shown
+        this += SlideTransitionAction(direction)
+    }
+
+    private inner class FadeTransitionAction : Action() {
+        private var elapsed = if (shown) 0f else Animation.CONTAINER_TRANSITION_DURATION
+
+        init {
+            isVisible = true
+            renderToFrameBuffer = true
+            alpha = if (shown) 1f else 0f
+        }
+
+        override fun act(delta: Float): Boolean {
+            elapsed += if (shown) delta else -delta
+            val progress = Animation.CONTAINER_TRANSITION_INTERPOLATION.applyBounded(
+                    elapsed / Animation.CONTAINER_TRANSITION_DURATION)
+            alpha = progress
+
+            if (shown && progress >= 1 || !shown && progress <= 0) {
+                isVisible = shown
+                renderToFrameBuffer = false
+                return true
+            }
+            return false
+        }
+    }
+
+    private fun completeSlideTransition() {
+        // Complete previous slide transition if there was one.
+        val action = actions.firstOrNull()
+        if (action is SlideTransitionAction) {
+            action.complete()
+            clearActions()
+        }
+    }
+
+    private inner class SlideTransitionAction(direction: Direction) : Action() {
+        private var elapsed = 0f
+        private var completed = false
+
+        private var startX: Float = x
+        private var startY: Float = y
+        private var endX: Float = x
+        private var endY: Float = y
+
+        init {
+            isVisible = true
+            renderToFrameBuffer = false
+            alpha = 1f
+
+            when (direction) {
+                Direction.LEFT -> startX -= width
+                Direction.RIGHT -> startX += width
+                Direction.UP -> startY += height
+                Direction.DOWN -> startY -= height
+            }
+            if (!shown) {
+                val tempX = endX
+                val tempY = endY
+                endX = startX
+                endY = startY
+                startX = tempX
+                startY = tempY
+            }
+            setPosition(startX, startY)
+        }
+
+        override fun act(delta: Float): Boolean {
+            if (completed) return true
+
+            elapsed += delta
+            val progress = Animation.CONTAINER_TRANSITION_INTERPOLATION
+                    .applyBounded(elapsed / Animation.CONTAINER_TRANSITION_DURATION)
+            setPosition(startX + (endX - startX) * progress, startY + (endY - startY) * progress)
+
+            if (elapsed >= Animation.CONTAINER_TRANSITION_DURATION) {
+                complete()
+                return true
+            }
+            return false
+        }
+
+        fun complete() {
+            if (shown) {
+                setPosition(endX, endY)
+            } else {
+                isVisible = false
+                setPosition(startX, startY)
+            }
+            completed = true
+        }
+    }
+
+    enum class Direction {
+        LEFT, RIGHT, UP, DOWN
+    }
+
+    ////////// ANIMATION //////////
     internal fun moveCardTo(dst: CardContainer, srcIndex: Int, dstIndex: Int,
                             replaceSrc: Boolean = false, replaceDst: Boolean = false) {
         if (oldActors == null) {
@@ -528,102 +713,6 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
                 if (dragListener != null) actor.listeners.add(internalInputListener)
             }
         }
-    }
-
-    /**
-     * Returns a list of the positions of the actors in this container.
-     * The list is indexed like the actors list. Should return positions for null cards too.
-     */
-    internal abstract fun computeActorsPosition(): List<Vector2>
-
-    /**
-     * Compute the minimum size this container can be.
-     */
-    internal open fun computeSize() {
-        if (!sizeInvalid) return
-        sizeInvalid = false
-
-        cardScale = cardSize / cardStyle.cardWidth
-        cardWidth = cardStyle.cardWidth * cardScale
-        cardHeight = cardStyle.cardHeight * cardScale
-    }
-
-    /**
-     * Returns a vector of the offset needed to respect
-     * the alignment and the padding, given a required size.
-     */
-    protected fun computeAlignmentOffset(requiredWidth: Float, requiredHeight: Float): Vector2 {
-        val offsetX = when {
-            Align.isCenterHorizontal(alignment) || alignment == Align.center -> (width - requiredWidth) / 2
-            Align.isLeft(alignment) -> 0f
-            Align.isRight(alignment) -> width - requiredWidth
-            else -> 0f
-        }
-        val offsetY = when {
-            Align.isCenterVertical(alignment) || alignment == Align.center -> (height - requiredHeight) / 2
-            Align.isTop(alignment) -> height - requiredHeight
-            Align.isBottom(alignment) -> 0f
-            else -> 0f
-        }
-
-        return vec2(offsetX, offsetY)
-    }
-
-    override fun toString() = "[cards: $cards, visibility: ${visibility.toString().toLowerCase()}}]"
-
-    interface ClickListener {
-        /**
-         * Called when a card is clicked. Not called if container is disabled.
-         * @param index index of card in container.
-         */
-        fun onCardClicked(actor: CardActor, index: Int)
-    }
-
-    interface LongClickListener {
-        /**
-         * Called when a card is long clicked. Not called if container is disabled.
-         * @param index index of card in container.
-         */
-        fun onCardLongClicked(actor: CardActor, index: Int)
-    }
-
-    interface DragListener {
-        /**
-         * Called when a card in this container is dragged.
-         * Can return an input listener provided by [AnimationLayer.dragCards] to
-         * drag the card, or can return `null` to not drag the card.
-         * Not called if container is disabled.
-         */
-        fun onCardDragged(actor: CardActor): AnimationLayer.CardDragger?
-    }
-
-    interface PlayListener {
-        /**
-         * When a card is dragged over this container, returns whether or not it can be played in it.
-         * Not called if container is disabled.
-         */
-        fun canCardsBePlayed(actors: List<CardActor>, src: CardContainer, pos: Vector2): Boolean
-
-        /**
-         * Called when cards from another container are dragged to this container at
-         * a position in the container coordinates, and [canCardsBePlayed] returned true.
-         * The animation layer is updated automatically afterwards.
-         * Not called if container is disabled.
-         */
-        fun onCardsPlayed(actors: List<CardActor>, src: CardContainer, pos: Vector2)
-    }
-
-    enum class Visibility {
-        /** Automatically show all cards. */
-        ALL,
-        /** Automatically hide all cards. */
-        NONE,
-        /** Must manually set cards shown state. */
-        MIXED
-    }
-
-    enum class Side {
-        LEFT, RIGHT, TOP, BOTTOM
     }
 
 }

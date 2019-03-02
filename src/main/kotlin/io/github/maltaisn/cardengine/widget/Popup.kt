@@ -20,22 +20,22 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
 import io.github.maltaisn.cardengine.Animation
 import io.github.maltaisn.cardengine.applyBounded
+import ktx.actors.alpha
 import ktx.actors.plusAssign
 import ktx.math.vec2
 import kotlin.math.max
 
 
 /**
- * A popup for information or interaction shown over any actor on the stage.
+ * A popup for information or interaction shown next to any actor on the stage.
  */
-class Popup(val style: PopupStyle) : Table() {
+class Popup(val style: PopupStyle) : FrameBufferTable() {
 
-    /** Whether the popup is currently shown or not. */
+    /** Whether the popup is shown or not. Like [isVisible] but with the correct value during a transition. */
     var shown = false
         private set
 
@@ -56,6 +56,7 @@ class Popup(val style: PopupStyle) : Table() {
 
     init {
         isVisible = false
+        renderToFrameBuffer = false
     }
 
     constructor(skin: Skin) : this(skin.get(PopupStyle::class.java))
@@ -82,11 +83,11 @@ class Popup(val style: PopupStyle) : Table() {
                     dx = distance + it.width
                     dy = (it.height - height) / 2 - style.bodyOffsetY
                 }
-                Side.TOP -> {
+                Side.ABOVE -> {
                     dx = (it.width - width) / 2 - style.bodyOffsetX
                     dy = distance + it.height
                 }
-                Side.BOTTOM -> {
+                Side.BELOW -> {
                     dx = (it.width - width) / 2 - style.bodyOffsetX
                     dy = -(distance + height)
                 }
@@ -106,7 +107,7 @@ class Popup(val style: PopupStyle) : Table() {
         val tipPadRight = padRight - body.rightWidth * scale
         val tipPadTop = padTop - body.topHeight * scale
         val tipPadBottom = padBottom - body.bottomHeight * scale
-        batch.setColor(1f, 1f, 1f, color.a * parentAlpha)
+        batch.setColor(1f, 1f, 1f, 1f)
         body.draw(batch, x + tipPadLeft, y + tipPadBottom, 0f, 0f,
                 (width - tipPadLeft - tipPadRight) / scale,
                 (height - tipPadTop - tipPadBottom) / scale, scale, scale, 0f)
@@ -126,11 +127,11 @@ class Popup(val style: PopupStyle) : Table() {
                     tip = style.leftTip
                     offsetY = (style.leftTipOffsetY + style.bodyOffsetY) * scale + height / 2
                 }
-                Side.TOP -> {
+                Side.ABOVE -> {
                     tip = style.bottomTip
                     offsetX = (style.bottomTipOffsetX + style.bodyOffsetX) * scale + width / 2
                 }
-                Side.BOTTOM -> {
+                Side.BELOW -> {
                     tip = style.topTip
                     offsetX = (style.topTipOffsetX + style.bodyOffsetX) * scale + width / 2
                     offsetY = height - tip.minHeight * scale
@@ -148,13 +149,16 @@ class Popup(val style: PopupStyle) : Table() {
     }
 
     /**
-     * Show popup on a [side] of an [actor]. The popup will follow the actor.
+     * Show popup on a [side] of an [actor].
+     * The popup will follow the actor if it moves.
      */
     fun show(actor: Actor, side: Side) {
+        if (shown) return
+
+        shown = true
+
         this.actor = actor
         this.side = side
-        shown = true
-        isVisible = true
 
         // Adjust the padding for the tip
         val body = style.body
@@ -166,8 +170,8 @@ class Popup(val style: PopupStyle) : Table() {
             Side.CENTER -> Unit
             Side.LEFT -> right += max(0f, style.rightTip.minWidth + style.rightTipOffsetX)
             Side.RIGHT -> left += max(0f, -style.leftTipOffsetX)
-            Side.TOP -> bottom += max(0f, -style.bottomTipOffsetY)
-            Side.BOTTOM -> top += max(0f, style.topTip.minHeight + style.topTipOffsetY)
+            Side.ABOVE -> bottom += max(0f, -style.bottomTipOffsetY)
+            Side.BELOW -> top += max(0f, style.topTip.minHeight + style.topTipOffsetY)
         }
         val scale = style.scale
         pad(top * scale, left * scale, bottom * scale, right * scale)
@@ -178,15 +182,21 @@ class Popup(val style: PopupStyle) : Table() {
         }
     }
 
+    /**
+     * Hide the popup.
+     */
     fun hide() {
+        if (!shown) return
+
         shown = false
+
         if (actions.isEmpty) {
             this += TransitionAction()
         }
     }
 
     enum class Side {
-        CENTER, TOP, BOTTOM, LEFT, RIGHT
+        CENTER, ABOVE, BELOW, LEFT, RIGHT
     }
 
     /**
@@ -217,9 +227,11 @@ class Popup(val style: PopupStyle) : Table() {
         private var elapsed = if (shown) 0f else Animation.POPUP_TRANSITION_DURATION
 
         init {
+            isVisible = true
             offsetX = 0f
             offsetY = 0f
-            color.a = if (shown) 1f else 0f
+            alpha = if (shown) 1f else 0f
+            renderToFrameBuffer = true
         }
 
         override fun act(delta: Float): Boolean {
@@ -231,18 +243,21 @@ class Popup(val style: PopupStyle) : Table() {
                 Side.CENTER -> Unit
                 Side.LEFT -> offsetX = offset
                 Side.RIGHT -> offsetX = -offset
-                Side.TOP -> offsetY = -offset
-                Side.BOTTOM -> offsetY = offset
+                Side.ABOVE -> offsetY = -offset
+                Side.BELOW -> offsetY = offset
             }
-            color.a = progress
+            alpha = progress
 
-            val done = if (shown) progress >= 1 else progress <= 0
-            if (done && !shown) {
-                isVisible = false
-                actor = null
-                side = Side.CENTER
+            if (shown && progress >= 1 || !shown && progress <= 0) {
+                if (!shown) {
+                    isVisible = false
+                    actor = null
+                    side = Side.CENTER
+                }
+                renderToFrameBuffer = false
+                return true
             }
-            return done
+            return false
         }
     }
 

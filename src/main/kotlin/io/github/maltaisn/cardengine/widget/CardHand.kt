@@ -110,6 +110,7 @@ class CardHand : CardContainer {
     constructor(coreStyle: GameLayer.CoreStyle, cardStyle: CardActor.CardStyle) : super(coreStyle, cardStyle)
 
 
+    ////////// CARDS //////////
     override fun updateCards(newCards: List<Card?>) {
         super.updateCards(newCards)
         sort()
@@ -137,21 +138,7 @@ class CardHand : CardContainer {
         }
     }
 
-    override fun findCardPositionForCoordinates(x: Float, y: Float) =
-            min(size, findInsertPositionForCoordinates(x, y))
-
-    override fun findInsertPositionForCoordinates(x: Float, y: Float): Int {
-        val positions = computeActorsPosition()
-        val py = if (horizontal) y else y - cardHeight
-        for (i in 0..positions.lastIndex) {
-            val pos = positions[i]
-            if (horizontal && x < pos.x || !horizontal && py > pos.y) {
-                return i
-            }
-        }
-        return size
-    }
-
+    ////////// HIGHLIGHTING //////////
     /**
      * Change the highlighted state of [cards].
      */
@@ -171,6 +158,68 @@ class CardHand : CardContainer {
         }
     }
 
+    /**
+     * If hand and actor are highlightable, change the highlighted state of a card actor.
+     * The change is animated and the animation is cancelled is state is changed during it.
+     */
+    private fun highlightActor(actor: CardActor, highlighted: Boolean) {
+        if (!actor.highlightable || actor.highlighted == highlighted) return
+
+        // Call listeners and check if highlighted is allowed.
+        if (highlightListener?.onCardActorHighlighted(actor, highlighted) != false) {
+            actor.highlighted = highlighted
+
+            // Do the highlight animation.
+            val restPos = if (horizontal) actor.y else actor.x
+            if (actor.highlighted) {
+                actor += HighlightAction(restPos, highlightSize,
+                        horizontal, true, 0f)
+            } else {
+                val action = actor.actions.find { it is HighlightAction } as HighlightAction?
+                if (action != null) {
+                    action.highlighted = false
+                } else {
+                    actor += HighlightAction(restPos - highlightSize, highlightSize,
+                            horizontal, false, Animation.HIGHLIGHT_DURATION)
+                }
+            }
+        }
+    }
+
+    /**
+     * An action to translate a card actor from its resting
+     * position to the highlight position or the opposite.
+     */
+    private class HighlightAction(private val restPos: Float, private val translate: Float,
+                                  private val horizontal: Boolean, var highlighted: Boolean,
+                                  var elapsed: Float) : Action() {
+        override fun act(delta: Float): Boolean {
+            val actor = actor as CardActor
+            elapsed += if (highlighted) delta else -delta
+
+            val pos = Animation.HIGHLIGHT_INTERPOLATION.applyBounded(
+                    elapsed / Animation.HIGHLIGHT_DURATION) * translate + restPos
+            if (horizontal) {
+                actor.y = pos
+            } else {
+                actor.x = pos
+            }
+
+            return elapsed <= 0 || elapsed >= Animation.HIGHLIGHT_DURATION
+        }
+    }
+
+    interface HighlightListener {
+        /**
+         * Called when a card [actor] in the group is clicked and
+         * its [highlighted] state is changed. Return false if highlighting should
+         * be blocked. If therre are many listeners, only one needs to return false.
+         */
+        fun onCardActorHighlighted(actor: CardActor, highlighted: Boolean): Boolean
+    }
+
+
+    ////////// LAYOUT //////////
     override fun computeActorsPosition(): List<Vector2> {
         // Recompute minimum size
         computeSize()
@@ -266,64 +315,19 @@ class CardHand : CardContainer {
         }
     }
 
-    /**
-     * If hand and actor are highlightable, change the highlighted state of a card actor.
-     * The change is animated and the animation is cancelled is state is changed during it.
-     */
-    private fun highlightActor(actor: CardActor, highlighted: Boolean) {
-        if (!actor.highlightable || actor.highlighted == highlighted) return
+    override fun findCardPositionForCoordinates(x: Float, y: Float) =
+            min(size, findInsertPositionForCoordinates(x, y))
 
-        // Call listeners and check if highlighted is allowed.
-        if (highlightListener?.onCardActorHighlighted(actor, highlighted) != false) {
-            actor.highlighted = highlighted
-
-            // Do the highlight animation.
-            val restPos = if (horizontal) actor.y else actor.x
-            if (actor.highlighted) {
-                actor += HighlightAction(restPos, highlightSize,
-                        horizontal, true, 0f)
-            } else {
-                val action = actor.actions.find { it is HighlightAction } as HighlightAction?
-                if (action != null) {
-                    action.highlighted = false
-                } else {
-                    actor += HighlightAction(restPos - highlightSize, highlightSize,
-                            horizontal, false, Animation.HIGHLIGHT_DURATION)
-                }
+    override fun findInsertPositionForCoordinates(x: Float, y: Float): Int {
+        val positions = computeActorsPosition()
+        val py = if (horizontal) y else y - cardHeight
+        for (i in 0..positions.lastIndex) {
+            val pos = positions[i]
+            if (horizontal && x < pos.x || !horizontal && py > pos.y) {
+                return i
             }
         }
-    }
-
-    /**
-     * An action to translate a card actor from its resting
-     * position to the highlight position or the opposite.
-     */
-    private class HighlightAction(private val restPos: Float, private val translate: Float,
-                                  private val horizontal: Boolean, var highlighted: Boolean,
-                                  var elapsed: Float) : Action() {
-        override fun act(delta: Float): Boolean {
-            val actor = actor as CardActor
-            elapsed += if (highlighted) delta else -delta
-
-            val pos = Animation.HIGHLIGHT_INTERPOLATION.applyBounded(
-                    elapsed / Animation.HIGHLIGHT_DURATION) * translate + restPos
-            if (horizontal) {
-                actor.y = pos
-            } else {
-                actor.x = pos
-            }
-
-            return elapsed <= 0 || elapsed >= Animation.HIGHLIGHT_DURATION
-        }
-    }
-
-    interface HighlightListener {
-        /**
-         * Called when a card [actor] in the group is clicked and
-         * its [highlighted] state is changed. Return false if highlighting should
-         * be blocked. If therre are many listeners, only one needs to return false.
-         */
-        fun onCardActorHighlighted(actor: CardActor, highlighted: Boolean): Boolean
+        return size
     }
 
 }

@@ -66,21 +66,30 @@ class CardTrick : CardContainer {
         this.capacity = capacity
     }
 
+    override fun drawDebugChildren(shapes: ShapeRenderer) {
+        super.drawDebugChildren(shapes)
 
-    override fun findCardPositionForCoordinates(x: Float, y: Float): Int {
-        // Find the angle of the coordinates relative to the center
-        var angle = atan2(y - center.y, x - center.x) - startAngle
-        if (clockwisePlacement) angle = -angle
+        if (!debug || capacity == 1) return
 
-        // Find the index of the card at the angle
-        val index = (angle / PI2 * capacity).roundToInt()
-        return (index % capacity + capacity) % capacity
+        // Draw the circle path on which the cards are placed
+        shapes.set(ShapeRenderer.ShapeType.Line)
+        shapes.color = Color.BLUE
+        shapes.circle(center.x, center.y, computedRadius)
+
+        // Draw a mark on the circle for each card position
+        val r1 = computedRadius - 5f
+        val r2 = computedRadius + 5f
+        for (i in 0 until capacity) {
+            var angle = i.toFloat() / capacity * PI2 - startAngle
+            if (clockwisePlacement) angle = -angle
+            val x = cos(angle)
+            val y = sin(angle)
+            shapes.line(center.x + x * r1, center.y + y * r1,
+                    center.x + x * r2, center.y + y * r2)
+        }
     }
 
-    /** Returns the same as [findCardPositionForCoordinates] since no cards can only be replaced in a trick. */
-    override fun findInsertPositionForCoordinates(x: Float, y: Float) =
-            findCardPositionForCoordinates(x, y)
-
+    ////////// CARDS //////////
     override fun updateCards(newCards: List<Card?>) {
         require(newCards.size == capacity) {
             "Must set the same number of cards on trick as its capacity"
@@ -88,6 +97,7 @@ class CardTrick : CardContainer {
         super.updateCards(newCards)
     }
 
+    ////////// LAYOUT //////////
     override fun computeActorsPosition(): List<Vector2> {
         // Recompute minimum size
         computeSize()
@@ -135,28 +145,20 @@ class CardTrick : CardContainer {
         center.y = offset.y + computedRadius + cardHeight / 2
     }
 
-    override fun drawDebugChildren(shapes: ShapeRenderer) {
-        super.drawDebugChildren(shapes)
+    override fun findCardPositionForCoordinates(x: Float, y: Float): Int {
+        // Find the angle of the coordinates relative to the center
+        var angle = atan2(y - center.y, x - center.x) - startAngle
+        if (clockwisePlacement) angle = -angle
 
-        if (!debug || capacity == 1) return
-
-        // Draw the circle path on which the cards are placed
-        shapes.set(ShapeRenderer.ShapeType.Line)
-        shapes.color = Color.BLUE
-        shapes.circle(center.x, center.y, computedRadius)
-
-        // Draw a mark on the circle for each card position
-        val r1 = computedRadius - 5f
-        val r2 = computedRadius + 5f
-        for (i in 0 until capacity) {
-            var angle = i.toFloat() / capacity * PI2 - startAngle
-            if (clockwisePlacement) angle = -angle
-            val x = cos(angle)
-            val y = sin(angle)
-            shapes.line(center.x + x * r1, center.y + y * r1,
-                    center.x + x * r2, center.y + y * r2)
-        }
+        // Find the index of the card at the angle
+        val index = (angle / PI2 * capacity).roundToInt()
+        return (index % capacity + capacity) % capacity
     }
+
+    /** Returns the same as [findCardPositionForCoordinates] since no cards can only be replaced in a trick. */
+    override fun findInsertPositionForCoordinates(x: Float, y: Float) =
+            findCardPositionForCoordinates(x, y)
+
 
     companion object {
         const val RADIUS_AUTO = -1f

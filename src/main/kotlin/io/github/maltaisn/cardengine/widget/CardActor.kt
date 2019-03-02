@@ -16,52 +16,33 @@
 
 package io.github.maltaisn.cardengine.widget
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.graphics.glutils.FrameBuffer
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Widget
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
+import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
 import io.github.maltaisn.cardengine.Animation
 import io.github.maltaisn.cardengine.applyBounded
 import io.github.maltaisn.cardengine.core.Card
 import io.github.maltaisn.cardengine.withinBounds
-import ktx.actors.alpha
-import kotlin.math.roundToInt
 
 
 /**
  * An actor that draws a card.
  * @property coreStyle Engine core style.
  * @property cardStyle Card actor style, must match card type.
- * @param card Card to display.
+ * @property card Card shown by the actor.
  */
-class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, card: Card) : Widget() {
-
-    /** Card shown by the actor. */
-    var card = card
-        set(value) {
-            field = value
-            needsRendering = true
-        }
+class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, var card: Card) : Widget() {
 
     /**
      * Whether the card value is displayed.
      * If not shown, the back of the card is displayed instead.
      */
     var shown = true
-        set(value) {
-            field = value
-            needsRendering = true
-        }
 
     /**
      * Whether the card can be selected and hovered.
@@ -75,7 +56,6 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, ca
                 hovered = false
                 selectionAlpha = 0f
                 hoverAlpha = 0f
-                needsRendering = true
             }
         }
 
@@ -122,13 +102,6 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, ca
     private var selectionAlpha = 0f
     private var hoverAlpha = 0f
 
-    // The card is drawn with many sprites. They are drawn on a frame buffer then drawn to the screen batch.
-    // The card is only rendered to the frame buffer when needed.
-    private var needsRendering = true
-    private val fbo: FrameBuffer
-    private val fboRegion: TextureRegion
-    private val renderBatch: SpriteBatch
-
     /**
      * Internal flag used by the animation layer to indicate when a card is being animated.
      * An animated card doesn't fire click and long click events.
@@ -150,21 +123,6 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, ca
 
 
     init {
-        val fboWidth = cardStyle.cardWidth + coreStyle.cardBackground.horizontalWidth
-        val fboHeight = cardStyle.cardHeight + coreStyle.cardBackground.verticalHeight
-        fbo = FrameBuffer(Pixmap.Format.RGBA8888, fboWidth.roundToInt(), fboHeight.roundToInt(), false)
-        fboRegion = TextureRegion(fbo.colorBufferTexture)
-        fboRegion.flip(false, true)
-
-        val camera = OrthographicCamera(fboWidth, fboHeight)
-        camera.translate(fboWidth / 2, fboHeight / 2)
-        camera.update()
-        renderBatch = SpriteBatch(8)
-        renderBatch.enableBlending()
-        renderBatch.setBlendFunctionSeparate(GL20.GL_SRC_ALPHA,
-                GL20.GL_ONE_MINUS_SRC_ALPHA, GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA)
-        renderBatch.projectionMatrix = camera.combined
-
         setSize(prefWidth, prefHeight)
 
         addListener(object : InputListener() {
@@ -174,7 +132,6 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, ca
                     selectionElapsed = 0f
                     lastTouchDownTime = System.currentTimeMillis()
                     longClicked = false
-                    needsRendering = true
                 }
                 return true
             }
@@ -184,7 +141,6 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, ca
                     selected = false
                     selectionElapsed = Animation.SELECTION_FADE_DURATION * selectionAlpha
                     lastTouchDownTime = 0
-                    needsRendering = true
 
                     if (!animated && !longClicked && withinBounds(x, y)) {
                         // Click ended in actor, call listeners.
@@ -202,7 +158,6 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, ca
                 if (enabled && pointer == -1) {
                     hovered = true
                     hoverElapsed = 0f
-                    needsRendering = true
                 }
             }
 
@@ -210,7 +165,6 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, ca
                 if (enabled && pointer == -1) {
                     hovered = false
                     hoverElapsed = Animation.HOVER_FADE_DURATION * hoverAlpha
-                    needsRendering = true
                 }
             }
         })
@@ -233,79 +187,60 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, ca
         if (selected && selectionElapsed < Animation.SELECTION_FADE_DURATION) {
             selectionElapsed += delta
             selectionAlpha = Animation.SELECTION_IN_INTERPOLATION.applyBounded(selectionElapsed / Animation.SELECTION_FADE_DURATION)
-            needsRendering = true
         } else if (!selected && selectionElapsed > 0f) {
             selectionElapsed -= delta
             selectionAlpha = Animation.SELECTION_OUT_INTERPOLATION.applyBounded(selectionElapsed / Animation.SELECTION_FADE_DURATION)
-            needsRendering = true
         }
 
         // Update hover alpha
         if (hovered && hoverElapsed < Animation.HOVER_FADE_DURATION) {
             hoverElapsed += delta
             hoverAlpha = Animation.HOVER_IN_INTERPOLATION.applyBounded(hoverElapsed / Animation.HOVER_FADE_DURATION)
-            needsRendering = true
         } else if (!hovered && hoverElapsed > 0f) {
             hoverElapsed -= delta
             hoverAlpha = Animation.HOVER_OUT_INTERPOLATION.applyBounded(hoverElapsed / Animation.HOVER_FADE_DURATION)
-            needsRendering = true
         }
     }
 
 
     override fun draw(batch: Batch, parentAlpha: Float) {
-        val background = coreStyle.cardBackground
+        val colorBefore = batch.color.cpy()
 
-        if (needsRendering) {
-            // Draw the sprites of the card on a frame buffer first
-            batch.end()
-            fbo.begin()
-            renderBatch.begin()
-            renderBatch.setColor(1f, 1f, 1f, 1f)
-            Gdx.gl.glClearColor(0f, 0f, 0f, 0f)
-            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+        val scale = size / cardStyle.cardWidth
+        batch.setColor(1f, 1f, 1f, 1f)
 
-            // Draw background
-            val w = cardStyle.cardWidth + background.horizontalWidth
-            val h = cardStyle.cardHeight + background.verticalHeight
-            background.draw(renderBatch, 0f, 0f, w, h)
+        // Draw background
+        drawCenteredDrawable(batch, coreStyle.cardBackground as TransformDrawable)
 
-            // Draw card
-            val card = if (shown) cardStyle.cards[card.value] else cardStyle.back
-            card.draw(renderBatch, (w - card.minWidth) / 2, (h - card.minHeight) / 2,
-                    card.minWidth, card.minHeight)
+        // Draw card
+        val card = (if (shown) cardStyle.cards[card.value] else cardStyle.back) as TransformDrawable
+        card.draw(batch, x + (width - card.minWidth * scale) / 2,
+                y + (height - card.minHeight * scale) / 2, 0f, 0f,
+                card.minWidth, card.minHeight, scale, scale, 0f)
 
-            // Draw hover
-            if (hoverAlpha != 0f) {
-                renderBatch.setColor(1f, 1f, 1f, hoverAlpha)
-                coreStyle.cardHover.draw(renderBatch, 0f, 0f, w, h)
-            }
-
-            // Draw selection
-            if (selectionAlpha != 0f) {
-                renderBatch.setColor(1f, 1f, 1f, selectionAlpha)
-                coreStyle.cardSelection.draw(renderBatch, background.leftWidth,
-                        background.bottomHeight, cardStyle.cardWidth, cardStyle.cardHeight)
-            }
-
-            renderBatch.end()
-            fbo.end()
-            batch.begin()
-
-            needsRendering = false
+        // Draw hover
+        if (hoverAlpha != 0f) {
+            batch.setColor(hoverAlpha, hoverAlpha, hoverAlpha, hoverAlpha)
+            drawCenteredDrawable(batch, coreStyle.cardHover as TransformDrawable)
         }
 
-        // Draw the frame buffer texture to the screen
-        val scale = size / cardStyle.cardWidth
-        val colorBefore = batch.color.cpy()
-        // FBO blending is a nightmare: https://stackoverflow.com/a/18497511/5288316
-        batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA)
-        batch.setColor(1f, 1f, 1f, parentAlpha * alpha)
-        batch.draw(fboRegion, x - background.leftWidth * scale, y - background.bottomHeight * scale,
-                0f, 0f, width / scale + background.horizontalWidth,
-                height / scale + background.verticalHeight, scale, scale, 0f)
+        // Draw selection
+        if (selectionAlpha != 0f) {
+            batch.setColor(selectionAlpha, selectionAlpha, selectionAlpha, selectionAlpha)
+            drawCenteredDrawable(batch, coreStyle.cardSelection as TransformDrawable)
+        }
+
         batch.color = colorBefore
-        batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)
+    }
+
+    /** Draw a drawable to fit around the actor when considering padding. */
+    private fun drawCenteredDrawable(batch: Batch, drawable: TransformDrawable) {
+        val scale = size / cardStyle.cardWidth
+        drawable.draw(batch, x - drawable.leftWidth * scale,
+                y - drawable.bottomHeight * scale, 0f, 0f,
+                width / scale + drawable.leftWidth + drawable.rightWidth,
+                height / scale + drawable.bottomHeight + drawable.topHeight,
+                scale, scale, 0f)
     }
 
     override fun getPrefWidth() = size
@@ -345,12 +280,5 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, ca
         const val SIZE_BIG = 150f
         const val SIZE_HUGE = 200f
     }
-
-
-    private inline val Drawable.horizontalWidth: Float
-        get() = this.leftWidth + this.rightWidth
-
-    private inline val Drawable.verticalHeight: Float
-        get() = this.bottomHeight + this.topHeight
 
 }
