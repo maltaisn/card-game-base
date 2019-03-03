@@ -19,8 +19,8 @@ package io.github.maltaisn.cardengine
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Interpolation.pow2Out
 import com.badlogic.gdx.math.Interpolation.smooth
-import io.github.maltaisn.cardengine.widget.AnimationLayer
-import io.github.maltaisn.cardengine.widget.CardHand
+import io.github.maltaisn.cardengine.widget.card.CardAnimationLayer
+import io.github.maltaisn.cardengine.widget.card.CardHand
 
 /**
  * Stores all constants related to animation.
@@ -29,10 +29,10 @@ import io.github.maltaisn.cardengine.widget.CardHand
 internal object Animation {
 
     // ANIMATION LAYER
-    /** The duration of the update animation for [AnimationLayer.update] */
+    /** The duration of the update animation for [CardAnimationLayer.update] */
     const val UPDATE_DURATION = 0.4f
 
-    /** The duration between each card dealt with [AnimationLayer.deal]
+    /** The duration between each card dealt with [CardAnimationLayer.deal]
      * Values less than the update duration look worse. */
     const val DEAL_DELAY: Float = 0.4f
 

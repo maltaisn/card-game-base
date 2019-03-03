@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package io.github.maltaisn.cardengine.widget
+package io.github.maltaisn.cardengine.widget.card
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
@@ -27,6 +28,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
 import io.github.maltaisn.cardengine.Animation
 import io.github.maltaisn.cardengine.applyBounded
 import io.github.maltaisn.cardengine.core.Card
+import io.github.maltaisn.cardengine.widget.GameLayer
 import io.github.maltaisn.cardengine.withinBounds
 
 
@@ -183,22 +185,32 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
             }
         }
 
+        var renderingNeeded = false
+
         // Update selection alpha
         if (selected && selectionElapsed < Animation.SELECTION_FADE_DURATION) {
             selectionElapsed += delta
             selectionAlpha = Animation.SELECTION_IN_INTERPOLATION.applyBounded(selectionElapsed / Animation.SELECTION_FADE_DURATION)
+            renderingNeeded = true
         } else if (!selected && selectionElapsed > 0f) {
             selectionElapsed -= delta
             selectionAlpha = Animation.SELECTION_OUT_INTERPOLATION.applyBounded(selectionElapsed / Animation.SELECTION_FADE_DURATION)
+            renderingNeeded = true
         }
 
         // Update hover alpha
         if (hovered && hoverElapsed < Animation.HOVER_FADE_DURATION) {
             hoverElapsed += delta
             hoverAlpha = Animation.HOVER_IN_INTERPOLATION.applyBounded(hoverElapsed / Animation.HOVER_FADE_DURATION)
+            renderingNeeded = true
         } else if (!hovered && hoverElapsed > 0f) {
             hoverElapsed -= delta
             hoverAlpha = Animation.HOVER_OUT_INTERPOLATION.applyBounded(hoverElapsed / Animation.HOVER_FADE_DURATION)
+            renderingNeeded = true
+        }
+
+        if (renderingNeeded) {
+            Gdx.graphics.requestRendering()
         }
     }
 

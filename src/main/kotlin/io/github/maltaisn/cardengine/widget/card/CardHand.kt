@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.github.maltaisn.cardengine.widget
+package io.github.maltaisn.cardengine.widget.card
 
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Action
@@ -23,6 +23,7 @@ import com.badlogic.gdx.utils.Align
 import io.github.maltaisn.cardengine.Animation
 import io.github.maltaisn.cardengine.applyBounded
 import io.github.maltaisn.cardengine.core.Card
+import io.github.maltaisn.cardengine.widget.GameLayer
 import ktx.actors.plusAssign
 import ktx.math.vec2
 import kotlin.math.absoluteValue

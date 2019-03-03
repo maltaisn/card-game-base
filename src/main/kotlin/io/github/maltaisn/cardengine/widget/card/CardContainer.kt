@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.github.maltaisn.cardengine.widget
+package io.github.maltaisn.cardengine.widget.card
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
@@ -32,6 +32,7 @@ import io.github.maltaisn.cardengine.Animation
 import io.github.maltaisn.cardengine.CardGameScreen
 import io.github.maltaisn.cardengine.applyBounded
 import io.github.maltaisn.cardengine.core.Card
+import io.github.maltaisn.cardengine.widget.GameLayer
 import ktx.actors.alpha
 import ktx.actors.plusAssign
 import ktx.collections.isNotEmpty
@@ -43,7 +44,7 @@ import kotlin.math.min
 
 /**
  * The base class for a widget group that contains card actors.
- * All card containers support animations with the [AnimationLayer],
+ * All card containers support animations with the [CardAnimationLayer],
  * however the container must be in a [CardGameScreen] stage to support animations.
  */
 abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
@@ -142,7 +143,7 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
 
     /** The input listener set on all actors in this container */
     private val internalInputListener = object : InputListener() {
-        private var cardDragger: AnimationLayer.CardDragger? = null
+        private var cardDragger: CardAnimationLayer.CardDragger? = null
         private var startPos = vec2()
 
         override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
@@ -181,9 +182,9 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
         }
 
         if (stage != null) {
-            (stage as CardGameScreen).animationLayer.containers += this
+            (stage as CardGameScreen).cardAnimationLayer.containers += this
         } else if (super.getStage() != null) {
-            (super.getStage() as CardGameScreen).animationLayer.containers -= this
+            (super.getStage() as CardGameScreen).cardAnimationLayer.containers -= this
         }
         super.setStage(stage)
     }
@@ -324,11 +325,11 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
     interface DragListener {
         /**
          * Called when a card in this container is dragged.
-         * Can return an input listener provided by [AnimationLayer.dragCards] to
+         * Can return an input listener provided by [CardAnimationLayer.dragCards] to
          * drag the card, or can return `null` to not drag the card.
          * Not called if container is disabled.
          */
-        fun onCardDragged(actor: CardActor): AnimationLayer.CardDragger?
+        fun onCardDragged(actor: CardActor): CardAnimationLayer.CardDragger?
     }
 
     interface PlayListener {

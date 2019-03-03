@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package io.github.maltaisn.cardengine.widget
+package io.github.maltaisn.cardengine.widget.card
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import io.github.maltaisn.cardengine.core.Card
+import io.github.maltaisn.cardengine.widget.GameLayer
 import ktx.math.vec2
 import kotlin.math.*
 

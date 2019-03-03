@@ -21,7 +21,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup
 import com.badlogic.gdx.scenes.scene2d.utils.Layout
 
 
-class PopupLayer : WidgetGroup() {
+/**
+ * Group that contains the popups.
+ * Acts like an absolute layout by having no restrictions on the size and position of children.
+ */
+class PopupGroup : WidgetGroup() {
 
     init {
         touchable = Touchable.childrenOnly

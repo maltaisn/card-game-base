@@ -29,4 +29,16 @@ object Resources {
     internal const val CORE_SKIN = "engine/core.skin"
     internal const val CORE_SKIN_ATLAS = "engine/core.atlas"
 
+    const val FONT_REGULAR = "engine/font-regular.ttf"
+    const val FONT_BOLD = "engine/font-bold.ttf"
+
+    // Generated bitmap font names
+    const val FONT_16_SHADOW = "font-16-shadow"
+    const val FONT_22 = "font-22"
+    const val FONT_22_BOLD = "font-22-bold"
+    const val FONT_24_BOLD_SHADOW = "font-24-bold-shadow"
+    const val FONT_24 = "font-24"
+    const val FONT_32_BOLD = "font-32-bold"
+    const val FONT_40_SHADOW = "font-40-shadow"
+
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.github.maltaisn.cardengine.widget
+package io.github.maltaisn.cardengine.widget.card
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
@@ -34,7 +34,7 @@ import ktx.math.times
 import ktx.math.vec2
 
 
-class AnimationLayer : Group() {
+class CardAnimationLayer : Group() {
 
     /** The list of all card containers on the stage.
      * It's update by the container themselves when they are added to the stage. */
@@ -362,7 +362,7 @@ class AnimationLayer : Group() {
             for (actor in container.actors) {
                 actor?.apply {
                     assert(actions.size == 1)
-                    assert(parent === this@AnimationLayer)
+                    assert(parent === this@CardAnimationLayer)
 
                     val action = actions.first() as MoveCardAction
                     container += this
@@ -405,8 +405,8 @@ class AnimationLayer : Group() {
         init {
             // Compute the dst container rectangle bounds.
             if (src !== dst) {
-                val start = dst.localToActorCoordinates(this@AnimationLayer, vec2())
-                val end = dst.localToActorCoordinates(this@AnimationLayer, vec2(dst.width, dst.height))
+                val start = dst.localToActorCoordinates(this@CardAnimationLayer, vec2())
+                val end = dst.localToActorCoordinates(this@CardAnimationLayer, vec2(dst.width, dst.height))
                 containerRect = Rectangle(start.x, start.y, end.x - start.x, end.y - start.y)
                 changeLayer()
             } // else, card container wasn't changed so initial Z-index stays correct.
@@ -434,7 +434,7 @@ class AnimationLayer : Group() {
             if (containerRect == null) return
 
             // Check if the card actor's center is within the destination container rectangle bounds.
-            val cardCenter = cardActor.localToActorCoordinates(this@AnimationLayer,
+            val cardCenter = cardActor.localToActorCoordinates(this@CardAnimationLayer,
                     vec2(cardActor.width / 2, cardActor.height / 2))
             if (cardCenter !in containerRect!!) {
                 return
@@ -485,8 +485,8 @@ class AnimationLayer : Group() {
             var timeLeft: Float,
             private val callback: (() -> Unit)?) {
 
-        fun doMove(animationLayer: AnimationLayer) {
-            animationLayer.moveCard(src, dst, srcIndex, dstIndex, replaceSrc, replaceDst)
+        fun doMove(cardAnimationLayer: CardAnimationLayer) {
+            cardAnimationLayer.moveCard(src, dst, srcIndex, dstIndex, replaceSrc, replaceDst)
             callback?.invoke()
         }
     }
@@ -574,7 +574,7 @@ class AnimationLayer : Group() {
                     clearChildren()
                     for (actor in actors) {
                         if (actor != null) {
-                            this@AnimationLayer += actor
+                            this@CardAnimationLayer += actor
                             // Actor position is persisted through the re-add
                         }
                     }
