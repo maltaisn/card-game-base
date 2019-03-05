@@ -18,12 +18,12 @@ package io.github.maltaisn.cardengine.widget.card
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
+import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.*
 import com.oracle.util.Checksums.update
-import io.github.maltaisn.cardengine.Animation
 import io.github.maltaisn.cardengine.applyBounded
 import io.github.maltaisn.cardengine.withinBounds
 import ktx.actors.plusAssign
@@ -79,7 +79,7 @@ class CardAnimationLayer : Group() {
             }
         }
 
-        // Start or complete animation.
+        // Start or complete 
         if (animationPending) {
             startAnimation()
         } else if (animationRunning) {
@@ -147,7 +147,7 @@ class CardAnimationLayer : Group() {
             val srcIndex = if (replaceSrc) i else srcStartSize - i - 1
             val dstIndex = if (replaceDst) i else dstStartSize + i
             moveCardDelayed(src, dst, srcIndex, dstIndex,
-                    replaceSrc, replaceDst, i * Animation.DEAL_DELAY) {
+                    replaceSrc, replaceDst, i * DEAL_DELAY) {
                 callback?.invoke()
                 update()
             }
@@ -300,7 +300,7 @@ class CardAnimationLayer : Group() {
                     actor.isVisible = true
                 }
 
-                var duration = Animation.UPDATE_DURATION
+                var duration = UPDATE_DURATION
 
                 // If actor was already moving and its animation still has some time left,
                 // recycle the action by assigning a new duration.
@@ -312,7 +312,7 @@ class CardAnimationLayer : Group() {
                     if (oldDistance != 0f && newDistance != 0f && remaining > 0.1f) {
                         // Extrapolate new duration from new to old distance ratio
                         duration = (newDistance / oldDistance * remaining)
-                                .coerceIn(0.2f, Animation.UPDATE_DURATION)
+                                .coerceIn(0.2f, UPDATE_DURATION)
                     }
                 }
 
@@ -416,7 +416,7 @@ class CardAnimationLayer : Group() {
             elapsed += delta
 
             // Change position and size
-            val progress = Animation.UPDATE_INTERPOLATION.applyBounded(elapsed / duration)
+            val progress = UPDATE_INTERPOLATION.applyBounded(elapsed / duration)
             cardActor.x = startX + progress * distance.x
             cardActor.y = startY + progress * distance.y
             cardActor.size = startSize + progress * (dst.cardSize - startSize)
@@ -550,10 +550,10 @@ class CardAnimationLayer : Group() {
 
                         override fun act(delta: Float): Boolean {
                             elapsed += delta
-                            val progress = Animation.DRAG_SIZE_INTERPOLATION.applyBounded(
-                                    elapsed / Animation.DRAG_SIZE_CHANGE_DURATION)
+                            val progress = DRAG_SIZE_INTERPOLATION.applyBounded(
+                                    elapsed / DRAG_SIZE_CHANGE_DURATION)
                             cardActor.size = startSize + progress * (endSize - startSize)
-                            return elapsed >= Animation.DRAG_SIZE_CHANGE_DURATION
+                            return elapsed >= DRAG_SIZE_CHANGE_DURATION
                         }
                     }
                 }
@@ -590,8 +590,8 @@ class CardAnimationLayer : Group() {
                                 private var elapsed = 0f
                                 override fun act(delta: Float): Boolean {
                                     elapsed += delta
-                                    val progress = Animation.REARRANGE_INTERPOLATION.applyBounded(
-                                            elapsed / Animation.DRAG_REARRANGE_DURATION)
+                                    val progress = REARRANGE_INTERPOLATION.applyBounded(
+                                            elapsed / DRAG_REARRANGE_DURATION)
                                     actor.x = startPos.x + progress * distance.x
                                     actor.y = startPos.y + progress * distance.y
                                     return progress >= 1
@@ -626,6 +626,24 @@ class CardAnimationLayer : Group() {
             // Update the animation layer to put the card in its container.
             update()
         }
+    }
+
+    companion object {
+        /** The duration of the update  */
+        private const val UPDATE_DURATION = 0.4f
+
+        /** The duration between each card dealt. Values less than the update duration look worse. */
+        private const val DEAL_DELAY: Float = 0.4f
+
+        /** The duration of the card size animation when the dragged card hovers a container. */
+        private const val DRAG_SIZE_CHANGE_DURATION = 0.25f
+
+        /** The duration of rearrangement animation when cards are dragged.  */
+        private const val DRAG_REARRANGE_DURATION: Float = 0.3f
+
+        private val UPDATE_INTERPOLATION: Interpolation = Interpolation.smooth
+        private val DRAG_SIZE_INTERPOLATION: Interpolation = Interpolation.smooth
+        private val REARRANGE_INTERPOLATION: Interpolation = Interpolation.pow2Out
     }
 
 }

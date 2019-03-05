@@ -18,6 +18,7 @@ package io.github.maltaisn.cardengine.widget.card
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
@@ -25,7 +26,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Widget
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
-import io.github.maltaisn.cardengine.Animation
 import io.github.maltaisn.cardengine.applyBounded
 import io.github.maltaisn.cardengine.core.Card
 import io.github.maltaisn.cardengine.widget.GameLayer
@@ -47,8 +47,8 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
     var shown = true
 
     /**
-     * Whether the card can be selected and hovered.
-     * Usually a card is enabled when it can be played.
+     * Whether the card can be selected, hovered and clicked.
+     * Usually a card is enabled when it's involved in a valid move.
      */
     var enabled = true
         set(value) {
@@ -96,7 +96,7 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
     private var lastTouchDownTime = 0L
     private var longClicked = false
 
-    // Used for hover and selection interpolation.
+    // Hover and selection status.
     private var selected = false
     private var hovered = false
     private var selectionElapsed = 0f
@@ -115,11 +115,7 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
     internal var dst: CardContainer? = null
 
 
-    constructor(skin: Skin, card: Card) :
-            this(skin.get(GameLayer.CoreStyle::class.java),
-                    skin.get(CardStyle::class.java), card)
-
-    constructor(skin: Skin, coreStyleName: String, cardStyleName: String, card: Card) :
+    constructor(skin: Skin, card: Card, coreStyleName: String = "default", cardStyleName: String = "default") :
             this(skin.get(coreStyleName, GameLayer.CoreStyle::class.java),
                     skin.get(cardStyleName, CardStyle::class.java), card)
 
@@ -141,7 +137,7 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 if (enabled) {
                     selected = false
-                    selectionElapsed = Animation.SELECTION_FADE_DURATION * selectionAlpha
+                    selectionElapsed = SELECTION_FADE_DURATION * selectionAlpha
                     lastTouchDownTime = 0
 
                     if (!animated && !longClicked && withinBounds(x, y)) {
@@ -166,7 +162,7 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
             override fun exit(event: InputEvent, x: Float, y: Float, pointer: Int, toActor: Actor?) {
                 if (enabled && pointer == -1) {
                     hovered = false
-                    hoverElapsed = Animation.HOVER_FADE_DURATION * hoverAlpha
+                    hoverElapsed = HOVER_FADE_DURATION * hoverAlpha
                 }
             }
         })
@@ -178,7 +174,7 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
         // Trigger long click if held long enough
         val heldDuration = (System.currentTimeMillis() - lastTouchDownTime) / 1000f
         if (longClickListeners.isNotEmpty() && lastTouchDownTime != 0L
-                && heldDuration > Animation.LONG_CLICK_DELAY && enabled && !animated) {
+                && heldDuration > LONG_CLICK_DELAY && enabled && !animated) {
             longClicked = true
             for (listener in longClickListeners.toMutableList()) {
                 listener.onCardActorLongClicked(this@CardActor)
@@ -188,24 +184,24 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
         var renderingNeeded = false
 
         // Update selection alpha
-        if (selected && selectionElapsed < Animation.SELECTION_FADE_DURATION) {
+        if (selected && selectionElapsed < SELECTION_FADE_DURATION) {
             selectionElapsed += delta
-            selectionAlpha = Animation.SELECTION_IN_INTERPOLATION.applyBounded(selectionElapsed / Animation.SELECTION_FADE_DURATION)
+            selectionAlpha = SELECTION_IN_INTERPOLATION.applyBounded(selectionElapsed / SELECTION_FADE_DURATION)
             renderingNeeded = true
         } else if (!selected && selectionElapsed > 0f) {
             selectionElapsed -= delta
-            selectionAlpha = Animation.SELECTION_OUT_INTERPOLATION.applyBounded(selectionElapsed / Animation.SELECTION_FADE_DURATION)
+            selectionAlpha = SELECTION_OUT_INTERPOLATION.applyBounded(selectionElapsed / SELECTION_FADE_DURATION)
             renderingNeeded = true
         }
 
         // Update hover alpha
-        if (hovered && hoverElapsed < Animation.HOVER_FADE_DURATION) {
+        if (hovered && hoverElapsed < HOVER_FADE_DURATION) {
             hoverElapsed += delta
-            hoverAlpha = Animation.HOVER_IN_INTERPOLATION.applyBounded(hoverElapsed / Animation.HOVER_FADE_DURATION)
+            hoverAlpha = HOVER_IN_INTERPOLATION.applyBounded(hoverElapsed / HOVER_FADE_DURATION)
             renderingNeeded = true
         } else if (!hovered && hoverElapsed > 0f) {
             hoverElapsed -= delta
-            hoverAlpha = Animation.HOVER_OUT_INTERPOLATION.applyBounded(hoverElapsed / Animation.HOVER_FADE_DURATION)
+            hoverAlpha = HOVER_OUT_INTERPOLATION.applyBounded(hoverElapsed / HOVER_FADE_DURATION)
             renderingNeeded = true
         }
 
@@ -291,6 +287,20 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
         const val SIZE_NORMAL = 120f
         const val SIZE_BIG = 150f
         const val SIZE_HUGE = 200f
+
+        /** The duration of the hover fade. */
+        private const val HOVER_FADE_DURATION = 0.3f
+
+        /** The duration of the selection fade. */
+        private const val SELECTION_FADE_DURATION = 0.3f
+
+        /** The delay before long click is triggered. */
+        private const val LONG_CLICK_DELAY = 0.5f
+
+        private val SELECTION_IN_INTERPOLATION: Interpolation = Interpolation.smooth
+        private val SELECTION_OUT_INTERPOLATION: Interpolation = Interpolation.smooth
+        private val HOVER_IN_INTERPOLATION: Interpolation = Interpolation.pow2Out
+        private val HOVER_OUT_INTERPOLATION: Interpolation = Interpolation.smooth
     }
 
 }

@@ -17,12 +17,12 @@
 package io.github.maltaisn.cardengine.widget
 
 import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
-import io.github.maltaisn.cardengine.Animation
 import io.github.maltaisn.cardengine.applyBounded
 import ktx.actors.alpha
 import ktx.actors.plusAssign
@@ -33,7 +33,9 @@ import kotlin.math.max
 /**
  * A popup for information or interaction shown next to any actor on the stage.
  */
-class Popup(val style: PopupStyle) : FrameBufferTable() {
+class Popup(skin: Skin) : FrameBufferTable() {
+
+    val style = skin.get(PopupStyle::class.java)
 
     /** Whether the popup is shown or not. Like [isVisible] but with the correct value during a transition. */
     var shown = false
@@ -58,10 +60,6 @@ class Popup(val style: PopupStyle) : FrameBufferTable() {
         isVisible = false
         renderToFrameBuffer = false
     }
-
-    constructor(skin: Skin) : this(skin.get(PopupStyle::class.java))
-
-    constructor(skin: Skin, styleName: String) : this(skin.get(styleName, PopupStyle::class.java))
 
     override fun validate() {
         super.validate()
@@ -224,7 +222,7 @@ class Popup(val style: PopupStyle) : FrameBufferTable() {
     }
 
     private inner class TransitionAction : Action() {
-        private var elapsed = if (shown) 0f else Animation.POPUP_TRANSITION_DURATION
+        private var elapsed = if (shown) 0f else TRANSITION_DURATION
 
         init {
             isVisible = true
@@ -236,9 +234,9 @@ class Popup(val style: PopupStyle) : FrameBufferTable() {
 
         override fun act(delta: Float): Boolean {
             elapsed += if (shown) delta else -delta
-            val progress = Animation.POPUP_TRANSITION_INTERPOLATION.applyBounded(
-                    elapsed / Animation.POPUP_TRANSITION_DURATION)
-            val offset = (1 - progress) * Animation.POPUP_TRANSITION_DISTANCE
+            val progress = TRANSITION_INTERPOLATION.applyBounded(
+                    elapsed / TRANSITION_DURATION)
+            val offset = (1 - progress) * TRANSITION_DISTANCE
             when (side) {
                 Side.CENTER -> Unit
                 Side.LEFT -> offsetX = offset
@@ -259,6 +257,16 @@ class Popup(val style: PopupStyle) : FrameBufferTable() {
             }
             return false
         }
+    }
+
+    companion object {
+        /** The duration a popup's show and hide transition. */
+        private const val TRANSITION_DURATION = 0.3f
+
+        /** The distance in pixels the popup is translated up when shown and down when hidden. */
+        private const val TRANSITION_DISTANCE = 30f
+
+        private val TRANSITION_INTERPOLATION: Interpolation = Interpolation.smooth
     }
 
 }

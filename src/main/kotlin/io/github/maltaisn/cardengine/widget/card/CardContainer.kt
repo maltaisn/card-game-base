@@ -20,6 +20,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.InputEvent
@@ -28,7 +29,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup
 import com.badlogic.gdx.utils.Align
-import io.github.maltaisn.cardengine.Animation
 import io.github.maltaisn.cardengine.CardGameScreen
 import io.github.maltaisn.cardengine.applyBounded
 import io.github.maltaisn.cardengine.core.Card
@@ -75,6 +75,7 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
 
     /** Whether the container is shown or not. Like [isVisible] but with the correct value during a transition. */
     var shown = true
+        private set
 
     /**
      * Whether this card container is enabled. If disabled, card actors will be too,
@@ -154,7 +155,7 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
         override fun touchDragged(event: InputEvent, x: Float, y: Float, pointer: Int) {
             val pos = vec2(event.stageX, event.stageY)
             if (enabled && pointer == Input.Buttons.LEFT && (cardDragger != null ||
-                            dragListener != null && (pos - startPos).len() > Animation.MIN_DRAG_DISTANCE)) {
+                            dragListener != null && (pos - startPos).len() > MIN_DRAG_DISTANCE)) {
                 // Start dragging only when touch has been dragged for a minimum distance
                 if (cardDragger == null) {
                     cardDragger = dragListener!!.onCardDragged(event.listenerActor as CardActor)
@@ -539,7 +540,7 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
     }
 
     private inner class FadeTransitionAction : Action() {
-        private var elapsed = if (shown) 0f else Animation.CONTAINER_TRANSITION_DURATION
+        private var elapsed = if (shown) 0f else TRANSITION_DURATION
 
         init {
             isVisible = true
@@ -549,8 +550,8 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
 
         override fun act(delta: Float): Boolean {
             elapsed += if (shown) delta else -delta
-            val progress = Animation.CONTAINER_TRANSITION_INTERPOLATION.applyBounded(
-                    elapsed / Animation.CONTAINER_TRANSITION_DURATION)
+            val progress = TRANSITION_INTERPOLATION.applyBounded(
+                    elapsed / TRANSITION_DURATION)
             alpha = progress
 
             if (shown && progress >= 1 || !shown && progress <= 0) {
@@ -606,11 +607,11 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
             if (completed) return true
 
             elapsed += delta
-            val progress = Animation.CONTAINER_TRANSITION_INTERPOLATION
-                    .applyBounded(elapsed / Animation.CONTAINER_TRANSITION_DURATION)
+            val progress = TRANSITION_INTERPOLATION
+                    .applyBounded(elapsed / TRANSITION_DURATION)
             setPosition(startX + (endX - startX) * progress, startY + (endY - startY) * progress)
 
-            if (elapsed >= Animation.CONTAINER_TRANSITION_DURATION) {
+            if (elapsed >= TRANSITION_DURATION) {
                 complete()
                 return true
             }
@@ -714,6 +715,17 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
                 if (dragListener != null) actor.listeners.add(internalInputListener)
             }
         }
+    }
+
+
+    companion object {
+        /** The duration of the transitions. */
+        private const val TRANSITION_DURATION = 0.5f
+
+        /** The minimum dragging distance in pixels for a card to be effectively dragged. */
+        private const val MIN_DRAG_DISTANCE = 10f
+
+        private val TRANSITION_INTERPOLATION: Interpolation = Interpolation.smooth
     }
 
 }

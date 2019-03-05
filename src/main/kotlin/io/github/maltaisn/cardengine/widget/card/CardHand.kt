@@ -16,11 +16,11 @@
 
 package io.github.maltaisn.cardengine.widget.card
 
+import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Align
-import io.github.maltaisn.cardengine.Animation
 import io.github.maltaisn.cardengine.applyBounded
 import io.github.maltaisn.cardengine.core.Card
 import io.github.maltaisn.cardengine.widget.GameLayer
@@ -170,7 +170,7 @@ class CardHand : CardContainer {
         if (highlightListener?.onCardActorHighlighted(actor, highlighted) != false) {
             actor.highlighted = highlighted
 
-            // Do the highlight animation.
+            // Do the highlight 
             val restPos = if (horizontal) actor.y else actor.x
             if (actor.highlighted) {
                 actor += HighlightAction(restPos, highlightSize,
@@ -181,7 +181,7 @@ class CardHand : CardContainer {
                     action.highlighted = false
                 } else {
                     actor += HighlightAction(restPos - highlightSize, highlightSize,
-                            horizontal, false, Animation.HIGHLIGHT_DURATION)
+                            horizontal, false, HIGHLIGHT_DURATION)
                 }
             }
         }
@@ -198,15 +198,15 @@ class CardHand : CardContainer {
             val actor = actor as CardActor
             elapsed += if (highlighted) delta else -delta
 
-            val pos = Animation.HIGHLIGHT_INTERPOLATION.applyBounded(
-                    elapsed / Animation.HIGHLIGHT_DURATION) * translate + restPos
+            val pos = HIGHLIGHT_INTERPOLATION.applyBounded(
+                    elapsed / HIGHLIGHT_DURATION) * translate + restPos
             if (horizontal) {
                 actor.y = pos
             } else {
                 actor.x = pos
             }
 
-            return elapsed <= 0 || elapsed >= Animation.HIGHLIGHT_DURATION
+            return elapsed <= 0 || elapsed >= HIGHLIGHT_DURATION
         }
     }
 
@@ -329,6 +329,13 @@ class CardHand : CardContainer {
             }
         }
         return size
+    }
+
+    companion object {
+        /** The duration of the highlight animation. */
+        private const val HIGHLIGHT_DURATION = 0.1f
+
+        private val HIGHLIGHT_INTERPOLATION: Interpolation = Interpolation.smooth
     }
 
 }
