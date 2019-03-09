@@ -181,7 +181,7 @@ popup
   xy: 232, 362
   size: 61, 77
   split: 30, 30, 30, 46
-  pad: 9, 9, 9, 25
+  pad: 0, 0, 0, 16
   orig: 61, 77
   offset: 0, 0
   index: -1

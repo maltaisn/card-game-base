@@ -29,11 +29,11 @@ object Resources {
     internal const val CORE_SKIN = "engine/core.skin"
     internal const val CORE_SKIN_ATLAS = "engine/core.atlas"
 
-    const val FONT_FILE = "engine/font.fnt"
-    const val FONT_BOLD_FILE = "engine/font-bold.fnt"
-    const val FONT_TEXTURE = "engine/font.png"
-    const val FONT_BOLD_TEXTURE = "engine/font-bold.png"
-    const val FONT_SHADER_VERT = "engine/font.vert"
-    const val FONT_SHADER_FRAG = "engine/font.frag"
+    const val FONT_FILE = "engine/font/font.fnt"
+    const val FONT_BOLD_FILE = "engine/font/font-bold.fnt"
+    const val FONT_TEXTURE = "engine/font/font.png"
+    const val FONT_BOLD_TEXTURE = "engine/font/font-bold.png"
+    const val FONT_SHADER_VERT = "engine/font/font.vert"
+    const val FONT_SHADER_FRAG = "engine/font/font.frag"
 
 }

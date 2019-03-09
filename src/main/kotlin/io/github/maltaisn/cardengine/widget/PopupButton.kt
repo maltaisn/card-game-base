@@ -64,10 +64,10 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : Table(skin) {
         }
 
     /**
-     * Click listeners, called when the button is clicked. Clicks must end within the bounds.
-     * The listeners are not called when the button is disabled.
+     * Click listener, called when the button is clicked. Clicks must end within the bounds.
+     * The listener is not called when the button is disabled.
      */
-    val clickListeners = mutableListOf<ClickListener>()
+    var clickListener: ClickListener? = null
 
 
     // Hover and selection status.
@@ -93,12 +93,8 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : Table(skin) {
                     selected = false
                     selectionElapsed = SELECTION_FADE_DURATION * selectionAlpha
 
-                    if (withinBounds(x, y)) {
-                        // Click ended in button, call listeners.
-                        // The list is copied so changes to it don't lead to concurrent modification errors.
-                        for (listener in clickListeners.toMutableList()) {
-                            listener.onButtonClicked(this@PopupButton)
-                        }
+                    if (clickListener != null && withinBounds(x, y)) {
+                        clickListener?.onButtonClicked(this@PopupButton)
                     }
                 }
             }

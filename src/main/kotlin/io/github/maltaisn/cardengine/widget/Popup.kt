@@ -99,7 +99,7 @@ class Popup(skin: Skin) : FrameBufferTable() {
     override fun drawChildren(batch: Batch, parentAlpha: Float) {
         // Draw the body
         val colorBefore = batch.color.cpy()
-        val scale = style.scale
+        val scale = style.backgroundScale
         val body = style.body as TransformDrawable
         val tipPadLeft = padLeft - body.leftWidth * scale
         val tipPadRight = padRight - body.rightWidth * scale
@@ -171,7 +171,7 @@ class Popup(skin: Skin) : FrameBufferTable() {
             Side.ABOVE -> bottom += max(0f, -style.bottomTipOffsetY)
             Side.BELOW -> top += max(0f, style.topTip.minHeight + style.topTipOffsetY)
         }
-        val scale = style.scale
+        val scale = style.backgroundScale
         pad(top * scale, left * scale, bottom * scale, right * scale)
         invalidateHierarchy()
 
@@ -203,7 +203,7 @@ class Popup(skin: Skin) : FrameBufferTable() {
      */
     class PopupStyle {
         lateinit var body: Drawable
-        var scale = 0f
+        var backgroundScale = 0f
         var bodyOffsetX = 0f
         var bodyOffsetY = 0f
 

@@ -60,7 +60,6 @@
   io.github.maltaisn.cardengine.widget.Popup$PopupStyle: {
     default: {
       body: popup
-      scale: 0.75
       bodyOffsetX: 0
       bodyOffsetY: 8
       topTip: popup-tip-top
@@ -75,6 +74,7 @@
       leftTipOffsetY: -20
       rightTipOffsetX: -2
       rightTipOffsetY: -20
+      backgroundScale: 0.75
     }
   }
   io.github.maltaisn.cardengine.widget.PopupButton$PopupButtonStyle: {
