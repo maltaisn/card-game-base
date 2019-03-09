@@ -26,7 +26,7 @@ import ktx.actors.plusAssign
  * Custom container that acts places its children on top of each other, matching its size.
  * Game layer uses custom bounds to account for its side tables.
  */
-class CardGameContainer(vararg actors: Actor) : WidgetGroup() {
+internal class CardGameContainer(vararg actors: Actor) : WidgetGroup() {
 
     init {
         setFillParent(true)

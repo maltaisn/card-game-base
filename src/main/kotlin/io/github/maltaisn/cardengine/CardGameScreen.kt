@@ -25,7 +25,6 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.glutils.FrameBuffer
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
@@ -33,13 +32,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import io.github.maltaisn.cardengine.widget.GameLayer
 import io.github.maltaisn.cardengine.widget.PopupGroup
+import io.github.maltaisn.cardengine.widget.SdfLabel
 import io.github.maltaisn.cardengine.widget.card.CardAnimationLayer
-import ktx.actors.plusAssign
 import ktx.assets.getAsset
 import ktx.assets.load
-import ktx.freetype.generateFont
-import ktx.freetype.registerFreeTypeFontLoaders
-import kotlin.math.roundToInt
 
 
 abstract class CardGameScreen(val game: CardGame) :
@@ -66,50 +62,24 @@ abstract class CardGameScreen(val game: CardGame) :
         Gdx.app.logLevel = Application.LOG_DEBUG
 
         assetManager.apply {
-            registerFreeTypeFontLoaders()
             load<TextureAtlas>(Resources.CORE_SKIN_ATLAS)
             load<Skin>(Resources.CORE_SKIN, SkinLoader.SkinParameter(Resources.CORE_SKIN_ATLAS))
-            load<FreeTypeFontGenerator>(Resources.FONT_REGULAR)
-            load<FreeTypeFontGenerator>(Resources.FONT_BOLD)
             finishLoading()
 
             coreSkin = assetManager.getAsset(Resources.CORE_SKIN)
 
-            // Generate fonts
-            val fontGen = getAsset<FreeTypeFontGenerator>(Resources.FONT_REGULAR)
-            val fontBoldGen = getAsset<FreeTypeFontGenerator>(Resources.FONT_BOLD)
-
-            createFont(fontGen, Resources.FONT_16_SHADOW, 16, true)
-            createFont(fontGen, Resources.FONT_22, 22, false)
-            createFont(fontBoldGen, Resources.FONT_22_BOLD, 22, false)
-            createFont(fontGen, Resources.FONT_24, 24, false)
-            createFont(fontBoldGen, Resources.FONT_24_BOLD_SHADOW, 24, true)
-            createFont(fontBoldGen, Resources.FONT_32_BOLD, 32, false)
-            createFont(fontGen, Resources.FONT_40_SHADOW, 40, true)
-
-            fontGen.dispose()
-            fontBoldGen.dispose()
+            SdfLabel.load(coreSkin)
         }
 
         gameLayer = GameLayer(coreSkin)
         cardAnimationLayer = CardAnimationLayer()
         popupGroup = PopupGroup()
 
-        this += CardGameContainer(gameLayer, cardAnimationLayer, popupGroup)
+        addActor(CardGameContainer(gameLayer, cardAnimationLayer, popupGroup))
 
         updateOffscreenFrameBuffer()
 
         actionsRequestRendering = true
-    }
-
-    private fun createFont(generator: FreeTypeFontGenerator, name: String, size: Int, hasShadow: Boolean) {
-        coreSkin.add(name, generator.generateFont {
-            val scale = Gdx.graphics.width / width
-            this.size = (size * scale).roundToInt()
-            if (hasShadow) {
-                shadowOffsetY = (size / 12f * scale).roundToInt()
-            }
-        })
     }
 
     final override fun addActor(actor: Actor?) = super.addActor(actor)
