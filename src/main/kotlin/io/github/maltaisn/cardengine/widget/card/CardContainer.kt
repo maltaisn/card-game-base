@@ -48,7 +48,8 @@ import kotlin.math.min
  * however the container must be in a [CardGameScreen] stage to support animations.
  */
 abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
-                             val cardStyle: CardActor.CardStyle) : WidgetGroup() {
+                             val cardStyle: CardActor.CardStyle) : WidgetGroup(),
+        CardActor.ClickListener, CardActor.LongClickListener {
 
     private val _actors = mutableListOf<CardActor?>()
 
@@ -102,16 +103,28 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
     var alignment = Align.center
 
     /** Listener called when a card is clicked, or `null` for none. */
-    private val clickListeners = mutableListOf<ClickListener>()
+    var clickListener: ClickListener? = null
 
     /** Listener called when a card is long clicked, or `null` for none. */
-    private val longClickListeners = mutableListOf<LongClickListener>()
+    var longClickListener: LongClickListener? = null
 
     /** Listener called when a card is dragged, or `null` for if not draggable. */
-    private var dragListener: DragListener? = null
+    var dragListener: DragListener? = null
+        set(value) {
+            if (field != null && value == null) {
+                for (actor in actors) {
+                    actor?.removeListener(internalInputListener)
+                }
+            } else if (field == null && value != null) {
+                for (actor in actors) {
+                    actor?.addListener(internalInputListener)
+                }
+            }
+            field = value
+        }
 
     /** Listener called when a card is played on this container, or `null` if not playable. */
-    internal var playListener: PlayListener? = null
+    var playListener: PlayListener? = null
 
     // Size properties
     protected var sizeInvalid = true
@@ -122,55 +135,6 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
     protected var cardScale = 0f
 
     private var renderToFrameBuffer = false
-
-
-    private val internalClickListener = object : CardActor.ClickListener {
-        override fun onCardActorClicked(actor: CardActor) {
-            val index = actors.indexOf(actor)
-            for (listener in clickListeners) {
-                listener.onCardClicked(actor, index)
-            }
-        }
-    }
-
-    private val internalLongClickListener = object : CardActor.LongClickListener {
-        override fun onCardActorLongClicked(actor: CardActor) {
-            val index = actors.indexOf(actor)
-            for (listener in longClickListeners) {
-                listener.onCardLongClicked(actor, index)
-            }
-        }
-    }
-
-    /** The input listener set on all actors in this container */
-    private val internalInputListener = object : InputListener() {
-        private var cardDragger: CardAnimationLayer.CardDragger? = null
-        private var startPos = vec2()
-
-        override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-            startPos = vec2(event.stageX, event.stageY)
-            return enabled && dragListener != null && pointer == Input.Buttons.LEFT
-        }
-
-        override fun touchDragged(event: InputEvent, x: Float, y: Float, pointer: Int) {
-            val pos = vec2(event.stageX, event.stageY)
-            if (enabled && pointer == Input.Buttons.LEFT && (cardDragger != null ||
-                            dragListener != null && (pos - startPos).len() > MIN_DRAG_DISTANCE)) {
-                // Start dragging only when touch has been dragged for a minimum distance
-                if (cardDragger == null) {
-                    cardDragger = dragListener!!.onCardDragged(event.listenerActor as CardActor)
-                }
-                cardDragger?.touchDragged(pos)
-            }
-        }
-
-        override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
-            if (enabled && cardDragger != null && pointer == Input.Buttons.LEFT) {
-                cardDragger?.touchUp(vec2(event.stageX, event.stageY))
-                cardDragger = null
-            }
-        }
-    }
 
 
     constructor(coreSkin: Skin, cardSkin: Skin) :
@@ -254,57 +218,48 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
     }
 
     ////////// LISTENERS //////////
-    fun addClickListener(listener: ClickListener) {
-        if (clickListeners.isEmpty()) {
-            for (actor in actors) {
-                actor?.clickListeners?.add(internalClickListener)
-            }
-        }
-        clickListeners += listener
-    }
-
-    fun removeClickListener(listener: ClickListener) {
-        clickListeners -= listener
-        if (clickListeners.isEmpty()) {
-            for (actor in actors) {
-                actor?.clickListeners?.remove(internalClickListener)
-            }
+    override fun onCardActorClicked(actor: CardActor) {
+        if (clickListener != null) {
+            val index = actors.indexOf(actor)
+            clickListener?.onCardClicked(actor, index)
         }
     }
 
-    fun addLongClickListener(listener: LongClickListener) {
-        if (longClickListeners.isEmpty()) {
-            for (actor in actors) {
-                actor?.longClickListeners?.add(internalLongClickListener)
-            }
-        }
-        longClickListeners += listener
-    }
-
-    fun removeLongClickListener(listener: LongClickListener) {
-        longClickListeners -= listener
-        if (longClickListeners.isEmpty()) {
-            for (actor in actors) {
-                actor?.longClickListeners?.remove(internalLongClickListener)
-            }
+    override fun onCardActorLongClicked(actor: CardActor) {
+        if (longClickListener != null) {
+            val index = actors.indexOf(actor)
+            longClickListener?.onCardLongClicked(actor, index)
         }
     }
 
-    fun setDragListener(listener: DragListener?) {
-        if (dragListener != null && listener == null) {
-            for (actor in actors) {
-                actor?.removeListener(internalInputListener)
-            }
-        } else if (dragListener == null && listener != null) {
-            for (actor in actors) {
-                actor?.addListener(internalInputListener)
+    /** The input listener set on all actors in this container */
+    private val internalInputListener = object : InputListener() {
+        private var cardDragger: CardAnimationLayer.CardDragger? = null
+        private var startPos = vec2()
+
+        override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+            startPos = vec2(event.stageX, event.stageY)
+            return enabled && dragListener != null && pointer == Input.Buttons.LEFT
+        }
+
+        override fun touchDragged(event: InputEvent, x: Float, y: Float, pointer: Int) {
+            val pos = vec2(event.stageX, event.stageY)
+            if (enabled && pointer == Input.Buttons.LEFT && (cardDragger != null ||
+                            dragListener != null && (pos - startPos).len() > MIN_DRAG_DISTANCE)) {
+                // Start dragging only when touch has been dragged for a minimum distance
+                if (cardDragger == null) {
+                    cardDragger = dragListener!!.onCardDragged(event.listenerActor as CardActor)
+                }
+                cardDragger?.touchDragged(pos)
             }
         }
-        dragListener = listener
-    }
 
-    fun setPlayListener(listener: PlayListener?) {
-        playListener = listener
+        override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
+            if (enabled && cardDragger != null && pointer == Input.Buttons.LEFT) {
+                cardDragger?.touchUp(vec2(event.stageX, event.stageY))
+                cardDragger = null
+            }
+        }
     }
 
     interface ClickListener {
@@ -380,8 +335,8 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
 
         // Remove listeners from unused old actors.
         for (actor in oldActors) {
-            if (clickListeners.isNotEmpty()) actor.clickListeners -= internalClickListener
-            if (longClickListeners.isNotEmpty()) actor.longClickListeners -= internalLongClickListener
+            actor.clickListener = null
+            actor.longClickListener = null
             if (dragListener != null) actor.listeners.removeValue(internalInputListener, true)
         }
 
@@ -391,8 +346,8 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
             if (card != null) {
                 val actor = CardActor(coreStyle, cardStyle, card)
                 actor.enabled = enabled
-                if (clickListeners.isNotEmpty()) actor.clickListeners += internalClickListener
-                if (longClickListeners.isNotEmpty()) actor.longClickListeners += internalLongClickListener
+                actor.clickListener = this
+                actor.longClickListener = this
                 if (dragListener != null) actor.listeners.add(internalInputListener)
                 _actors += actor
             } else {
@@ -405,30 +360,6 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
 
     protected fun sortWith(comparator: Comparator<CardActor?>) {
         _actors.sortWith(comparator)
-    }
-
-    /** Apply an [action] on all card actors. */
-    fun applyOnAllCards(action: (CardActor) -> Unit) {
-        for (actor in actors) {
-            if (actor != null) {
-                action(actor)
-            }
-        }
-    }
-
-    /**
-     * Apply an [action] on the actors of a list of [cards].
-     * If multiple card actors have the same card, the first one found is used.
-     */
-    fun applyOnCards(vararg cards: Card, action: (CardActor) -> Unit) {
-        for (card in cards) {
-            for (actor in actors) {
-                if (actor != null && actor.card == card) {
-                    action(actor)
-                    break
-                }
-            }
-        }
     }
 
     enum class Visibility {
@@ -688,8 +619,8 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
         // Reset old actors
         for (actor in oldActors!!) {
             actor?.apply {
-                clickListeners.clear()
-                longClickListeners.clear()
+                clickListener = null
+                longClickListener = null
                 listeners.removeValue(internalInputListener, true)
                 enabled = true
                 highlighted = false
@@ -710,8 +641,8 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
     internal open fun onAnimationEnd() {
         for (actor in actors) {
             if (actor != null) {
-                if (clickListeners.isNotEmpty()) actor.clickListeners += internalClickListener
-                if (longClickListeners.isNotEmpty()) actor.longClickListeners += internalLongClickListener
+                actor.clickListener = this
+                actor.longClickListener = this
                 if (dragListener != null) actor.listeners.add(internalInputListener)
             }
         }

@@ -83,16 +83,16 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
         }
 
     /**
-     * Click listeners, called when the actor is clicked. Clicks must end within the bounds.
-     * The listeners are not called when the actor is disabled or animated.
+     * Click listener, called when the actor is clicked. Clicks must end within the bounds.
+     * The listener is not called when the actor is disabled or animated.
      */
-    val clickListeners = mutableListOf<ClickListener>()
+    var clickListener: ClickListener? = null
 
     /**
-     * Click listeners, called when the actor is long clicked.
-     * The listeners are not called when the actor is disabled or animated.
+     * Click listener, called when the actor is long clicked.
+     * The listener is not called when the actor is disabled or animated.
      */
-    val longClickListeners = mutableListOf<LongClickListener>()
+    var longClickListener: LongClickListener? = null
     private var lastTouchDownTime = 0L
     private var longClicked = false
 
@@ -115,7 +115,9 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
     internal var dst: CardContainer? = null
 
 
-    constructor(skin: Skin, card: Card, coreStyleName: String = "default", cardStyleName: String = "default") :
+    constructor(skin: Skin, card: Card,
+                coreStyleName: String = "default",
+                cardStyleName: String = "default") :
             this(skin.get(coreStyleName, GameLayer.CoreStyle::class.java),
                     skin.get(cardStyleName, CardStyle::class.java), card)
 
@@ -140,12 +142,9 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
                     selectionElapsed = SELECTION_FADE_DURATION * selectionAlpha
                     lastTouchDownTime = 0
 
-                    if (!animated && !longClicked && withinBounds(x, y)) {
-                        // Click ended in actor, call listeners.
-                        // The list is copied so changes to it don't lead to concurrent modification errors.
-                        for (listener in clickListeners.toMutableList()) {
-                            listener.onCardActorClicked(this@CardActor)
-                        }
+                    if (clickListener != null && !animated && !longClicked && withinBounds(x, y)) {
+                        // Click ended in actor, call listener.
+                        clickListener?.onCardActorClicked(this@CardActor)
                     }
                 }
             }
@@ -173,12 +172,10 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
 
         // Trigger long click if held long enough
         val heldDuration = (System.currentTimeMillis() - lastTouchDownTime) / 1000f
-        if (longClickListeners.isNotEmpty() && lastTouchDownTime != 0L
+        if (longClickListener != null && lastTouchDownTime != 0L
                 && heldDuration > LONG_CLICK_DELAY && enabled && !animated) {
             longClicked = true
-            for (listener in longClickListeners.toMutableList()) {
-                listener.onCardActorLongClicked(this@CardActor)
-            }
+            longClickListener?.onCardActorLongClicked(this@CardActor)
         }
 
         var renderingNeeded = false

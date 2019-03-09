@@ -95,16 +95,6 @@ class CardHand : CardContainer {
             }
         }
 
-    init {
-        addClickListener(object : ClickListener {
-            override fun onCardClicked(actor: CardActor, index: Int) {
-                if (highlightable) {
-                    highlightActor(actor, !actor.highlighted)
-                }
-            }
-        })
-    }
-
 
     constructor(coreSkin: Skin, cardSkin: Skin) : super(coreSkin, cardSkin)
 
@@ -139,7 +129,14 @@ class CardHand : CardContainer {
         }
     }
 
-    ////////// HIGHLIGHTING //////////
+    override fun onCardActorClicked(actor: CardActor) {
+        super.onCardActorClicked(actor)
+
+        if (highlightable) {
+            highlightActor(actor, !actor.highlighted)
+        }
+    }
+
     /**
      * Change the highlighted state of [cards].
      */
