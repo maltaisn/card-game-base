@@ -6,7 +6,7 @@
     textColorGray: { hex: #3b3b3bff }
     textColorWhite: { hex: #e7e7e7ff }
   }
-  io.github.maltaisn.cardengine.widget.GameLayer$CoreStyle: {
+  io.github.maltaisn.cardgame.widget.GameLayer$CoreStyle: {
     default: {
       background: background
       border: background-border
@@ -17,7 +17,7 @@
       cardSlot: card-slot
     }
   }
-  io.github.maltaisn.cardengine.widget.SdfLabel$SdfLabelStyle: {
+  io.github.maltaisn.cardgame.widget.SdfLabel$SdfLabelStyle: {
     white16shadow: {
       fontSize: 16
       fontColor: textColorWhite
@@ -57,7 +57,7 @@
       shadowColor: black
     }
   }
-  io.github.maltaisn.cardengine.widget.Popup$PopupStyle: {
+  io.github.maltaisn.cardgame.widget.Popup$PopupStyle: {
     default: {
       body: popup
       bodyOffsetX: 0
@@ -77,7 +77,7 @@
       backgroundScale: 0.75
     }
   }
-  io.github.maltaisn.cardengine.widget.PopupButton$PopupButtonStyle: {
+  io.github.maltaisn.cardgame.widget.PopupButton$PopupButtonStyle: {
     default: {
       background: btn-popup-background
       hover: btn-popup-hover

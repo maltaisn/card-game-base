@@ -1,5 +1,5 @@
 {
-  io.github.maltaisn.cardengine.widget.card.CardActor$CardStyle: {
+  io.github.maltaisn.cardgame.widget.card.CardActor$CardStyle: {
     default: {
       cardWidth: 240
       cardHeight: 336

@@ -4,7 +4,7 @@ buildscript {
         gdxVersion = "1.9.9"
         ktxVersion = "1.9.9-b1"
         junitVersion = "4.12"
-        engineVersion = "0.0.1"
+        coreVersion = "0.0.1"
     }
     repositories {
         mavenCentral()
