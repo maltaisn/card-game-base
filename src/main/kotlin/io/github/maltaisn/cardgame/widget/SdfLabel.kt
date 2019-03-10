@@ -35,7 +35,7 @@ import ktx.math.vec2
 class SdfLabel(text: CharSequence?, private val skin: Skin, sdfStyle: SdfLabelStyle) :
         Label(text, createLabelStyle(skin, sdfStyle)) {
 
-    /** The style of the distance field label. */
+    /** The style of the distance field label, replaces [style]. */
     var sdfStyle: SdfLabelStyle = sdfStyle
         set(value) {
             field = value
@@ -44,14 +44,15 @@ class SdfLabel(text: CharSequence?, private val skin: Skin, sdfStyle: SdfLabelSt
 
     private val sdfShader: SdfShader
 
+
     init {
         sdfShader = skin.get(SHADER_NAME, SdfShader::class.java)
-
-        setFontScale(sdfStyle.fontSize / 32f)
     }
 
     override fun draw(batch: Batch, parentAlpha: Float) {
+        // Draw the text
         if (batch.shader === sdfShader) {
+            // No need to change the shader
             super.draw(batch, parentAlpha)
         } else {
             batch.shader = sdfShader
@@ -91,9 +92,9 @@ class SdfLabel(text: CharSequence?, private val skin: Skin, sdfStyle: SdfLabelSt
     }
 
     class SdfLabelStyle {
+        var bold = false
         var fontSize = 24f
         var fontColor: Color = Color.WHITE
-        var bold = false
         var drawShadow = false
         var shadowColor: Color = Color.BLACK
     }

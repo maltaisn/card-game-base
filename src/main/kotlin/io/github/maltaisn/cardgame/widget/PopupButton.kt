@@ -94,7 +94,7 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : Table(skin) {
                     selectionElapsed = SELECTION_FADE_DURATION * selectionAlpha
 
                     if (clickListener != null && withinBounds(x, y)) {
-                        clickListener?.onButtonClicked(this@PopupButton)
+                        clickListener?.onPopupButtonClicked(this@PopupButton)
                     }
                 }
             }
@@ -122,7 +122,7 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : Table(skin) {
 
         // Add the button label
         label = SdfLabel(text, skin, style.fontStyle)
-        add(label).fill().pad(0f, 15f, 0f, 15f)
+        add(label).expand().pad(0f, 15f, 0f, 15f)
     }
 
     override fun act(delta: Float) {
@@ -206,7 +206,7 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : Table(skin) {
     }
 
     interface ClickListener {
-        fun onButtonClicked(button: PopupButton)
+        fun onPopupButtonClicked(button: PopupButton)
     }
 
     companion object {

@@ -3,7 +3,8 @@
     black: { hex: #000000ff }
     white: { hex: #ffffffff }
     textColorBlack: { hex: #1b1b1bff }
-    textColorGray: { hex: #3b3b3bff }
+    textColorLightGray: { hex: #b0b0b0ff }
+    textColorDarkGray: { hex: #3b3b3bff }
     textColorWhite: { hex: #e7e7e7ff }
   }
   io.github.maltaisn.cardgame.widget.GameLayer$CoreStyle: {
@@ -15,46 +16,6 @@
       cardSelection: card-selection
       cardHover: card-hover
       cardSlot: card-slot
-    }
-  }
-  io.github.maltaisn.cardgame.widget.SdfLabel$SdfLabelStyle: {
-    white16shadow: {
-      fontSize: 16
-      fontColor: textColorWhite
-      drawShadow: true
-      shadowColor: black
-    }
-    black20: {
-      fontSize: 20
-      fontColor: textColorBlack
-    }
-    black20bold: {
-      fontSize: 20
-      fontColor: textColorBlack
-      bold: true
-    }
-    gray22bold: {
-      fontSize: 22
-      fontColor: textColorGray
-      bold: true
-    }
-    gray22boldShadow: {
-      fontSize: 22
-      fontColor: textColorGray
-      bold: true
-      drawShadow: true
-      shadowColor: black
-    }
-    black32bold: {
-      fontSize: 32
-      fontColor: textColorGray
-      bold: true
-    }
-    black40shadow: {
-      fontSize: 40
-      fontColor: textColorGray
-      drawShadow: true
-      shadowColor: black
     }
   }
   io.github.maltaisn.cardgame.widget.Popup$PopupStyle: {
@@ -89,6 +50,37 @@
         shadowColor: white
       }
       backgroundScale: 0.75
+    }
+  }
+  io.github.maltaisn.cardgame.widget.MenuButton$MenuButtonStyle: {
+    default: {
+      backgroundCenter: btn-menu-center
+      backgroundTop: btn-menu-top
+      backgroundBottom: btn-menu-bottom
+      backgroundLeft: btn-menu-left
+      backgroundRight: btn-menu-right
+      backgroundScale: 0.75
+      fontStyle: {
+        fontSize: 22
+        fontColor: textColorWhite
+        drawShadow: true
+        shadowColor: black
+      }
+      selectedColor: textColorLightGray
+      disabledColor: textColorLightGray
+      hoverMaxAlpha: 0.5
+      iconLabelMargin: 10
+    }
+  }
+  io.github.maltaisn.cardgame.widget.CardGameIcons: {
+    default: {
+      arrowRight: icon-arrow-right
+      book: icon-book
+      cards: icon-cards
+      chevronLeft: icon-chevron-left
+      info: icon-info
+      list: icon-list
+      settings: icon-settings
     }
   }
 }
