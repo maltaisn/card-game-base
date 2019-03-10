@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.badlogic.gdx.utils.StringBuilder
 import io.github.maltaisn.cardgame.Resources
 import ktx.assets.file
 import ktx.math.vec2
@@ -42,6 +43,8 @@ class SdfLabel(text: CharSequence?, private val skin: Skin, sdfStyle: SdfLabelSt
             style = createLabelStyle(skin, value)
         }
 
+    private var _text = StringBuilder()
+
     private val sdfShader: SdfShader
 
     private val tempColor = Color()
@@ -51,6 +54,20 @@ class SdfLabel(text: CharSequence?, private val skin: Skin, sdfStyle: SdfLabelSt
         sdfShader = skin.get(SHADER_NAME, SdfShader::class.java)
         setFontScale(sdfStyle.fontSize / 32f)
     }
+
+    override fun setText(newText: CharSequence?) {
+        if (sdfStyle.allCaps) {
+            // Somewhat inefficient but there's no alternative...
+            _text.setLength(0)
+            _text.append(newText)
+            super.setText(newText.toString().toUpperCase())
+        } else {
+            super.setText(newText)
+        }
+    }
+
+    override fun getText(): StringBuilder = if (sdfStyle.allCaps) _text else super.getText()
+
 
     override fun draw(batch: Batch, parentAlpha: Float) {
         // Draw the text
@@ -100,6 +117,7 @@ class SdfLabel(text: CharSequence?, private val skin: Skin, sdfStyle: SdfLabelSt
 
     class SdfLabelStyle {
         var bold = false
+        var allCaps = false
         var fontSize = 24f
         var fontColor: Color = Color.WHITE
         var drawShadow = false

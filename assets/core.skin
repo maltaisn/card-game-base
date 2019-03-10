@@ -62,6 +62,7 @@
       backgroundScale: 0.75
       fontStyle: {
         bold: true
+        allCaps: true
         fontSize: 22
         fontColor: textColorWhite
         drawShadow: true
