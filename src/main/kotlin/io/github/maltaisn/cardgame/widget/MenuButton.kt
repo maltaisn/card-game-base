@@ -117,13 +117,11 @@ class MenuButton(skin: Skin) : Table(skin) {
     private val iconView: ShadowImage
 
     // Hover and selection status.
-    private val tempColor = Color()
     private var selected = false
     private var hovered = false
     private var selectionElapsed = 0f
     private var hoverElapsed = 0f
     private var hoverAlpha = 0f
-
     private var selectionAlpha = 0f
         set(value) {
             field = value
@@ -131,6 +129,8 @@ class MenuButton(skin: Skin) : Table(skin) {
             labelView.color.set(color)
             iconView.color.set(color)
         }
+
+    private val tempColor = Color()
 
     private val backgroundDrawable: Drawable
         get() = when (anchorSide) {

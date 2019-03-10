@@ -16,6 +16,7 @@
 
 package io.github.maltaisn.cardgame.widget
 
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Action
@@ -42,7 +43,7 @@ class Popup(skin: Skin) : FrameBufferTable() {
         private set
 
     /** Distance of the popup from the actor. */
-    var distance = 10f
+    var distance = 5f
 
     /** The actor on which the popup is attached to, or `null` if not shown. */
     var actor: Actor? = null
@@ -55,6 +56,8 @@ class Popup(skin: Skin) : FrameBufferTable() {
 
     private var offsetX = 0f
     private var offsetY = 0f
+
+    private val tempColor = Color()
 
     init {
         isVisible = false
@@ -97,15 +100,16 @@ class Popup(skin: Skin) : FrameBufferTable() {
     }
 
     override fun drawChildren(batch: Batch, parentAlpha: Float) {
+        tempColor.set(batch.color)
+        batch.setColor(color.r, color.g, color.b, color.a * parentAlpha)
+
         // Draw the body
-        val colorBefore = batch.color.cpy()
         val scale = style.backgroundScale
         val body = style.body as TransformDrawable
         val tipPadLeft = padLeft - body.leftWidth * scale
         val tipPadRight = padRight - body.rightWidth * scale
         val tipPadTop = padTop - body.topHeight * scale
         val tipPadBottom = padBottom - body.bottomHeight * scale
-        batch.setColor(1f, 1f, 1f, 1f)
         body.draw(batch, x + tipPadLeft, y + tipPadBottom, 0f, 0f,
                 (width - tipPadLeft - tipPadRight) / scale,
                 (height - tipPadTop - tipPadBottom) / scale, scale, scale, 0f)
@@ -141,9 +145,9 @@ class Popup(skin: Skin) : FrameBufferTable() {
                     0f, 0f, tip.minWidth, tip.minHeight, scale, scale, 0f)
         }
 
-        batch.color = colorBefore
-
         super.drawChildren(batch, parentAlpha)
+
+        batch.setColor(tempColor.r, tempColor.g, tempColor.b, tempColor.a)
     }
 
     /**

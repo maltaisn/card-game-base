@@ -44,9 +44,12 @@ class SdfLabel(text: CharSequence?, private val skin: Skin, sdfStyle: SdfLabelSt
 
     private val sdfShader: SdfShader
 
+    private val tempColor = Color()
+
 
     init {
         sdfShader = skin.get(SHADER_NAME, SdfShader::class.java)
+        setFontScale(sdfStyle.fontSize / 32f)
     }
 
     override fun draw(batch: Batch, parentAlpha: Float) {
@@ -55,14 +58,18 @@ class SdfLabel(text: CharSequence?, private val skin: Skin, sdfStyle: SdfLabelSt
             // No need to change the shader
             super.draw(batch, parentAlpha)
         } else {
+            tempColor.set(batch.color)
+            batch.setColor(color.r, color.g, color.b, color.a * parentAlpha)
+
             batch.shader = sdfShader
 
             sdfShader.drawShadow = sdfStyle.drawShadow
             sdfShader.shadowColor = sdfStyle.shadowColor
-            sdfShader.update()
+            sdfShader.updateUniforms()
 
             super.draw(batch, parentAlpha)
             batch.shader = null
+            batch.setColor(tempColor.r, tempColor.g, tempColor.b, tempColor.a)
         }
     }
 
@@ -80,7 +87,7 @@ class SdfLabel(text: CharSequence?, private val skin: Skin, sdfStyle: SdfLabelSt
             check(isCompiled) { "Distance field font shader compilation failed: $log" }
         }
 
-        fun update() {
+        fun updateUniforms() {
             setUniformf("u_smoothing", 0.5f * smoothing)
             setUniformf("u_drawShadow", if (drawShadow) 1f else 0f)
             if (drawShadow) {

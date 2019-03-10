@@ -61,6 +61,7 @@
       backgroundRight: btn-menu-right
       backgroundScale: 0.75
       fontStyle: {
+        bold: true
         fontSize: 22
         fontColor: textColorWhite
         drawShadow: true
@@ -69,7 +70,7 @@
       selectedColor: textColorLightGray
       disabledColor: textColorLightGray
       hoverMaxAlpha: 0.5
-      iconLabelMargin: 10
+      iconLabelMargin: 15
     }
   }
   io.github.maltaisn.cardgame.widget.CardGameIcons: {

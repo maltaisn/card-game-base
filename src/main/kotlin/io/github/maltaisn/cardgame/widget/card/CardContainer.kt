@@ -172,7 +172,11 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
             // Draw the table content
-            super.draw(batch, parentAlpha)
+            // Since the alpha of this actor and its parent is handled with the frame buffer, draw children with no transparency.
+            val oldAlpha = color.a
+            color.a = 1f
+            super.draw(batch, 1f)
+            color.a = oldAlpha
 
             fbo.end()
 

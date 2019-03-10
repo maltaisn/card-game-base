@@ -17,6 +17,7 @@
 package io.github.maltaisn.cardgame.widget.card
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Actor
@@ -103,6 +104,8 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
     private var hoverElapsed = 0f
     private var selectionAlpha = 0f
     private var hoverAlpha = 0f
+
+    private val tempColor = Color()
 
     /**
      * Internal flag used by the animation layer to indicate when a card is being animated.
@@ -209,15 +212,14 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
 
 
     override fun draw(batch: Batch, parentAlpha: Float) {
-        val colorBefore = batch.color.cpy()
-
-        val scale = size / cardStyle.cardWidth
-        batch.setColor(1f, 1f, 1f, 1f)
+        tempColor.set(batch.color)
+        batch.setColor(color.r, color.g, color.b, color.a * parentAlpha)
 
         // Draw background
         drawCenteredDrawable(batch, coreStyle.cardBackground as TransformDrawable)
 
         // Draw card
+        val scale = size / cardStyle.cardWidth
         val card = (if (shown) cardStyle.cards[card.value] else cardStyle.back) as TransformDrawable
         card.draw(batch, x + (width - card.minWidth * scale) / 2,
                 y + (height - card.minHeight * scale) / 2, 0f, 0f,
@@ -225,17 +227,17 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
 
         // Draw hover
         if (hoverAlpha != 0f) {
-            batch.setColor(hoverAlpha, hoverAlpha, hoverAlpha, hoverAlpha)
+            batch.setColor(color.r, color.g, color.b, color.a * parentAlpha * hoverAlpha)
             drawCenteredDrawable(batch, coreStyle.cardHover as TransformDrawable)
         }
 
         // Draw selection
         if (selectionAlpha != 0f) {
-            batch.setColor(selectionAlpha, selectionAlpha, selectionAlpha, selectionAlpha)
+            batch.setColor(color.r, color.g, color.b, color.a * parentAlpha * selectionAlpha)
             drawCenteredDrawable(batch, coreStyle.cardSelection as TransformDrawable)
         }
 
-        batch.color = colorBefore
+        batch.setColor(tempColor.r, tempColor.g, tempColor.b, tempColor.a)
     }
 
     /** Draw a drawable to fit around the actor when considering padding. */

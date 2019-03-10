@@ -17,6 +17,7 @@
 package io.github.maltaisn.cardgame.widget
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Actor
@@ -77,6 +78,8 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : Table(skin) {
     private var hoverElapsed = 0f
     private var selectionAlpha = 0f
     private var hoverAlpha = 0f
+
+    private val tempColor = Color()
 
     init {
         addListener(object : InputListener() {
@@ -158,11 +161,12 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : Table(skin) {
     }
 
     override fun drawChildren(batch: Batch, parentAlpha: Float) {
-        val colorBefore = batch.color.cpy()
+        tempColor.set(batch.color)
+
         val scale = style.backgroundScale
 
         // Draw background
-        batch.setColor(1f, 1f, 1f, 1f)
+        batch.setColor(color.r, color.g, color.b, color.a * parentAlpha)
         (style.background as TransformDrawable).draw(batch, x, y, 0f, 0f,
                 width / scale, height / scale, scale, scale, 0f)
 
@@ -172,19 +176,19 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : Table(skin) {
 
         // Draw hover
         if (hoverAlpha != 0f) {
-            batch.setColor(hoverAlpha, hoverAlpha, hoverAlpha, hoverAlpha)
+            batch.setColor(color.r, color.g, color.b, color.a * parentAlpha * hoverAlpha)
             (style.hover as TransformDrawable).draw(batch, x, y, 0f, 0f,
                     width / scale, height / scale, scale, scale, 0f)
         }
 
         // Draw selection
         if (selectionAlpha != 0f) {
-            batch.setColor(selectionAlpha, selectionAlpha, selectionAlpha, selectionAlpha)
+            batch.setColor(color.r, color.g, color.b, color.a * parentAlpha * selectionAlpha)
             (style.selection as TransformDrawable).draw(batch, x, y, 0f, 0f,
                     width / scale, height / scale, scale, scale, 0f)
         }
 
-        batch.color = colorBefore
+        batch.setColor(tempColor.r, tempColor.g, tempColor.b, tempColor.a)
     }
 
     override fun getPrefWidth(): Float {
