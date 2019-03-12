@@ -7,6 +7,17 @@
     textColorDarkGray: { hex: #3b3b3bff }
     textColorWhite: { hex: #e7e7e7ff }
   }
+  io.github.maltaisn.cardgame.widget.MenuIcons: {
+    default: {
+      arrowRight: icon-arrow-right
+      book: icon-book
+      cards: icon-cards
+      chevronLeft: icon-chevron-left
+      info: icon-info
+      list: icon-list
+      settings: icon-settings
+    }
+  }
   io.github.maltaisn.cardgame.widget.GameLayer$CoreStyle: {
     default: {
       background: background
@@ -74,15 +85,11 @@
       iconLabelMargin: 15
     }
   }
-  io.github.maltaisn.cardgame.widget.CardGameIcons: {
+  io.github.maltaisn.cardgame.widget.MainMenu$MainMenuStyle: {
     default: {
-      arrowRight: icon-arrow-right
-      book: icon-book
-      cards: icon-cards
-      chevronLeft: icon-chevron-left
-      info: icon-info
-      list: icon-list
-      settings: icon-settings
+      menuIcons: default
+      buttonStyle: default
+      iconSize: 48
     }
   }
 }

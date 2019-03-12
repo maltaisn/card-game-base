@@ -31,6 +31,7 @@ import io.github.maltaisn.cardgame.applyBounded
 import io.github.maltaisn.cardgame.core.Card
 import io.github.maltaisn.cardgame.widget.GameLayer
 import io.github.maltaisn.cardgame.withinBounds
+import ktx.style.get
 
 
 /**
@@ -121,8 +122,7 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
     constructor(skin: Skin, card: Card,
                 coreStyleName: String = "default",
                 cardStyleName: String = "default") :
-            this(skin.get(coreStyleName, GameLayer.CoreStyle::class.java),
-                    skin.get(cardStyleName, CardStyle::class.java), card)
+            this(skin[coreStyleName], skin[cardStyleName], card)
 
 
     init {

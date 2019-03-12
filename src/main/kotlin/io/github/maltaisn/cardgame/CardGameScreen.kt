@@ -29,6 +29,7 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.badlogic.gdx.utils.I18NBundle
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import io.github.maltaisn.cardgame.widget.GameLayer
 import io.github.maltaisn.cardgame.widget.PopupGroup
@@ -59,14 +60,17 @@ abstract class CardGameScreen(val game: CardGame) :
     lateinit var offscreenFboRegion: TextureRegion
 
     init {
+        @Suppress("LibGDXLogLevel")
         Gdx.app.logLevel = Application.LOG_DEBUG
 
         assetManager.apply {
             load<TextureAtlas>(Resources.CORE_SKIN_ATLAS)
             load<Skin>(Resources.CORE_SKIN, SkinLoader.SkinParameter(Resources.CORE_SKIN_ATLAS))
+            load<I18NBundle>(Resources.CORE_STRINGS_FILE)
             finishLoading()
 
             coreSkin = assetManager.getAsset(Resources.CORE_SKIN)
+            coreSkin.add(Resources.CORE_STRINGS_NAME, assetManager.getAsset<I18NBundle>(Resources.CORE_STRINGS_FILE))
 
             SdfLabel.load(coreSkin)
         }
@@ -131,6 +135,9 @@ abstract class CardGameScreen(val game: CardGame) :
     }
 
     private fun updateOffscreenFrameBuffer() {
+        if (::offscreenFbo.isInitialized) {
+            offscreenFbo.dispose()
+        }
         offscreenFbo = FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.width, Gdx.graphics.height, false)
         offscreenFboRegion = TextureRegion(offscreenFbo.colorBufferTexture)
         offscreenFboRegion.flip(false, true)

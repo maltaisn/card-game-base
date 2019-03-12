@@ -23,16 +23,21 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import io.github.maltaisn.cardgame.CardGameScreen
 import ktx.actors.alpha
+import ktx.math.vec2
 
 
 /**
  * A table that can draw its content on an offscreen
  * frame buffer before drawing it to the screen batch.
+ * Note that a frame buffer table CANNOT render a child that is also a frame buffer table!
  */
 open class FrameBufferTable : Table() {
 
     /** Whether to render table to frame buffer first, then to screen. Allows uniform transparency. */
     var renderToFrameBuffer = true
+
+    /** A translation made on position when the table is drawn. */
+    val drawOffset = vec2()
 
     override fun setStage(stage: Stage?) {
         require(stage == null || stage is CardGameScreen) {
@@ -42,6 +47,9 @@ open class FrameBufferTable : Table() {
     }
 
     override fun draw(batch: Batch, parentAlpha: Float) {
+        x += drawOffset.x
+        y += drawOffset.y
+
         if (renderToFrameBuffer) {
             val stage = stage as CardGameScreen
             val fbo = stage.offscreenFbo
@@ -79,6 +87,9 @@ open class FrameBufferTable : Table() {
         } else {
             super.draw(batch, parentAlpha)
         }
+
+        x -= drawOffset.x
+        y -= drawOffset.y
     }
 
 }

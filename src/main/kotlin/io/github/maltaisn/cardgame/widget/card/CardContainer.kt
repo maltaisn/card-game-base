@@ -134,6 +134,8 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
     protected var cardHeight = 0f
     protected var cardScale = 0f
 
+    private val drawOffset = vec2()
+
     private var renderToFrameBuffer = false
 
 
@@ -155,6 +157,9 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
     }
 
     override fun draw(batch: Batch, parentAlpha: Float) {
+        x += drawOffset.x
+        y += drawOffset.y
+
         if (renderToFrameBuffer) {
             val stage = stage as CardGameScreen
             val fbo = stage.offscreenFbo
@@ -192,6 +197,9 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
         } else {
             super.draw(batch, parentAlpha)
         }
+
+        x -= drawOffset.x
+        y -= drawOffset.y
     }
 
     override fun childrenChanged() {
@@ -447,31 +455,35 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
     ////////// TRANSITIONS //////////
     /**
      * Animate a visibility change by fading in or out.
+     * A fade can be performed during another transition, the previous one will be canceled.
      * @param shown New visibility.
      */
     fun fade(shown: Boolean) {
         if (this.shown == shown) return
-
-        completeSlideTransition()
-
         this.shown = shown
-        if (actions.isEmpty) {
+
+        if (actions.firstOrNull() !is FadeTransitionAction) {
+            clearActions()
             this += FadeTransitionAction()
         }
     }
 
     /**
      * Animate a visibility change by sliding in or out in a [direction].
+     * A slide can be performed during another transition, the previous one will be canceled.
      * @param shown New visibility.
      */
     fun slide(shown: Boolean, direction: Direction) {
         if (this.shown == shown) return
-
-        completeSlideTransition()
-        clearActions()
-
         this.shown = shown
-        this += SlideTransitionAction(direction)
+
+        val first = actions.firstOrNull()
+        if (first is SlideTransitionAction) {
+            first.start(direction)
+        } else {
+            clearActions()
+            this += SlideTransitionAction().start(direction)
+        }
     }
 
     private inner class FadeTransitionAction : Action() {
@@ -481,6 +493,8 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
             isVisible = true
             renderToFrameBuffer = true
             alpha = if (shown) 1f else 0f
+            drawOffset.x = 0f
+            drawOffset.y = 0f
         }
 
         override fun act(delta: Float): Boolean {
@@ -498,69 +512,43 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
         }
     }
 
-    private fun completeSlideTransition() {
-        // Complete previous slide transition if there was one.
-        val action = actions.firstOrNull()
-        if (action is SlideTransitionAction) {
-            action.complete()
-            clearActions()
-        }
-    }
-
-    private inner class SlideTransitionAction(direction: Direction) : Action() {
+    private inner class SlideTransitionAction : Action() {
         private var elapsed = 0f
-        private var completed = false
+        private val startOffset = vec2()
+        private val endOffset = vec2()
 
-        private var startX: Float = x
-        private var startY: Float = y
-        private var endX: Float = x
-        private var endY: Float = y
+        fun start(direction: Direction): SlideTransitionAction {
+            elapsed = 0f
 
-        init {
             isVisible = true
             renderToFrameBuffer = false
             alpha = 1f
 
+            startOffset.setZero()
+            endOffset.setZero()
+            val offset = if (shown) startOffset else endOffset
             when (direction) {
-                Direction.LEFT -> startX -= width
-                Direction.RIGHT -> startX += width
-                Direction.UP -> startY += height
-                Direction.DOWN -> startY -= height
+                Direction.LEFT -> offset.x -= width
+                Direction.RIGHT -> offset.x += width
+                Direction.UP -> offset.y += height
+                Direction.DOWN -> offset.y -= height
             }
-            if (!shown) {
-                val tempX = endX
-                val tempY = endY
-                endX = startX
-                endY = startY
-                startX = tempX
-                startY = tempY
-            }
-            setPosition(startX, startY)
+
+            return this
         }
 
         override fun act(delta: Float): Boolean {
-            if (completed) return true
-
             elapsed += delta
             val progress = TRANSITION_INTERPOLATION
                     .applyBounded(elapsed / TRANSITION_DURATION)
-            setPosition(startX + (endX - startX) * progress, startY + (endY - startY) * progress)
+            drawOffset.x = startOffset.x + (endOffset.x - startOffset.x) * progress
+            drawOffset.y = startOffset.y + (endOffset.y - startOffset.y) * progress
 
             if (elapsed >= TRANSITION_DURATION) {
-                complete()
+                isVisible = shown
                 return true
             }
             return false
-        }
-
-        fun complete() {
-            if (shown) {
-                setPosition(endX, endY)
-            } else {
-                isVisible = false
-                setPosition(startX, startY)
-            }
-            completed = true
         }
     }
 

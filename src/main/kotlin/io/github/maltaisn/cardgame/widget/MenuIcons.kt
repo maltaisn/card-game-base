@@ -19,7 +19,7 @@ package io.github.maltaisn.cardgame.widget
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 
 
-class CardGameIcons {
+class MenuIcons {
 
     lateinit var cards: Drawable
     lateinit var chevronLeft: Drawable

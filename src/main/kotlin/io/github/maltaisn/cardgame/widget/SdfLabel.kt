@@ -28,6 +28,7 @@ import com.badlogic.gdx.utils.StringBuilder
 import io.github.maltaisn.cardgame.Resources
 import ktx.assets.file
 import ktx.math.vec2
+import ktx.style.get
 
 
 /**
@@ -51,7 +52,7 @@ class SdfLabel(text: CharSequence?, private val skin: Skin, sdfStyle: SdfLabelSt
 
 
     init {
-        sdfShader = skin.get(SHADER_NAME, SdfShader::class.java)
+        sdfShader = skin[SHADER_NAME]
         setFontScale(sdfStyle.fontSize / 32f)
     }
 
@@ -151,7 +152,7 @@ class SdfLabel(text: CharSequence?, private val skin: Skin, sdfStyle: SdfLabelSt
 
         private fun createLabelStyle(skin: Skin, style: SdfLabelStyle): LabelStyle {
             load(skin)
-            val font = skin.getFont(if (style.bold) FONT_BOLD_NAME else FONT_NAME)
+            val font: BitmapFont = skin.get(if (style.bold) FONT_BOLD_NAME else FONT_NAME)
             return LabelStyle(font, style.fontColor)
         }
 

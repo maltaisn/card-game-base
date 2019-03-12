@@ -36,9 +36,7 @@ import io.github.maltaisn.cardgame.withinBounds
 /**
  * A button in a menu, with an optional text and icon.
  */
-class MenuButton(skin: Skin) : Table(skin) {
-
-    val style: MenuButtonStyle = skin.get(MenuButtonStyle::class.java)
+class MenuButton(skin: Skin, val style: MenuButtonStyle, text: String? = null, icon: Drawable? = null) : Table(skin) {
 
     /** The button text, or `null` for none. */
     var text: CharSequence?
@@ -75,7 +73,7 @@ class MenuButton(skin: Skin) : Table(skin) {
             if (field == value) return
             field = value
             if (iconSide == Side.NONE) {
-                populateTable()
+                updateButtonLayout()
             }
         }
 
@@ -88,7 +86,7 @@ class MenuButton(skin: Skin) : Table(skin) {
         set(value) {
             if (field == value) return
             field = value
-            populateTable()
+            updateButtonLayout()
         }
 
     /** Whether the button can be selected, hovered and clicked */
@@ -140,6 +138,9 @@ class MenuButton(skin: Skin) : Table(skin) {
             Side.LEFT -> style.backgroundLeft
             Side.RIGHT -> style.backgroundRight
         }
+
+    constructor(skin: Skin, text: String? = null, icon: Drawable? = null) :
+            this(skin, skin.get(MenuButtonStyle::class.java), text, icon)
 
     init {
         touchable = Touchable.enabled
@@ -195,11 +196,14 @@ class MenuButton(skin: Skin) : Table(skin) {
         }
 
         pad(10f, 10f, 10f, 10f)
-        populateTable()
+        updateButtonLayout()
+
+        this.text = text
+        this.icon = icon
     }
 
     /** Clear the children and redo the correct label and icon layout. */
-    private fun populateTable() {
+    private fun updateButtonLayout() {
         clearChildren()
         when (if (iconSide == Side.NONE) anchorSide else iconSide) {
             Side.NONE, Side.TOP -> {

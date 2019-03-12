@@ -54,9 +54,6 @@ class Popup(skin: Skin) : FrameBufferTable() {
         private set
 
 
-    private var offsetX = 0f
-    private var offsetY = 0f
-
     private val tempColor = Color()
 
     init {
@@ -94,8 +91,8 @@ class Popup(skin: Skin) : FrameBufferTable() {
                 }
             }
             val actorPos = it.localToActorCoordinates(parent, vec2())
-            this.x = actorPos.x + dx + offsetX
-            this.y = actorPos.y + dy + offsetY
+            this.x = actorPos.x + dx + drawOffset.x
+            this.y = actorPos.y + dy + drawOffset.y
         }
     }
 
@@ -230,32 +227,30 @@ class Popup(skin: Skin) : FrameBufferTable() {
 
         init {
             isVisible = true
-            offsetX = 0f
-            offsetY = 0f
-            alpha = if (shown) 1f else 0f
+            drawOffset.setZero()
+            alpha = if (shown) 0f else 1f
             renderToFrameBuffer = true
         }
 
         override fun act(delta: Float): Boolean {
             elapsed += if (shown) delta else -delta
-            val progress = TRANSITION_INTERPOLATION.applyBounded(
-                    elapsed / TRANSITION_DURATION)
-            val offset = (1 - progress) * TRANSITION_DISTANCE
+            val progress = TRANSITION_INTERPOLATION.applyBounded(elapsed / TRANSITION_DURATION)
+            val offset = progress * TRANSITION_DISTANCE
             when (side) {
                 Side.CENTER -> Unit
-                Side.LEFT -> offsetX = offset
-                Side.RIGHT -> offsetX = -offset
-                Side.ABOVE -> offsetY = -offset
-                Side.BELOW -> offsetY = offset
+                Side.LEFT -> drawOffset.x = -offset
+                Side.RIGHT -> drawOffset.x = offset
+                Side.ABOVE -> drawOffset.y = offset
+                Side.BELOW -> drawOffset.y = -offset
             }
             alpha = progress
 
             if (shown && progress >= 1 || !shown && progress <= 0) {
                 if (!shown) {
-                    isVisible = false
                     actor = null
                     side = Side.CENTER
                 }
+                isVisible = shown
                 renderToFrameBuffer = false
                 return true
             }

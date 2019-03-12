@@ -170,7 +170,6 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : Table(skin) {
         (style.background as TransformDrawable).draw(batch, x, y, 0f, 0f,
                 width / scale, height / scale, scale, scale, 0f)
 
-
         // Draw button content
         super.drawChildren(batch, parentAlpha)
 

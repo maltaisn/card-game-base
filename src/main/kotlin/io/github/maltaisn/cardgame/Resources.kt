@@ -26,8 +26,8 @@ object Resources {
     const val PCARD_SKIN = "core/pcard/pcard.skin"
     const val PCARD_SKIN_ATLAS = "core/pcard/pcard.atlas"
 
-    internal const val CORE_SKIN = "core/core.skin"
-    internal const val CORE_SKIN_ATLAS = "core/core.atlas"
+    const val CORE_SKIN = "core/core.skin"
+    const val CORE_SKIN_ATLAS = "core/core.atlas"
 
     const val FONT_FILE = "core/font/font.fnt"
     const val FONT_BOLD_FILE = "core/font/font-bold.fnt"
@@ -35,5 +35,8 @@ object Resources {
     const val FONT_BOLD_TEXTURE = "core/font/font-bold.png"
     const val FONT_SHADER_VERT = "core/font/font.vert"
     const val FONT_SHADER_FRAG = "core/font/font.frag"
+
+    const val CORE_STRINGS_FILE = "core/strings"
+    const val CORE_STRINGS_NAME = "core-strings"
 
 }
