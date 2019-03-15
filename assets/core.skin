@@ -3,9 +3,9 @@
     black: { hex: #000000ff }
     white: { hex: #ffffffff }
     textColorBlack: { hex: #1b1b1bff }
-    textColorLightGray: { hex: #b0b0b0ff }
+    textColorLightGray: { hex: #abababff }
     textColorDarkGray: { hex: #3b3b3bff }
-    textColorWhite: { hex: #e7e7e7ff }
+    textColorWhite: { hex: #e3e3e3ff }
   }
   io.github.maltaisn.cardgame.widget.MenuIcons: {
     default: {
@@ -22,7 +22,7 @@
     default: {
       background: background
       border: background-border
-      borderMargin: 15
+      borderMargin: 13
       cardBackground: card-background
       cardSelection: card-selection
       cardHover: card-hover
@@ -71,7 +71,14 @@
       backgroundLeft: btn-menu-left
       backgroundRight: btn-menu-right
       backgroundScale: 0.75
-      fontStyle: {
+      selectedColor: textColorLightGray
+      disabledColor: textColorLightGray
+      iconTitleMargin: 15
+    }
+  }
+  io.github.maltaisn.cardgame.widget.MainMenu$MainMenuStyle: {
+    default: {
+      itemFontStyle: {
         bold: true
         allCaps: true
         fontSize: 22
@@ -79,17 +86,28 @@
         drawShadow: true
         shadowColor: black
       }
-      selectedColor: textColorLightGray
-      disabledColor: textColorLightGray
-      hoverMaxAlpha: 0.5
-      iconLabelMargin: 15
+      itemIconSize: 48
     }
   }
-  io.github.maltaisn.cardgame.widget.MainMenu$MainMenuStyle: {
+  io.github.maltaisn.cardgame.widget.SubMenu$SubMenuStyle: {
     default: {
-      menuIcons: default
-      buttonStyle: default
-      iconSize: 48
+      titleStyle: {
+        fontSize: 48
+        fontColor: textColorWhite
+        drawShadow: true
+        shadowColor: black
+      }
+      backArrowIcon: icon-chevron-left
+      itemFontStyle: {
+        bold: true
+        allCaps: true
+        fontSize: 22
+        fontColor: textColorWhite
+        drawShadow: true
+        shadowColor: black
+      }
+      itemIconSize: 32
+      contentBackground: submenu-content-background
     }
   }
 }

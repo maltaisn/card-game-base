@@ -20,166 +20,117 @@ import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.utils.I18NBundle
-import com.gmail.blueboxware.libgdxplugin.annotations.GDXAssets
-import io.github.maltaisn.cardgame.Resources
+import com.badlogic.gdx.utils.Align
 import io.github.maltaisn.cardgame.applyBounded
 import ktx.actors.alpha
 import ktx.actors.plusAssign
-import ktx.style.get
 
 
-class MainMenu(skin: Skin) : Table() {
+/**
+ * The main menu of the game, has two rows of buttons that lead to submenus.
+ * When the menu is created, it is hidden.
+ */
+class MainMenu(skin: Skin) : MenuTable(skin) {
 
     val style = skin.get(MainMenuStyle::class.java)
 
-    val topButtons = ArrayList<MenuButton>()
-    val bottomButtons = ArrayList<MenuButton>()
+    private val topRow = Table()
+    private val bottomRow = Table()
 
-    private val topRow = FrameBufferTable()
-    private val bottomRow = FrameBufferTable()
+    override var shown = false
+        set(value) {
+            if (field == value) return
+            field = value
 
-    /** Whether the menu is shown or not. Like [isVisible] but with the correct value during a transition. */
-    var shown = true
-        private set
+            if (actions.isEmpty) {
+                this += TransitionAction()
+            }
+        }
+
+    private var transitionAction: TransitionAction? = null
 
     init {
+        isVisible = false
+        checkable = false
+
         // Do the layout
-        add(topRow).growX().height(100f).pad(0f, 10f, 0f, 10f).row()
-        add().expand().row()
-        add(bottomRow).height(100f).pad(0f, 10f, 0f, 10f).growX()
-
-        buildDefaultMenu(skin)
+        add(topRow).growX().expandY().height(MENU_ROW_HEIGHT)
+                .align(Align.top).pad(0f, 10f, 0f, 10f).row()
+        add(bottomRow).growX().expandY().height(MENU_ROW_HEIGHT)
+                .align(Align.bottom).pad(0f, 10f, 0f, 10f).growX()
     }
 
-    private fun buildDefaultMenu(skin: Skin) {
-        @GDXAssets(propertiesFiles = ["assets/core/strings.properties"])
-        val bundle: I18NBundle = skin[Resources.CORE_STRINGS_NAME]
-        val icons = style.menuIcons
-        val btnStyle = style.buttonStyle
+    override fun layout() {
+        super.layout()
 
-        val rulesBtn = MenuButton(skin, btnStyle, bundle.get("mainmenu_rules"), icons.book)
-        rulesBtn.clickListener = object : MenuButton.ClickListener {
-            override fun onMenuButtonClicked(button: MenuButton) {
-                // Nothing for now
-            }
+        transitionAction?.let {
+            it.topStartY = topRow.y
+            it.bottomStartY = bottomRow.y
         }
-        topButtons += rulesBtn
-
-        val statsBtn = MenuButton(skin, btnStyle, bundle.get("mainmenu_stats"), icons.list)
-        statsBtn.clickListener = object : MenuButton.ClickListener {
-            override fun onMenuButtonClicked(button: MenuButton) {
-                // Nothing for now
-            }
-        }
-        topButtons += statsBtn
-
-        val aboutBtn = MenuButton(skin, btnStyle, bundle.get("mainmenu_about"), icons.info)
-        aboutBtn.clickListener = object : MenuButton.ClickListener {
-            override fun onMenuButtonClicked(button: MenuButton) {
-                // Nothing for now
-            }
-        }
-        topButtons += aboutBtn
-
-        val newGameBtn = MenuButton(skin, btnStyle, bundle.get("mainmenu_new_game"), icons.cards)
-        newGameBtn.clickListener = object : MenuButton.ClickListener {
-            override fun onMenuButtonClicked(button: MenuButton) {
-                // Nothing for now
-            }
-        }
-        bottomButtons += newGameBtn
-
-        val continueBtn = MenuButton(skin, btnStyle, bundle.get("mainmenu_continue"), icons.arrowRight)
-        continueBtn.clickListener = object : MenuButton.ClickListener {
-            override fun onMenuButtonClicked(button: MenuButton) {
-                // Nothing for now
-            }
-        }
-        bottomButtons += continueBtn
-
-        val settingsBtn = MenuButton(skin, btnStyle, bundle.get("mainmenu_settings"), icons.settings)
-        settingsBtn.clickListener = object : MenuButton.ClickListener {
-            override fun onMenuButtonClicked(button: MenuButton) {
-                // Nothing for now
-            }
-        }
-        bottomButtons += settingsBtn
-
-        updateMenuLayout()
     }
 
-    /**
-     * Redo the menu layout, must be called if new items are added.
-     */
-    fun updateMenuLayout() {
+    override fun invalidateLayout() {
         topRow.clearChildren()
-        for (btn in topButtons) {
-            btn.anchorSide = MenuButton.Side.TOP
-            btn.iconSide = MenuButton.Side.LEFT
-            btn.iconSize = style.iconSize
-            topRow.add(btn).grow().pad(0f, 15f, 0f, 15f)
-        }
-
         bottomRow.clearChildren()
-        for (btn in bottomButtons) {
-            btn.anchorSide = MenuButton.Side.BOTTOM
-            btn.iconSide = MenuButton.Side.LEFT
-            btn.iconSize = style.iconSize
-            bottomRow.add(btn).grow().pad(0f, 15f, 0f, 15f)
+
+        for (item in items) {
+            val onTopRow = item.position == SIDE_TOP
+            val btn = MenuButton(skin, style.itemFontStyle, item.title, item.icon).apply {
+                clickListener = btnClickListener
+                anchorSide = if (onTopRow) MenuButton.Side.TOP else MenuButton.Side.BOTTOM
+                iconSide = MenuButton.Side.LEFT
+                iconSize = this@MainMenu.style.itemIconSize
+            }
+            item.menu = this
+            item.button = btn
+            (if (onTopRow) topRow else bottomRow).add(btn).grow().pad(0f, 15f, 0f, 15f)
         }
     }
 
-    /**
-     * Animate a visibility change by sliding the top row up and the bottom row down
-     * when hiding, the oppose when showing. A slide can be performed during
-     * another slide, the previous one will be canceled.
-     * @param shown New visibility.
-     */
-    fun slide(shown: Boolean) {
-        if (this.shown == shown) return
-        this.shown = shown
-
-        if (topRow.actions.isEmpty) {
-            topRow += TransitionAction(topRow, false)
-            bottomRow += TransitionAction(bottomRow, true)
-        }
-    }
-
-    private inner class TransitionAction(private val table: FrameBufferTable,
-                                         private val slideDown: Boolean) : Action() {
+    private inner class TransitionAction : Action() {
         private var elapsed = if (shown) 0f else TRANSITION_DURATION
 
+        var topStartY = topRow.y
+        var bottomStartY = bottomRow.y
+
         init {
-            table.isVisible = true
-            table.drawOffset.setZero()
-            table.alpha = if (shown) 0f else 1f
-            table.renderToFrameBuffer = true
+            isVisible = true
+            alpha = if (shown) 0f else 1f
+            renderToFrameBuffer = true
+            transitionAction = this
         }
 
         override fun act(delta: Float): Boolean {
             elapsed += if (shown) delta else -delta
             val progress = TRANSITION_INTERPOLATION.applyBounded(elapsed / TRANSITION_DURATION)
-            table.drawOffset.y = (1 - progress) * table.height * if (slideDown) -1 else 1
-            table.alpha = progress
+
+            topRow.y = topStartY + (1 - progress) * MENU_ROW_HEIGHT
+            bottomRow.y = bottomStartY + (1 - progress) * -MENU_ROW_HEIGHT
+            alpha = progress
 
             if (shown && progress >= 1 || !shown && progress <= 0) {
-                table.isVisible = shown
-                table.renderToFrameBuffer = false
+                isVisible = shown
+                renderToFrameBuffer = false
+                transitionAction = null
+
+                // Place all animated widgets to their correct position
+                topRow.y = topStartY
+                bottomRow.y = bottomStartY
+
                 return true
             }
             return false
         }
     }
 
-    class MainMenuStyle {
-        lateinit var menuIcons: MenuIcons
-        lateinit var buttonStyle: MenuButton.MenuButtonStyle
-        var iconSize = 0f
-    }
+    class MainMenuStyle : MenuTableStyle()
 
     companion object {
-        private const val TRANSITION_DURATION = 0.5f
+        const val SIDE_TOP = 0
+        const val SIDE_BOTTOM = 1
+
+        internal const val TRANSITION_DURATION = 2.0f
+        private const val MENU_ROW_HEIGHT = 100f
 
         private val TRANSITION_INTERPOLATION = Interpolation.smooth
     }

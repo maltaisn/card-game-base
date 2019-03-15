@@ -17,12 +17,12 @@
 package io.github.maltaisn.cardgame.widget
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
+import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
@@ -30,6 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
 import io.github.maltaisn.cardgame.applyBounded
 import io.github.maltaisn.cardgame.withinBounds
+import ktx.actors.alpha
 import kotlin.math.max
 
 
@@ -79,9 +80,10 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : Table(skin) {
     private var selectionAlpha = 0f
     private var hoverAlpha = 0f
 
-    private val tempColor = Color()
 
     init {
+        touchable = Touchable.enabled
+
         addListener(object : InputListener() {
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                 if (enabled) {
@@ -161,12 +163,10 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : Table(skin) {
     }
 
     override fun drawChildren(batch: Batch, parentAlpha: Float) {
-        tempColor.set(batch.color)
-
         val scale = style.backgroundScale
 
         // Draw background
-        batch.setColor(color.r, color.g, color.b, color.a * parentAlpha)
+        batch.setColor(color.r, color.g, color.b, alpha * parentAlpha)
         (style.background as TransformDrawable).draw(batch, x, y, 0f, 0f,
                 width / scale, height / scale, scale, scale, 0f)
 
@@ -175,19 +175,17 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : Table(skin) {
 
         // Draw hover
         if (hoverAlpha != 0f) {
-            batch.setColor(color.r, color.g, color.b, color.a * parentAlpha * hoverAlpha)
+            batch.setColor(color.r, color.g, color.b, alpha * parentAlpha * hoverAlpha)
             (style.hover as TransformDrawable).draw(batch, x, y, 0f, 0f,
                     width / scale, height / scale, scale, scale, 0f)
         }
 
         // Draw selection
         if (selectionAlpha != 0f) {
-            batch.setColor(color.r, color.g, color.b, color.a * parentAlpha * selectionAlpha)
+            batch.setColor(color.r, color.g, color.b, alpha * parentAlpha * selectionAlpha)
             (style.selection as TransformDrawable).draw(batch, x, y, 0f, 0f,
                     width / scale, height / scale, scale, scale, 0f)
         }
-
-        batch.setColor(tempColor.r, tempColor.g, tempColor.b, tempColor.a)
     }
 
     override fun getPrefWidth(): Float {

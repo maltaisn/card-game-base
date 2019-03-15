@@ -49,14 +49,12 @@ class CardStack : CardContainer {
             // Draw the slot if there's no cards in the stack.
             val offset = computeAlignmentOffset(cardWidth, cardHeight)
             val slot = coreStyle.cardSlot as TransformDrawable
-            val colorBefore = batch.color.cpy()
             batch.setColor(1f, 1f, 1f, parentAlpha)
             slot.draw(batch, offset.x - slot.leftWidth * cardScale,
                     offset.y - slot.bottomHeight * cardScale, 0f, 0f,
                     cardWidth / cardScale + slot.leftWidth + slot.rightWidth,
                     cardHeight / cardScale + slot.bottomHeight + slot.topHeight,
                     cardScale, cardScale, 0f)
-            batch.color = colorBefore
         }
 
         super.drawChildren(batch, parentAlpha)

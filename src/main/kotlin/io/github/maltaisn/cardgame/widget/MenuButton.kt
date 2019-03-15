@@ -26,45 +26,59 @@ import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.scenes.scene2d.ui.Value
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
 import com.badlogic.gdx.utils.Scaling
 import io.github.maltaisn.cardgame.applyBounded
 import io.github.maltaisn.cardgame.withinBounds
+import ktx.actors.alpha
 
 
 /**
- * A button in a menu, with an optional text and icon.
+ * A button for a menu, with an optional title and icon.
  */
-class MenuButton(skin: Skin, val style: MenuButtonStyle, text: String? = null, icon: Drawable? = null) : Table(skin) {
+class MenuButton(skin: Skin,
+                 val style: MenuButtonStyle,
+                 val fontStyle: SdfLabel.SdfLabelStyle,
+                 title: CharSequence? = null, icon: Drawable? = null) : Table() {
 
-    /** The button text, or `null` for none. */
-    var text: CharSequence?
+    /** The button title, or `null` for none. */
+    var title: CharSequence?
         set(value) {
-            labelView.isVisible = (value != null)
-            labelView.setText(value)
+            val titleShown = (value != null && value.isNotEmpty())
+            titleLabel.isVisible = titleShown
+            titleLabel.setText(value)
             updateIconViewPadding()
-            invalidateHierarchy()
+
+            // Change the size of the cell according to its visibility
+            // since no text in a label still take a certain height.
+            val titleCell = getCell(titleLabel)
+            if (titleShown) {
+                titleCell.size(Value.prefWidth, Value.prefHeight)
+                        .minSize(Value.minWidth, Value.minHeight)
+                        .maxSize(Value.maxWidth, Value.maxHeight)
+            } else {
+                titleCell.size(0f, 0f)
+            }
         }
-        get() = labelView.text
+        get() = titleLabel.text
 
     /** The button icon, or `null` for none. */
     var icon: Drawable?
         set(value) {
-            iconView.isVisible = (value != null)
-            iconView.drawable = value
+            iconImage.isVisible = (value != null)
+            iconImage.drawable = value
             updateIconViewPadding()
             updateIconSize()
-            invalidateHierarchy()
         }
-        get() = iconView.drawable
+        get() = iconImage.drawable
 
     /** The icon size (width actually), in pixels. */
     var iconSize = 32f
         set(value) {
             field = value
             updateIconSize()
-            invalidateHierarchy()
         }
 
     /** The side on which this button is anchored. There will be no rounded corners on this side. */
@@ -89,43 +103,47 @@ class MenuButton(skin: Skin, val style: MenuButtonStyle, text: String? = null, i
             updateButtonLayout()
         }
 
-    /** Whether the button can be selected, hovered and clicked */
+    /** Whether the button can be pressed, hovered and clicked */
     var enabled = true
         set(value) {
             field = value
             if (!value) {
-                selected = false
+                pressed = false
                 hovered = false
-                selectionAlpha = 0f
+                pressAlpha = 0f
                 hoverAlpha = 0f
             }
-            val color = if (value) style.fontStyle.fontColor else style.disabledColor
-            labelView.color.set(color)
-            iconView.color.set(color)
+            val color = if (value) fontStyle.fontColor else style.disabledColor
+            titleLabel.color.set(color)
+            iconImage.color.set(color)
         }
 
     /**
      * Click listener, called when the button is clicked. Clicks must end within the bounds.
      * The listener is not called when the button is disabled.
      */
-    var clickListener: ClickListener? = null
+    var clickListener: ((btn: MenuButton) -> Unit)? = null
 
 
-    private val labelView: SdfLabel
-    private val iconView: ShadowImage
+    private val titleLabel: SdfLabel
+    private val iconImage: ShadowImage
 
-    // Hover and selection status.
-    private var selected = false
+    var checked = false
+    private var checkedElapsed = 0f
+    private var checkedAlpha = 0f
+
     private var hovered = false
-    private var selectionElapsed = 0f
     private var hoverElapsed = 0f
     private var hoverAlpha = 0f
-    private var selectionAlpha = 0f
+
+    private var pressed = false
+    private var pressElapsed = 0f
+    private var pressAlpha = 0f
         set(value) {
             field = value
-            val color = interpolateColors(style.fontStyle.fontColor, style.selectedColor, value)
-            labelView.color.set(color)
-            iconView.color.set(color)
+            val color = interpolateColors(fontStyle.fontColor, style.selectedColor, value)
+            titleLabel.color.set(color)
+            iconImage.color.set(color)
         }
 
     private val tempColor = Color()
@@ -139,8 +157,9 @@ class MenuButton(skin: Skin, val style: MenuButtonStyle, text: String? = null, i
             Side.RIGHT -> style.backgroundRight
         }
 
-    constructor(skin: Skin, text: String? = null, icon: Drawable? = null) :
-            this(skin, skin.get(MenuButtonStyle::class.java), text, icon)
+    constructor(skin: Skin, fontStyle: SdfLabel.SdfLabelStyle,
+                text: CharSequence? = null, icon: Drawable? = null) :
+            this(skin, skin.get(MenuButtonStyle::class.java), fontStyle, text, icon)
 
     init {
         touchable = Touchable.enabled
@@ -148,19 +167,19 @@ class MenuButton(skin: Skin, val style: MenuButtonStyle, text: String? = null, i
         addListener(object : InputListener() {
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                 if (enabled) {
-                    selected = true
-                    selectionElapsed = 0f
+                    pressed = true
+                    pressElapsed = 0f
                 }
                 return true
             }
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 if (enabled) {
-                    selected = false
-                    selectionElapsed = SELECTION_FADE_DURATION * selectionAlpha
+                    pressed = false
+                    pressElapsed = PRESS_FADE_DURATION * pressAlpha
 
                     if (clickListener != null && withinBounds(x, y)) {
-                        clickListener?.onMenuButtonClicked(this@MenuButton)
+                        clickListener!!(this@MenuButton)
                     }
                 }
             }
@@ -182,12 +201,11 @@ class MenuButton(skin: Skin, val style: MenuButtonStyle, text: String? = null, i
             }
         })
 
-        val fontStyle = style.fontStyle
-        labelView = SdfLabel(null, skin, fontStyle).apply {
+        titleLabel = SdfLabel(null, skin, fontStyle).apply {
             isVisible = false
             touchable = Touchable.disabled
         }
-        iconView = ShadowImage().apply {
+        iconImage = ShadowImage().apply {
             isVisible = false
             touchable = Touchable.disabled
             setScaling(Scaling.fit)
@@ -198,7 +216,7 @@ class MenuButton(skin: Skin, val style: MenuButtonStyle, text: String? = null, i
         pad(10f, 10f, 10f, 10f)
         updateButtonLayout()
 
-        this.text = text
+        this.title = title
         this.icon = icon
     }
 
@@ -207,20 +225,20 @@ class MenuButton(skin: Skin, val style: MenuButtonStyle, text: String? = null, i
         clearChildren()
         when (if (iconSide == Side.NONE) anchorSide else iconSide) {
             Side.NONE, Side.TOP -> {
-                add(iconView).expandX().row()
-                add(labelView).expandX()
+                add(iconImage).expandX().row()
+                add(titleLabel).expandX()
             }
             Side.BOTTOM -> {
-                add(labelView).expandX().row()
-                add(iconView).expandX()
+                add(titleLabel).expandX().row()
+                add(iconImage).expandX()
             }
             Side.LEFT -> {
-                add(iconView).expandY()
-                add(labelView).expandY()
+                add(iconImage).expandY()
+                add(titleLabel).expandY()
             }
             Side.RIGHT -> {
-                add(labelView).expandY()
-                add(iconView).expandY()
+                add(titleLabel).expandY()
+                add(iconImage).expandY()
             }
         }
         updateIconViewPadding()
@@ -229,9 +247,9 @@ class MenuButton(skin: Skin, val style: MenuButtonStyle, text: String? = null, i
 
     /** If both icon and label are visible, update the margin between them. */
     private fun updateIconViewPadding() {
-        val iconCell = getCell(iconView)
-        if (icon != null && text != null) {
-            val padding = style.iconLabelMargin
+        val iconCell = getCell(iconImage)
+        if (icon != null && title?.isEmpty() != true) {
+            val padding = style.iconTitleMargin
             when (if (iconSide == Side.NONE) anchorSide else iconSide) {
                 Side.NONE, Side.TOP -> iconCell.padBottom(padding)
                 Side.BOTTOM -> iconCell.padTop(padding)
@@ -246,8 +264,20 @@ class MenuButton(skin: Skin, val style: MenuButtonStyle, text: String? = null, i
     private fun updateIconSize() {
         val icon = icon
         if (icon != null) {
-            getCell(iconView).size(iconSize, icon.minHeight / icon.minWidth * iconSize)
+            getCell(iconImage).size(iconSize, icon.minHeight / icon.minWidth * iconSize)
+            invalidateHierarchy()
         }
+    }
+
+    override fun layout() {
+        super.layout()
+
+        /*
+        transitionAction?.let {
+            it.topStartY = topRow.y
+            it.bottomStartY = bottomRow.y
+        }
+        */
     }
 
     override fun act(delta: Float) {
@@ -255,14 +285,25 @@ class MenuButton(skin: Skin, val style: MenuButtonStyle, text: String? = null, i
 
         var renderingNeeded = false
 
-        // Update selection alpha
-        if (selected && selectionElapsed < SELECTION_FADE_DURATION) {
-            selectionElapsed += delta
-            selectionAlpha = SELECTION_IN_INTERPOLATION.applyBounded(selectionElapsed / SELECTION_FADE_DURATION)
+        // Update check alpha
+        if (checked && checkedElapsed < CHECK_FADE_DURATION) {
+            checkedElapsed += delta
+            checkedAlpha = CHECK_IN_INTERPOLATION.applyBounded(checkedElapsed / CHECK_FADE_DURATION)
             renderingNeeded = true
-        } else if (!selected && selectionElapsed > 0f) {
-            selectionElapsed -= delta
-            selectionAlpha = SELECTION_OUT_INTERPOLATION.applyBounded(selectionElapsed / SELECTION_FADE_DURATION)
+        } else if (!checked && checkedElapsed > 0f) {
+            checkedElapsed -= delta
+            checkedAlpha = CHECK_OUT_INTERPOLATION.applyBounded(checkedElapsed / CHECK_FADE_DURATION)
+            renderingNeeded = true
+        }
+
+        // Update press alpha
+        if (pressed && pressElapsed < PRESS_FADE_DURATION) {
+            pressElapsed += delta
+            pressAlpha = PRESS_IN_INTERPOLATION.applyBounded(pressElapsed / PRESS_FADE_DURATION)
+            renderingNeeded = true
+        } else if (!pressed && pressElapsed > 0f) {
+            pressElapsed -= delta
+            pressAlpha = PRESS_OUT_INTERPOLATION.applyBounded(pressElapsed / PRESS_FADE_DURATION)
             renderingNeeded = true
         }
 
@@ -283,29 +324,20 @@ class MenuButton(skin: Skin, val style: MenuButtonStyle, text: String? = null, i
     }
 
     override fun drawChildren(batch: Batch, parentAlpha: Float) {
-        tempColor.set(batch.color)
-
         val scale = style.backgroundScale
 
         // Draw background
+        // Alpha depends on hovered, checked and enabled states
+        val alpha = (0.2f + 0.2f * checkedAlpha + 0.1f * hoverAlpha) *
+                alpha * parentAlpha * if (enabled) 1f else 0.5f
         val background = backgroundDrawable as TransformDrawable
-        batch.setColor(color.r, color.g, color.b, color.a * parentAlpha * if (enabled) 1f else 0.7f)
+        batch.setColor(color.r, color.g, color.b, alpha)
         background.draw(batch, x, y, 0f, 0f,
                 width / scale, height / scale, scale, scale, 0f)
 
-        // Draw hover
-        if (hoverAlpha != 0f) {
-            batch.setColor(color.r, color.g, color.b,
-                    color.a * hoverAlpha * style.hoverMaxAlpha * parentAlpha)
-            background.draw(batch, x, y, 0f, 0f,
-                    width / scale, height / scale, scale, scale, 0f)
-        }
-
         // Draw button content
-        batch.setColor(color.r, color.g, color.b, color.a * parentAlpha)
+        batch.setColor(color.r, color.g, color.b, alpha * parentAlpha)
         super.drawChildren(batch, parentAlpha)
-
-        batch.setColor(tempColor.r, tempColor.g, tempColor.b, tempColor.a)
     }
 
     private fun interpolateColors(start: Color, end: Color, percent: Float): Color {
@@ -330,36 +362,33 @@ class MenuButton(skin: Skin, val style: MenuButtonStyle, text: String? = null, i
         /** At what scale the background drawable is drawn. */
         var backgroundScale = 0f
 
-        /** Font style for the label */
-        lateinit var fontStyle: SdfLabel.SdfLabelStyle
-        /** Color of the text and icon on selected state. */
+        /** Color of the title and icon on pressed state. */
         lateinit var selectedColor: Color
-        /** Color of the text and icon on disabled state. */
+        /** Color of the title and icon on disabled state. */
         lateinit var disabledColor: Color
-        /** When hovered, the background drawable is redrawn on top. The maximum alpha of that redraw. */
-        var hoverMaxAlpha = 0f
 
-        /** The margin between the icon and the label view. */
-        var iconLabelMargin = 0f
+        /** The margin between the icon and the title. */
+        var iconTitleMargin = 0f
     }
 
     enum class Side {
         NONE, TOP, BOTTOM, LEFT, RIGHT
     }
 
-    interface ClickListener {
-        fun onMenuButtonClicked(button: MenuButton)
-    }
-
     companion object {
+        /** The duration of the check fade. */
+        private const val CHECK_FADE_DURATION = 0.3f
+
         /** The duration of the hover fade. */
         private const val HOVER_FADE_DURATION = 0.3f
 
-        /** The duration of the selection fade. */
-        private const val SELECTION_FADE_DURATION = 0.3f
+        /** The duration of the press fade. */
+        private const val PRESS_FADE_DURATION = 0.3f
 
-        private val SELECTION_IN_INTERPOLATION: Interpolation = Interpolation.smooth
-        private val SELECTION_OUT_INTERPOLATION: Interpolation = Interpolation.smooth
+        private val CHECK_IN_INTERPOLATION: Interpolation = Interpolation.smooth
+        private val CHECK_OUT_INTERPOLATION: Interpolation = Interpolation.smooth
+        private val PRESS_IN_INTERPOLATION: Interpolation = Interpolation.smooth
+        private val PRESS_OUT_INTERPOLATION: Interpolation = Interpolation.smooth
         private val HOVER_IN_INTERPOLATION: Interpolation = Interpolation.pow2Out
         private val HOVER_OUT_INTERPOLATION: Interpolation = Interpolation.smooth
     }

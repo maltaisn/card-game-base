@@ -62,17 +62,15 @@ class GameLayer(skin: Skin) : Table(skin) {
 
     override fun drawChildren(batch: Batch, parentAlpha: Float) {
         // Draw the background
+        batch.setColor(1f, 1f, 1f, parentAlpha)
         style.background.draw(batch, 0f, 0f,
                 centerTable.width, centerTable.height)
 
         // Draw the background border
-        val colorBefore = batch.color.cpy()
-        batch.setColor(1f, 1f, 1f, parentAlpha)
         val margin = style.borderMargin
         style.border.draw(batch, margin, margin,
                 centerTable.width - 2 * margin,
                 centerTable.height - 2 * margin)
-        batch.color = colorBefore
 
         super.drawChildren(batch, parentAlpha)
     }

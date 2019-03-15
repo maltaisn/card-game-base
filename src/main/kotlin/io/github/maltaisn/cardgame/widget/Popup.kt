@@ -16,7 +16,6 @@
 
 package io.github.maltaisn.cardgame.widget
 
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Action
@@ -38,10 +37,6 @@ class Popup(skin: Skin) : FrameBufferTable() {
 
     val style = skin.get(PopupStyle::class.java)
 
-    /** Whether the popup is shown or not. Like [isVisible] but with the correct value during a transition. */
-    var shown = false
-        private set
-
     /** Distance of the popup from the actor. */
     var distance = 5f
 
@@ -53,8 +48,12 @@ class Popup(skin: Skin) : FrameBufferTable() {
     var side = Side.CENTER
         private set
 
+    /** Whether the popup is shown or not. Like [isVisible] but with the correct value during a transition. */
+    var shown = false
+        private set
 
-    private val tempColor = Color()
+    private var translateX = 0f
+    private var translateY = 0f
 
     init {
         isVisible = false
@@ -91,14 +90,13 @@ class Popup(skin: Skin) : FrameBufferTable() {
                 }
             }
             val actorPos = it.localToActorCoordinates(parent, vec2())
-            this.x = actorPos.x + dx + drawOffset.x
-            this.y = actorPos.y + dy + drawOffset.y
+            this.x = actorPos.x + dx + translateX
+            this.y = actorPos.y + dy + translateY
         }
     }
 
     override fun drawChildren(batch: Batch, parentAlpha: Float) {
-        tempColor.set(batch.color)
-        batch.setColor(color.r, color.g, color.b, color.a * parentAlpha)
+        batch.setColor(color.r, color.g, color.b, alpha * parentAlpha)
 
         // Draw the body
         val scale = style.backgroundScale
@@ -143,8 +141,6 @@ class Popup(skin: Skin) : FrameBufferTable() {
         }
 
         super.drawChildren(batch, parentAlpha)
-
-        batch.setColor(tempColor.r, tempColor.g, tempColor.b, tempColor.a)
     }
 
     /**
@@ -227,7 +223,8 @@ class Popup(skin: Skin) : FrameBufferTable() {
 
         init {
             isVisible = true
-            drawOffset.setZero()
+            translateX = 0f
+            translateY = 0f
             alpha = if (shown) 0f else 1f
             renderToFrameBuffer = true
         }
@@ -238,10 +235,10 @@ class Popup(skin: Skin) : FrameBufferTable() {
             val offset = progress * TRANSITION_DISTANCE
             when (side) {
                 Side.CENTER -> Unit
-                Side.LEFT -> drawOffset.x = -offset
-                Side.RIGHT -> drawOffset.x = offset
-                Side.ABOVE -> drawOffset.y = offset
-                Side.BELOW -> drawOffset.y = -offset
+                Side.LEFT -> translateX = -offset
+                Side.RIGHT -> translateX = offset
+                Side.ABOVE -> translateY = offset
+                Side.BELOW -> translateY = -offset
             }
             alpha = progress
 

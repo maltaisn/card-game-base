@@ -20,10 +20,10 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import io.github.maltaisn.cardgame.CardGameScreen
 import ktx.actors.alpha
-import ktx.math.vec2
 
 
 /**
@@ -31,13 +31,10 @@ import ktx.math.vec2
  * frame buffer before drawing it to the screen batch.
  * Note that a frame buffer table CANNOT render a child that is also a frame buffer table!
  */
-open class FrameBufferTable : Table() {
+open class FrameBufferTable(skin: Skin? = null) : Table(skin) {
 
     /** Whether to render table to frame buffer first, then to screen. Allows uniform transparency. */
-    var renderToFrameBuffer = true
-
-    /** A translation made on position when the table is drawn. */
-    val drawOffset = vec2()
+    var renderToFrameBuffer = false
 
     override fun setStage(stage: Stage?) {
         require(stage == null || stage is CardGameScreen) {
@@ -47,9 +44,6 @@ open class FrameBufferTable : Table() {
     }
 
     override fun draw(batch: Batch, parentAlpha: Float) {
-        x += drawOffset.x
-        y += drawOffset.y
-
         if (renderToFrameBuffer) {
             val stage = stage as CardGameScreen
             val fbo = stage.offscreenFbo
@@ -68,28 +62,23 @@ open class FrameBufferTable : Table() {
 
             // Draw the table content
             // Since the alpha of this actor and its parent is handled with the frame buffer, draw children with no transparency.
-            val oldAlpha = color.a
-            color.a = 1f
+            val oldAlpha = alpha
+            alpha = 1f
             super.draw(batch, 1f)
-            color.a = oldAlpha
+            alpha = oldAlpha
 
             fbo.end()
 
             // Draw the frame buffer to the screen batch
-            val oldColor = batch.color.cpy()
             val a = alpha * parentAlpha
             batch.setColor(a, a, a, a)
             batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA)  // Premultiplied alpha blending mode
             batch.draw(stage.offscreenFboRegion, 0f, 0f, stage.width, stage.height)
-            batch.color = oldColor
             batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)
 
         } else {
             super.draw(batch, parentAlpha)
         }
-
-        x -= drawOffset.x
-        y -= drawOffset.y
     }
 
 }

@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
+import ktx.actors.alpha
 import ktx.math.vec2
 
 
@@ -38,8 +39,6 @@ class ShadowImage : Image() {
     /** The tint of this icon. */
     var shadowColor: Color = Color.BLACK
 
-    private val tempColor = Color()
-
 
     override fun draw(batch: Batch, parentAlpha: Float) {
         validate()
@@ -53,8 +52,7 @@ class ShadowImage : Image() {
     private fun drawIcon(batch: Batch, offset: Vector2, color: Color, parentAlpha: Float) {
         val icon = drawable ?: return
 
-        tempColor.set(batch.color)
-        batch.setColor(color.r, color.g, color.b, color.a * parentAlpha)
+        batch.setColor(color.r, color.g, color.b, alpha * parentAlpha)
 
         if (icon is TransformDrawable && (scaleX != 1f || scaleY != 1f || rotation != 0f)) {
             icon.draw(batch, x + imageX + offset.x, y + imageY + offset.y,
@@ -64,8 +62,6 @@ class ShadowImage : Image() {
             icon.draw(batch, x + imageX + offset.x, y + imageY + offset.y,
                     imageWidth * scaleX, imageHeight * scaleY)
         }
-
-        batch.setColor(tempColor.r, tempColor.g, tempColor.b, tempColor.a)
     }
 
 }

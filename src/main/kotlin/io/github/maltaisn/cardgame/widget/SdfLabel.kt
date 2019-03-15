@@ -26,6 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.StringBuilder
 import io.github.maltaisn.cardgame.Resources
+import ktx.actors.alpha
 import ktx.assets.file
 import ktx.math.vec2
 import ktx.style.get
@@ -48,20 +49,23 @@ class SdfLabel(text: CharSequence?, private val skin: Skin, sdfStyle: SdfLabelSt
 
     private val sdfShader: SdfShader
 
-    private val tempColor = Color()
-
 
     init {
         sdfShader = skin[SHADER_NAME]
+
+        // The font size is divided by 32 because that's the glyph size in the texture
         setFontScale(sdfStyle.fontSize / 32f)
     }
 
     override fun setText(newText: CharSequence?) {
         if (sdfStyle.allCaps) {
-            // Somewhat inefficient but there's no alternative...
             _text.setLength(0)
-            _text.append(newText)
-            super.setText(newText.toString().toUpperCase())
+            if (newText != null) {
+                _text.append(newText)
+                super.setText(newText.toString().toUpperCase())
+            } else {
+                super.setText(null)
+            }
         } else {
             super.setText(newText)
         }
@@ -76,9 +80,7 @@ class SdfLabel(text: CharSequence?, private val skin: Skin, sdfStyle: SdfLabelSt
             // No need to change the shader
             super.draw(batch, parentAlpha)
         } else {
-            tempColor.set(batch.color)
-            batch.setColor(color.r, color.g, color.b, color.a * parentAlpha)
-
+            batch.setColor(color.r, color.g, color.b, alpha * parentAlpha)
             batch.shader = sdfShader
 
             sdfShader.drawShadow = sdfStyle.drawShadow
@@ -87,7 +89,6 @@ class SdfLabel(text: CharSequence?, private val skin: Skin, sdfStyle: SdfLabelSt
 
             super.draw(batch, parentAlpha)
             batch.shader = null
-            batch.setColor(tempColor.r, tempColor.g, tempColor.b, tempColor.a)
         }
     }
 

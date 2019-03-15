@@ -134,7 +134,7 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
     protected var cardHeight = 0f
     protected var cardScale = 0f
 
-    private val drawOffset = vec2()
+    private val translate = vec2()
 
     private var renderToFrameBuffer = false
 
@@ -157,8 +157,8 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
     }
 
     override fun draw(batch: Batch, parentAlpha: Float) {
-        x += drawOffset.x
-        y += drawOffset.y
+        x += translate.x
+        y += translate.y
 
         if (renderToFrameBuffer) {
             val stage = stage as CardGameScreen
@@ -178,28 +178,26 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
 
             // Draw the table content
             // Since the alpha of this actor and its parent is handled with the frame buffer, draw children with no transparency.
-            val oldAlpha = color.a
-            color.a = 1f
+            val oldAlpha = alpha
+            alpha = 1f
             super.draw(batch, 1f)
-            color.a = oldAlpha
+            alpha = oldAlpha
 
             fbo.end()
 
             // Draw the frame buffer to the screen batch
-            val oldColor = batch.color.cpy()
             val a = alpha * parentAlpha
             batch.setColor(a, a, a, a)
             batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA)  // Premultiplied alpha blending mode
             batch.draw(stage.offscreenFboRegion, 0f, 0f, stage.width, stage.height)
-            batch.color = oldColor
             batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)
 
         } else {
             super.draw(batch, parentAlpha)
         }
 
-        x -= drawOffset.x
-        y -= drawOffset.y
+        x -= translate.x
+        y -= translate.y
     }
 
     override fun childrenChanged() {
@@ -493,8 +491,8 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
             isVisible = true
             renderToFrameBuffer = true
             alpha = if (shown) 1f else 0f
-            drawOffset.x = 0f
-            drawOffset.y = 0f
+            translate.x = 0f
+            translate.y = 0f
         }
 
         override fun act(delta: Float): Boolean {
@@ -541,8 +539,8 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
             elapsed += delta
             val progress = TRANSITION_INTERPOLATION
                     .applyBounded(elapsed / TRANSITION_DURATION)
-            drawOffset.x = startOffset.x + (endOffset.x - startOffset.x) * progress
-            drawOffset.y = startOffset.y + (endOffset.y - startOffset.y) * progress
+            translate.x = startOffset.x + (endOffset.x - startOffset.x) * progress
+            translate.y = startOffset.y + (endOffset.y - startOffset.y) * progress
 
             if (elapsed >= TRANSITION_DURATION) {
                 isVisible = shown
