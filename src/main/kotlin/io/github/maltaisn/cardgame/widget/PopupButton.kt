@@ -35,7 +35,7 @@ import kotlin.math.max
 
 
 /**
- * A button for a popup. Unlike [Button], hover and selection states are animated,
+ * A button for a popup. Unlike [Button], hover and press states are animated,
  * but there are no checked or focused states. Button can be disabled to act like a label.
  * A popup button has a label by default but it can be replaced or more actors can be added.
  */
@@ -53,14 +53,14 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : Table(skin) {
         }
         get() = label.text
 
-    /** Whether the button can be selected, hovered and clicked */
+    /** Whether the button can be pressed, hovered and clicked */
     var enabled = true
         set(value) {
             field = value
             if (!value) {
-                selected = false
+                pressed = false
                 hovered = false
-                selectionAlpha = 0f
+                pressAlpha = 0f
                 hoverAlpha = 0f
             }
         }
@@ -72,12 +72,12 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : Table(skin) {
     var clickListener: ((PopupButton) -> Unit)? = null
 
 
-    // Hover and selection status.
-    private var selected = false
+    private var pressed = false
+    private var pressElapsed = 0f
+    private var pressAlpha = 0f
+
     private var hovered = false
-    private var selectionElapsed = 0f
     private var hoverElapsed = 0f
-    private var selectionAlpha = 0f
     private var hoverAlpha = 0f
 
 
@@ -87,16 +87,16 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : Table(skin) {
         addListener(object : InputListener() {
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                 if (enabled) {
-                    selected = true
-                    selectionElapsed = 0f
+                    pressed = true
+                    pressElapsed = 0f
                 }
                 return true
             }
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 if (enabled) {
-                    selected = false
-                    selectionElapsed = SELECTION_FADE_DURATION * selectionAlpha
+                    pressed = false
+                    pressElapsed = PRESS_FADE_DURATION * pressAlpha
 
                     if (clickListener != null && withinBounds(x, y)) {
                         clickListener!!(this@PopupButton)
@@ -135,14 +135,14 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : Table(skin) {
 
         var renderingNeeded = false
 
-        // Update selection alpha
-        if (selected && selectionElapsed < SELECTION_FADE_DURATION) {
-            selectionElapsed += delta
-            selectionAlpha = SELECTION_IN_INTERPOLATION.applyBounded(selectionElapsed / SELECTION_FADE_DURATION)
+        // Update press alpha
+        if (pressed && pressElapsed < PRESS_FADE_DURATION) {
+            pressElapsed += delta
+            pressAlpha = PRESS_IN_INTERPOLATION.applyBounded(pressElapsed / PRESS_FADE_DURATION)
             renderingNeeded = true
-        } else if (!selected && selectionElapsed > 0f) {
-            selectionElapsed -= delta
-            selectionAlpha = SELECTION_OUT_INTERPOLATION.applyBounded(selectionElapsed / SELECTION_FADE_DURATION)
+        } else if (!pressed && pressElapsed > 0f) {
+            pressElapsed -= delta
+            pressAlpha = PRESS_OUT_INTERPOLATION.applyBounded(pressElapsed / PRESS_FADE_DURATION)
             renderingNeeded = true
         }
 
@@ -180,10 +180,10 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : Table(skin) {
                     width / scale, height / scale, scale, scale, 0f)
         }
 
-        // Draw selection
-        if (selectionAlpha != 0f) {
-            batch.setColor(color.r, color.g, color.b, alpha * parentAlpha * selectionAlpha)
-            (style.selection as TransformDrawable).draw(batch, x, y, 0f, 0f,
+        // Draw press
+        if (pressAlpha != 0f) {
+            batch.setColor(color.r, color.g, color.b, alpha * parentAlpha * pressAlpha)
+            (style.press as TransformDrawable).draw(batch, x, y, 0f, 0f,
                     width / scale, height / scale, scale, scale, 0f)
         }
     }
@@ -201,7 +201,7 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : Table(skin) {
     class PopupButtonStyle {
         lateinit var background: Drawable
         lateinit var hover: Drawable
-        lateinit var selection: Drawable
+        lateinit var press: Drawable
         lateinit var fontStyle: SdfLabel.SdfLabelStyle
         var backgroundScale = 0f
     }
@@ -210,11 +210,11 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : Table(skin) {
         /** The duration of the hover fade. */
         private const val HOVER_FADE_DURATION = 0.3f
 
-        /** The duration of the selection fade. */
-        private const val SELECTION_FADE_DURATION = 0.3f
+        /** The duration of the press fade. */
+        private const val PRESS_FADE_DURATION = 0.3f
 
-        private val SELECTION_IN_INTERPOLATION: Interpolation = Interpolation.smooth
-        private val SELECTION_OUT_INTERPOLATION: Interpolation = Interpolation.smooth
+        private val PRESS_IN_INTERPOLATION: Interpolation = Interpolation.smooth
+        private val PRESS_OUT_INTERPOLATION: Interpolation = Interpolation.smooth
         private val HOVER_IN_INTERPOLATION: Interpolation = Interpolation.pow2Out
         private val HOVER_OUT_INTERPOLATION: Interpolation = Interpolation.smooth
     }

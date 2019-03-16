@@ -33,7 +33,7 @@ import kotlin.math.max
 /**
  * A popup for information or interaction shown next to any actor on the stage.
  */
-class Popup(skin: Skin) : FrameBufferTable() {
+class Popup(skin: Skin) : FboTable() {
 
     val style = skin.get(PopupStyle::class.java)
 

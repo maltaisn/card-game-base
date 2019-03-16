@@ -20,25 +20,24 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup
 import io.github.maltaisn.cardgame.CardGameScreen
 import ktx.actors.alpha
 
 
 /**
- * A table that can draw its content on an offscreen
+ * A widget group that can draw its content on an offscreen
  * frame buffer before drawing it to the screen batch.
- * Note that a frame buffer table CANNOT render a child that is also a frame buffer table!
+ * Note that any child of this group may not use the frame buffer for drawing.
  */
-open class FrameBufferTable(skin: Skin? = null) : Table(skin) {
+open class FboWidgetGroup : WidgetGroup() {
 
-    /** Whether to render table to frame buffer first, then to screen. Allows uniform transparency. */
+    /** Whether to render the widget group to frame buffer first, then to screen. */
     var renderToFrameBuffer = false
 
     override fun setStage(stage: Stage?) {
         require(stage == null || stage is CardGameScreen) {
-            "FrameBufferTable must be added to a CardGameScreen stage."
+            "FboWidgetGroup must be added to a CardGameScreen stage."
         }
         super.setStage(stage)
     }
@@ -60,7 +59,7 @@ open class FrameBufferTable(skin: Skin? = null) : Table(skin) {
             Gdx.gl.glClearColor(0f, 0f, 0f, 0f)
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
-            // Draw the table content
+            // Draw the widget group content
             // Since the alpha of this actor and its parent is handled with the frame buffer, draw children with no transparency.
             val oldAlpha = alpha
             alpha = 1f

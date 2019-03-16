@@ -87,7 +87,7 @@ class GameLayer(skin: Skin) : Table(skin) {
         lateinit var cardBackground: Drawable
         /** Drawable for the hover. (9-patch) */
         lateinit var cardHover: Drawable
-        /** Drawable for the selection. Must have no padding. (9-patch) */
+        /** Drawable for the press. Must have no padding. (9-patch) */
         lateinit var cardSelection: Drawable
         /** Drawable for the slot. Must have no padding. (9-patch) */
         lateinit var cardSlot: Drawable

@@ -16,9 +16,7 @@
 
 package io.github.maltaisn.cardgame.widget.card
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
-import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Vector2
@@ -27,11 +25,11 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup
 import com.badlogic.gdx.utils.Align
 import io.github.maltaisn.cardgame.CardGameScreen
 import io.github.maltaisn.cardgame.applyBounded
 import io.github.maltaisn.cardgame.core.Card
+import io.github.maltaisn.cardgame.widget.FboWidgetGroup
 import io.github.maltaisn.cardgame.widget.GameLayer
 import ktx.actors.alpha
 import ktx.actors.plusAssign
@@ -48,7 +46,7 @@ import kotlin.math.min
  * however the container must be in a [CardGameScreen] stage to support animations.
  */
 abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
-                             val cardStyle: CardActor.CardStyle) : WidgetGroup() {
+                             val cardStyle: CardActor.CardStyle) : FboWidgetGroup() {
 
     private val _actors = mutableListOf<CardActor?>()
 
@@ -140,8 +138,6 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
 
     private val translate = vec2()
 
-    private var renderToFrameBuffer = false
-
 
     constructor(coreSkin: Skin, cardSkin: Skin) :
             this(coreSkin.get(GameLayer.CoreStyle::class.java),
@@ -163,43 +159,7 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
     override fun draw(batch: Batch, parentAlpha: Float) {
         x += translate.x
         y += translate.y
-
-        if (renderToFrameBuffer) {
-            val stage = stage as CardGameScreen
-            val fbo = stage.offscreenFbo
-
-            // Change blending function to avoid blending twice: when drawn to FBO and when FBO is drawn to screen
-            // https://gist.github.com/mattdesl/4393861
-            batch.enableBlending()
-            batch.setBlendFunctionSeparate(GL20.GL_SRC_ALPHA,
-                    GL20.GL_ONE_MINUS_SRC_ALPHA, GL20.GL_ONE, GL20.GL_ONE)
-
-            fbo.begin()
-
-            // Clear the frame buffer
-            Gdx.gl.glClearColor(0f, 0f, 0f, 0f)
-            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-
-            // Draw the table content
-            // Since the alpha of this actor and its parent is handled with the frame buffer, draw children with no transparency.
-            val oldAlpha = alpha
-            alpha = 1f
-            super.draw(batch, 1f)
-            alpha = oldAlpha
-
-            fbo.end()
-
-            // Draw the frame buffer to the screen batch
-            val a = alpha * parentAlpha
-            batch.setColor(a, a, a, a)
-            batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA)  // Premultiplied alpha blending mode
-            batch.draw(stage.offscreenFboRegion, 0f, 0f, stage.width, stage.height)
-            batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)
-
-        } else {
-            super.draw(batch, parentAlpha)
-        }
-
+        super.draw(batch, parentAlpha)
         x -= translate.x
         y -= translate.y
     }

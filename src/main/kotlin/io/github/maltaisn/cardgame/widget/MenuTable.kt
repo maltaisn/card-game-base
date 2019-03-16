@@ -19,7 +19,7 @@ package io.github.maltaisn.cardgame.widget
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 
 
-abstract class MenuTable(skin: Skin) : FrameBufferTable(skin) {
+abstract class MenuTable(skin: Skin) : FboTable(skin) {
 
     val items = mutableListOf<MenuItem>()
 

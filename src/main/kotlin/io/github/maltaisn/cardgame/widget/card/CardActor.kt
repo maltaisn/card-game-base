@@ -49,16 +49,16 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
     var shown = true
 
     /**
-     * Whether the card can be selected, hovered and clicked.
+     * Whether the card can be pressed, hovered and clicked.
      * Usually a card is enabled when it's involved in a valid move.
      */
     var enabled = true
         set(value) {
             field = value
             if (!value) {
-                selected = false
+                pressed = false
                 hovered = false
-                selectionAlpha = 0f
+                pressAlpha = 0f
                 hoverAlpha = 0f
             }
         }
@@ -98,14 +98,6 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
     private var lastTouchDownTime = 0L
     private var longClicked = false
 
-    // Hover and selection status.
-    private var selected = false
-    private var hovered = false
-    private var selectionElapsed = 0f
-    private var hoverElapsed = 0f
-    private var selectionAlpha = 0f
-    private var hoverAlpha = 0f
-
     /**
      * Internal flag used by the animation layer to indicate when a card is being animated.
      * An animated card doesn't fire click and long click events.
@@ -115,6 +107,14 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
     // Used when animating to set the source and destination containers on a moved card.
     internal var src: CardContainer? = null
     internal var dst: CardContainer? = null
+
+    private var pressed = false
+    private var pressElapsed = 0f
+    private var pressAlpha = 0f
+
+    private var hovered = false
+    private var hoverElapsed = 0f
+    private var hoverAlpha = 0f
 
 
     constructor(skin: Skin, card: Card,
@@ -129,8 +129,8 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
         addListener(object : InputListener() {
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                 if (enabled) {
-                    selected = true
-                    selectionElapsed = 0f
+                    pressed = true
+                    pressElapsed = 0f
                     lastTouchDownTime = System.currentTimeMillis()
                     longClicked = false
                 }
@@ -139,8 +139,8 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 if (enabled) {
-                    selected = false
-                    selectionElapsed = SELECTION_FADE_DURATION * selectionAlpha
+                    pressed = false
+                    pressElapsed = PRESS_FADE_DURATION * pressAlpha
                     lastTouchDownTime = 0
 
                     if (clickListener != null && !animated && !longClicked && withinBounds(x, y)) {
@@ -181,14 +181,14 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
 
         var renderingNeeded = false
 
-        // Update selection alpha
-        if (selected && selectionElapsed < SELECTION_FADE_DURATION) {
-            selectionElapsed += delta
-            selectionAlpha = SELECTION_IN_INTERPOLATION.applyBounded(selectionElapsed / SELECTION_FADE_DURATION)
+        // Update press alpha
+        if (pressed && pressElapsed < PRESS_FADE_DURATION) {
+            pressElapsed += delta
+            pressAlpha = PRESS_IN_INTERPOLATION.applyBounded(pressElapsed / PRESS_FADE_DURATION)
             renderingNeeded = true
-        } else if (!selected && selectionElapsed > 0f) {
-            selectionElapsed -= delta
-            selectionAlpha = SELECTION_OUT_INTERPOLATION.applyBounded(selectionElapsed / SELECTION_FADE_DURATION)
+        } else if (!pressed && pressElapsed > 0f) {
+            pressElapsed -= delta
+            pressAlpha = PRESS_OUT_INTERPOLATION.applyBounded(pressElapsed / PRESS_FADE_DURATION)
             renderingNeeded = true
         }
 
@@ -228,9 +228,9 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
             drawCenteredDrawable(batch, coreStyle.cardHover as TransformDrawable)
         }
 
-        // Draw selection
-        if (selectionAlpha != 0f) {
-            batch.setColor(color.r, color.g, color.b, alpha * parentAlpha * selectionAlpha)
+        // Draw press
+        if (pressAlpha != 0f) {
+            batch.setColor(color.r, color.g, color.b, alpha * parentAlpha * pressAlpha)
             drawCenteredDrawable(batch, coreStyle.cardSelection as TransformDrawable)
         }
     }
@@ -277,14 +277,14 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
         /** The duration of the hover fade. */
         private const val HOVER_FADE_DURATION = 0.3f
 
-        /** The duration of the selection fade. */
-        private const val SELECTION_FADE_DURATION = 0.3f
+        /** The duration of the press fade. */
+        private const val PRESS_FADE_DURATION = 0.3f
 
         /** The delay before long click is triggered. */
         private const val LONG_CLICK_DELAY = 0.5f
 
-        private val SELECTION_IN_INTERPOLATION: Interpolation = Interpolation.smooth
-        private val SELECTION_OUT_INTERPOLATION: Interpolation = Interpolation.smooth
+        private val PRESS_IN_INTERPOLATION: Interpolation = Interpolation.smooth
+        private val PRESS_OUT_INTERPOLATION: Interpolation = Interpolation.smooth
         private val HOVER_IN_INTERPOLATION: Interpolation = Interpolation.pow2Out
         private val HOVER_OUT_INTERPOLATION: Interpolation = Interpolation.smooth
     }

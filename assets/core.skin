@@ -53,7 +53,7 @@
     default: {
       background: btn-popup-background
       hover: btn-popup-hover
-      selection: btn-popup-selection
+      press: btn-popup-selection
       fontStyle: {
         fontSize: 20
         fontColor: textColorBlack
