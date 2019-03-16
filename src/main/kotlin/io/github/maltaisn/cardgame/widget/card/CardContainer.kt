@@ -495,14 +495,20 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
     }
 
     ////////// ANIMATION //////////
-    internal fun moveCardTo(dst: CardContainer, srcIndex: Int, dstIndex: Int,
-                            replaceSrc: Boolean = false, replaceDst: Boolean = false) {
+    /**
+     * Make this container changed, so that it will be
+     * animated when [CardAnimationLayer.update] is called.
+     */
+    fun requestUpdate() {
         if (oldActors == null) {
             oldActors = actors.toMutableList()
         }
-        if (dst.oldActors == null) {
-            dst.oldActors = dst.actors.toMutableList()
-        }
+    }
+
+    internal fun moveCardTo(dst: CardContainer, srcIndex: Int, dstIndex: Int,
+                            replaceSrc: Boolean = false, replaceDst: Boolean = false) {
+        requestUpdate()
+        dst.requestUpdate()
 
         // Move card and actor
         val actor = _actors.removeAt(srcIndex)
@@ -553,7 +559,7 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
                 longClickListener = null
                 listeners.removeValue(cardInputListener, true)
                 enabled = true
-                highlighted = false
+                //highlighted = false
                 highlightable = true
             }
         }

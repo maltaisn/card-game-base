@@ -65,10 +65,9 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
 
     /**
      * Whether the card is highlighted or not.
-     * This is a flag used for [CardHand].
+     * To update this state with animation, [CardContainer.requestUpdate] must be called before updating.
      */
     var highlighted = false
-        internal set
 
     /**
      * Whether this card can be highlighted by clicking on it.
@@ -249,7 +248,8 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
 
     override fun getPrefHeight() = size / cardStyle.cardWidth * cardStyle.cardHeight
 
-    override fun toString() = "[card: $card, ${if (shown) "shown" else "hidden"}]"
+    override fun toString() = "[card: $card, ${if (shown) "shown" else "hidden"}" +
+            "${if (highlighted) ", highlighted" else ""}]"
 
     /**
      * The style for cards drawn with a [CardActor], must match the [card] type.

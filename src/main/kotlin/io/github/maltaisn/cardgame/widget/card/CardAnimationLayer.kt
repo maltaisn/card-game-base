@@ -209,8 +209,10 @@ class CardAnimationLayer : Group() {
     }
 
     /**
-     * Dispatch an animated update.
+     * Dispatch an animated update of the changed card containers on the stage.
      * An update can be dispatched before last update ends, both animations will be merged.
+     * A card container is changed when any of card was added, moved or removed since last update.
+     * To also update a container that wasn't changed call [CardContainer.requestUpdate] before.
      */
     fun update() {
         // Add pending animation for next frame.
@@ -238,7 +240,10 @@ class CardAnimationLayer : Group() {
                 actor?.animated = true
             }
 
-            if (container.oldActors == null) continue
+            if (container.oldActors == null) {
+                // Container cards didn't change and no animation was requested.
+                continue
+            }
 
             container.onAnimationStart()
 
@@ -510,12 +515,6 @@ class CardAnimationLayer : Group() {
 
         private var dst = container
 
-        private val cardPositions = container.computeActorsPosition().also {
-            for (pos in it) {
-                container.localToStageCoordinates(pos)
-            }
-        }
-
         fun touchDragged(stagePos: Vector2) {
             // Check if the container containing the mouse changed
             var newDst = container
@@ -577,6 +576,12 @@ class CardAnimationLayer : Group() {
                             this@CardAnimationLayer += actor
                             // Actor position is persisted through the re-add
                         }
+                    }
+
+                    // Find the new coordinates of each card on the stage
+                    val cardPositions = container.computeActorsPosition()
+                    for (pos in cardPositions) {
+                        container.localToActorCoordinates(this@CardAnimationLayer, pos)
                     }
 
                     // Animate undragged actors to their new position
