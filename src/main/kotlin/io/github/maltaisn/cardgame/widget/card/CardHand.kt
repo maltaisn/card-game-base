@@ -84,10 +84,11 @@ class CardHand : CardContainer {
 
 
     /**
-     * Listener triggered if user clicks on a highlightable card actor.
+     * Listener called if user clicks on a highlightable card actor.
      * Setting this listener will automatically make the hand [highlightable].
+     * Return false if highlighting should be blocked.
      */
-    var highlightListener: HighlightListener? = null
+    var highlightListener: ((actor: CardActor, highlighted: Boolean) -> Boolean)? = null
         set(value) {
             field = value
             if (value != null) {
@@ -129,8 +130,8 @@ class CardHand : CardContainer {
         }
     }
 
-    override fun onCardActorClicked(actor: CardActor) {
-        super.onCardActorClicked(actor)
+    override val cardClickListener: (CardActor) -> Unit = { actor: CardActor ->
+        super.cardClickListener(actor)
 
         if (highlightable) {
             highlightActor(actor, !actor.highlighted)
@@ -164,7 +165,7 @@ class CardHand : CardContainer {
         if (!actor.highlightable || actor.highlighted == highlighted) return
 
         // Call listeners and check if highlighted is allowed.
-        if (highlightListener?.onCardActorHighlighted(actor, highlighted) != false) {
+        if (highlightListener?.invoke(actor, highlighted) != false) {
             actor.highlighted = highlighted
 
             // Do the highlight 
@@ -205,15 +206,6 @@ class CardHand : CardContainer {
 
             return elapsed <= 0 || elapsed >= HIGHLIGHT_DURATION
         }
-    }
-
-    interface HighlightListener {
-        /**
-         * Called when a card [actor] in the group is clicked and
-         * its [highlighted] state is changed. Return false if highlighting should
-         * be blocked. If therre are many listeners, only one needs to return false.
-         */
-        fun onCardActorHighlighted(actor: CardActor, highlighted: Boolean): Boolean
     }
 
 

@@ -69,7 +69,7 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : Table(skin) {
      * Click listener, called when the button is clicked. Clicks must end within the bounds.
      * The listener is not called when the button is disabled.
      */
-    var clickListener: ClickListener? = null
+    var clickListener: ((PopupButton) -> Unit)? = null
 
 
     // Hover and selection status.
@@ -99,7 +99,7 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : Table(skin) {
                     selectionElapsed = SELECTION_FADE_DURATION * selectionAlpha
 
                     if (clickListener != null && withinBounds(x, y)) {
-                        clickListener?.onPopupButtonClicked(this@PopupButton)
+                        clickListener!!(this@PopupButton)
                     }
                 }
             }
@@ -204,10 +204,6 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : Table(skin) {
         lateinit var selection: Drawable
         lateinit var fontStyle: SdfLabel.SdfLabelStyle
         var backgroundScale = 0f
-    }
-
-    interface ClickListener {
-        fun onPopupButtonClicked(button: PopupButton)
     }
 
     companion object {

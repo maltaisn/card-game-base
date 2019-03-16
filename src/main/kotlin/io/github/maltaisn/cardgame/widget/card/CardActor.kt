@@ -88,13 +88,13 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
      * Click listener, called when the actor is clicked. Clicks must end within the bounds.
      * The listener is not called when the actor is disabled or animated.
      */
-    var clickListener: ClickListener? = null
+    var clickListener: ((CardActor) -> Unit)? = null
 
     /**
      * Click listener, called when the actor is long clicked.
      * The listener is not called when the actor is disabled or animated.
      */
-    var longClickListener: LongClickListener? = null
+    var longClickListener: ((CardActor) -> Unit)? = null
     private var lastTouchDownTime = 0L
     private var longClicked = false
 
@@ -145,7 +145,7 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
 
                     if (clickListener != null && !animated && !longClicked && withinBounds(x, y)) {
                         // Click ended in actor, call listener.
-                        clickListener?.onCardActorClicked(this@CardActor)
+                        clickListener!!(this@CardActor)
                     }
                 }
             }
@@ -176,7 +176,7 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
         if (longClickListener != null && lastTouchDownTime != 0L
                 && heldDuration > LONG_CLICK_DELAY && enabled && !animated) {
             longClicked = true
-            longClickListener?.onCardActorLongClicked(this@CardActor)
+            longClickListener!!(this@CardActor)
         }
 
         var renderingNeeded = false
@@ -250,14 +250,6 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
     override fun getPrefHeight() = size / cardStyle.cardWidth * cardStyle.cardHeight
 
     override fun toString() = "[card: $card, ${if (shown) "shown" else "hidden"}]"
-
-    interface ClickListener {
-        fun onCardActorClicked(actor: CardActor)
-    }
-
-    interface LongClickListener {
-        fun onCardActorLongClicked(actor: CardActor)
-    }
 
     /**
      * The style for cards drawn with a [CardActor], must match the [card] type.
