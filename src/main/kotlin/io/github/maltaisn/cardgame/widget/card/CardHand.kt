@@ -241,7 +241,7 @@ class CardHand : CardContainer {
             }
         }
 
-        val offset = computeAlignmentOffset(reqWidth, reqHeight)
+        val offset = computeAlignOffset(reqWidth, reqHeight)
 
         // Clipping offset
         if (clipSize > 0) {
@@ -293,7 +293,7 @@ class CardHand : CardContainer {
         super.computeSize()
 
         // Find clip and highlight sizes
-        check(alignment != Align.center || clipPercent.absoluteValue == 0f) {
+        check(align != Align.center || clipPercent.absoluteValue == 0f) {
             "Cannot clip a CardHand with center alignement."
         }
 

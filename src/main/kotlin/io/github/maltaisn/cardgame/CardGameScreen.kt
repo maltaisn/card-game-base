@@ -26,15 +26,16 @@ import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.glutils.FrameBuffer
-import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.I18NBundle
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import io.github.maltaisn.cardgame.widget.GameLayer
+import io.github.maltaisn.cardgame.widget.GameMenu
 import io.github.maltaisn.cardgame.widget.PopupGroup
 import io.github.maltaisn.cardgame.widget.SdfLabel
 import io.github.maltaisn.cardgame.widget.card.CardAnimationLayer
+import ktx.actors.plusAssign
 import ktx.assets.getAsset
 import ktx.assets.load
 
@@ -54,14 +55,29 @@ abstract class CardGameScreen(val game: CardGame) :
     /** Group where popups are shown. */
     val popupGroup: PopupGroup
 
+    /** The game menu. */
+    var gameMenu: GameMenu? = null
+        set(value) {
+            check(field == null) { "Game menu can only be set once." }
+            if (value != null) {
+                field = value
+                rootContainer += value
+            }
+        }
+
     // This frame buffer is used to draw sprites offscreen, not on the screen batch.
     // The buffer can then be rendered to screen, allowing uniform transparency for example.
     lateinit var offscreenFbo: FrameBuffer
     lateinit var offscreenFboRegion: TextureRegion
 
+    private val rootContainer: CardGameContainer
+
     init {
         @Suppress("LibGDXLogLevel")
         Gdx.app.logLevel = Application.LOG_DEBUG
+
+        updateOffscreenFrameBuffer()
+        actionsRequestRendering = true
 
         assetManager.apply {
             load<TextureAtlas>(Resources.CORE_SKIN_ATLAS)
@@ -75,31 +91,19 @@ abstract class CardGameScreen(val game: CardGame) :
             SdfLabel.load(coreSkin)
         }
 
+        // Create the layout
         gameLayer = GameLayer(coreSkin)
         cardAnimationLayer = CardAnimationLayer()
         popupGroup = PopupGroup()
 
-        addActor(CardGameContainer(gameLayer, cardAnimationLayer, popupGroup))
-
-        updateOffscreenFrameBuffer()
-
-        actionsRequestRendering = true
+        rootContainer = CardGameContainer(gameLayer, cardAnimationLayer, popupGroup)
+        @Suppress("LeakingThis")
+        addActor(rootContainer)
     }
-
-    /**
-     * Load the PCard skin, containing standard playing cards sprites. Doesn't finish loading.
-     */
-    protected fun loadPCardSkin() {
-        assetManager.apply {
-            load<TextureAtlas>(Resources.PCARD_SKIN_ATLAS)
-            load<Skin>(Resources.PCARD_SKIN, SkinLoader.SkinParameter(Resources.PCARD_SKIN_ATLAS))
-        }
-    }
-
-    final override fun addActor(actor: Actor?) = super.addActor(actor)
 
     override fun show() {
         Gdx.input.inputProcessor = this
+        Gdx.input.isCatchBackKey = true
     }
 
     override fun hide() {
@@ -132,6 +136,16 @@ abstract class CardGameScreen(val game: CardGame) :
         super.dispose()
         assetManager.dispose()
         offscreenFbo.dispose()
+    }
+
+    /**
+     * Load the PCard skin, containing standard playing cards sprites. Doesn't finish loading.
+     */
+    protected fun loadPCardSkin() {
+        assetManager.apply {
+            load<TextureAtlas>(Resources.PCARD_SKIN_ATLAS)
+            load<Skin>(Resources.PCARD_SKIN, SkinLoader.SkinParameter(Resources.PCARD_SKIN_ATLAS))
+        }
     }
 
     private fun updateOffscreenFrameBuffer() {

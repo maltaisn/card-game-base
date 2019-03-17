@@ -74,7 +74,7 @@ class MainMenu(skin: Skin) : MenuTable(skin) {
         bottomRow.clearChildren()
 
         for (item in items) {
-            val onTopRow = item.position == SIDE_TOP
+            val onTopRow = item.position == MenuItem.Position.TOP
             val btn = MenuButton(skin, style.itemFontStyle, item.title, item.icon).apply {
                 clickListener = btnClickListener
                 anchorSide = if (onTopRow) MenuButton.Side.TOP else MenuButton.Side.BOTTOM
@@ -126,10 +126,7 @@ class MainMenu(skin: Skin) : MenuTable(skin) {
     class MainMenuStyle : MenuTableStyle()
 
     companion object {
-        const val SIDE_TOP = 0
-        const val SIDE_BOTTOM = 1
-
-        internal const val TRANSITION_DURATION = 2.0f
+        private const val TRANSITION_DURATION = 0.3f
         private const val MENU_ROW_HEIGHT = 100f
 
         private val TRANSITION_INTERPOLATION = Interpolation.smooth

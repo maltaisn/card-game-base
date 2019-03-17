@@ -48,6 +48,12 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
         }
         get() = titleLabel.text
 
+    /**
+     * The position of the menu pane.
+     * [invalidateLayout] after if this is changed.
+     */
+    var menuPosition = MenuPosition.LEFT
+
     /** The content of the submenu scroll pane. May be null to show nothing or when the submenu isn't shown. */
     val content = Table()
 
@@ -56,9 +62,14 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
             if (field == value) return
             field = value
 
-            if (value && items.isNotEmpty()) {
-                // Always check the first item of the menu when showing.
-                checkItem(items.first())
+            if (value && items.isNotEmpty() && checkable) {
+                // Always check the first checkable item of the menu when showing.
+                for (item in items) {
+                    if (item.checkable) {
+                        checkItem(item)
+                        break
+                    }
+                }
             }
 
             if (actions.isEmpty) {
@@ -71,6 +82,7 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
 
     private var transitionAction: TransitionAction? = null
 
+    private val headerTable = Table()
     private val titleLabel = SdfLabel(null, skin, style.titleStyle)
     private val menuTable = Table()
     private val contentPane = ScrollPane(content, ScrollPane.ScrollPaneStyle(
@@ -84,16 +96,9 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
         backBtn.iconSize = 64f
         backBtn.clickListener = { backArrowClickListener?.invoke() }
 
-        // Do the layout
-        val headerTable = Table()
         headerTable.pad(25f, 25f, 0f, 20f)
         headerTable.add(backBtn).size(75f, 75f)
         headerTable.add(titleLabel).padLeft(10f).grow()
-        add(headerTable).growX().colspan(2).row()
-
-        menuTable.pad(20f, 25f, 25f, 0f)
-        menuTable.align(Align.top)
-        add(menuTable).width(Value.percentWidth(0.3f, this)).growY()
 
         content.pad(20f, 20f, 20f, 20f)
         contentPane.setScrollingDisabled(false, false)
@@ -107,8 +112,6 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
                 stage.scrollFocus = null
             }
         })
-        add(contentPane).pad(-style.contentBackground.leftWidth,
-                -style.contentBackground.topHeight, 0f, 10f).grow()
     }
 
     override fun layout() {
@@ -120,42 +123,62 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
     }
 
     override fun invalidateLayout() {
-        // Create the buttons and add them the menu
+        // Do the submenu layout. If there are no menu items, hide the menu pane.
+        clearChildren()
+        add(headerTable).growX().colspan(2).row()
+
+        if (items.isEmpty()) {
+            // No menu items, center content with 70% width.
+            getCell(headerTable).padBottom(15f)
+            add(contentPane).pad(-style.contentBackground.topHeight, 0f, 0f, 0f)
+                    .width(Value.percentWidth(0.7f, this)).grow()
+        } else if (menuPosition == MenuPosition.LEFT) {
+            // Menu pane on the left
+            menuTable.pad(20f, 25f, 25f, 0f)
+            add(menuTable).width(Value.percentWidth(0.3f, this)).growY()
+            add(contentPane).pad(-style.contentBackground.topHeight,
+                    -style.contentBackground.leftWidth, 0f, 10f).grow()
+        } else {
+            // Menu pane on the right
+            menuTable.pad(35f, 0f, 25f, 25f)
+            add(contentPane).pad(-style.contentBackground.topHeight + 15f, 10f,
+                    0f, -style.contentBackground.rightWidth).grow()
+            add(menuTable).width(Value.percentWidth(0.3f, this)).growY()
+        }
+
+        // Create the menu buttons and add them the menu table
         menuTable.clearChildren()
         for (item in items) {
-            val btn = MenuButton(skin, style.itemFontStyle, item.title, item.icon).apply {
-                clickListener = btnClickListener
-                anchorSide = MenuButton.Side.RIGHT
-                iconSide = MenuButton.Side.LEFT
-                iconSize = this@SubMenu.style.itemIconSize
-                align(Align.left)
+            if (item.position == MenuItem.Position.TOP) {
+                addButtonToMenuTable(item)
             }
-            item.menu = this
-            item.button = btn
-            menuTable.add(btn).growX().pad(2f, 0f, 2f, 0f).prefHeight(70f).row()
         }
-
-        if (items.isNotEmpty()) {
-            checkItem(items.first())
-        }
-    }
-
-    /** Check an item by [id] and call the listener.*/
-    fun checkItem(id: Int) {
+        menuTable.add().grow().row()
         for (item in items) {
-            if (item.id == id) {
-                checkItem(item)
-                break
+            if (item.position == MenuItem.Position.BOTTOM) {
+                addButtonToMenuTable(item)
             }
         }
     }
 
-    /** Check an [item] and call the listener*/
-    fun checkItem(item: MenuItem) {
-        if (item.menu === this) {
-            item.checked = true
-            itemClickListener?.invoke(item)
+    private fun addButtonToMenuTable(item: MenuItem) {
+        val btn = MenuButton(skin, style.itemFontStyle, item.title, item.icon).apply {
+            clickListener = btnClickListener
+            anchorSide = if (menuPosition == MenuPosition.LEFT) MenuButton.Side.RIGHT else MenuButton.Side.LEFT
+            iconSide = MenuButton.Side.LEFT
+            iconSize = this@SubMenu.style.itemIconSize
+            align(Align.left)
         }
+        item.menu = this
+        item.button = btn
+
+        menuTable.add(btn).growX().pad(2f, 0f, 2f, 0f).prefHeight(70f)
+        if (menuPosition == MenuPosition.LEFT) {
+            btn.pad(10f, 10f, 10f, 20f)
+        } else {
+            btn.pad(10f, 20f, 10f, 10f)
+        }
+        menuTable.row()
     }
 
     private inner class TransitionAction : Action() {
@@ -181,7 +204,8 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
                 val btn = item.button!!
                 val itemProgress = TRANSITION_INTERPOLATION.applyBounded(
                         elapsed / ITEM_TRANSITION_DURATION - i * durationGap)
-                btn.x = menuTable.padLeft + (1 - itemProgress) * -(btn.width + menuTable.padLeft)
+                btn.x = menuTable.padLeft + (1 - itemProgress) * (btn.width + menuTable.padLeft) *
+                        if (menuPosition == MenuPosition.LEFT) -1 else 1
             }
 
             alpha = progress
@@ -209,11 +233,15 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
         lateinit var contentBackground: Drawable
     }
 
+    enum class MenuPosition {
+        LEFT, RIGHT
+    }
+
     companion object {
         /** The duration of the overall transition. */
-        internal const val TRANSITION_DURATION = 0.7f
+        private const val TRANSITION_DURATION = 0.5f
         /** The duration of each menu item slide. */
-        internal const val ITEM_TRANSITION_DURATION = 0.5f
+        private const val ITEM_TRANSITION_DURATION = 0.3f
         /** The Y translation performed by the content table. */
         private const val CONTENT_TRANSITION_TRANSLATE = -100f
 

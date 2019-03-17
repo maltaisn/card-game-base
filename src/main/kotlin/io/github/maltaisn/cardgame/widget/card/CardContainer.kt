@@ -97,7 +97,7 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
         }
 
     /** Alignment of the container's content. */
-    var alignment = Align.center
+    var align = Align.center
 
     /** Listener called when a card at an index is clicked, or `null` for none. */
     var clickListener: ((actor: CardActor, index: Int) -> Unit)? = null
@@ -368,19 +368,19 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
 
     /**
      * Returns a vector of the offset needed to respect
-     * the alignment and the padding, given a required size.
+     * the align and the padding, given a required size.
      */
-    protected fun computeAlignmentOffset(requiredWidth: Float, requiredHeight: Float): Vector2 {
+    protected fun computeAlignOffset(requiredWidth: Float, requiredHeight: Float): Vector2 {
         val offsetX = when {
-            Align.isCenterHorizontal(alignment) || alignment == Align.center -> (width - requiredWidth) / 2
-            Align.isLeft(alignment) -> 0f
-            Align.isRight(alignment) -> width - requiredWidth
+            Align.isCenterHorizontal(align) || align == Align.center -> (width - requiredWidth) / 2
+            Align.isLeft(align) -> 0f
+            Align.isRight(align) -> width - requiredWidth
             else -> 0f
         }
         val offsetY = when {
-            Align.isCenterVertical(alignment) || alignment == Align.center -> (height - requiredHeight) / 2
-            Align.isTop(alignment) -> height - requiredHeight
-            Align.isBottom(alignment) -> 0f
+            Align.isCenterVertical(align) || align == Align.center -> (height - requiredHeight) / 2
+            Align.isTop(align) -> height - requiredHeight
+            Align.isBottom(align) -> 0f
             else -> 0f
         }
 

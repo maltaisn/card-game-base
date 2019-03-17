@@ -24,11 +24,11 @@ abstract class MenuTable(skin: Skin) : FboTable(skin) {
     val items = mutableListOf<MenuItem>()
 
     /** Whether the items in the menu can be checked or not. */
-    protected var checkable = false
+    var checkable = false
 
     /**
      * Changing this value animates a visibility change by sliding the menu parts in and out of the screen.
-     * If changed during an outgoing transition, the previous one will be canceled.
+     * If changed during an outgoing transition, the previous one will be inverted.
      */
     abstract var shown: Boolean
 
@@ -36,14 +36,12 @@ abstract class MenuTable(skin: Skin) : FboTable(skin) {
     var itemClickListener: ((item: MenuItem) -> Unit)? = null
 
     protected val btnClickListener = { btn: MenuButton ->
-        if (checkable) {
-            for (item in items) {
-                if (item.button === btn) {
-                    item.checked = true
-                    itemClickListener?.invoke(item)
-                } else {
-                    item.checked = false
-                }
+        for (item in items) {
+            if (item.button === btn) {
+                item.checked = checkable
+                itemClickListener?.invoke(item)
+            } else {
+                item.checked = false
             }
         }
     }
@@ -52,6 +50,33 @@ abstract class MenuTable(skin: Skin) : FboTable(skin) {
      * Invalidate the menu layout, must be called if items are changed.
      */
     abstract fun invalidateLayout()
+
+
+    /** Check an item by [id] and call the listener. */
+    fun checkItem(id: Int) {
+        for (item in items) {
+            if (item.id == id) {
+                checkItem(item)
+                break
+            }
+        }
+    }
+
+    /** Check an [item] and call the listener. */
+    fun checkItem(item: MenuItem) {
+        if (checkable && item.menu === this) {
+            for (menuItem in items) {
+                if (menuItem === item) {
+                    if (!menuItem.checked && menuItem.checkable) {
+                        menuItem.checked = true
+                        itemClickListener?.invoke(menuItem)
+                    }
+                } else {
+                    menuItem.checked = false
+                }
+            }
+        }
+    }
 
 
     abstract class MenuTableStyle {

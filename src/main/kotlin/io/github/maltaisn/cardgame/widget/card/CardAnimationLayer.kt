@@ -133,7 +133,6 @@ class CardAnimationLayer : Group() {
      * @param callback Called after each card is passed.
      * @param replaceSrc If true, cards removed from source will be replaced with null.
      * @param replaceDst If true, cards will replace null cards in destination.
-     * @param dealDelay Delay in seconds between each card dealt.
      */
     fun deal(src: CardContainer, dst: CardContainer, count: Int,
              replaceSrc: Boolean = false, replaceDst: Boolean = false,

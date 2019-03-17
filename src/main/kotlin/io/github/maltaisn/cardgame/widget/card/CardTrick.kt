@@ -141,7 +141,7 @@ class CardTrick : CardContainer {
         computedHeight = d + cardHeight
 
         // Compute center
-        val offset = computeAlignmentOffset(computedWidth, computedHeight)
+        val offset = computeAlignOffset(computedWidth, computedHeight)
         center.x = offset.x + computedRadius + cardWidth / 2
         center.y = offset.y + computedRadius + cardHeight / 2
     }

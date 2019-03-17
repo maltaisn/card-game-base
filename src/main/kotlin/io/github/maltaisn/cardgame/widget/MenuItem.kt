@@ -26,21 +26,41 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 class MenuItem(val id: Int,
                val title: CharSequence,
                val icon: Drawable,
-               val position: Int = -1) {
+               val position: Position = Position.TOP) {
 
     /** The menu this is in. */
     var menu: MenuTable? = null
+        internal set
 
     /** The button this item is attached to. */
     var button: MenuButton? = null
+        internal set
 
     /** Whether this item is checked or not. */
-    var checked
+    var checked: Boolean
         set(value) {
-            button?.checked = value
+            button?.checked = value && checkable
         }
         get() = button?.checked == true
 
-    override fun toString() = "[id: $id, title: $title${if (checked) ", checked" else ""}]"
+    /** If the [menu] is checkable, whether this item can be checked. */
+    var checkable = true
+
+    /** Whether this item is enabled or not. */
+    var enabled: Boolean
+        set(value) {
+            button?.enabled = value
+        }
+        get() = button?.enabled == true
+
+
+    override fun toString() = "[id: $id, title: $title" +
+            (if (checked) ", checked" else "") +
+            (if (!enabled) ", disabled" else "")
+
+
+    enum class Position {
+        TOP, BOTTOM
+    }
 
 }

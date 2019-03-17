@@ -47,7 +47,7 @@ class CardStack : CardContainer {
     override fun drawChildren(batch: Batch, parentAlpha: Float) {
         if (drawSlot && children.isEmpty) {
             // Draw the slot if there's no cards in the stack.
-            val offset = computeAlignmentOffset(cardWidth, cardHeight)
+            val offset = computeAlignOffset(cardWidth, cardHeight)
             val slot = coreStyle.cardSlot as TransformDrawable
             batch.setColor(1f, 1f, 1f, parentAlpha)
             slot.draw(batch, offset.x - slot.leftWidth * cardScale,
@@ -79,7 +79,7 @@ class CardStack : CardContainer {
         // Recompute minimum size
         computeSize()
 
-        cardsPosition = computeAlignmentOffset(cardWidth, cardHeight)
+        cardsPosition = computeAlignOffset(cardWidth, cardHeight)
         return List(actors.size) { cardsPosition.cpy() }
     }
 
