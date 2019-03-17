@@ -31,10 +31,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.I18NBundle
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import io.github.maltaisn.cardgame.widget.GameLayer
-import io.github.maltaisn.cardgame.widget.GameMenu
 import io.github.maltaisn.cardgame.widget.PopupGroup
 import io.github.maltaisn.cardgame.widget.SdfLabel
 import io.github.maltaisn.cardgame.widget.card.CardAnimationLayer
+import io.github.maltaisn.cardgame.widget.menu.GameMenu
 import ktx.actors.plusAssign
 import ktx.assets.getAsset
 import ktx.assets.load

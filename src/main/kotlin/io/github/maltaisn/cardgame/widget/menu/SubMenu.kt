@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.github.maltaisn.cardgame.widget
+package io.github.maltaisn.cardgame.widget.menu
 
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Action
@@ -28,6 +28,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Value
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Align
 import io.github.maltaisn.cardgame.applyBounded
+import io.github.maltaisn.cardgame.widget.SdfLabel
 import ktx.actors.alpha
 import ktx.actors.plusAssign
 import kotlin.math.max

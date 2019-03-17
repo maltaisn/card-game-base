@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.github.maltaisn.cardgame.widget
+package io.github.maltaisn.cardgame.widget.menu
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
@@ -31,6 +31,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
 import com.badlogic.gdx.utils.Scaling
 import io.github.maltaisn.cardgame.applyBounded
+import io.github.maltaisn.cardgame.widget.SdfLabel
+import io.github.maltaisn.cardgame.widget.ShadowImage
 import io.github.maltaisn.cardgame.withinBounds
 import ktx.actors.alpha
 

@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package io.github.maltaisn.cardgame.widget
+package io.github.maltaisn.cardgame.widget.menu
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import io.github.maltaisn.cardgame.widget.FboTable
+import io.github.maltaisn.cardgame.widget.SdfLabel
 
 
 abstract class MenuTable(skin: Skin) : FboTable(skin) {

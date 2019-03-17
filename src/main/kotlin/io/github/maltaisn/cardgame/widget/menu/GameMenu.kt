@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.github.maltaisn.cardgame.widget
+package io.github.maltaisn.cardgame.widget.menu
 
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.scenes.scene2d.Action

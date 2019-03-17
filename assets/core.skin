@@ -7,7 +7,7 @@
     textColorDarkGray: { hex: #3b3b3bff }
     textColorWhite: { hex: #e3e3e3ff }
   }
-  io.github.maltaisn.cardgame.widget.MenuIcons: {
+  io.github.maltaisn.cardgame.widget.menu.MenuIcons: {
     default: {
       arrowRight: icon-arrow-right
       book: icon-book
@@ -63,7 +63,7 @@
       backgroundScale: 0.75
     }
   }
-  io.github.maltaisn.cardgame.widget.MenuButton$MenuButtonStyle: {
+  io.github.maltaisn.cardgame.widget.menu.MenuButton$MenuButtonStyle: {
     default: {
       backgroundCenter: btn-menu-center
       backgroundTop: btn-menu-top
@@ -76,7 +76,7 @@
       iconTitleMargin: 15
     }
   }
-  io.github.maltaisn.cardgame.widget.MainMenu$MainMenuStyle: {
+  io.github.maltaisn.cardgame.widget.menu.MainMenu$MainMenuStyle: {
     default: {
       itemFontStyle: {
         bold: true
@@ -89,7 +89,7 @@
       itemIconSize: 48
     }
   }
-  io.github.maltaisn.cardgame.widget.SubMenu$SubMenuStyle: {
+  io.github.maltaisn.cardgame.widget.menu.SubMenu$SubMenuStyle: {
     default: {
       titleStyle: {
         fontSize: 48
