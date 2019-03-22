@@ -35,7 +35,7 @@ import kotlin.math.max
  */
 class Popup(skin: Skin) : FboTable() {
 
-    val style = skin.get(PopupStyle::class.java)
+    val style = skin[PopupStyle::class.java]
 
     /** Distance of the popup from the actor. */
     var distance = 5f

@@ -75,8 +75,7 @@ open class GameMenu(skin: Skin) : Stack() {
             }
         }
 
-        @Suppress("LeakingThis")
-        addActor(mainMenu)
+        this += mainMenu
     }
 
     /**

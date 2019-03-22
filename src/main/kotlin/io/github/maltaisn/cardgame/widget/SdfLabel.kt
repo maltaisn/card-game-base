@@ -153,7 +153,7 @@ class SdfLabel(text: CharSequence?, private val skin: Skin, sdfStyle: SdfLabelSt
 
         private fun createLabelStyle(skin: Skin, style: SdfLabelStyle): LabelStyle {
             load(skin)
-            val font: BitmapFont = skin.get(if (style.bold) FONT_BOLD_NAME else FONT_NAME)
+            val font: BitmapFont = skin[if (style.bold) FONT_BOLD_NAME else FONT_NAME]
             return LabelStyle(font, style.fontColor)
         }
 

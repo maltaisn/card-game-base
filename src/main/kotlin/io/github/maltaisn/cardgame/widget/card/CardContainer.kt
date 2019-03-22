@@ -140,8 +140,8 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
 
 
     constructor(coreSkin: Skin, cardSkin: Skin) :
-            this(coreSkin.get(GameLayer.CoreStyle::class.java),
-                    cardSkin.get(CardActor.CardStyle::class.java))
+            this(coreSkin[GameLayer.CoreStyle::class.java],
+                    cardSkin[CardActor.CardStyle::class.java])
 
     override fun setStage(stage: Stage?) {
         require(stage == null || stage is CardGameScreen) {

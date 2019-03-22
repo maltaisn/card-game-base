@@ -32,7 +32,7 @@ import ktx.actors.plusAssign
  */
 class MainMenu(skin: Skin) : MenuTable(skin) {
 
-    val style = skin.get(MainMenuStyle::class.java)
+    val style = skin[MainMenuStyle::class.java]
 
     private val topRow = Table()
     private val bottomRow = Table()
