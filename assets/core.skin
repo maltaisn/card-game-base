@@ -63,6 +63,15 @@
       backgroundScale: 0.75
     }
   }
+  io.github.maltaisn.cardgame.widget.Switch$SwitchStyle: {
+    default: {
+      background: switch-background
+      checkOverlay: switch-checked
+      thumb: switch-thumb
+      thumbHoverOverlay: switch-thumb-hover
+      scale: 0.75
+    }
+  }
   io.github.maltaisn.cardgame.widget.menu.MenuButton$MenuButtonStyle: {
     default: {
       backgroundCenter: btn-menu-center

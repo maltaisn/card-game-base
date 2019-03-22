@@ -19,18 +19,15 @@ package io.github.maltaisn.cardgame.widget.menu
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.InputListener
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.scenes.scene2d.ui.Value
+import com.badlogic.gdx.scenes.scene2d.EventListener
+import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Align
 import io.github.maltaisn.cardgame.applyBounded
 import io.github.maltaisn.cardgame.widget.SdfLabel
 import ktx.actors.alpha
 import ktx.actors.plusAssign
+import ktx.actors.setScrollFocus
 import kotlin.math.max
 
 
@@ -40,7 +37,7 @@ import kotlin.math.max
  */
 class SubMenu(skin: Skin) : MenuTable(skin) {
 
-    val style = skin.get(SubMenuStyle::class.java)
+    val style = skin[SubMenuStyle::class.java]
 
     /** The submenu title, shown at the top. May be null for none. */
     var title: CharSequence?
@@ -56,12 +53,18 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
     var menuPosition = MenuPosition.LEFT
 
     /** The content of the submenu scroll pane. May be null to show nothing or when the submenu isn't shown. */
-    val content = Table()
+    val content = Container<Actor>()
+
+    /** The scroll pane containing the [content] container. */
+    val contentPane = ContentPane(content, ScrollPane.ScrollPaneStyle(
+            style.contentBackground, null, null, null, null))
 
     override var shown = false
         set(value) {
             if (field == value) return
             field = value
+
+            contentPane.setScrollFocus(value)
 
             if (value && items.isNotEmpty() && checkable) {
                 // Always check the first checkable item of the menu when showing.
@@ -86,8 +89,6 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
     private val headerTable = Table()
     private val titleLabel = SdfLabel(null, skin, style.titleStyle)
     private val menuTable = Table()
-    private val contentPane = ScrollPane(content, ScrollPane.ScrollPaneStyle(
-            style.contentBackground, null, null, null, null))
 
     init {
         isVisible = false
@@ -99,20 +100,12 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
 
         headerTable.pad(25f, 25f, 0f, 20f)
         headerTable.add(backBtn).size(75f, 75f)
-        headerTable.add(titleLabel).padLeft(10f).grow()
+        headerTable.add(titleLabel).padLeft(15f).grow()
 
-        content.pad(20f, 20f, 20f, 20f)
+        content.fill().pad(20f, 20f, 20f, 20f)
         contentPane.setScrollingDisabled(false, false)
         contentPane.setupOverscroll(30f, 100f, 200f)
-        contentPane.addListener(object : InputListener() {
-            override fun enter(event: InputEvent, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
-                stage.scrollFocus = contentPane
-            }
-
-            override fun exit(event: InputEvent, x: Float, y: Float, pointer: Int, toActor: Actor?) {
-                stage.scrollFocus = null
-            }
-        })
+        contentPane.setCancelTouchFocus(false)
     }
 
     override fun layout() {
@@ -226,6 +219,37 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
             }
             return false
         }
+    }
+
+    class ContentPane(widget: Actor, style: ScrollPaneStyle) : ScrollPane(widget, style) {
+
+        /**
+         * Whether scrolling is enabled. When disabled, all listeners
+         * are temporarily removed until scrolling is re-enabled.
+         */
+        var scrollingEnabled = true
+            set(value) {
+                if (field == value) return
+                field = value
+                if (value) {
+                    for (listener in prevListeners) {
+                        addListener(listener)
+                    }
+                    for (listener in prevCaptureListeners) {
+                        addCaptureListener(listener)
+                    }
+                    prevListeners.clear()
+                    prevCaptureListeners.clear()
+                } else {
+                    prevListeners += listeners
+                    prevCaptureListeners += captureListeners
+                    clearListeners()
+                }
+            }
+
+        private val prevListeners = mutableListOf<EventListener>()
+        private val prevCaptureListeners = mutableListOf<EventListener>()
+
     }
 
     class SubMenuStyle : MenuTableStyle() {
