@@ -17,6 +17,7 @@
 package io.github.maltaisn.cardgame.widget.menu
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Interpolation
@@ -161,22 +162,22 @@ class MenuButton(skin: Skin,
 
     constructor(skin: Skin, fontStyle: SdfLabel.SdfLabelStyle,
                 text: CharSequence? = null, icon: Drawable? = null) :
-            this(skin, skin.get(MenuButtonStyle::class.java), fontStyle, text, icon)
+            this(skin, skin[MenuButtonStyle::class.java], fontStyle, text, icon)
 
     init {
         touchable = Touchable.enabled
 
         addListener(object : InputListener() {
-            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                if (enabled) {
+            override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                if (enabled && button == Input.Buttons.LEFT) {
                     pressed = true
                     pressElapsed = 0f
                 }
                 return true
             }
 
-            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                if (enabled) {
+            override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
+                if (enabled && button == Input.Buttons.LEFT) {
                     pressed = false
                     pressElapsed = PRESS_FADE_DURATION * pressAlpha
 
@@ -389,10 +390,10 @@ class MenuButton(skin: Skin,
 
         private val CHECK_IN_INTERPOLATION: Interpolation = Interpolation.smooth
         private val CHECK_OUT_INTERPOLATION: Interpolation = Interpolation.smooth
-        private val PRESS_IN_INTERPOLATION: Interpolation = Interpolation.smooth
-        private val PRESS_OUT_INTERPOLATION: Interpolation = Interpolation.smooth
         private val HOVER_IN_INTERPOLATION: Interpolation = Interpolation.pow2Out
         private val HOVER_OUT_INTERPOLATION: Interpolation = Interpolation.smooth
+        private val PRESS_IN_INTERPOLATION: Interpolation = Interpolation.smooth
+        private val PRESS_OUT_INTERPOLATION: Interpolation = Interpolation.smooth
     }
 
 }

@@ -17,6 +17,7 @@
 package io.github.maltaisn.cardgame.widget
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Actor
@@ -41,7 +42,7 @@ import kotlin.math.max
  */
 class PopupButton(skin: Skin, text: CharSequence? = null) : Table(skin) {
 
-    val style: PopupButtonStyle = skin.get(PopupButtonStyle::class.java)
+    val style: PopupButtonStyle = skin[PopupButtonStyle::class.java]
 
     /** The button label showing its text. */
     val label: SdfLabel
@@ -85,16 +86,16 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : Table(skin) {
         touchable = Touchable.enabled
 
         addListener(object : InputListener() {
-            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                if (enabled) {
+            override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                if (enabled && button == Input.Buttons.LEFT) {
                     pressed = true
                     pressElapsed = 0f
                 }
                 return true
             }
 
-            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                if (enabled) {
+            override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
+                if (enabled && button == Input.Buttons.LEFT) {
                     pressed = false
                     pressElapsed = PRESS_FADE_DURATION * pressAlpha
 

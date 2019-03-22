@@ -17,6 +17,7 @@
 package io.github.maltaisn.cardgame.widget.card
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Actor
@@ -40,7 +41,8 @@ import ktx.style.get
  * @property cardStyle Card actor style, must match card type.
  * @property card Card shown by the actor.
  */
-class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, var card: Card) : Widget() {
+class CardActor(val coreStyle: GameLayer.CoreStyle,
+                val cardStyle: CardStyle, var card: Card) : Widget() {
 
     /**
      * Whether the card value is displayed.
@@ -126,8 +128,8 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
         setSize(prefWidth, prefHeight)
 
         addListener(object : InputListener() {
-            override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                if (enabled) {
+            override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                if (enabled && button == Input.Buttons.LEFT) {
                     pressed = true
                     pressElapsed = 0f
                     lastTouchDownTime = System.currentTimeMillis()
@@ -136,8 +138,8 @@ class CardActor(val coreStyle: GameLayer.CoreStyle, val cardStyle: CardStyle, va
                 return true
             }
 
-            override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
-                if (enabled) {
+            override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
+                if (enabled && button == Input.Buttons.LEFT) {
                     pressed = false
                     pressElapsed = PRESS_FADE_DURATION * pressAlpha
                     lastTouchDownTime = 0
