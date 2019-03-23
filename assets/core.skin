@@ -72,6 +72,15 @@
       scale: 0.75
     }
   }
+  io.github.maltaisn.cardgame.widget.Slider$SliderStyle: {
+    default: {
+      trackEmpty: slider-track-empty
+      trackFilled: slider-track-filled
+      thumb: slider-thumb
+      thumbHoverOverlay: slider-thumb-hover
+      scale: 0.75
+    }
+  }
   io.github.maltaisn.cardgame.widget.menu.MenuButton$MenuButtonStyle: {
     default: {
       backgroundCenter: btn-menu-center

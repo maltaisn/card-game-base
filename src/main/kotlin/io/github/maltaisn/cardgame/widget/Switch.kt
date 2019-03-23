@@ -28,7 +28,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Widget
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
 import io.github.maltaisn.cardgame.applyBounded
-import io.github.maltaisn.cardgame.widget.menu.SubMenu
 import io.github.maltaisn.cardgame.withinBounds
 import kotlin.math.absoluteValue
 
@@ -91,9 +90,9 @@ class Switch(val style: SwitchStyle) : Widget() {
     init {
         setSize(prefWidth, prefHeight)
 
-        addListener(object : InputListener() {
-            private var disabledContentPane: SubMenu.ContentPane? = null
-
+        // A capture listener is used to intercept the touch down event,
+        // so that if the switch is in a scroll pane, it won't be able to scroll.
+        addCaptureListener(object : InputListener() {
             override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                 if (enabled && button == Input.Buttons.LEFT) {
                     pressed = true
@@ -101,17 +100,7 @@ class Switch(val style: SwitchStyle) : Widget() {
                     pressPosX = x
                     checkAlphaOnPress = checkAlpha
                     dragged = false
-
-                    // If switch is in a disableable scrollpane, disable it.
-                    var parent = parent
-                    while (parent != null) {
-                        if (parent is SubMenu.ContentPane) {
-                            parent.scrollingEnabled = false
-                            disabledContentPane = parent
-                            break
-                        }
-                        parent = parent.parent
-                    }
+                    event.stop()
                 }
                 return true
             }
@@ -129,28 +118,22 @@ class Switch(val style: SwitchStyle) : Widget() {
                     } else if (withinBounds(x, y)) {
                         checked = !checked
                     }
-
-                    // Re-enable scrollpane if necessary
-                    disabledContentPane?.scrollingEnabled = true
-                    disabledContentPane = null
                 }
             }
 
             override fun touchDragged(event: InputEvent, x: Float, y: Float, pointer: Int) {
-                if (pressed && pointer == Input.Buttons.LEFT) {
-                    val distance = x - pressPosX
-                    if (distance.absoluteValue > MIN_DRAG_DISTANCE) {
-                        dragged = true
-                    }
-                    val trackWidth = (style.background.minWidth - style.thumb.minWidth) * style.scale
-                    checkAlpha = (checkAlphaOnPress + distance / trackWidth * DRAG_SPEED).coerceIn(0f, 1f)
-                    Gdx.graphics.requestRendering()
+                val distance = x - pressPosX
+                if (distance.absoluteValue > MIN_DRAG_DISTANCE) {
+                    dragged = true
                 }
+                val trackWidth = (style.background.minWidth - style.thumb.minWidth) * style.scale
+                checkAlpha = (checkAlphaOnPress + distance / trackWidth * DRAG_SPEED).coerceIn(0f, 1f)
+                Gdx.graphics.requestRendering()
             }
+        })
 
+        addListener(object : InputListener() {
             override fun enter(event: InputEvent, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
-                // Pointer must be -1 because hovering can only happen on desktop.
-                // Also when on touch down/up, an enter/exit event is fired, but that shouldn't stop hovering.
                 if (enabled && pointer == -1) {
                     hovered = true
                     hoverElapsed = 0f
@@ -230,7 +213,7 @@ class Switch(val style: SwitchStyle) : Widget() {
         thumb.draw(batch, thumbX, y, 0f, 0f, thumb.minWidth,
                 thumb.minHeight, scale, scale, 0f)
 
-        // Draw thumb hover/press
+        // Draw thumb hover/press overlay
         batch.setColor(color.r, color.g, color.b, parentAlpha * (hoverAlpha + pressAlpha) * 0.1f)
         val thumbHover = style.thumbHoverOverlay as TransformDrawable
         thumbHover.draw(batch, thumbX, y, 0f, 0f, thumbHover.minWidth,
@@ -274,10 +257,10 @@ class Switch(val style: SwitchStyle) : Widget() {
         private const val HOVER_FADE_DURATION = 0.3f
 
         /** The duration of the check animation. */
-        private const val CHECK_DURATION = 0.3f
+        private const val CHECK_DURATION = 0.2f
 
         /** The minimum drag distance in pixels to enable drag mode. */
-        private const val MIN_DRAG_DISTANCE = 5f
+        private const val MIN_DRAG_DISTANCE = 10f
 
         /** How fast is the thumb moving compared to the pointer when dragged. */
         private const val DRAG_SPEED = 0.5f

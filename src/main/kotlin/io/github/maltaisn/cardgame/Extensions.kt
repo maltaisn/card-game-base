@@ -29,4 +29,8 @@ internal fun Actor.withinBounds(x: Float, y: Float) = x >= 0 && y >= 0 && x <= w
  * Apply an interpolation to an alpha value.
  * Both the parameter and the result are checked to be between 0 and 1.
  */
-fun Interpolation.applyBounded(a: Float) = this.apply(a.coerceIn(0f, 1f)).coerceIn(0f, 1f)
+fun Interpolation.applyBounded(a: Float) =
+        this.apply(a.coerceIn(0f, 1f)).coerceIn(0f, 1f)
+
+fun Interpolation.applyBounded(start: Float, end: Float, a: Float) =
+        start + (end - start) * applyBounded(a)
