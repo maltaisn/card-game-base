@@ -32,6 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
 import io.github.maltaisn.cardgame.applyBounded
 import io.github.maltaisn.cardgame.withinBounds
 import ktx.actors.plusAssign
+import ktx.math.vec2
 import kotlin.math.round
 
 
@@ -133,16 +134,18 @@ class Slider(val style: SliderStyle) : Widget() {
         // so that if the slider is in a scroll pane, it won't be able to scroll.
         addCaptureListener(object : InputListener() {
             private var pressOffset = 0f
+            private var pressStagePos = vec2()
 
             override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                 if (enabled && button == Input.Buttons.LEFT) {
                     sliderPressed = true
+                    pressStagePos.set(event.stageX, event.stageY)
                     if (isPointInThumb(x, y)) {
                         pressed = true
                         pressElapsed = 0f
                         pressOffset = x - trackFilledWidth
+                        event.stop()
                     }
-                    event.stop()
                 }
                 return true
             }
@@ -152,7 +155,10 @@ class Slider(val style: SliderStyle) : Widget() {
                     if (pressed) {
                         pressed = false
                         pressElapsed = PRESS_FADE_DURATION * pressAlpha
-                    } else if (sliderPressed && withinBounds(x, y)) {
+                    } else if (sliderPressed && withinBounds(x, y) &&
+                            Vector2.len(event.stageX - pressStagePos.x,
+                                    event.stageY - pressStagePos.y) < MAX_SLIDE_DRAG_DISTANCE) {
+                        // To slide, touch must start and end within bounds and touch must not have been dragged too much.
                         pressOffset = style.thumb.minWidth * style.scale / 2
                         slideTo(getProgressForX(x))
                     }
@@ -343,6 +349,9 @@ class Slider(val style: SliderStyle) : Widget() {
 
         /** The duration of the animation when the thumb slides to a new position. */
         private const val SLIDE_DURATION = 0.3f
+
+        /** Maximum distance that touch can be dragged to allow slide when clicking on track. */
+        private const val MAX_SLIDE_DRAG_DISTANCE = 10f
 
         private val PRESS_IN_INTERPOLATION: Interpolation = Interpolation.smooth
         private val PRESS_OUT_INTERPOLATION: Interpolation = Interpolation.smooth
