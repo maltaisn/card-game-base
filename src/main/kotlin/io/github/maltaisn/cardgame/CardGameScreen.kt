@@ -21,6 +21,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.SkinLoader
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
@@ -35,9 +36,13 @@ import io.github.maltaisn.cardgame.widget.PopupGroup
 import io.github.maltaisn.cardgame.widget.SdfLabel
 import io.github.maltaisn.cardgame.widget.card.CardAnimationLayer
 import io.github.maltaisn.cardgame.widget.menu.GameMenu
+import io.github.maltaisn.cardgame.widget.menu.MenuIcons
+import io.github.maltaisn.cardgame.widget.prefs.GamePrefs
+import io.github.maltaisn.cardgame.widget.prefs.GamePrefsLoader
 import ktx.actors.plusAssign
 import ktx.assets.getAsset
 import ktx.assets.load
+import ktx.assets.setLoader
 
 
 abstract class CardGameScreen(val game: CardGame) :
@@ -65,6 +70,9 @@ abstract class CardGameScreen(val game: CardGame) :
             }
         }
 
+    /** The game settings, will be saved when game is paused. */
+    var gameSettings: GamePrefs? = null
+
     // This frame buffer is used to draw sprites offscreen, not on the screen batch.
     // The buffer can then be rendered to screen, allowing uniform transparency for example.
     lateinit var offscreenFbo: FrameBuffer
@@ -80,6 +88,8 @@ abstract class CardGameScreen(val game: CardGame) :
         actionsRequestRendering = true
 
         assetManager.apply {
+            setLoader(GamePrefsLoader(InternalFileHandleResolver()))
+
             load<TextureAtlas>(Resources.CORE_SKIN_ATLAS)
             load<Skin>(Resources.CORE_SKIN, SkinLoader.SkinParameter(Resources.CORE_SKIN_ATLAS))
             load<I18NBundle>(Resources.CORE_STRINGS_FILE)
@@ -87,6 +97,7 @@ abstract class CardGameScreen(val game: CardGame) :
 
             coreSkin = assetManager.getAsset(Resources.CORE_SKIN)
             coreSkin.add(Resources.CORE_STRINGS_NAME, assetManager.getAsset<I18NBundle>(Resources.CORE_STRINGS_FILE))
+            coreSkin.add("default", MenuIcons(coreSkin))
 
             SdfLabel.load(coreSkin)
         }
@@ -97,7 +108,6 @@ abstract class CardGameScreen(val game: CardGame) :
         popupGroup = PopupGroup()
 
         rootContainer = CardGameContainer(gameLayer, cardAnimationLayer, popupGroup)
-        @Suppress("LeakingThis")
         addActor(rootContainer)
     }
 
@@ -120,7 +130,7 @@ abstract class CardGameScreen(val game: CardGame) :
     }
 
     override fun pause() {
-
+        gameSettings?.save()
     }
 
     override fun resume() {

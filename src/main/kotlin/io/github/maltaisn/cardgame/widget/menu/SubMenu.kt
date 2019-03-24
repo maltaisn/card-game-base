@@ -19,7 +19,6 @@ package io.github.maltaisn.cardgame.widget.menu
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.EventListener
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Align
@@ -56,7 +55,7 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
     val content = Container<Actor>()
 
     /** The scroll pane containing the [content] container. */
-    val contentPane = ContentPane(content, ScrollPane.ScrollPaneStyle(
+    val contentPane = ScrollPane(content, ScrollPane.ScrollPaneStyle(
             style.contentBackground, null, null, null, null))
 
     override var shown = false
@@ -81,6 +80,17 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
             }
         }
 
+    /** Returns the first checked item in the menu, `null` if none are checked */
+    val checkedItem: MenuItem?
+        get() {
+            for (item in items) {
+                if (item.checked) {
+                    return item
+                }
+            }
+            return null
+        }
+
     /** The listener called when the back arrow is clicked. */
     var backArrowClickListener: (() -> Unit)? = null
 
@@ -102,9 +112,9 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
         headerTable.add(backBtn).size(75f, 75f)
         headerTable.add(titleLabel).padLeft(15f).grow()
 
-        content.fill().pad(20f, 20f, 20f, 20f)
+        content.fill().pad(0f, 20f, 0f, 20f)
         contentPane.setScrollingDisabled(false, false)
-        contentPane.setupOverscroll(30f, 100f, 200f)
+        contentPane.setOverscroll(false, false)
         contentPane.setCancelTouchFocus(false)
     }
 
@@ -219,37 +229,6 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
             }
             return false
         }
-    }
-
-    class ContentPane(widget: Actor, style: ScrollPaneStyle) : ScrollPane(widget, style) {
-
-        /**
-         * Whether scrolling is enabled. When disabled, all listeners
-         * are temporarily removed until scrolling is re-enabled.
-         */
-        var scrollingEnabled = true
-            set(value) {
-                if (field == value) return
-                field = value
-                if (value) {
-                    for (listener in prevListeners) {
-                        addListener(listener)
-                    }
-                    for (listener in prevCaptureListeners) {
-                        addCaptureListener(listener)
-                    }
-                    prevListeners.clear()
-                    prevCaptureListeners.clear()
-                } else {
-                    prevListeners += listeners
-                    prevCaptureListeners += captureListeners
-                    clearListeners()
-                }
-            }
-
-        private val prevListeners = mutableListOf<EventListener>()
-        private val prevCaptureListeners = mutableListOf<EventListener>()
-
     }
 
     class SubMenuStyle : MenuTableStyle() {

@@ -16,14 +16,25 @@
 
 package io.github.maltaisn.cardgame.widget.menu
 
+import com.badlogic.gdx.scenes.scene2d.Action
+import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.I18NBundle
 import com.gmail.blueboxware.libgdxplugin.annotations.GDXAssets
 import io.github.maltaisn.cardgame.Resources
+import io.github.maltaisn.cardgame.widget.prefs.GamePrefs
+import io.github.maltaisn.cardgame.widget.prefs.PrefCategory
+import ktx.actors.plusAssign
 import ktx.style.get
 
 
-class DefaultGameMenu(skin: Skin) : GameMenu(skin) {
+/**
+ * The default implementation of the [GameMenu], with 6 items in main menu:
+ * new game, continue, settings, rules, statistics and about.
+ */
+class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
 
     /** Listener called when the continue item is clicked in the main menu. */
     var continueListener: (() -> Unit)? = null
@@ -31,16 +42,44 @@ class DefaultGameMenu(skin: Skin) : GameMenu(skin) {
     /** The continue menu item. Can be disabled. */
     val continueItem: MenuItem
 
+    /** The game preferences, shown in the setting submenu. */
+    var settings: GamePrefs? = null
+        set(value) {
+            field = value
+            settingsMenu.items.clear()
+            if (value != null) {
+                settingsView = value.createView(skin)
+                settingsMenu.content.actor = settingsView
+
+                // Add menu items from settings categories
+                var id = 0
+                for (entry in value.entries) {
+                    if (entry is PrefCategory) {
+                        settingsMenu.items += MenuItem(id, entry.title,
+                                menuIcons[entry.icon ?: MenuIcons.CARDS])
+                        id++
+                    }
+                }
+            } else {
+                settingsView = null
+                settingsMenu.content.actor = null
+            }
+            settingsMenu.invalidateLayout()
+        }
+
+    private var settingsView: Table? = null
+
     private val newGameMenu = SubMenu(skin)
     private val settingsMenu = SubMenu(skin)
     private val rulesMenu = SubMenu(skin)
     private val statsMenu = SubMenu(skin)
     private val aboutMenu = SubMenu(skin)
 
+    private val menuIcons = skin[MenuIcons::class.java]
+
     init {
         @GDXAssets(propertiesFiles = ["assets/core/strings.properties"])
         val bundle: I18NBundle = skin[Resources.CORE_STRINGS_NAME]
-        val icons = skin.get(MenuIcons::class.java)
 
         val newGameStr = bundle.get("mainmenu_new_game")
         val continueStr = bundle.get("mainmenu_continue")
@@ -51,13 +90,13 @@ class DefaultGameMenu(skin: Skin) : GameMenu(skin) {
 
         mainMenu.apply {
             // Add main menu items
-            continueItem = MenuItem(ITEM_ID_CONTINUE, continueStr, icons.arrowRight, MenuItem.Position.BOTTOM)
-            items += MenuItem(ITEM_ID_NEW_GAME, newGameStr, icons.cards, MenuItem.Position.BOTTOM)
+            continueItem = MenuItem(ITEM_ID_CONTINUE, continueStr, menuIcons[MenuIcons.ARROW_RIGHT], MenuItem.Position.BOTTOM)
+            items += MenuItem(ITEM_ID_NEW_GAME, newGameStr, menuIcons[MenuIcons.CARDS], MenuItem.Position.BOTTOM)
             items += continueItem
-            items += MenuItem(ITEM_ID_SETTINGS, settingsStr, icons.settings, MenuItem.Position.BOTTOM)
-            items += MenuItem(ITEM_ID_RULES, rulesStr, icons.book, MenuItem.Position.TOP)
-            items += MenuItem(ITEM_ID_STATS, statsStr, icons.list, MenuItem.Position.TOP)
-            items += MenuItem(ITEM_ID_ABOUT, aboutStr, icons.info, MenuItem.Position.TOP)
+            items += MenuItem(ITEM_ID_SETTINGS, settingsStr, menuIcons[MenuIcons.SETTINGS], MenuItem.Position.BOTTOM)
+            items += MenuItem(ITEM_ID_RULES, rulesStr, menuIcons[MenuIcons.BOOK], MenuItem.Position.TOP)
+            items += MenuItem(ITEM_ID_STATS, statsStr, menuIcons[MenuIcons.LIST], MenuItem.Position.TOP)
+            items += MenuItem(ITEM_ID_ABOUT, aboutStr, menuIcons[MenuIcons.INFO], MenuItem.Position.TOP)
             invalidateLayout()
 
             itemClickListener = {
@@ -72,17 +111,12 @@ class DefaultGameMenu(skin: Skin) : GameMenu(skin) {
             }
         }
 
+        // New game menu
         newGameMenu.title = newGameStr
-        settingsMenu.title = settingsStr
-        rulesMenu.title = rulesStr
-        statsMenu.title = statsStr
-        aboutMenu.title = aboutStr
-
-        // TEMP SUBMENU ITEMS
         newGameMenu.apply {
             checkable = false
             menuPosition = SubMenu.MenuPosition.RIGHT
-            items += MenuItem(0, "Start Game", icons.cards, MenuItem.Position.BOTTOM)
+            items += MenuItem(0, "Start Game", menuIcons[MenuIcons.CARDS], MenuItem.Position.BOTTOM)
             itemClickListener = {
                 if (it.id == 0) {
                     this@DefaultGameMenu.shown = false
@@ -91,26 +125,108 @@ class DefaultGameMenu(skin: Skin) : GameMenu(skin) {
             invalidateLayout()
         }
 
-        settingsMenu.apply {
-            items += MenuItem(0, "Game", icons.cards)
-            items += MenuItem(1, "Interface", icons.book)
-            items += MenuItem(2, "Contracts", icons.list)
-            invalidateLayout()
+        // Settings menu
+        settingsMenu.title = settingsStr
+        settingsMenu.backArrowClickListener = {
+            settings?.save()
+            closeSubMenu()
+        }
+        settingsMenu.itemClickListener = {
+            // When a settings menu item is clicked, scroll the content pane to the category header.
+            // Category headers are the only Container children and are recognized this way.
+            var id = 0
+            val scrollPane = settingsMenu.contentPane
+            for (child in settingsView!!.children) {
+                if (child is Container<*>) {
+                    if (id == it.id) {
+                        val top = child.y + child.height + 20f
+                        val height = scrollPane.height
+                        scrollPane.scrollTo(0f, top - scrollPane.height, 0f, height)
+                        break
+                    }
+                    id++
+                }
+            }
+        }
+        settingsMenu.contentPane += object : Action() {
+            private var lastScrollY = 0f
+
+            override fun act(delta: Float): Boolean {
+                // There's no scroll change listener, so this action constantly check if the scroll pane has scrolled.
+                val scrollPane = settingsMenu.contentPane
+                val scrollY = scrollPane.scrollY
+                if (scrollY != lastScrollY) {
+                    lastScrollY = scrollY
+
+                    // Change the checked menu item if needed
+                    var newId = MenuItem.NO_ID
+                    val oldId = settingsMenu.checkedItem?.id ?: MenuItem.NO_ID
+                    when {
+                        scrollPane.isTopEdge -> {
+                            // Scrolled to top edge, always check first category
+                            newId = 0
+                        }
+                        scrollPane.isBottomEdge -> {
+                            // Scrolled to bottom edge, always check last category
+                            newId = settingsMenu.items.size - 1
+                        }
+                        else -> {
+                            // Find the top and bottom limits of the currently checked category
+                            var id = 0
+                            var currCatg: Actor? = null
+                            var nextCatg: Actor? = null
+                            val children = settingsView!!.children
+                            for (child in children) {
+                                if (child is Container<*>) {
+                                    if (currCatg != null) {
+                                        nextCatg = child
+                                    } else if (id == oldId) {
+                                        currCatg = child
+                                    }
+                                    id++
+                                }
+                            }
+                            if (nextCatg == null) nextCatg = children.last()
+                            val top = currCatg!!.y + currCatg.height
+                            val bottom = nextCatg!!.y + nextCatg.height
+
+                            // If currently checked category is completely hidden, check another
+                            val maxY = settingsView!!.height - scrollY
+                            val minY = maxY - scrollPane.height
+                            val tooHigh = top > maxY && bottom > maxY
+                            val tooLow = top < minY && bottom < minY
+                            if (tooHigh || tooLow) {
+                                // If too high check next category, otherwise check previous.
+                                newId = (oldId + if (tooHigh) 1 else -1).coerceIn(settingsMenu.items.indices)
+                            }
+                        }
+                    }
+                    if (newId != -1 && newId != oldId) {
+                        settingsMenu.checkItem(newId, false)
+                    }
+                }
+                return false
+            }
         }
 
+        // Rules menu
+        rulesMenu.title = rulesStr
         rulesMenu.apply {
-            items += MenuItem(0, "Dealing", icons.cards)
-            items += MenuItem(1, "Scoring", icons.book)
-            items += MenuItem(2, "Contracts", icons.list)
+            items += MenuItem(0, "Dealing", menuIcons[MenuIcons.CARDS])
+            items += MenuItem(1, "Scoring", menuIcons[MenuIcons.BOOK])
+            items += MenuItem(2, "Contracts", menuIcons[MenuIcons.LIST])
             invalidateLayout()
-
         }
 
+        // Statistics menu
+        statsMenu.title = statsStr
         statsMenu.invalidateLayout()
 
+        // About menu
+        aboutMenu.title = aboutStr
         aboutMenu.apply {
-            items += MenuItem(0, "About", icons.info)
-            items += MenuItem(1, "Donate", icons.arrowRight)
+            items += MenuItem(0, "About", menuIcons[MenuIcons.INFO])
+            items += MenuItem(1, "Donate", menuIcons[MenuIcons.ARROW_RIGHT])
             invalidateLayout()
         }
     }

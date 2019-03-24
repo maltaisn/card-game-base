@@ -64,6 +64,7 @@ open class GameMenu(skin: Skin) : Stack() {
      */
     private var mainMenuShown = true
 
+    private val defaultBackListener = { closeSubMenu() }
 
     init {
         onKeyDown { keycode ->
@@ -78,6 +79,7 @@ open class GameMenu(skin: Skin) : Stack() {
 
     /**
      * Open a [subMenu]. If another submenu is opened or animated on screen, this does nothing.
+     * If no back arrow listener was set, a default one that only returns the main menu is set.
      */
     fun openSubMenu(subMenu: SubMenu) {
         if (children.size > 1) {
@@ -90,7 +92,9 @@ open class GameMenu(skin: Skin) : Stack() {
         this.subMenu = subMenu
         this += subMenu
 
-        subMenu.backArrowClickListener = { closeSubMenu() }
+        if (subMenu.backArrowClickListener == null) {
+            subMenu.backArrowClickListener = defaultBackListener
+        }
 
         mainMenu.shown = false
         val newAction = mainMenu.actions.first() then object : Action() {
@@ -114,6 +118,10 @@ open class GameMenu(skin: Skin) : Stack() {
         val menu = subMenu!!
 
         setKeyboardFocus(false)
+
+        if (menu.backArrowClickListener === defaultBackListener) {
+            menu.backArrowClickListener = null
+        }
 
         menu.shown = false
         val newAction = menu.actions.first() then object : Action() {

@@ -17,16 +17,21 @@
 package io.github.maltaisn.cardgame.widget.menu
 
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
+import io.github.maltaisn.cardgame.widget.menu.MenuItem.Companion.NO_ID
 
 
 /**
- * An item in a menu, with a [title], an [icon] and a [position] in the menu.
- * Each item should have an unique ID to identify them in click listener.
+ * An item in a menu, with an [id], a [title], an [icon] and a [position] in the menu.
+ * Each item should have an unique ID to identify them in click listener, different than [NO_ID].
  */
 class MenuItem(val id: Int,
                val title: CharSequence,
                val icon: Drawable,
                val position: Position = Position.TOP) {
+
+    init {
+        require(id != NO_ID) { "A menu item cannot have an ID of $NO_ID." }
+    }
 
     /** The menu this is in. */
     var menu: MenuTable? = null
@@ -61,6 +66,10 @@ class MenuItem(val id: Int,
 
     enum class Position {
         TOP, BOTTOM
+    }
+
+    companion object {
+        const val NO_ID = -1
     }
 
 }

@@ -35,7 +35,7 @@ import ktx.style.get
 /**
  * Wrapper class around [Label] for rendering text with a distance field font.
  */
-class SdfLabel(text: CharSequence?, private val skin: Skin, sdfStyle: SdfLabelStyle) :
+open class SdfLabel(text: CharSequence?, private val skin: Skin, sdfStyle: SdfLabelStyle) :
         Label(text, createLabelStyle(skin, sdfStyle)) {
 
     /** The style of the distance field label, replaces [style]. */
@@ -72,7 +72,6 @@ class SdfLabel(text: CharSequence?, private val skin: Skin, sdfStyle: SdfLabelSt
     }
 
     override fun getText(): StringBuilder = if (sdfStyle.allCaps) _text else super.getText()
-
 
     override fun draw(batch: Batch, parentAlpha: Float) {
         // Draw the text

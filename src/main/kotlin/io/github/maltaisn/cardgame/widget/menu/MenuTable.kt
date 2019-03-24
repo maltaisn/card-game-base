@@ -55,23 +55,25 @@ abstract class MenuTable(skin: Skin) : FboTable(skin) {
 
 
     /** Check an item by [id] and call the listener. */
-    fun checkItem(id: Int) {
+    fun checkItem(id: Int, callListener: Boolean = true) {
         for (item in items) {
             if (item.id == id) {
-                checkItem(item)
+                checkItem(item, callListener)
                 break
             }
         }
     }
 
     /** Check an [item] and call the listener. */
-    fun checkItem(item: MenuItem) {
+    fun checkItem(item: MenuItem, callListener: Boolean = true) {
         if (checkable && item.menu === this) {
             for (menuItem in items) {
                 if (menuItem === item) {
                     if (!menuItem.checked && menuItem.checkable) {
                         menuItem.checked = true
-                        itemClickListener?.invoke(menuItem)
+                        if (callListener) {
+                            itemClickListener?.invoke(menuItem)
+                        }
                     }
                 } else {
                     menuItem.checked = false

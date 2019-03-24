@@ -16,17 +16,34 @@
 
 package io.github.maltaisn.cardgame.widget.menu
 
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 
 
-class MenuIcons {
+class MenuIcons(skin: Skin) {
 
-    lateinit var cards: Drawable
-    lateinit var chevronLeft: Drawable
-    lateinit var arrowRight: Drawable
-    lateinit var book: Drawable
-    lateinit var settings: Drawable
-    lateinit var list: Drawable
-    lateinit var info: Drawable
+    /** The menu icons map. More icons can be added. */
+    val icons = mutableMapOf<String, Drawable>()
+
+    init {
+        for (name in ICON_NAMES) {
+            icons[name] = skin.getDrawable(name)
+        }
+    }
+
+    operator fun get(name: String) = icons[name]!!
+
+    companion object {
+        // Names of default icons
+        const val CARDS = "icon-cards"
+        const val CHEVRON_LEFT = "icon-chevron-left"
+        const val ARROW_RIGHT = "icon-arrow-right"
+        const val BOOK = "icon-book"
+        const val SETTINGS = "icon-settings"
+        const val LIST = "icon-list"
+        const val INFO = "icon-info"
+
+        private val ICON_NAMES = arrayOf(CARDS, CHEVRON_LEFT, ARROW_RIGHT, BOOK, SETTINGS, LIST, INFO)
+    }
 
 }

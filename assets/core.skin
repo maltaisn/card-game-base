@@ -4,18 +4,14 @@
     white: { hex: #ffffffff }
     textColorBlack: { hex: #1b1b1bff }
     textColorLightGray: { hex: #abababff }
+    textColorGray: { hex: #797979ff }
     textColorDarkGray: { hex: #3b3b3bff }
     textColorWhite: { hex: #e3e3e3ff }
   }
-  io.github.maltaisn.cardgame.widget.menu.MenuIcons: {
-    default: {
-      arrowRight: icon-arrow-right
-      book: icon-book
-      cards: icon-cards
-      chevronLeft: icon-chevron-left
-      info: icon-info
-      list: icon-list
-      settings: icon-settings
+  io.github.maltaisn.cardgame.widget.SdfLabel$SdfLabelStyle: {
+    prefTitle: {
+      fontSize: 22
+      fontColor: textColorBlack
     }
   }
   io.github.maltaisn.cardgame.widget.GameLayer$CoreStyle: {
@@ -126,6 +122,38 @@
       }
       itemIconSize: 32
       contentBackground: submenu-content-background
+    }
+  }
+  io.github.maltaisn.cardgame.widget.prefs.GamePrefs$GamePrefsStyle: {
+    default: {
+      separator: pref-separator
+    }
+  }
+  io.github.maltaisn.cardgame.widget.prefs.PrefCategory$PrefCategoryStyle: {
+    default: {
+      titleFontStyle: {
+        fontSize: 32
+        fontColor: textColorBlack
+        bold: true
+      }
+    }
+  }
+  io.github.maltaisn.cardgame.widget.prefs.SwitchPref$SwitchPrefStyle: {
+    default: {
+      titleFontStyle: prefTitle
+      helpIcon: pref-help
+      switchStyle: default
+    }
+  }
+  io.github.maltaisn.cardgame.widget.prefs.SliderPref$SliderPrefStyle: {
+    default: {
+      titleFontStyle: prefTitle
+      helpIcon: pref-help
+      valueFontStyle: {
+        fontSize: 24
+        fontColor: textColorGray
+      }
+      sliderStyle: default
     }
   }
 }
