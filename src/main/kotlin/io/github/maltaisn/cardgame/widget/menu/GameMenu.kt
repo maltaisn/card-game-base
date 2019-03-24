@@ -45,8 +45,6 @@ open class GameMenu(skin: Skin) : Stack() {
             if (field == value) return
             field = value
 
-            setKeyboardFocus(value)  // Needed to catch back key press
-
             if (mainMenuShown) {
                 mainMenu.shown = value
                 if (subMenu != null) {
@@ -87,6 +85,8 @@ open class GameMenu(skin: Skin) : Stack() {
             return
         }
 
+        setKeyboardFocus(true)  // Needed to catch back key press
+
         this.subMenu = subMenu
         this += subMenu
 
@@ -112,6 +112,8 @@ open class GameMenu(skin: Skin) : Stack() {
     fun closeSubMenu() {
         if (subMenu?.shown != true) return
         val menu = subMenu!!
+
+        setKeyboardFocus(false)
 
         menu.shown = false
         val newAction = menu.actions.first() then object : Action() {
