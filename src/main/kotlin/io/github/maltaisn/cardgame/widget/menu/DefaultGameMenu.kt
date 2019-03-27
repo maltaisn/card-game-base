@@ -16,7 +16,6 @@
 
 package io.github.maltaisn.cardgame.widget.menu
 
-import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
@@ -32,7 +31,6 @@ import io.github.maltaisn.cardgame.prefs.PrefCategory
 import io.github.maltaisn.cardgame.widget.SdfLabel
 import io.github.maltaisn.cardgame.widget.prefs.PrefCategoryView
 import io.github.maltaisn.cardgame.widget.prefs.PrefsGroup
-import ktx.actors.plusAssign
 import ktx.style.get
 
 
@@ -170,64 +168,52 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
                     }
                 }
             }
-            contentPane += object : Action() {
-                private var lastScrollY = 0f
-
-                override fun act(delta: Float): Boolean {
-                    // There's no scroll change listener, so this action constantly check if the scroll pane has scrolled.
-                    val scrollPane = settingsMenu.contentPane
-                    val scrollY = scrollPane.scrollY
-                    if (scrollY != lastScrollY) {
-                        lastScrollY = scrollY
-
-                        // Change the checked menu item if needed
-                        var newId = MenuItem.NO_ID
-                        val oldId = settingsMenu.checkedItem?.id ?: MenuItem.NO_ID
-                        when {
-                            scrollPane.isTopEdge -> {
-                                // Scrolled to top edge, always check first category
-                                newId = 0
-                            }
-                            scrollPane.isBottomEdge -> {
-                                // Scrolled to bottom edge, always check last category
-                                newId = settingsMenu.items.size - 1
-                            }
-                            else -> {
-                                // Find the top and bottom limits of the currently checked category
-                                var id = 0
-                                var currCatg: Actor? = null
-                                var nextCatg: Actor? = null
-                                val children = settingsView!!.children
-                                for (child in children) {
-                                    if (child is PrefCategoryView) {
-                                        if (currCatg != null) {
-                                            nextCatg = child
-                                        } else if (id == oldId) {
-                                            currCatg = child
-                                        }
-                                        id++
-                                    }
+            contentPane.scrollListener = { _, _, y, _, _ ->
+                // Change the checked menu item if needed
+                var newId = MenuItem.NO_ID
+                val oldId = settingsMenu.checkedItem?.id ?: MenuItem.NO_ID
+                when {
+                    contentPane.isTopEdge -> {
+                        // Scrolled to top edge, always check first category
+                        newId = 0
+                    }
+                    contentPane.isBottomEdge -> {
+                        // Scrolled to bottom edge, always check last category
+                        newId = settingsMenu.items.size - 1
+                    }
+                    else -> {
+                        // Find the top and bottom limits of the currently checked category
+                        var id = 0
+                        var currCatg: Actor? = null
+                        var nextCatg: Actor? = null
+                        val children = settingsView!!.children
+                        for (child in children) {
+                            if (child is PrefCategoryView) {
+                                if (currCatg != null) {
+                                    nextCatg = child
+                                } else if (id == oldId) {
+                                    currCatg = child
                                 }
-                                if (nextCatg == null) nextCatg = children.last()
-                                val top = currCatg!!.y + currCatg.height
-                                val bottom = nextCatg!!.y + nextCatg.height
-
-                                // If currently checked category is completely hidden, check another
-                                val maxY = settingsView!!.height - scrollY
-                                val minY = maxY - scrollPane.height
-                                val tooHigh = top > maxY && bottom > maxY
-                                val tooLow = top < minY && bottom < minY
-                                if (tooHigh || tooLow) {
-                                    // If too high check next category, otherwise check previous.
-                                    newId = (oldId + if (tooHigh) 1 else -1).coerceIn(0, settingsMenu.items.size - 1)
-                                }
+                                id++
                             }
                         }
-                        if (newId != -1 && newId != oldId) {
-                            settingsMenu.checkItem(newId, false)
+                        if (nextCatg == null) nextCatg = children.last()
+                        val top = currCatg!!.y + currCatg.height
+                        val bottom = nextCatg!!.y + nextCatg.height
+
+                        // If currently checked category is completely hidden, check another
+                        val maxY = settingsView!!.height - y
+                        val minY = maxY - contentPane.height
+                        val tooHigh = top > maxY && bottom > maxY
+                        val tooLow = top < minY && bottom < minY
+                        if (tooHigh || tooLow) {
+                            // If too high check next category, otherwise check previous.
+                            newId = (oldId + if (tooHigh) 1 else -1).coerceIn(0, settingsMenu.items.size - 1)
                         }
                     }
-                    return false
+                }
+                if (newId != -1 && newId != oldId) {
+                    settingsMenu.checkItem(newId, false)
                 }
             }
         }

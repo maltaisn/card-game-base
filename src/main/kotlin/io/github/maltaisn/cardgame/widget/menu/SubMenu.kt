@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Align
 import io.github.maltaisn.cardgame.applyBounded
+import io.github.maltaisn.cardgame.widget.ScrollView
 import io.github.maltaisn.cardgame.widget.SdfLabel
 import ktx.actors.alpha
 import ktx.actors.plusAssign
@@ -55,7 +56,7 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
     val content = Container<Actor>()
 
     /** The scroll pane containing the [content] container. */
-    val contentPane = ScrollPane(content, ScrollPane.ScrollPaneStyle(
+    val contentPane = ScrollView(content, ScrollPane.ScrollPaneStyle(
             style.contentBackground, null, null, null, null))
 
     override var shown = false

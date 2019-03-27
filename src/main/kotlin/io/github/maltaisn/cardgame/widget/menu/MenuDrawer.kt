@@ -27,6 +27,7 @@ import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Scaling
 import io.github.maltaisn.cardgame.applyBounded
 import io.github.maltaisn.cardgame.defaultSize
+import io.github.maltaisn.cardgame.widget.ScrollView
 import io.github.maltaisn.cardgame.widget.SdfLabel
 import ktx.actors.plusAssign
 
@@ -94,7 +95,7 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
         }
 
     /** The scroll pane containing the [content] container. */
-    val contentPane = ScrollPane(null)
+    val contentPane = ScrollView(null)
 
     /** The content of the drawer scroll pane, `null` for none. */
     var content: Actor?
