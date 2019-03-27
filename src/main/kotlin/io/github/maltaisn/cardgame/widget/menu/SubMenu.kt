@@ -113,7 +113,7 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
         headerTable.add(titleLabel).padLeft(15f).grow()
 
         content.fill().pad(0f, 20f, 0f, 20f)
-        contentPane.setScrollingDisabled(false, false)
+        contentPane.setScrollingDisabled(true, false)
         contentPane.setOverscroll(false, false)
         contentPane.setCancelTouchFocus(false)
     }
@@ -132,7 +132,7 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
         add(headerTable).growX().colspan(2).row()
 
         if (items.isEmpty()) {
-            // No menu items, center content with 70% width.
+            // No menu items, center content with 70% with.
             getCell(headerTable).padBottom(15f)
             add(contentPane).pad(-style.contentBackground.topHeight, 0f, 0f, 0f)
                     .width(Value.percentWidth(0.7f, this)).grow()

@@ -18,12 +18,24 @@ package io.github.maltaisn.cardgame
 
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.ui.Cell
+import com.badlogic.gdx.scenes.scene2d.ui.Value
 
 
 /**
  * Returns whether a point ([x], [y]) in the actor's coordinates is within its bounds.
  */
 internal fun Actor.withinBounds(x: Float, y: Float) = x >= 0 && y >= 0 && x <= width && y <= height
+
+/**
+ * Set the default size parameter on a cell.
+ */
+fun <T : Actor> Cell<T>.defaultSize(): Cell<T> {
+    size(Value.prefWidth, Value.prefHeight)
+            .minSize(Value.minWidth, Value.minHeight)
+            .maxSize(Value.maxWidth, Value.maxHeight)
+    return this
+}
 
 /**
  * Apply an interpolation to an alpha value.

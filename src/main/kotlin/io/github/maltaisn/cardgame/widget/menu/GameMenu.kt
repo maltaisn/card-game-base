@@ -32,6 +32,12 @@ open class GameMenu(skin: Skin) : Stack() {
     /** The main menu. A click listener can be set to open submenus and do other actions. */
     val mainMenu = MainMenu(skin)
 
+    /**
+     * The menu drawer. Content should always be set before showing.
+     * The drawer back button text needs to be set.
+     */
+    val drawer = MenuDrawer(skin)
+
     /** The currently shown submenu, `null` if main menu is shown. */
     private var subMenu: SubMenu? = null
 
@@ -75,6 +81,7 @@ open class GameMenu(skin: Skin) : Stack() {
         }
 
         this += mainMenu
+        this += drawer
     }
 
     /**
@@ -82,7 +89,7 @@ open class GameMenu(skin: Skin) : Stack() {
      * If no back arrow listener was set, a default one that only returns the main menu is set.
      */
     fun openSubMenu(subMenu: SubMenu) {
-        if (children.size > 1) {
+        if (children.size > 2) {
             // A submenu is still on screen.
             return
         }
@@ -90,7 +97,7 @@ open class GameMenu(skin: Skin) : Stack() {
         setKeyboardFocus(true)  // Needed to catch back key press
 
         this.subMenu = subMenu
-        this += subMenu
+        this.addActorAt(1, subMenu)
 
         if (subMenu.backArrowClickListener == null) {
             subMenu.backArrowClickListener = defaultBackListener

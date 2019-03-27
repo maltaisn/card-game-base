@@ -36,7 +36,6 @@ import io.github.maltaisn.cardgame.widget.PopupGroup
 import io.github.maltaisn.cardgame.widget.SdfLabel
 import io.github.maltaisn.cardgame.widget.card.CardAnimationLayer
 import io.github.maltaisn.cardgame.widget.menu.GameMenu
-import io.github.maltaisn.cardgame.widget.menu.MenuIcons
 import io.github.maltaisn.cardgame.widget.prefs.GamePrefs
 import io.github.maltaisn.cardgame.widget.prefs.GamePrefsLoader
 import ktx.actors.plusAssign
@@ -97,7 +96,6 @@ abstract class CardGameScreen(val game: CardGame) :
 
             coreSkin = assetManager.getAsset(Resources.CORE_SKIN)
             coreSkin.add(Resources.CORE_STRINGS_NAME, assetManager.getAsset<I18NBundle>(Resources.CORE_STRINGS_FILE))
-            coreSkin.add("default", MenuIcons(coreSkin))
 
             SdfLabel.load(coreSkin)
         }

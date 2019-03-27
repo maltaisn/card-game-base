@@ -24,7 +24,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
 import io.github.maltaisn.cardgame.widget.SdfLabel
-import ktx.log.debug
 
 
 /**
@@ -37,7 +36,7 @@ class PrefTitleLabel(text: CharSequence?, skin: Skin,
                      private val helpIcon: Drawable?) : SdfLabel(text, skin, sdfStyle) {
 
     /** The listener called when the icon is clicked. */
-    val iconClickListener: (() -> Unit)? = null
+    var iconClickListener: (() -> Unit)? = null
 
     private val iconSize = sdfStyle.fontSize + 4f
     private val iconRect = Rectangle(0f, 1f - ICON_PADDING,
@@ -49,7 +48,6 @@ class PrefTitleLabel(text: CharSequence?, skin: Skin,
             override fun clicked(event: InputEvent, x: Float, y: Float) {
                 if (iconRect.contains(x, y)) {
                     iconClickListener?.invoke()
-                    debug { "Help clicked" }
                 }
             }
         })

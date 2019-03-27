@@ -9,7 +9,7 @@
     textColorWhite: { hex: #e3e3e3ff }
   }
   io.github.maltaisn.cardgame.widget.SdfLabel$SdfLabelStyle: {
-    prefTitle: {
+    normal: {
       fontSize: 22
       fontColor: textColorBlack
     }
@@ -51,7 +51,7 @@
       hover: btn-popup-hover
       press: btn-popup-selection
       fontStyle: {
-        fontSize: 20
+        fontSize: 22
         fontColor: textColorBlack
         drawShadow: true
         shadowColor: white
@@ -124,6 +124,24 @@
       contentBackground: submenu-content-background
     }
   }
+  io.github.maltaisn.cardgame.widget.menu.MenuDrawer$MenuDrawerStyle: {
+    default: {
+      background: menu-drawer-background
+      drawerBackground: menu-drawer
+      backBtnFontStyle: {
+        fontSize: 20
+        fontColor: textColorBlack
+      }
+      backBtnIcon: icon-chevron-left
+      backBtnIconColor: textColorDarkGray
+      titleFontStyle: {
+        fontSize: 32
+        fontColor: textColorBlack
+        bold: true
+      }
+      headerSeparator: pref-separator
+    }
+  }
   io.github.maltaisn.cardgame.widget.prefs.GamePrefs$GamePrefsStyle: {
     default: {
       separator: pref-separator
@@ -140,20 +158,32 @@
   }
   io.github.maltaisn.cardgame.widget.prefs.SwitchPref$SwitchPrefStyle: {
     default: {
-      titleFontStyle: prefTitle
+      titleFontStyle: normal
       helpIcon: pref-help
       switchStyle: default
     }
   }
   io.github.maltaisn.cardgame.widget.prefs.SliderPref$SliderPrefStyle: {
     default: {
-      titleFontStyle: prefTitle
+      titleFontStyle: normal
       helpIcon: pref-help
       valueFontStyle: {
         fontSize: 24
         fontColor: textColorGray
       }
       sliderStyle: default
+    }
+  }
+  io.github.maltaisn.cardgame.widget.menu.DefaultGameMenu$DefaultGameMenuStyle: {
+    default: {
+      settingsHelpFontStyle: normal
+      newGameIcon: icon-cards
+      continueIcon: icon-arrow-right
+      settingsIcon: icon-settings
+      rulesIcon: icon-book
+      statsIcon: icon-list
+      aboutIcon: icon-info
+      startGameIcon: icon-arrow-right
     }
   }
 }

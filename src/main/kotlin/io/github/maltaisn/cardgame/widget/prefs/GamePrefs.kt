@@ -136,18 +136,25 @@ class GamePrefs {
     /**
      * Create a table containing all the settings widgets.
      * The table should be placed in a scroll pane.
+     * @param helpCallback Called to show when a preference help icon is clicked.
      */
-    fun createView(skin: Skin): Table {
+    fun createView(skin: Skin, helpCallback: ((GamePref) -> Unit)?): Table {
         val style = skin[GamePrefsStyle::class.java]
         val table = Table()
         table.pad(10f, 0f, 20f, 0f)
 
         for ((i, pref) in entries.withIndex()) {
-            table.add(pref.createView(skin)).growX().row()
+            // Add preference view
+            val view = if (pref is GamePref) {
+                pref.createView(skin, helpCallback)
+            } else {
+                pref.createView(skin)
+            }
+            table.add(view).growX().row()
+
+            // Add a separator, only between two game preferences, not after and before category or at the end.
             if (pref is GamePref && entries.getOrNull(i + 1) is GamePref) {
-                // Add a separator, only between two game preferences, not after and before category or at the end.
-                val separator = Image(style.separator)
-                separator.setScaling(Scaling.stretchX)
+                val separator = Image(style.separator, Scaling.stretchX)
                 table.add(separator).growX().pad(10f, 15f, 10f, 0f).row()
             }
         }

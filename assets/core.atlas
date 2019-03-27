@@ -21,7 +21,7 @@ background-border
   index: -1
 btn-menu-bottom
   rotate: false
-  xy: 887, 454
+  xy: 964, 863
   size: 19, 19
   split: 9, 9, 9, 9
   pad: 1, 1, 1, 1
@@ -30,7 +30,7 @@ btn-menu-bottom
   index: -1
 btn-menu-center
   rotate: false
-  xy: 964, 863
+  xy: 45, 6
   size: 19, 19
   split: 9, 9, 9, 9
   pad: 1, 1, 1, 1
@@ -39,7 +39,7 @@ btn-menu-center
   index: -1
 btn-menu-left
   rotate: false
-  xy: 45, 6
+  xy: 887, 454
   size: 19, 19
   split: 9, 9, 9, 9
   pad: 1, 1, 1, 1
@@ -174,6 +174,22 @@ icon-settings
   xy: 2, 163
   size: 72, 72
   orig: 72, 72
+  offset: 0, 0
+  index: -1
+menu-drawer
+  rotate: false
+  xy: 84, 323
+  size: 26, 2
+  split: 24, 0, 0, 0
+  orig: 26, 2
+  offset: 0, 0
+  index: -1
+menu-drawer-background
+  rotate: false
+  xy: 70, 159
+  size: 2, 2
+  split: 0, 0, 0, 0
+  orig: 2, 2
   offset: 0, 0
   index: -1
 popup

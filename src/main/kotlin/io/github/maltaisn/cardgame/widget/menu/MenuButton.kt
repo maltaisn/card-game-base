@@ -27,11 +27,11 @@ import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.scenes.scene2d.ui.Value
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
 import com.badlogic.gdx.utils.Scaling
 import io.github.maltaisn.cardgame.applyBounded
+import io.github.maltaisn.cardgame.defaultSize
 import io.github.maltaisn.cardgame.widget.SdfLabel
 import io.github.maltaisn.cardgame.widget.ShadowImage
 import io.github.maltaisn.cardgame.withinBounds
@@ -58,9 +58,7 @@ class MenuButton(skin: Skin,
             // since no text in a label still take a certain height.
             val titleCell = getCell(titleLabel)
             if (titleShown) {
-                titleCell.size(Value.prefWidth, Value.prefHeight)
-                        .minSize(Value.minWidth, Value.minHeight)
-                        .maxSize(Value.maxWidth, Value.maxHeight)
+                titleCell.defaultSize()
             } else {
                 titleCell.size(0f, 0f)
             }
@@ -77,7 +75,7 @@ class MenuButton(skin: Skin,
         }
         get() = iconImage.drawable
 
-    /** The icon size (width actually), in pixels. */
+    /** The icon size (with actually), in pixels. */
     var iconSize = 32f
         set(value) {
             field = value
@@ -188,8 +186,6 @@ class MenuButton(skin: Skin,
             }
 
             override fun enter(event: InputEvent, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
-                // Pointer must be -1 because hovering can only happen on desktop.
-                // Also when on touch down/up, an enter/exit event is fired, but that shouldn't stop hovering.
                 if (enabled && pointer == -1) {
                     hovered = true
                     hoverElapsed = 0f

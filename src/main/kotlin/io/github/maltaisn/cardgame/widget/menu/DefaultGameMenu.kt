@@ -21,9 +21,13 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.scenes.scene2d.ui.Value
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable
+import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.I18NBundle
 import com.gmail.blueboxware.libgdxplugin.annotations.GDXAssets
 import io.github.maltaisn.cardgame.Resources
+import io.github.maltaisn.cardgame.widget.SdfLabel
 import io.github.maltaisn.cardgame.widget.prefs.GamePrefs
 import io.github.maltaisn.cardgame.widget.prefs.PrefCategory
 import ktx.actors.plusAssign
@@ -48,7 +52,14 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
             field = value
             settingsMenu.items.clear()
             if (value != null) {
-                settingsView = value.createView(skin)
+                settingsView = value.createView(skin) { pref ->
+                    // When a help icon is clicked, show drawer with help text
+                    drawer.content = settingsHelpContent
+                    drawer.drawerWidth = Value.percentWidth(0.5f, drawer)
+                    drawer.title = pref.helpTitle
+                    settingsHelpLabel.setText(pref.help)
+                    drawer.shown = true
+                }
                 settingsMenu.content.actor = settingsView
 
                 // Add menu items from settings categories
@@ -56,7 +67,7 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
                 for (entry in value.entries) {
                     if (entry is PrefCategory) {
                         settingsMenu.items += MenuItem(id, entry.title,
-                                menuIcons[entry.icon ?: MenuIcons.CARDS])
+                                skin.getDrawable(entry.icon ?: MenuIcons.CARDS))
                         id++
                     }
                 }
@@ -67,7 +78,7 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
             settingsMenu.invalidateLayout()
         }
 
-    private var settingsView: Table? = null
+    private val style = skin[DefaultGameMenuStyle::class.java]
 
     private val newGameMenu = SubMenu(skin)
     private val settingsMenu = SubMenu(skin)
@@ -75,29 +86,35 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
     private val statsMenu = SubMenu(skin)
     private val aboutMenu = SubMenu(skin)
 
-    private val menuIcons = skin[MenuIcons::class.java]
+    private var settingsView: Table? = null
+    private var settingsHelpLabel = SdfLabel(null, skin, style.settingsHelpFontStyle)
+    private var settingsHelpContent = Container<Actor>(settingsHelpLabel)
 
     init {
         @GDXAssets(propertiesFiles = ["assets/core/strings.properties"])
         val bundle: I18NBundle = skin[Resources.CORE_STRINGS_NAME]
 
-        val newGameStr = bundle.get("mainmenu_new_game")
-        val continueStr = bundle.get("mainmenu_continue")
-        val settingsStr = bundle.get("mainmenu_settings")
-        val rulesStr = bundle.get("mainmenu_rules")
-        val statsStr = bundle.get("mainmenu_stats")
-        val aboutStr = bundle.get("mainmenu_about")
+        drawer.backBtnText = bundle.get("menu_drawer_back")
+
+        val newGameStr = bundle.get("menu_new_game")
+        val continueStr = bundle.get("menu_continue")
+        val settingsStr = bundle.get("menu_settings")
+        val rulesStr = bundle.get("menu_rules")
+        val statsStr = bundle.get("menu_stats")
+        val aboutStr = bundle.get("menu_about")
 
         mainMenu.apply {
             // Add main menu items
-            continueItem = MenuItem(ITEM_ID_CONTINUE, continueStr, menuIcons[MenuIcons.ARROW_RIGHT], MenuItem.Position.BOTTOM)
-            items += MenuItem(ITEM_ID_NEW_GAME, newGameStr, menuIcons[MenuIcons.CARDS], MenuItem.Position.BOTTOM)
-            items += continueItem
-            items += MenuItem(ITEM_ID_SETTINGS, settingsStr, menuIcons[MenuIcons.SETTINGS], MenuItem.Position.BOTTOM)
-            items += MenuItem(ITEM_ID_RULES, rulesStr, menuIcons[MenuIcons.BOOK], MenuItem.Position.TOP)
-            items += MenuItem(ITEM_ID_STATS, statsStr, menuIcons[MenuIcons.LIST], MenuItem.Position.TOP)
-            items += MenuItem(ITEM_ID_ABOUT, aboutStr, menuIcons[MenuIcons.INFO], MenuItem.Position.TOP)
+            val icons = this@DefaultGameMenu.style
+            items += MenuItem(ITEM_ID_NEW_GAME, newGameStr, icons.newGameIcon, MenuItem.Position.BOTTOM)
+            items += MenuItem(ITEM_ID_CONTINUE, continueStr, icons.continueIcon, MenuItem.Position.BOTTOM)
+            items += MenuItem(ITEM_ID_SETTINGS, settingsStr, icons.settingsIcon, MenuItem.Position.BOTTOM)
+            items += MenuItem(ITEM_ID_RULES, rulesStr, icons.rulesIcon, MenuItem.Position.TOP)
+            items += MenuItem(ITEM_ID_STATS, statsStr, icons.statsIcon, MenuItem.Position.TOP)
+            items += MenuItem(ITEM_ID_ABOUT, aboutStr, icons.aboutIcon, MenuItem.Position.TOP)
             invalidateLayout()
+
+            continueItem = items[1]
 
             itemClickListener = {
                 when (it.id) {
@@ -116,7 +133,8 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
         newGameMenu.apply {
             checkable = false
             menuPosition = SubMenu.MenuPosition.RIGHT
-            items += MenuItem(0, "Start Game", menuIcons[MenuIcons.CARDS], MenuItem.Position.BOTTOM)
+            items += MenuItem(0, "Start Game",
+                    this@DefaultGameMenu.style.startGameIcon, MenuItem.Position.BOTTOM)
             itemClickListener = {
                 if (it.id == 0) {
                     this@DefaultGameMenu.shown = false
@@ -126,95 +144,100 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
         }
 
         // Settings menu
-        settingsMenu.title = settingsStr
-        settingsMenu.backArrowClickListener = {
-            settings?.save()
-            closeSubMenu()
-        }
-        settingsMenu.itemClickListener = {
-            // When a settings menu item is clicked, scroll the content pane to the category header.
-            // Category headers are the only Container children and are recognized this way.
-            var id = 0
-            val scrollPane = settingsMenu.contentPane
-            for (child in settingsView!!.children) {
-                if (child is Container<*>) {
-                    if (id == it.id) {
-                        val top = child.y + child.height + 20f
-                        val height = scrollPane.height
-                        scrollPane.scrollTo(0f, top - scrollPane.height, 0f, height)
-                        break
+        settingsMenu.apply {
+            title = settingsStr
+            backArrowClickListener = {
+                settings?.save()
+                closeSubMenu()
+            }
+            itemClickListener = {
+                // When a settings menu item is clicked, scroll the content pane to the category header.
+                // Category headers are the only Container children and are recognized this way.
+                var id = 0
+                val scrollPane = settingsMenu.contentPane
+                for (child in settingsView!!.children) {
+                    if (child is Container<*>) {
+                        if (id == it.id) {
+                            val top = child.y + child.height + 20f
+                            val height = scrollPane.height
+                            scrollPane.scrollTo(0f, top - scrollPane.height, 0f, height)
+                            break
+                        }
+                        id++
                     }
-                    id++
                 }
             }
-        }
-        settingsMenu.contentPane += object : Action() {
-            private var lastScrollY = 0f
+            contentPane += object : Action() {
+                private var lastScrollY = 0f
 
-            override fun act(delta: Float): Boolean {
-                // There's no scroll change listener, so this action constantly check if the scroll pane has scrolled.
-                val scrollPane = settingsMenu.contentPane
-                val scrollY = scrollPane.scrollY
-                if (scrollY != lastScrollY) {
-                    lastScrollY = scrollY
+                override fun act(delta: Float): Boolean {
+                    // There's no scroll change listener, so this action constantly check if the scroll pane has scrolled.
+                    val scrollPane = settingsMenu.contentPane
+                    val scrollY = scrollPane.scrollY
+                    if (scrollY != lastScrollY) {
+                        lastScrollY = scrollY
 
-                    // Change the checked menu item if needed
-                    var newId = MenuItem.NO_ID
-                    val oldId = settingsMenu.checkedItem?.id ?: MenuItem.NO_ID
-                    when {
-                        scrollPane.isTopEdge -> {
-                            // Scrolled to top edge, always check first category
-                            newId = 0
-                        }
-                        scrollPane.isBottomEdge -> {
-                            // Scrolled to bottom edge, always check last category
-                            newId = settingsMenu.items.size - 1
-                        }
-                        else -> {
-                            // Find the top and bottom limits of the currently checked category
-                            var id = 0
-                            var currCatg: Actor? = null
-                            var nextCatg: Actor? = null
-                            val children = settingsView!!.children
-                            for (child in children) {
-                                if (child is Container<*>) {
-                                    if (currCatg != null) {
-                                        nextCatg = child
-                                    } else if (id == oldId) {
-                                        currCatg = child
+                        // Change the checked menu item if needed
+                        var newId = MenuItem.NO_ID
+                        val oldId = settingsMenu.checkedItem?.id ?: MenuItem.NO_ID
+                        when {
+                            scrollPane.isTopEdge -> {
+                                // Scrolled to top edge, always check first category
+                                newId = 0
+                            }
+                            scrollPane.isBottomEdge -> {
+                                // Scrolled to bottom edge, always check last category
+                                newId = settingsMenu.items.size - 1
+                            }
+                            else -> {
+                                // Find the top and bottom limits of the currently checked category
+                                var id = 0
+                                var currCatg: Actor? = null
+                                var nextCatg: Actor? = null
+                                val children = settingsView!!.children
+                                for (child in children) {
+                                    if (child is Container<*>) {
+                                        if (currCatg != null) {
+                                            nextCatg = child
+                                        } else if (id == oldId) {
+                                            currCatg = child
+                                        }
+                                        id++
                                     }
-                                    id++
+                                }
+                                if (nextCatg == null) nextCatg = children.last()
+                                val top = currCatg!!.y + currCatg.height
+                                val bottom = nextCatg!!.y + nextCatg.height
+
+                                // If currently checked category is completely hidden, check another
+                                val maxY = settingsView!!.height - scrollY
+                                val minY = maxY - scrollPane.height
+                                val tooHigh = top > maxY && bottom > maxY
+                                val tooLow = top < minY && bottom < minY
+                                if (tooHigh || tooLow) {
+                                    // If too high check next category, otherwise check previous.
+                                    newId = (oldId + if (tooHigh) 1 else -1).coerceIn(0, settingsMenu.items.size - 1)
                                 }
                             }
-                            if (nextCatg == null) nextCatg = children.last()
-                            val top = currCatg!!.y + currCatg.height
-                            val bottom = nextCatg!!.y + nextCatg.height
-
-                            // If currently checked category is completely hidden, check another
-                            val maxY = settingsView!!.height - scrollY
-                            val minY = maxY - scrollPane.height
-                            val tooHigh = top > maxY && bottom > maxY
-                            val tooLow = top < minY && bottom < minY
-                            if (tooHigh || tooLow) {
-                                // If too high check next category, otherwise check previous.
-                                newId = (oldId + if (tooHigh) 1 else -1).coerceIn(settingsMenu.items.indices)
-                            }
+                        }
+                        if (newId != -1 && newId != oldId) {
+                            settingsMenu.checkItem(newId, false)
                         }
                     }
-                    if (newId != -1 && newId != oldId) {
-                        settingsMenu.checkItem(newId, false)
-                    }
+                    return false
                 }
-                return false
             }
         }
+        settingsHelpContent.fill().pad(0f, 30f, 0f, 30f)
+        settingsHelpLabel.setWrap(true)
+        settingsHelpLabel.setAlignment(Align.topLeft)
 
         // Rules menu
         rulesMenu.title = rulesStr
         rulesMenu.apply {
-            items += MenuItem(0, "Dealing", menuIcons[MenuIcons.CARDS])
-            items += MenuItem(1, "Scoring", menuIcons[MenuIcons.BOOK])
-            items += MenuItem(2, "Contracts", menuIcons[MenuIcons.LIST])
+            items += MenuItem(0, "Dealing", skin.getDrawable(MenuIcons.CARDS))
+            items += MenuItem(1, "Scoring", skin.getDrawable(MenuIcons.BOOK))
+            items += MenuItem(2, "Contracts", skin.getDrawable(MenuIcons.LIST))
             invalidateLayout()
         }
 
@@ -225,10 +248,21 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
         // About menu
         aboutMenu.title = aboutStr
         aboutMenu.apply {
-            items += MenuItem(0, "About", menuIcons[MenuIcons.INFO])
-            items += MenuItem(1, "Donate", menuIcons[MenuIcons.ARROW_RIGHT])
+            items += MenuItem(0, "About", skin.getDrawable(MenuIcons.INFO))
+            items += MenuItem(1, "Donate", skin.getDrawable(MenuIcons.ARROW_RIGHT))
             invalidateLayout()
         }
+    }
+
+    class DefaultGameMenuStyle {
+        lateinit var settingsHelpFontStyle: SdfLabel.SdfLabelStyle
+        lateinit var newGameIcon: Drawable
+        lateinit var continueIcon: Drawable
+        lateinit var settingsIcon: Drawable
+        lateinit var rulesIcon: Drawable
+        lateinit var statsIcon: Drawable
+        lateinit var aboutIcon: Drawable
+        lateinit var startGameIcon: Drawable
     }
 
     companion object {

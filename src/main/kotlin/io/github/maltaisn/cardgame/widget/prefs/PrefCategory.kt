@@ -21,7 +21,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Align
 import io.github.maltaisn.cardgame.widget.SdfLabel
-import io.github.maltaisn.cardgame.widget.menu.MenuIcons
 
 
 /**
@@ -29,10 +28,7 @@ import io.github.maltaisn.cardgame.widget.menu.MenuIcons
  */
 class PrefCategory : PrefEntry {
 
-    /**
-     * The category icon name, `null` to use the default icon.
-     * The icons are stored by name in [MenuIcons].
-     */
+    /** The category icon name, a drawable in the core skin, or `null` to use the default icon. */
     var icon: String? = null
 
 

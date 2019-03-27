@@ -48,8 +48,8 @@ class SliderPref : GamePref {
     // JSON reflection constructor
     constructor() : super()
 
-    constructor(key: String, title: String, help: String? = null,
-                min: Float, max: Float, step: Float, default: Float) : super(key, title, help) {
+    constructor(key: String, title: String, help: String? = null, helpTitle: String? = null,
+                min: Float, max: Float, step: Float, default: Float) : super(key, title, help, helpTitle) {
         minValue = min
         maxValue = max
         this.step = step
@@ -65,7 +65,9 @@ class SliderPref : GamePref {
         if (flush) prefs.flush()
     }
 
-    override fun createView(skin: Skin): Table {
+    override fun createView(skin: Skin) = createView(skin, null)
+
+    override fun createView(skin: Skin, helpCallback: ((GamePref) -> Unit)?): Table {
         val style = skin[SliderPrefStyle::class.java]
         val table = Table()
 
@@ -73,6 +75,11 @@ class SliderPref : GamePref {
         val label = PrefTitleLabel(title, skin, style.titleFontStyle, helpIcon)
         label.setWrap(true)
         label.setAlignment(Align.left)
+        if (helpCallback != null) {
+            label.iconClickListener = {
+                helpCallback(this@SliderPref)
+            }
+        }
 
         val valueLabel = SdfLabel(title, skin, style.valueFontStyle)
         valueLabel.setAlignment(Align.right)

@@ -37,8 +37,8 @@ class SwitchPref : GamePref {
     // JSON reflection constructor
     constructor() : super()
 
-    constructor(key: String, title: String, help: String? = null,
-                default: Boolean) : super(key, title, help) {
+    constructor(key: String, title: String, help: String? = null, helpTitle: String? = null,
+                default: Boolean) : super(key, title, help, helpTitle) {
         defaultValue = default
     }
 
@@ -51,17 +51,23 @@ class SwitchPref : GamePref {
         if (flush) prefs.flush()
     }
 
-    override fun createView(skin: Skin): Table {
+    override fun createView(skin: Skin) = createView(skin, null)
+
+    override fun createView(skin: Skin, helpCallback: ((GamePref) -> Unit)?): Table {
         val style = skin[SwitchPrefStyle::class.java]
         val table = Table()
 
         val helpIcon = if (help == null) null else style.helpIcon
         val label = PrefTitleLabel(title, skin, style.titleFontStyle, helpIcon)
-        val switch = Switch(style.switchStyle)
-
         label.setWrap(true)
         label.setAlignment(Align.left)
+        if (helpCallback != null) {
+            label.iconClickListener = {
+                helpCallback(this@SwitchPref)
+            }
+        }
 
+        val switch = Switch(style.switchStyle)
         switch.check(value, false)
         switch.checkListener = { value = it }
 
