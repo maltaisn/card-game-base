@@ -224,10 +224,10 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
     class MenuDrawerStyle {
         lateinit var background: Drawable
         lateinit var drawerBackground: Drawable
-        lateinit var backBtnFontStyle: SdfLabel.SdfLabelStyle
+        lateinit var backBtnFontStyle: SdfLabel.FontStyle
         lateinit var backBtnIcon: Drawable
         lateinit var backBtnIconColor: Color
-        lateinit var titleFontStyle: SdfLabel.SdfLabelStyle
+        lateinit var titleFontStyle: SdfLabel.FontStyle
         lateinit var headerSeparator: Drawable
     }
 

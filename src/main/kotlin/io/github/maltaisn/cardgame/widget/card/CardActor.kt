@@ -152,8 +152,6 @@ class CardActor(val coreStyle: GameLayer.CoreStyle,
             }
 
             override fun enter(event: InputEvent, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
-                // Pointer must be -1 because hovering can only happen on desktop.
-                // Also when on touch down/up, an enter/exit event is fired, but that shouldn't stop hovering.
                 if (enabled && pointer == -1) {
                     hovered = true
                     hoverElapsed = 0f

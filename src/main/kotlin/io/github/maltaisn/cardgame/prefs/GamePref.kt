@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package io.github.maltaisn.cardgame.widget.prefs
+package io.github.maltaisn.cardgame.prefs
 
 import com.badlogic.gdx.Preferences
-import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 
 
 /**
  * The base class for a preference in [GamePrefs].
  */
-abstract class GamePref : PrefEntry {
+abstract class GamePref : PrefEntry() {
 
     /** Key under which the preference value is saved. */
     lateinit var key: String
@@ -35,21 +32,6 @@ abstract class GamePref : PrefEntry {
 
     /** Optional help message title, use `null` for no title. */
     var helpTitle: String? = null
-
-    // JSON reflection constructor
-    constructor() : super()
-
-    constructor(key: String, title: String, help: String? = null, helpTitle: String? = null) : super(title) {
-        this.key = key
-        this.help = help
-        this.helpTitle = helpTitle
-    }
-
-    /**
-     * Create an actor containing the preference widgets.
-     * @param helpCallback Called to show when a preference help icon is clicked.
-     */
-    abstract fun createView(skin: Skin, helpCallback: ((GamePref) -> Unit)?): Actor
 
     /**
      * Load the value of this preference from [prefs] into [progress].
@@ -62,11 +44,7 @@ abstract class GamePref : PrefEntry {
      */
     abstract fun saveValue(prefs: Preferences, flush: Boolean = true)
 
+
     override fun toString() = "[key: \"$key\", title: \"$title\"]"
-
-
-    abstract class GamePrefStyle : PrefEntryStyle() {
-        lateinit var helpIcon: Drawable
-    }
 
 }

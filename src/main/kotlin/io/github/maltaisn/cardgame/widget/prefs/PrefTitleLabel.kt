@@ -32,7 +32,7 @@ import io.github.maltaisn.cardgame.widget.SdfLabel
  * This widget must always be drawn
  */
 class PrefTitleLabel(text: CharSequence?, skin: Skin,
-                     sdfStyle: SdfLabel.SdfLabelStyle,
+                     sdfStyle: SdfLabel.FontStyle,
                      private val helpIcon: Drawable?) : SdfLabel(text, skin, sdfStyle) {
 
     /** The listener called when the icon is clicked. */

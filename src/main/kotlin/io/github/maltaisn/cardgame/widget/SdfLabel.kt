@@ -35,11 +35,11 @@ import ktx.style.get
 /**
  * Wrapper class around [Label] for rendering text with a distance field font.
  */
-open class SdfLabel(text: CharSequence?, private val skin: Skin, sdfStyle: SdfLabelStyle) :
+open class SdfLabel(text: CharSequence?, private val skin: Skin, sdfStyle: FontStyle) :
         Label(text, createLabelStyle(skin, sdfStyle)) {
 
-    /** The style of the distance field label, replaces [style]. */
-    var sdfStyle: SdfLabelStyle = sdfStyle
+    /** The font style of the distance field label, replaces [Label.style]. */
+    var fontStyle: FontStyle = sdfStyle
         set(value) {
             field = value
             style = createLabelStyle(skin, value)
@@ -58,7 +58,7 @@ open class SdfLabel(text: CharSequence?, private val skin: Skin, sdfStyle: SdfLa
     }
 
     override fun setText(newText: CharSequence?) {
-        if (sdfStyle.allCaps) {
+        if (fontStyle.allCaps) {
             _text.setLength(0)
             if (newText != null) {
                 _text.append(newText)
@@ -71,7 +71,7 @@ open class SdfLabel(text: CharSequence?, private val skin: Skin, sdfStyle: SdfLa
         }
     }
 
-    override fun getText(): StringBuilder = if (sdfStyle.allCaps) _text else super.getText()
+    override fun getText(): StringBuilder = if (fontStyle.allCaps) _text else super.getText()
 
     override fun draw(batch: Batch, parentAlpha: Float) {
         // Draw the text
@@ -82,8 +82,8 @@ open class SdfLabel(text: CharSequence?, private val skin: Skin, sdfStyle: SdfLa
             batch.setColor(color.r, color.g, color.b, alpha * parentAlpha)
             batch.shader = sdfShader
 
-            sdfShader.drawShadow = sdfStyle.drawShadow
-            sdfShader.shadowColor = sdfStyle.shadowColor
+            sdfShader.drawShadow = fontStyle.drawShadow
+            sdfShader.shadowColor = fontStyle.shadowColor
             sdfShader.updateUniforms()
 
             super.draw(batch, parentAlpha)
@@ -116,7 +116,7 @@ open class SdfLabel(text: CharSequence?, private val skin: Skin, sdfStyle: SdfLa
         }
     }
 
-    class SdfLabelStyle {
+    class FontStyle {
         var bold = false
         var allCaps = false
         var fontSize = 24f
@@ -150,7 +150,7 @@ open class SdfLabel(text: CharSequence?, private val skin: Skin, sdfStyle: SdfLa
             skin.add(FONT_BOLD_NAME, fontBold)
         }
 
-        private fun createLabelStyle(skin: Skin, style: SdfLabelStyle): LabelStyle {
+        private fun createLabelStyle(skin: Skin, style: FontStyle): LabelStyle {
             load(skin)
             val font: BitmapFont = skin[if (style.bold) FONT_BOLD_NAME else FONT_NAME]
             return LabelStyle(font, style.fontColor)

@@ -14,37 +14,26 @@
  * limitations under the License.
  */
 
-package io.github.maltaisn.cardgame.widget.prefs
+package io.github.maltaisn.cardgame.prefs
 
-import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import io.github.maltaisn.cardgame.widget.SdfLabel
+import io.github.maltaisn.cardgame.widget.prefs.PrefEntryView
 
 
 /**
- * An entry in a [GamePrefs] object. Can be either a preference or a category.
+ * An entry in a [GamePrefs] object.
+ * Can be either a preference or a category.
  */
 abstract class PrefEntry {
 
     /** The preference entry title. */
     var title = ""
 
-    // JSON reflection constructor
-    constructor()
 
-    constructor(title: String) {
-        this.title = title
-    }
+    /** Create a view for this preference. */
+    abstract fun createView(skin: Skin): PrefEntryView<out PrefEntry>
 
-    /**
-     * Create an actor containing the preference widgets.
-     */
-    abstract fun createView(skin: Skin): Actor
 
     override fun toString() = "[title: $title]"
-
-    abstract class PrefEntryStyle {
-        lateinit var titleFontStyle: SdfLabel.SdfLabelStyle
-    }
 
 }

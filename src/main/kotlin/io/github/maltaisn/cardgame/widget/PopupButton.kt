@@ -106,8 +106,6 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : Table(skin) {
             }
 
             override fun enter(event: InputEvent, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
-                // Pointer must be -1 because hovering can only happen on desktop.
-                // Also when on touch down/up, an enter/exit event is fired, but that shouldn't stop hovering.
                 if (enabled && pointer == -1) {
                     hovered = true
                     hoverElapsed = 0f
@@ -203,7 +201,7 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : Table(skin) {
         lateinit var background: Drawable
         lateinit var hover: Drawable
         lateinit var press: Drawable
-        lateinit var fontStyle: SdfLabel.SdfLabelStyle
+        lateinit var fontStyle: SdfLabel.FontStyle
         var backgroundScale = 0f
     }
 

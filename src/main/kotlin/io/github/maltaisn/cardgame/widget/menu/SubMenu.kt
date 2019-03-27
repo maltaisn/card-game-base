@@ -232,7 +232,7 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
     }
 
     class SubMenuStyle : MenuTableStyle() {
-        lateinit var titleStyle: SdfLabel.SdfLabelStyle
+        lateinit var titleStyle: SdfLabel.FontStyle
         lateinit var backArrowIcon: Drawable
         lateinit var contentBackground: Drawable
     }

@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package io.github.maltaisn.cardgame.widget.prefs
+package io.github.maltaisn.cardgame.prefs
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.files.FileHandle
-import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.I18NBundle
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
-import com.badlogic.gdx.utils.Scaling
 import kotlin.collections.component1
 import kotlin.collections.component2
 
@@ -131,39 +126,6 @@ class GamePrefs {
             }
         }
         preferences.flush()
-    }
-
-    /**
-     * Create a table containing all the settings widgets.
-     * The table should be placed in a scroll pane.
-     * @param helpCallback Called to show when a preference help icon is clicked.
-     */
-    fun createView(skin: Skin, helpCallback: ((GamePref) -> Unit)?): Table {
-        val style = skin[GamePrefsStyle::class.java]
-        val table = Table()
-        table.pad(10f, 0f, 20f, 0f)
-
-        for ((i, pref) in entries.withIndex()) {
-            // Add preference view
-            val view = if (pref is GamePref) {
-                pref.createView(skin, helpCallback)
-            } else {
-                pref.createView(skin)
-            }
-            table.add(view).growX().row()
-
-            // Add a separator, only between two game preferences, not after and before category or at the end.
-            if (pref is GamePref && entries.getOrNull(i + 1) is GamePref) {
-                val separator = Image(style.separator, Scaling.stretchX)
-                table.add(separator).growX().pad(10f, 15f, 10f, 0f).row()
-            }
-        }
-
-        return table
-    }
-
-    class GamePrefsStyle {
-        lateinit var separator: Drawable
     }
 
     companion object {

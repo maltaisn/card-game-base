@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.github.maltaisn.cardgame.widget.prefs
+package io.github.maltaisn.cardgame.prefs
 
 import com.badlogic.gdx.assets.AssetDescriptor
 import com.badlogic.gdx.assets.AssetLoaderParameters

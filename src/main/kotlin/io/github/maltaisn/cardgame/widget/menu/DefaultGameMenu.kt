@@ -27,9 +27,11 @@ import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.I18NBundle
 import com.gmail.blueboxware.libgdxplugin.annotations.GDXAssets
 import io.github.maltaisn.cardgame.Resources
+import io.github.maltaisn.cardgame.prefs.GamePrefs
+import io.github.maltaisn.cardgame.prefs.PrefCategory
 import io.github.maltaisn.cardgame.widget.SdfLabel
-import io.github.maltaisn.cardgame.widget.prefs.GamePrefs
-import io.github.maltaisn.cardgame.widget.prefs.PrefCategory
+import io.github.maltaisn.cardgame.widget.prefs.PrefCategoryView
+import io.github.maltaisn.cardgame.widget.prefs.PrefsGroup
 import ktx.actors.plusAssign
 import ktx.style.get
 
@@ -52,13 +54,15 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
             field = value
             settingsMenu.items.clear()
             if (value != null) {
-                settingsView = value.createView(skin) { pref ->
-                    // When a help icon is clicked, show drawer with help text
-                    drawer.content = settingsHelpContent
-                    drawer.drawerWidth = Value.percentWidth(0.5f, drawer)
-                    drawer.title = pref.helpTitle
-                    settingsHelpLabel.setText(pref.help)
-                    drawer.shown = true
+                settingsView = PrefsGroup(skin, value).apply {
+                    helpListener = { pref ->
+                        // When a help icon is clicked, show drawer with help text
+                        drawer.content = settingsHelpContent
+                        drawer.drawerWidth = Value.percentWidth(0.5f, drawer)
+                        drawer.title = pref.helpTitle
+                        settingsHelpLabel.setText(pref.help)
+                        drawer.shown = true
+                    }
                 }
                 settingsMenu.content.actor = settingsView
 
@@ -152,11 +156,10 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
             }
             itemClickListener = {
                 // When a settings menu item is clicked, scroll the content pane to the category header.
-                // Category headers are the only Container children and are recognized this way.
                 var id = 0
                 val scrollPane = settingsMenu.contentPane
                 for (child in settingsView!!.children) {
-                    if (child is Container<*>) {
+                    if (child is PrefCategoryView) {
                         if (id == it.id) {
                             val top = child.y + child.height + 20f
                             val height = scrollPane.height
@@ -196,7 +199,7 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
                                 var nextCatg: Actor? = null
                                 val children = settingsView!!.children
                                 for (child in children) {
-                                    if (child is Container<*>) {
+                                    if (child is PrefCategoryView) {
                                         if (currCatg != null) {
                                             nextCatg = child
                                         } else if (id == oldId) {
@@ -255,7 +258,7 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
     }
 
     class DefaultGameMenuStyle {
-        lateinit var settingsHelpFontStyle: SdfLabel.SdfLabelStyle
+        lateinit var settingsHelpFontStyle: SdfLabel.FontStyle
         lateinit var newGameIcon: Drawable
         lateinit var continueIcon: Drawable
         lateinit var settingsIcon: Drawable

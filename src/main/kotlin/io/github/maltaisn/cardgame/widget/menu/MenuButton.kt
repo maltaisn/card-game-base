@@ -43,7 +43,7 @@ import ktx.actors.alpha
  */
 class MenuButton(skin: Skin,
                  val style: MenuButtonStyle,
-                 val fontStyle: SdfLabel.SdfLabelStyle,
+                 val fontStyle: SdfLabel.FontStyle,
                  title: CharSequence? = null, icon: Drawable? = null) : Table() {
 
     /** The button title, or `null` for none. */
@@ -158,7 +158,7 @@ class MenuButton(skin: Skin,
             Side.RIGHT -> style.backgroundRight
         }
 
-    constructor(skin: Skin, fontStyle: SdfLabel.SdfLabelStyle,
+    constructor(skin: Skin, fontStyle: SdfLabel.FontStyle,
                 text: CharSequence? = null, icon: Drawable? = null) :
             this(skin, skin[MenuButtonStyle::class.java], fontStyle, text, icon)
 

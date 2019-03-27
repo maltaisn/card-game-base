@@ -34,7 +34,7 @@ interface FboActor {
     var renderToFrameBuffer: Boolean
 
 
-    fun getStage(): Stage
+    fun getStage(): Stage?
 
     fun getColor(): Color
 

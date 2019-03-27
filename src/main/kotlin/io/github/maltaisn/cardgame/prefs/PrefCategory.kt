@@ -14,41 +14,20 @@
  * limitations under the License.
  */
 
-package io.github.maltaisn.cardgame.widget.prefs
+package io.github.maltaisn.cardgame.prefs
 
-import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.utils.Align
-import io.github.maltaisn.cardgame.widget.SdfLabel
+import io.github.maltaisn.cardgame.widget.prefs.PrefCategoryView
 
 
 /**
  * A preference category for [GamePrefs], used to group and separate preferences.
  */
-class PrefCategory : PrefEntry {
+class PrefCategory : PrefEntry() {
 
     /** The category icon name, a drawable in the core skin, or `null` to use the default icon. */
     var icon: String? = null
 
-
-    // JSON reflection constructor
-    constructor() : super()
-
-    constructor(title: String, icon: String? = null) : super(title) {
-        this.icon = icon
-    }
-
-    override fun createView(skin: Skin): Actor {
-        val container = Container<Actor>()
-        val label = SdfLabel(title, skin, skin[PrefCategoryStyle::class.java].titleFontStyle)
-        label.setWrap(true)
-        label.setAlignment(Align.left)
-        container.actor = label
-        container.fill().pad(20f, 10f, 10f, 10f)
-        return container
-    }
-
-    class PrefCategoryStyle : PrefEntryStyle()
+    override fun createView(skin: Skin) = PrefCategoryView(skin, this)
 
 }

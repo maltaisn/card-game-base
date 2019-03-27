@@ -84,7 +84,7 @@ abstract class MenuTable(skin: Skin) : FboTable(skin) {
 
 
     abstract class MenuTableStyle {
-        lateinit var itemFontStyle: SdfLabel.SdfLabelStyle
+        lateinit var itemFontStyle: SdfLabel.FontStyle
         var itemIconSize = 0f
     }
 

@@ -31,13 +31,13 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.I18NBundle
 import com.badlogic.gdx.utils.viewport.ExtendViewport
+import io.github.maltaisn.cardgame.prefs.GamePrefs
+import io.github.maltaisn.cardgame.prefs.GamePrefsLoader
 import io.github.maltaisn.cardgame.widget.GameLayer
 import io.github.maltaisn.cardgame.widget.PopupGroup
 import io.github.maltaisn.cardgame.widget.SdfLabel
 import io.github.maltaisn.cardgame.widget.card.CardAnimationLayer
 import io.github.maltaisn.cardgame.widget.menu.GameMenu
-import io.github.maltaisn.cardgame.widget.prefs.GamePrefs
-import io.github.maltaisn.cardgame.widget.prefs.GamePrefsLoader
 import ktx.actors.plusAssign
 import ktx.assets.getAsset
 import ktx.assets.load
