@@ -31,7 +31,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.I18NBundle
 import com.badlogic.gdx.utils.viewport.ExtendViewport
-import io.github.maltaisn.cardgame.prefs.GamePrefs
 import io.github.maltaisn.cardgame.prefs.GamePrefsLoader
 import io.github.maltaisn.cardgame.widget.GameLayer
 import io.github.maltaisn.cardgame.widget.PopupGroup
@@ -68,9 +67,6 @@ abstract class CardGameScreen(val game: CardGame) :
                 rootContainer += value
             }
         }
-
-    /** The game settings, will be saved when game is paused. */
-    var gameSettings: GamePrefs? = null
 
     // This frame buffer is used to draw sprites offscreen, not on the screen batch.
     // The buffer can then be rendered to screen, allowing uniform transparency for example.
@@ -128,7 +124,7 @@ abstract class CardGameScreen(val game: CardGame) :
     }
 
     override fun pause() {
-        gameSettings?.save()
+
     }
 
     override fun resume() {

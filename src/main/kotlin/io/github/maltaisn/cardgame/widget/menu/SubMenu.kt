@@ -66,12 +66,15 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
 
             contentPane.setScrollFocus(value)
 
-            if (value && items.isNotEmpty() && checkable) {
-                // Always check the first checkable item of the menu when showing.
-                for (item in items) {
-                    if (item.checkable) {
-                        checkItem(item)
-                        break
+            if (value) {
+                contentPane.scrollToTop()
+                if (items.isNotEmpty() && checkable) {
+                    // Always check the first checkable item of the menu when showing.
+                    for (item in items) {
+                        if (item.checkable) {
+                            checkItem(item)
+                            break
+                        }
                     }
                 }
             }

@@ -60,11 +60,14 @@ class ScrollView(actor: Actor? = null, style: ScrollPane.ScrollPaneStyle? = null
                     }
                 }
                 addAction(scrollListenerAction)
-            } else {
-
             }
         }
 
     private var scrollListenerAction: Action? = null
+
+
+    fun scrollToTop() = scrollTo(0f, actor?.height ?: 0f, 0f, 0f)
+
+    fun scrollToBottom() = scrollTo(0f, 0f, 0f, 0f)
 
 }

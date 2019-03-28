@@ -19,13 +19,13 @@ package io.github.maltaisn.cardgame.widget.menu
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.Value
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.I18NBundle
 import com.gmail.blueboxware.libgdxplugin.annotations.GDXAssets
 import io.github.maltaisn.cardgame.Resources
+import io.github.maltaisn.cardgame.prefs.GamePref
 import io.github.maltaisn.cardgame.prefs.GamePrefs
 import io.github.maltaisn.cardgame.prefs.PrefCategory
 import io.github.maltaisn.cardgame.widget.SdfLabel
@@ -43,6 +43,12 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
     /** Listener called when the continue item is clicked in the main menu. */
     var continueListener: (() -> Unit)? = null
 
+    /**
+     * Listener called when the start game item is clicked in the new game submenu.
+     * When the item is clicked, the options are automatically saved and the game menu is closed.
+     */
+    var startGameListener: (() -> Unit)? = null
+
     /** The continue menu item. Can be disabled. */
     val continueItem: MenuItem
 
@@ -52,16 +58,8 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
             field = value
             settingsMenu.items.clear()
             if (value != null) {
-                settingsView = PrefsGroup(skin, value).apply {
-                    helpListener = { pref ->
-                        // When a help icon is clicked, show drawer with help text
-                        drawer.content = settingsHelpContent
-                        drawer.drawerWidth = Value.percentWidth(0.5f, drawer)
-                        drawer.title = pref.helpTitle
-                        settingsHelpLabel.setText(pref.help)
-                        drawer.shown = true
-                    }
-                }
+                settingsView = PrefsGroup(skin, value)
+                settingsView?.helpListener = prefsHelpListener
                 settingsMenu.content.actor = settingsView
 
                 // Add menu items from settings categories
@@ -80,6 +78,21 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
             settingsMenu.invalidateLayout()
         }
 
+    /** The new game game options, shown in the new game submenu. */
+    var newGameOptions: GamePrefs? = null
+        set(value) {
+            field = value
+            if (value != null) {
+                newGameView = PrefsGroup(skin, value)
+                newGameView?.helpListener = prefsHelpListener
+                newGameMenu.content.actor = newGameView
+            } else {
+                newGameView = null
+                newGameMenu.content.actor = null
+            }
+            newGameMenu.invalidateLayout()
+        }
+
     private val style = skin[DefaultGameMenuStyle::class.java]
 
     private val newGameMenu = SubMenu(skin)
@@ -88,9 +101,19 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
     private val statsMenu = SubMenu(skin)
     private val aboutMenu = SubMenu(skin)
 
-    private var settingsView: Table? = null
-    private var settingsHelpLabel = SdfLabel(null, skin, style.settingsHelpFontStyle)
-    private var settingsHelpContent = Container<Actor>(settingsHelpLabel)
+    private var newGameView: PrefsGroup? = null
+    private var settingsView: PrefsGroup? = null
+
+    private val prefsHelpLabel = SdfLabel(null, skin, style.settingsHelpFontStyle)
+    private val prefsHelpContent = Container<Actor>(prefsHelpLabel)
+    private val prefsHelpListener: (GamePref) -> Unit = { pref ->
+        // When a help icon is clicked, show drawer with help text
+        drawer.content = prefsHelpContent
+        drawer.drawerWidth = Value.percentWidth(0.5f, drawer)
+        drawer.title = pref.helpTitle
+        prefsHelpLabel.setText(pref.help)
+        drawer.shown = true
+    }
 
     init {
         @GDXAssets(propertiesFiles = ["assets/core/strings.properties"])
@@ -130,17 +153,26 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
             }
         }
 
+        // Preference help widgets
+        prefsHelpContent.fill().pad(0f, 30f, 0f, 30f)
+        prefsHelpLabel.setWrap(true)
+        prefsHelpLabel.setAlignment(Align.topLeft)
+
         // New game menu
-        newGameMenu.title = newGameStr
         newGameMenu.apply {
+            title = newGameStr
             checkable = false
             menuPosition = SubMenu.MenuPosition.RIGHT
-            items += MenuItem(0, "Start Game",
+            items += MenuItem(0, bundle.get("menu_start_game"),
                     this@DefaultGameMenu.style.startGameIcon, MenuItem.Position.BOTTOM)
             itemClickListener = {
-                if (it.id == 0) {
-                    this@DefaultGameMenu.shown = false
-                }
+                newGameOptions?.save()
+                this@DefaultGameMenu.shown = false
+                startGameListener?.invoke()
+            }
+            backArrowClickListener = {
+                newGameOptions?.save()
+                closeSubMenu()
             }
             invalidateLayout()
         }
@@ -217,13 +249,10 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
                 }
             }
         }
-        settingsHelpContent.fill().pad(0f, 30f, 0f, 30f)
-        settingsHelpLabel.setWrap(true)
-        settingsHelpLabel.setAlignment(Align.topLeft)
 
         // Rules menu
-        rulesMenu.title = rulesStr
         rulesMenu.apply {
+            title = rulesStr
             items += MenuItem(0, "Dealing", skin.getDrawable(MenuIcons.CARDS))
             items += MenuItem(1, "Scoring", skin.getDrawable(MenuIcons.BOOK))
             items += MenuItem(2, "Contracts", skin.getDrawable(MenuIcons.LIST))
@@ -231,12 +260,14 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
         }
 
         // Statistics menu
-        statsMenu.title = statsStr
-        statsMenu.invalidateLayout()
+        statsMenu.apply {
+            title = statsStr
+            invalidateLayout()
+        }
 
         // About menu
-        aboutMenu.title = aboutStr
         aboutMenu.apply {
+            title = aboutStr
             items += MenuItem(0, "About", skin.getDrawable(MenuIcons.INFO))
             items += MenuItem(1, "Donate", skin.getDrawable(MenuIcons.ARROW_RIGHT))
             invalidateLayout()
