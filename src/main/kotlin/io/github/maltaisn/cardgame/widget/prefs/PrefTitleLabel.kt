@@ -46,7 +46,7 @@ class PrefTitleLabel(text: CharSequence?, skin: Skin,
     init {
         addListener(object : ClickListener() {
             override fun clicked(event: InputEvent, x: Float, y: Float) {
-                if (iconRect.contains(x, y)) {
+                if (enabled && iconRect.contains(x, y)) {
                     iconClickListener?.invoke()
                 }
             }
@@ -62,6 +62,8 @@ class PrefTitleLabel(text: CharSequence?, skin: Skin,
             val icon = helpIcon as TransformDrawable
             val scale = iconSize / icon.minWidth
             iconRect.x = lastLine.x + lastLine.width + 10f - ICON_PADDING
+            batch.setColor(color.r, color.g, color.b,
+                    color.a * parentAlpha * if (enabled) 1f else 0.5f)
             icon.draw(batch, x + iconRect.x + ICON_PADDING, y + iconRect.y + ICON_PADDING,
                     0f, 0f, icon.minWidth, icon.minHeight, scale, scale, 0f)
         }

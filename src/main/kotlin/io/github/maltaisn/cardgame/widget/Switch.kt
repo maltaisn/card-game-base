@@ -101,8 +101,9 @@ class Switch(val style: SwitchStyle) : Widget() {
                     checkAlphaOnPress = checkAlpha
                     dragged = false
                     event.stop()
+                    return true
                 }
-                return true
+                return false
             }
 
             override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
@@ -122,13 +123,15 @@ class Switch(val style: SwitchStyle) : Widget() {
             }
 
             override fun touchDragged(event: InputEvent, x: Float, y: Float, pointer: Int) {
-                val distance = x - pressPosX
-                if (distance.absoluteValue > MIN_DRAG_DISTANCE) {
-                    dragged = true
+                if (enabled) {
+                    val distance = x - pressPosX
+                    if (distance.absoluteValue > MIN_DRAG_DISTANCE) {
+                        dragged = true
+                    }
+                    val trackWidth = (style.background.minWidth - style.thumb.minWidth) * style.scale
+                    checkAlpha = (checkAlphaOnPress + distance / trackWidth * DRAG_SPEED).coerceIn(0f, 1f)
+                    Gdx.graphics.requestRendering()
                 }
-                val trackWidth = (style.background.minWidth - style.thumb.minWidth) * style.scale
-                checkAlpha = (checkAlphaOnPress + distance / trackWidth * DRAG_SPEED).coerceIn(0f, 1f)
-                Gdx.graphics.requestRendering()
             }
         })
 
@@ -202,19 +205,20 @@ class Switch(val style: SwitchStyle) : Widget() {
 
         // Draw check overlay
         batch.setColor(color.r, color.g, color.b, parentAlpha * checkAlpha)
-        val checkOverlay = style.checkOverlay as TransformDrawable
+        val checkOverlay = (if (enabled) style.checkOverlay else style.checkDisabledOverlay) as TransformDrawable
         checkOverlay.draw(batch, x, y, 0f, 0f, checkOverlay.minWidth,
                 checkOverlay.minHeight, scale, scale, 0f)
 
         // Draw thumb
-        batch.setColor(color.r, color.g, color.b, parentAlpha * if (enabled) 1f else 0.5f)
+        batch.setColor(color.r, color.g, color.b, parentAlpha)
         val thumb = style.thumb as TransformDrawable
         val thumbX = x + (background.minWidth - thumb.minWidth) * scale * checkAlpha
         thumb.draw(batch, thumbX, y, 0f, 0f, thumb.minWidth,
                 thumb.minHeight, scale, scale, 0f)
 
         // Draw thumb hover/press overlay
-        batch.setColor(color.r, color.g, color.b, parentAlpha * (hoverAlpha + pressAlpha) * 0.1f)
+        batch.setColor(color.r, color.g, color.b,
+                parentAlpha * (hoverAlpha + pressAlpha) * 0.1f + if (enabled) 0f else 0.2f)
         val thumbHover = style.thumbHoverOverlay as TransformDrawable
         thumbHover.draw(batch, thumbX, y, 0f, 0f, thumbHover.minWidth,
                 thumbHover.minHeight, scale, scale, 0f)
@@ -244,6 +248,7 @@ class Switch(val style: SwitchStyle) : Widget() {
     class SwitchStyle {
         lateinit var background: Drawable
         lateinit var checkOverlay: Drawable
+        lateinit var checkDisabledOverlay: Drawable
         lateinit var thumb: Drawable
         lateinit var thumbHoverOverlay: Drawable
         var scale = 0f

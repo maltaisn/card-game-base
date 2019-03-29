@@ -16,23 +16,81 @@
 
 package io.github.maltaisn.cardgame.widget.prefs
 
+import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Align
+import com.badlogic.gdx.utils.Scaling
+import io.github.maltaisn.cardgame.prefs.GamePref
 import io.github.maltaisn.cardgame.prefs.PrefCategory
 import io.github.maltaisn.cardgame.widget.SdfLabel
+import io.github.maltaisn.cardgame.widget.menu.MenuContentSection
 
 
 class PrefCategoryView(skin: Skin, category: PrefCategory) :
-        PrefEntryView<PrefCategory>(skin, category) {
+        PrefEntryView<PrefCategory>(skin, category), MenuContentSection {
+
+    override var enabled
+        set(value) {
+            super.enabled = value
+            titleLabel.enabled = enabled
+
+            // Enable or disable all children views
+            for (view in children) {
+                if (view is PrefEntryView<*>) {
+                    view.enabled = value && view.pref.enabled
+                }
+            }
+        }
+        get() = super.enabled
+
+    /** Listener called when a preference help icon is clicked in a preference of the category. */
+    var helpListener: ((GamePref) -> Unit)? = null
+
+
+    private var titleLabel: SdfLabel
+
 
     init {
         val style = skin[PrefCategoryViewStyle::class.java]
-        val label = SdfLabel(category.title, skin, style.titleFontStyle)
-        label.setWrap(true)
-        label.setAlignment(Align.left)
-        add(label).grow().pad(20f, 10f, 10f, 10f)
+        titleLabel = SdfLabel(category.title, skin, style.titleFontStyle).apply {
+            setWrap(true)
+            setAlignment(Align.left)
+            enabled = this@PrefCategoryView.enabled
+        }
+        add(titleLabel).growX().pad(30f, 10f, 30f, 10f).row()
+
+        val prefs = category.prefs.values
+        for (pref in prefs) {
+            // Preference view
+            val view = pref.createView(skin)
+            view.helpListener = {
+                helpListener?.invoke(pref)
+            }
+            view.enabled = enabled && view.pref.enabled
+            add(view).growX().row()
+
+            // Separator between preferences
+            if (pref !== prefs.last()) {
+                val separator = Image(style.separator, Scaling.stretchX)
+                add(separator).growX().pad(10f, 15f, 10f, 0f).row()
+            }
+        }
     }
 
-    class PrefCategoryViewStyle : PrefEntryView.PrefEntryViewStyle()
+    override fun detachListener() {
+        // Detach all preferences listeners
+        super.detachListener()
+        for (child in children) {
+            if (child is GamePrefView<*>) {
+                child.detachListener()
+            }
+        }
+    }
+
+
+    class PrefCategoryViewStyle : PrefEntryView.PrefEntryViewStyle() {
+        lateinit var separator: Drawable
+    }
 
 }

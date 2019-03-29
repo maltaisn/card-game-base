@@ -26,14 +26,56 @@ import io.github.maltaisn.cardgame.widget.prefs.PrefEntryView
  */
 abstract class PrefEntry {
 
+    /** Key under which the preference value is put in maps and saved. */
+    lateinit var key: String
+
+    /**
+     * Whether the preference is enabled or not.
+     * A preference can be enabled in a disabled category.
+     */
+    var enabled = true
+        set(value) {
+            field = value
+            for (listener in listeners) {
+                listener.onPreferenceEnabledStateChanged(enabled)
+            }
+        }
+
     /** The preference entry title. */
     var title = ""
 
+    /** Optional dependency, the key of a switch preference. */
+    var dependency: String? = null
+
+    /** Listeners called when the value of this preference has changed. */
+    val listeners = mutableListOf<PrefListener>()
+
+
+    protected fun notifyValueChanged() {
+        for (listener in listeners) {
+            listener.onPreferenceValueChanged()
+        }
+    }
 
     /** Create a view for this preference. */
     abstract fun createView(skin: Skin): PrefEntryView<out PrefEntry>
 
 
-    override fun toString() = "[title: $title]"
+    override fun toString() = "[key: \"$key\", title: \"$title\"" +
+            (if (dependency != null) ", dependency: \"$dependency\"" else "") +
+            (if (!enabled) ", disabled" else "") + "]"
+
+
+    interface PrefListener {
+        /**
+         * Called when the preference value is changed.
+         */
+        fun onPreferenceValueChanged() {}
+
+        /**
+         * Called when the preference enabled state is changed.
+         */
+        fun onPreferenceEnabledStateChanged(enabled: Boolean) {}
+    }
 
 }

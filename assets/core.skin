@@ -63,6 +63,7 @@
     default: {
       background: switch-background
       checkOverlay: switch-checked
+      checkDisabledOverlay: switch-checked-disabled
       thumb: switch-thumb
       thumbHoverOverlay: switch-thumb-hover
       scale: 0.75
@@ -72,6 +73,7 @@
     default: {
       trackEmpty: slider-track-empty
       trackFilled: slider-track-filled
+      trackFilledDisabled: slider-track-filled-disabled
       thumb: slider-thumb
       thumbHoverOverlay: slider-thumb-hover
       scale: 0.75
@@ -160,6 +162,7 @@
         fontColor: textColorBlack
         bold: true
       }
+      separator: pref-separator
     }
   }
   io.github.maltaisn.cardgame.widget.prefs.SwitchPrefView$SwitchPrefViewStyle: {

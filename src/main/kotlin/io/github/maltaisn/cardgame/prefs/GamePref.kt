@@ -17,15 +17,14 @@
 package io.github.maltaisn.cardgame.prefs
 
 import com.badlogic.gdx.Preferences
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import io.github.maltaisn.cardgame.widget.prefs.GamePrefView
 
 
 /**
  * The base class for a preference in [GamePrefs].
  */
 abstract class GamePref : PrefEntry() {
-
-    /** Key under which the preference value is saved. */
-    lateinit var key: String
 
     /** Optional help message shown to the user, use `null` for no help message. */
     var help: String? = null
@@ -45,6 +44,6 @@ abstract class GamePref : PrefEntry() {
     abstract fun saveValue(prefs: Preferences, flush: Boolean = true)
 
 
-    override fun toString() = "[key: \"$key\", title: \"$title\"]"
+    abstract override fun createView(skin: Skin): GamePrefView<out GamePref>
 
 }

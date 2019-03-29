@@ -21,12 +21,16 @@ import io.github.maltaisn.cardgame.widget.prefs.PrefCategoryView
 
 
 /**
- * A preference category for [GamePrefs], used to group and separate preferences.
+ * A preference category for [GamePrefs], used to group preferences.
  */
 class PrefCategory : PrefEntry() {
 
+    /** The map of preferences in the category. */
+    var prefs = linkedMapOf<String, GamePref>()
+
     /** The category icon name, a drawable in the core skin, or `null` to use the default icon. */
     var icon: String? = null
+
 
     override fun createView(skin: Skin) = PrefCategoryView(skin, this)
 

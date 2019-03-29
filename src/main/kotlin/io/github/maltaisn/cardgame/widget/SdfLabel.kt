@@ -45,6 +45,9 @@ open class SdfLabel(text: CharSequence?, private val skin: Skin, sdfStyle: FontS
             style = createLabelStyle(skin, value)
         }
 
+    /** Whether the label is enabled or not. If disabled, it's drawn with 50% alpha. */
+    var enabled = true
+
     private var _text = StringBuilder()
 
     private val sdfShader: SdfShader
@@ -74,21 +77,18 @@ open class SdfLabel(text: CharSequence?, private val skin: Skin, sdfStyle: FontS
     override fun getText(): StringBuilder = if (fontStyle.allCaps) _text else super.getText()
 
     override fun draw(batch: Batch, parentAlpha: Float) {
-        // Draw the text
-        if (batch.shader === sdfShader) {
-            // No need to change the shader
-            super.draw(batch, parentAlpha)
-        } else {
-            batch.setColor(color.r, color.g, color.b, alpha * parentAlpha)
-            batch.shader = sdfShader
+        val alphaBefore = alpha
+        if (!enabled) alpha *= 0.5f
+        batch.shader = sdfShader
 
-            sdfShader.drawShadow = fontStyle.drawShadow
-            sdfShader.shadowColor = fontStyle.shadowColor
-            sdfShader.updateUniforms()
+        sdfShader.drawShadow = fontStyle.drawShadow
+        sdfShader.shadowColor = fontStyle.shadowColor
+        sdfShader.updateUniforms()
 
-            super.draw(batch, parentAlpha)
-            batch.shader = null
-        }
+        super.draw(batch, parentAlpha)
+
+        alpha = alphaBefore
+        batch.shader = null
     }
 
     private class SdfShader : ShaderProgram(

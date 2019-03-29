@@ -18,7 +18,7 @@ package io.github.maltaisn.cardgame.widget.menu
 
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Action
-import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Align
@@ -53,7 +53,7 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
     var menuPosition = MenuPosition.LEFT
 
     /** The content of the submenu scroll pane. May be null to show nothing or when the submenu isn't shown. */
-    val content = Container<Actor>()
+    val content = Container<Group>()
 
     /** The scroll pane containing the [content] container. */
     val contentPane = ScrollView(content, ScrollPane.ScrollPaneStyle(

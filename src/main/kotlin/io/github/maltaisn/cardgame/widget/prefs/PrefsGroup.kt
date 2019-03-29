@@ -29,25 +29,48 @@ class PrefsGroup(skin: Skin, prefs: GamePrefs) : Table() {
 
     /** Listener called when a preference help icon is clicked. */
     var helpListener: ((GamePref) -> Unit)? = null
+        set(value) {
+            field = value
+            for (child in children) {
+                if (child is PrefCategoryView) {
+                    child.helpListener = value
+                }
+            }
+        }
 
     init {
         val style = skin[PrefsGroupStyle::class.java]
         pad(10f, 0f, 20f, 0f)
 
-        for ((i, pref) in prefs.entries.withIndex()) {
+        val prefsList = prefs.prefs.values.toList()
+        for ((i, pref) in prefsList.withIndex()) {
             // Add preference view
             val view = pref.createView(skin)
-            if (view is GamePrefView<*>) {
+            if (view is PrefCategoryView) {
+                view.helpListener = helpListener
+            } else if (view is GamePrefView<*>) {
                 view.helpListener = {
                     helpListener?.invoke(pref as GamePref)
                 }
             }
             add(view).growX().row()
 
-            // Add a separator, only between two game preferences, not after and before category or at the end.
-            if (pref is GamePref && prefs.entries.getOrNull(i + 1) is GamePref) {
+            // Separator between preferences
+            if (pref is GamePref && prefsList.getOrNull(i + 1) is GamePref) {
                 val separator = Image(style.separator, Scaling.stretchX)
                 add(separator).growX().pad(10f, 15f, 10f, 0f).row()
+            }
+        }
+    }
+
+    /**
+     * Detach all preference listeners attached when the views were created.
+     * Must be called when the view is not used anymore to prevent memory leak.
+     */
+    fun detachListeners() {
+        for (child in children) {
+            if (child is PrefEntryView<*>) {
+                child.detachListener()
             }
         }
     }

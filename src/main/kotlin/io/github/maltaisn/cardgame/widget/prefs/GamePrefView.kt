@@ -22,7 +22,17 @@ import com.badlogic.gdx.utils.Align
 import io.github.maltaisn.cardgame.prefs.GamePref
 
 
+/**
+ * The view for a preference with a value (a [GamePref]).
+ */
 abstract class GamePrefView<T : GamePref>(skin: Skin, pref: T) : PrefEntryView<T>(skin, pref) {
+
+    override var enabled
+        set(value) {
+            super.enabled = value
+            titleLabel.enabled = value
+        }
+        get() = super.enabled
 
     protected val titleLabel: PrefTitleLabel
 
@@ -37,9 +47,11 @@ abstract class GamePrefView<T : GamePref>(skin: Skin, pref: T) : PrefEntryView<T
     init {
         val style = skin[GamePrefViewStyle::class.java]
         titleLabel = PrefTitleLabel(pref.title, skin, style.titleFontStyle,
-                if (pref.help == null) null else style.helpIcon)
-        titleLabel.setWrap(true)
-        titleLabel.setAlignment(Align.left)
+                if (pref.help == null) null else style.helpIcon).apply {
+            setWrap(true)
+            setAlignment(Align.left)
+            enabled = this@GamePrefView.enabled
+        }
     }
 
 

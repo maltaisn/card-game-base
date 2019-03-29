@@ -23,16 +23,30 @@ import io.github.maltaisn.cardgame.widget.Switch
 
 class SwitchPrefView(skin: Skin, pref: SwitchPref) : GamePrefView<SwitchPref>(skin, pref) {
 
+    override var enabled
+        set(value) {
+            super.enabled = value
+            switch.enabled = value
+        }
+        get() = super.enabled
+
+    private val switch: Switch
+
     init {
         val style = skin[SwitchPrefViewStyle::class.java]
 
-        val switch = Switch(style.switchStyle)
+        switch = Switch(style.switchStyle)
         switch.check(pref.value, false)
         switch.checkListener = { pref.value = it }
+        switch.enabled = enabled
 
         pad(5f, 0f, 5f, 0f)
         add(titleLabel).growX().pad(5f, 10f, 5f, 15f)
         add(switch).pad(5f, 5f, 5f, 10f)
+    }
+
+    override fun onPreferenceValueChanged() {
+        switch.checked = pref.value
     }
 
     class SwitchPrefViewStyle {

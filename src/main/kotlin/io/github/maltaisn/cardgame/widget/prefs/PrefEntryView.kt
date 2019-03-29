@@ -22,7 +22,32 @@ import io.github.maltaisn.cardgame.prefs.PrefEntry
 import io.github.maltaisn.cardgame.widget.SdfLabel
 
 
-abstract class PrefEntryView<T : PrefEntry>(skin: Skin, val pref: T) : Table(skin) {
+/**
+ * Base class for a preference view.
+ * The view attaches a listener to the preference when created and
+ * [detachListener] must be called when view becomes unused to prevent a memory leak.
+ */
+abstract class PrefEntryView<T : PrefEntry>(skin: Skin, val pref: T) :
+        Table(skin), PrefEntry.PrefListener {
+
+    /** Whether the preference view is enabled or not. */
+    open var enabled = pref.enabled
+
+
+    init {
+        pref.listeners += this
+    }
+
+    final override fun onPreferenceEnabledStateChanged(enabled: Boolean) {
+        val categoryEnabled = (parent as? PrefCategoryView)?.pref?.enabled ?: true
+        this.enabled = categoryEnabled && enabled
+    }
+
+    /** Detach the preference listener attached when the view was created. */
+    open fun detachListener() {
+        pref.listeners -= this
+    }
+
 
     abstract class PrefEntryViewStyle {
         lateinit var titleFontStyle: SdfLabel.FontStyle

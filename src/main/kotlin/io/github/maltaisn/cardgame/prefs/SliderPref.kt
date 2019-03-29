@@ -37,6 +37,10 @@ class SliderPref : GamePref() {
 
     /** The slider value. */
     var value = 0f
+        set(value) {
+            field = value
+            notifyValueChanged()
+        }
 
     /** The slider default value. */
     var defaultValue = 0f

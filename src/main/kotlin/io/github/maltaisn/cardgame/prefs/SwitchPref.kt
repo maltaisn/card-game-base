@@ -28,9 +28,16 @@ class SwitchPref : GamePref() {
 
     /** The switch value. */
     var value = false
+        set(value) {
+            field = value
+            notifyValueChanged()
+        }
 
     /** The switch default value. */
     var defaultValue = false
+
+    /** The checked state of the switch on which dependents are disabled. */
+    var disableDependentsState = false
 
 
     override fun loadValue(prefs: Preferences) {

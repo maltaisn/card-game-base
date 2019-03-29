@@ -26,27 +26,44 @@ import java.text.NumberFormat
 
 class SliderPrefView(skin: Skin, pref: SliderPref) : GamePrefView<SliderPref>(skin, pref) {
 
+    override var enabled
+        set(value) {
+            super.enabled = value
+            valueLabel.enabled = value
+            slider.enabled = value
+        }
+        get() = super.enabled
+
+    private val valueLabel: SdfLabel
+    private val slider: Slider
+
     init {
         val style = skin[SliderPrefViewStyle::class.java]
 
-        val valueLabel = SdfLabel(NUMBER_FORMAT.format(pref.value), skin, style.valueFontStyle)
+        valueLabel = SdfLabel(NUMBER_FORMAT.format(pref.value), skin, style.valueFontStyle)
         valueLabel.setAlignment(Align.right)
+        valueLabel.enabled = enabled
 
-        val slider = Slider(style.sliderStyle).apply {
-            minValue = pref.minValue
-            maxValue = pref.maxValue
+        slider = Slider(style.sliderStyle).apply {
+            minProgress = pref.minValue
+            maxProgress = pref.maxValue
             step = pref.step
             progress = pref.value
             changeListener = {
                 pref.value = it
                 valueLabel.setText(NUMBER_FORMAT.format(it))
             }
+            enabled = this@SliderPrefView.enabled
         }
 
         pad(5f, 0f, 5f, 0f)
         add(titleLabel).growX().pad(5f, 10f, 5f, 10f)
         add(valueLabel).width(60f).pad(5f, 5f, 5f, 20f).row()
         add(slider).growX().colspan(2).pad(5f, 0f, 5f, 0f)
+    }
+
+    override fun onPreferenceValueChanged() {
+        slider.progress = this.pref.value
     }
 
     class SliderPrefViewStyle {

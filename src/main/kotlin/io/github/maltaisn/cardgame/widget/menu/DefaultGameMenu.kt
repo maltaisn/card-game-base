@@ -28,8 +28,8 @@ import io.github.maltaisn.cardgame.Resources
 import io.github.maltaisn.cardgame.prefs.GamePref
 import io.github.maltaisn.cardgame.prefs.GamePrefs
 import io.github.maltaisn.cardgame.prefs.PrefCategory
+import io.github.maltaisn.cardgame.widget.ScrollView
 import io.github.maltaisn.cardgame.widget.SdfLabel
-import io.github.maltaisn.cardgame.widget.prefs.PrefCategoryView
 import io.github.maltaisn.cardgame.widget.prefs.PrefsGroup
 import ktx.style.get
 
@@ -56,21 +56,13 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
     var settings: GamePrefs? = null
         set(value) {
             field = value
+            settingsView?.detachListeners()
             settingsMenu.items.clear()
             if (value != null) {
                 settingsView = PrefsGroup(skin, value)
                 settingsView?.helpListener = prefsHelpListener
                 settingsMenu.content.actor = settingsView
-
-                // Add menu items from settings categories
-                var id = 0
-                for (entry in value.entries) {
-                    if (entry is PrefCategory) {
-                        settingsMenu.items += MenuItem(id, entry.title,
-                                skin.getDrawable(entry.icon ?: MenuIcons.CARDS))
-                        id++
-                    }
-                }
+                addPrefCategoryItemsToMenu(settingsMenu, value)
             } else {
                 settingsView = null
                 settingsMenu.content.actor = null
@@ -82,10 +74,13 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
     var newGameOptions: GamePrefs? = null
         set(value) {
             field = value
+            newGameView?.detachListeners()
+            newGameMenu.items.subList(0, newGameMenu.items.size - 1).clear()
             if (value != null) {
                 newGameView = PrefsGroup(skin, value)
                 newGameView?.helpListener = prefsHelpListener
                 newGameMenu.content.actor = newGameView
+                addPrefCategoryItemsToMenu(newGameMenu, value)
             } else {
                 newGameView = null
                 newGameMenu.content.actor = null
@@ -95,15 +90,18 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
 
     private val style = skin[DefaultGameMenuStyle::class.java]
 
+    // The submenus
     private val newGameMenu = SubMenu(skin)
     private val settingsMenu = SubMenu(skin)
     private val rulesMenu = SubMenu(skin)
     private val statsMenu = SubMenu(skin)
     private val aboutMenu = SubMenu(skin)
 
+    // The setting views
     private var newGameView: PrefsGroup? = null
     private var settingsView: PrefsGroup? = null
 
+    // Preference help drawer
     private val prefsHelpLabel = SdfLabel(null, skin, style.settingsHelpFontStyle)
     private val prefsHelpContent = Container<Actor>(prefsHelpLabel)
     private val prefsHelpListener: (GamePref) -> Unit = { pref ->
@@ -161,19 +159,30 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
         // New game menu
         newGameMenu.apply {
             title = newGameStr
-            checkable = false
             menuPosition = SubMenu.MenuPosition.RIGHT
-            items += MenuItem(0, bundle.get("menu_start_game"),
+
+            val startGameItem = MenuItem(1000, bundle.get("menu_start_game"),
                     this@DefaultGameMenu.style.startGameIcon, MenuItem.Position.BOTTOM)
-            itemClickListener = {
-                newGameOptions?.save()
-                this@DefaultGameMenu.shown = false
-                startGameListener?.invoke()
-            }
+            startGameItem.checkable = false
+            items += startGameItem
+
             backArrowClickListener = {
                 newGameOptions?.save()
                 closeSubMenu()
             }
+
+            val sectionClickListener = SectionClickListener(newGameMenu)
+            itemClickListener = {
+                if (it === startGameItem) {
+                    newGameOptions?.save()
+                    this@DefaultGameMenu.shown = false
+                    startGameListener?.invoke()
+                } else {
+                    sectionClickListener(it)
+                }
+            }
+            contentPane.scrollListener = SectionScrollListener(newGameMenu)
+
             invalidateLayout()
         }
 
@@ -184,70 +193,9 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
                 settings?.save()
                 closeSubMenu()
             }
-            itemClickListener = {
-                // When a settings menu item is clicked, scroll the content pane to the category header.
-                var id = 0
-                val scrollPane = settingsMenu.contentPane
-                for (child in settingsView!!.children) {
-                    if (child is PrefCategoryView) {
-                        if (id == it.id) {
-                            val top = child.y + child.height + 20f
-                            val height = scrollPane.height
-                            scrollPane.scrollTo(0f, top - scrollPane.height, 0f, height)
-                            break
-                        }
-                        id++
-                    }
-                }
-            }
-            contentPane.scrollListener = { _, _, y, _, _ ->
-                // Change the checked menu item if needed
-                var newId = MenuItem.NO_ID
-                val oldId = settingsMenu.checkedItem?.id ?: MenuItem.NO_ID
-                when {
-                    contentPane.isTopEdge -> {
-                        // Scrolled to top edge, always check first category
-                        newId = 0
-                    }
-                    contentPane.isBottomEdge -> {
-                        // Scrolled to bottom edge, always check last category
-                        newId = settingsMenu.items.size - 1
-                    }
-                    else -> {
-                        // Find the top and bottom limits of the currently checked category
-                        var id = 0
-                        var currCatg: Actor? = null
-                        var nextCatg: Actor? = null
-                        val children = settingsView!!.children
-                        for (child in children) {
-                            if (child is PrefCategoryView) {
-                                if (currCatg != null) {
-                                    nextCatg = child
-                                } else if (id == oldId) {
-                                    currCatg = child
-                                }
-                                id++
-                            }
-                        }
-                        if (nextCatg == null) nextCatg = children.last()
-                        val top = currCatg!!.y + currCatg.height
-                        val bottom = nextCatg!!.y + nextCatg.height
-
-                        // If currently checked category is completely hidden, check another
-                        val maxY = settingsView!!.height - y
-                        val minY = maxY - contentPane.height
-                        val tooHigh = top > maxY && bottom > maxY
-                        val tooLow = top < minY && bottom < minY
-                        if (tooHigh || tooLow) {
-                            // If too high check next category, otherwise check previous.
-                            newId = (oldId + if (tooHigh) 1 else -1).coerceIn(0, settingsMenu.items.size - 1)
-                        }
-                    }
-                }
-                if (newId != -1 && newId != oldId) {
-                    settingsMenu.checkItem(newId, false)
-                }
-            }
+            itemClickListener = SectionClickListener(settingsMenu)
+            contentPane.scrollListener = SectionScrollListener(settingsMenu)
+            invalidateLayout()
         }
 
         // Rules menu
@@ -271,6 +219,106 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
             items += MenuItem(0, "About", skin.getDrawable(MenuIcons.INFO))
             items += MenuItem(1, "Donate", skin.getDrawable(MenuIcons.ARROW_RIGHT))
             invalidateLayout()
+        }
+    }
+
+    /**
+     * Add menu items to a [menu] for each preference category in [prefs].
+     */
+    private fun addPrefCategoryItemsToMenu(menu: SubMenu, prefs: GamePrefs) {
+        var id = 0
+        for (entry in prefs.prefs.values) {
+            if (entry is PrefCategory) {
+                menu.items += MenuItem(id, entry.title,
+                        skin.getDrawable(entry.icon ?: MenuIcons.CARDS))
+                id++
+            }
+        }
+    }
+
+    /**
+     * A menu item click listener for scrolling to a section when items are clicked.
+     */
+    private class SectionClickListener(private val menu: SubMenu) : (MenuItem) -> Unit {
+
+        override fun invoke(item: MenuItem) {
+            // When a menu item is clicked, scroll the content pane to the section top.
+            var id = 0
+            val scrollPane = menu.contentPane
+            for (child in menu.content.actor.children) {
+                if (child is MenuContentSection) {
+                    if (id == item.id) {
+                        val top = child.y + child.height + 20f - scrollPane.height
+                        val height = scrollPane.height
+                        scrollPane.scrollTo(0f, top, 0f, height)
+                        break
+                    }
+                    id++
+                }
+            }
+        }
+    }
+
+    /**
+     * A scroll listener for checking a submenu section depending on the scroll position.
+     */
+    private class SectionScrollListener(private val menu: SubMenu) :
+            (ScrollView, Float, Float, Float, Float) -> Unit {
+
+        override fun invoke(scrollView: ScrollView, x: Float, y: Float, dx: Float, dy: Float) {
+            // Change the checked menu item if needed
+            var newId = MenuItem.NO_ID
+            val oldId = menu.checkedItem?.id ?: MenuItem.NO_ID
+            when {
+                scrollView.isTopEdge -> {
+                    // Scrolled to top edge, always check first checkable item
+                    for (item in menu.items) {
+                        if (item.checkable) {
+                            newId = item.id
+                            break
+                        }
+                    }
+                }
+                scrollView.isBottomEdge -> {
+                    // Scrolled to bottom edge, always check last checkable item
+                    for (item in menu.items) {
+                        if (item.checkable) {
+                            newId = item.id
+                        }
+                    }
+                }
+                else -> {
+                    val content = menu.content.actor
+
+                    // Find the view of the currently checked category
+                    var id = 0
+                    lateinit var categoryView: Actor
+                    for (child in menu.content.actor.children) {
+                        if (child is MenuContentSection) {
+                            if (id == oldId) {
+                                categoryView = child
+                                break
+                            }
+                            id++
+                        }
+                    }
+                    val bottom = categoryView.y
+                    val top = bottom + categoryView.height
+
+                    // If currently checked category is completely hidden, check another
+                    val maxY = content.height - y
+                    val minY = maxY - scrollView.height
+                    val tooHigh = top > maxY && bottom > maxY
+                    val tooLow = top < minY && bottom < minY
+                    if (tooHigh || tooLow) {
+                        // If too high check next category, otherwise check previous.
+                        newId = (oldId + if (tooHigh) 1 else -1).coerceIn(0, menu.items.size - 1)
+                    }
+                }
+            }
+            if (newId != MenuItem.NO_ID && newId != oldId) {
+                menu.checkItem(newId, false)
+            }
         }
     }
 

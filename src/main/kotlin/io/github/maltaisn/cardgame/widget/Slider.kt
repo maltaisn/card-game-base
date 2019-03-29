@@ -37,7 +37,7 @@ import kotlin.math.round
 
 
 /**
- * A slider widget that can be dragged to change its value.
+ * A slider widget that can be dragged to change its progress.
  */
 class Slider(val style: SliderStyle) : Widget() {
 
@@ -48,15 +48,18 @@ class Slider(val style: SliderStyle) : Widget() {
     var progress = 0f
         set(value) {
             if (field == value) return
-            field = (step * round(value / step)).coerceIn(minValue, maxValue)
+            field = (step * round(value / step)).coerceIn(minProgress, maxProgress)
             changeListener?.invoke(field)
             realProgress = field
             posInvalid = true
             clearActions()
         }
 
-    /** The slider minimum value. Must be less or equal to [maxValue] and will be rounded to a multiple of [step]. */
-    var minValue = 0f
+    /**
+     * The slider minimum progress. Must be less or equal to
+     * [maxProgress] and will be rounded to a multiple of [step].
+     */
+    var minProgress = 0f
         set(value) {
             if (field == value) return
             field = value
@@ -64,8 +67,11 @@ class Slider(val style: SliderStyle) : Widget() {
             boundsValidated = false
         }
 
-    /** The slider maximum value. Must be greater or equal to [minValue] and will be rounded to a multiple of [step]. */
-    var maxValue = 100f
+    /**
+     * The slider maximum progress. Must be greater or equal to
+     * [minProgress] and will be rounded to a multiple of [step].
+     */
+    var maxProgress = 100f
         set(value) {
             if (field == value) return
             field = value
@@ -95,8 +101,8 @@ class Slider(val style: SliderStyle) : Widget() {
         }
 
     /**
-     * The listener called when the slider value is changed.
-     * The listener is also called when the value is changed programatically.
+     * The listener called when the slider progress is changed.
+     * The listener is also called when the progress is changed programatically.
      */
     var changeListener: ((Float) -> Unit)? = null
 
@@ -145,9 +151,10 @@ class Slider(val style: SliderStyle) : Widget() {
                         pressElapsed = 0f
                         pressOffset = x - trackFilledWidth
                         event.stop()
+                        return true
                     }
                 }
-                return true
+                return false
             }
 
             override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
@@ -167,17 +174,19 @@ class Slider(val style: SliderStyle) : Widget() {
             }
 
             override fun touchDragged(event: InputEvent, x: Float, y: Float, pointer: Int) {
-                updateHoveredState(x, y)
+                if (enabled) {
+                    updateHoveredState(x, y)
 
-                if (pressed) {
-                    progress = getProgressForX(x)
-                    Gdx.graphics.requestRendering()
+                    if (pressed) {
+                        progress = getProgressForX(x)
+                        Gdx.graphics.requestRendering()
+                    }
                 }
             }
 
             private fun getProgressForX(x: Float): Float {
-                val newProgress = (x - pressOffset) / trackWidth * (maxValue - minValue) + minValue
-                return (step * round(newProgress / step)).coerceIn(minValue, maxValue)
+                val newProgress = (x - pressOffset) / trackWidth * (maxProgress - minProgress) + minProgress
+                return (step * round(newProgress / step)).coerceIn(minProgress, maxProgress)
             }
         })
 
@@ -240,8 +249,8 @@ class Slider(val style: SliderStyle) : Widget() {
 
         // Draw track, filled on the left side of the thumb and empty on the right side
         val trackEmpty = style.trackEmpty as TransformDrawable
-        val trackFilled = style.trackFilled as TransformDrawable
-        batch.setColor(color.r, color.g, color.b, parentAlpha * if (enabled) 1f else 0.7f)
+        val trackFilled = (if (enabled) style.trackFilled else style.trackFilledDisabled) as TransformDrawable
+        batch.setColor(color.r, color.g, color.b, parentAlpha)
         trackEmpty.draw(batch, trackX + trackFilledWidth, trackY, 0f, 0f,
                 (trackWidth - trackFilledWidth) / scale, trackEmpty.minHeight, scale, scale, 0f)
         trackFilled.draw(batch, trackX, trackY, 0f, 0f, trackFilledWidth / scale,
@@ -268,11 +277,11 @@ class Slider(val style: SliderStyle) : Widget() {
         if (!boundsValidated) {
             require(step > 0) { "Slider step must be positive" }
 
-            minValue = step * round(minValue / step)
-            maxValue = step * round(maxValue / step)
-            require(minValue <= maxValue) { "Slider max progress must be greater or equal to min progress." }
+            minProgress = step * round(minProgress / step)
+            maxProgress = step * round(maxProgress / step)
+            require(minProgress <= maxProgress) { "Slider max progress must be greater or equal to min progress." }
 
-            progress = (step * round(progress / step)).coerceIn(minValue, maxValue)
+            progress = (step * round(progress / step)).coerceIn(minProgress, maxProgress)
 
             boundsValidated = true
         }
@@ -283,7 +292,7 @@ class Slider(val style: SliderStyle) : Widget() {
             val trackEmpty = style.trackEmpty
             val thumb = style.thumb
 
-            percentProgress = (realProgress - minValue) / (maxValue - minValue)
+            percentProgress = (realProgress - minProgress) / (maxProgress - minProgress)
             trackX = x + (thumb.minWidth - trackEmpty.minHeight) * scale / 2
             trackY = y + (thumb.minHeight - trackEmpty.minHeight) * scale / 2
             trackWidth = width + (trackEmpty.minHeight - thumb.minWidth) * scale
@@ -335,6 +344,7 @@ class Slider(val style: SliderStyle) : Widget() {
     class SliderStyle {
         lateinit var trackEmpty: Drawable
         lateinit var trackFilled: Drawable
+        lateinit var trackFilledDisabled: Drawable
         lateinit var thumb: Drawable
         lateinit var thumbHoverOverlay: Drawable
         var scale = 0f
