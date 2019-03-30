@@ -37,10 +37,19 @@ class SliderPrefView(skin: Skin, pref: SliderPref) : GamePrefView<SliderPref>(sk
     private val valueLabel: SdfLabel
     private val slider: Slider
 
+    /** The value label text to display. */
+    private val valueText: String
+        get() = if (pref.enumValues == null) {
+            NUMBER_FORMAT.format(pref.value)
+        } else {
+            val index = ((pref.value - pref.minValue) / pref.step).toInt()
+            pref.enumValues!!.getOrElse(index) { NUMBER_FORMAT.format(pref.value) }
+        }
+
     init {
         val style = skin[SliderPrefViewStyle::class.java]
 
-        valueLabel = SdfLabel(NUMBER_FORMAT.format(pref.value), skin, style.valueFontStyle)
+        valueLabel = SdfLabel(valueText, skin, style.valueFontStyle)
         valueLabel.setAlignment(Align.right)
         valueLabel.enabled = enabled
 
@@ -51,7 +60,7 @@ class SliderPrefView(skin: Skin, pref: SliderPref) : GamePrefView<SliderPref>(sk
             progress = pref.value
             changeListener = {
                 pref.value = it
-                valueLabel.setText(NUMBER_FORMAT.format(it))
+                valueLabel.setText(valueText)
             }
             enabled = this@SliderPrefView.enabled
         }
@@ -65,6 +74,7 @@ class SliderPrefView(skin: Skin, pref: SliderPref) : GamePrefView<SliderPref>(sk
     override fun onPreferenceValueChanged() {
         slider.progress = this.pref.value
     }
+
 
     class SliderPrefViewStyle {
         lateinit var valueFontStyle: SdfLabel.FontStyle

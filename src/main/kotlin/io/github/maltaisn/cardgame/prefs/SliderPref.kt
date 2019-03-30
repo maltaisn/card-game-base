@@ -45,6 +45,13 @@ class SliderPref : GamePref() {
     /** The slider default value. */
     var defaultValue = 0f
 
+    /**
+     * The array of text values to use for formatting instead of a number.
+     * The first item of the array is applied to the lowest slider value.
+     * Use `null` for the standard number display.
+     */
+    var enumValues: Array<String>? = null
+
 
     override fun loadValue(prefs: Preferences) {
         value = prefs.getFloat(key, defaultValue)
