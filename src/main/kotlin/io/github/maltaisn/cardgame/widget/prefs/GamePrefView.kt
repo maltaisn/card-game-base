@@ -50,7 +50,6 @@ abstract class GamePrefView<T : GamePref>(skin: Skin, pref: T) : PrefEntryView<T
                 if (pref.help == null) null else style.helpIcon).apply {
             setWrap(true)
             setAlignment(Align.left)
-            enabled = this@GamePrefView.enabled
         }
     }
 

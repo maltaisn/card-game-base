@@ -94,15 +94,11 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
             }
         }
 
-    /** The scroll pane containing the [content] container. */
-    val contentPane = ScrollView(null)
+    /** The container in the drawer scroll pane. Change its actor to change the content. */
+    var content = Container<Actor>()
 
-    /** The content of the drawer scroll pane, `null` for none. */
-    var content: Actor?
-        set(value) {
-            contentPane.actor = value
-        }
-        get() = contentPane.actor
+    /** The scroll pane containing the [content] container. */
+    val contentPane = ScrollView(content)
 
 
     private val style = skin[MenuDrawerStyle::class.java]
@@ -141,14 +137,14 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
 
         drawerTable.background = style.drawerBackground
 
+        content.fill()
         contentPane.setScrollingDisabled(true, false)
         contentPane.setOverscroll(false, false)
         contentPane.setCancelTouchFocus(false)
 
         // Back button
         val backBtn = Table()
-        val backBtnIcon = Image(style.backBtnIcon)
-        val backBtnSize = style.backBtnFontStyle.fontSize + 6f
+        val backBtnIcon = Image(style.backBtnIcon, Scaling.fit)
         backBtnIcon.color = style.backBtnIconColor
         backBtn.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent, x: Float, y: Float) {
@@ -157,7 +153,7 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
             }
         })
         backBtn.touchable = Touchable.enabled
-        backBtn.add(backBtnIcon).size(backBtnSize)
+        backBtn.add(backBtnIcon).size(style.backBtnFontStyle.fontSize + 6f)
         backBtn.add(backBtnLabel).padLeft(10f)
         backBtn.pad(20f, 30f, 15f, 30f)
 

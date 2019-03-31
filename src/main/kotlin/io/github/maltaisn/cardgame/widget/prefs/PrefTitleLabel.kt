@@ -46,7 +46,7 @@ class PrefTitleLabel(text: CharSequence?, skin: Skin,
     init {
         addListener(object : ClickListener() {
             override fun clicked(event: InputEvent, x: Float, y: Float) {
-                if (enabled && iconRect.contains(x, y)) {
+                if (enabled && helpIcon != null && iconRect.contains(x, y)) {
                     iconClickListener?.invoke()
                 }
             }

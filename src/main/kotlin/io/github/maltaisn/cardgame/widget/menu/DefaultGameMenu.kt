@@ -16,8 +16,6 @@
 
 package io.github.maltaisn.cardgame.widget.menu
 
-import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Value
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
@@ -27,6 +25,7 @@ import com.gmail.blueboxware.libgdxplugin.annotations.GDXAssets
 import io.github.maltaisn.cardgame.Resources
 import io.github.maltaisn.cardgame.prefs.GamePref
 import io.github.maltaisn.cardgame.prefs.GamePrefs
+import io.github.maltaisn.cardgame.prefs.ListPref
 import io.github.maltaisn.cardgame.prefs.PrefCategory
 import io.github.maltaisn.cardgame.widget.ScrollView
 import io.github.maltaisn.cardgame.widget.SdfLabel
@@ -59,10 +58,7 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
             settingsView?.detachListeners()
             settingsMenu.items.clear()
             if (value != null) {
-                settingsView = PrefsGroup(skin, value)
-                settingsView?.helpListener = prefsHelpListener
-                settingsMenu.content.actor = settingsView
-                addPrefCategoryItemsToMenu(settingsMenu, value)
+                settingsView = createPreferenceView(settingsMenu, value)
             } else {
                 settingsView = null
                 settingsMenu.content.actor = null
@@ -77,10 +73,7 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
             newGameView?.detachListeners()
             newGameMenu.items.subList(0, newGameMenu.items.size - 1).clear()
             if (value != null) {
-                newGameView = PrefsGroup(skin, value)
-                newGameView?.helpListener = prefsHelpListener
-                newGameMenu.content.actor = newGameView
-                addPrefCategoryItemsToMenu(newGameMenu, value)
+                newGameView = createPreferenceView(newGameMenu, value)
             } else {
                 newGameView = null
                 newGameMenu.content.actor = null
@@ -102,15 +95,34 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
     private var settingsView: PrefsGroup? = null
 
     // Preference help drawer
-    private val prefsHelpLabel = SdfLabel(null, skin, style.settingsHelpFontStyle)
-    private val prefsHelpContent = Container<Actor>(prefsHelpLabel)
+    private val prefsHelpLabel = SdfLabel(null, skin, style.prefsHelpFontStyle)
     private val prefsHelpListener: (GamePref) -> Unit = { pref ->
         // When a help icon is clicked, show drawer with help text
-        drawer.content = prefsHelpContent
-        drawer.drawerWidth = Value.percentWidth(0.5f, drawer)
-        drawer.title = pref.helpTitle
+        drawer.apply {
+            content.actor = prefsHelpLabel
+            content.pad(0f, 30f, 0f, 30f)
+            drawerWidth = Value.percentWidth(0.5f, drawer)
+            title = pref.shortTitle ?: pref.title
+            shown = true
+        }
         prefsHelpLabel.setText(pref.help)
-        drawer.shown = true
+    }
+
+    // Preference list drawer
+    private var prefsListCurrentPref: ListPref? = null
+    private val prefsList = MenuDrawerList(skin)
+    private val prefsListListener: (ListPref) -> Unit = { pref ->
+        // When a list preference value is clicked, show drawer with the list items.
+        prefsListCurrentPref = pref
+        drawer.apply {
+            content.actor = prefsList
+            content.pad(0f, 0f, 0f, 0f)
+            drawerWidth = Value.percentWidth(0.4f, drawer)
+            title = pref.shortTitle ?: pref.title
+            shown = true
+        }
+        prefsList.items = pref.values
+        prefsList.selectedIndex = pref.keys.indexOf(pref.value)
     }
 
     init {
@@ -151,10 +163,15 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
             }
         }
 
-        // Preference help widgets
-        prefsHelpContent.fill().pad(0f, 30f, 0f, 30f)
+        // Drawer widgets
         prefsHelpLabel.setWrap(true)
         prefsHelpLabel.setAlignment(Align.topLeft)
+
+        prefsList.selectionChangeListener = { index ->
+            if (index != -1) {
+                prefsListCurrentPref!!.value = prefsListCurrentPref!!.keys[index]
+            }
+        }
 
         // New game menu
         newGameMenu.apply {
@@ -223,9 +240,16 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
     }
 
     /**
-     * Add menu items to a [menu] for each preference category in [prefs].
+     * Create a preference group view for a [menu] with [prefs].
      */
-    private fun addPrefCategoryItemsToMenu(menu: SubMenu, prefs: GamePrefs) {
+    private fun createPreferenceView(menu: SubMenu, prefs: GamePrefs): PrefsGroup {
+        // Create preference group view and set listeners
+        val view = PrefsGroup(skin, prefs)
+        view.helpListener = prefsHelpListener
+        view.listClickListener = prefsListListener
+        menu.content.actor = view
+
+        // Add menu items for each preference category
         var id = 0
         for (entry in prefs.prefs.values) {
             if (entry is PrefCategory) {
@@ -234,6 +258,8 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
                 id++
             }
         }
+
+        return view
     }
 
     /**
@@ -288,31 +314,28 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
                     }
                 }
                 else -> {
-                    val content = menu.content.actor
-
                     // Find the view of the currently checked category
                     var id = 0
-                    lateinit var categoryView: Actor
-                    for (child in menu.content.actor.children) {
+                    val content = menu.content.actor
+                    for (child in content.children) {
                         if (child is MenuContentSection) {
                             if (id == oldId) {
-                                categoryView = child
+                                val bottom = child.y
+                                val top = bottom + child.height
+
+                                // If currently checked category is completely hidden, check another
+                                val maxY = content.height - y
+                                val minY = maxY - scrollView.height
+                                val tooHigh = top > maxY && bottom > maxY
+                                val tooLow = top < minY && bottom < minY
+                                if (tooHigh || tooLow) {
+                                    // If too high check next category, otherwise check previous.
+                                    newId = (oldId + if (tooHigh) 1 else -1).coerceIn(0, menu.items.size - 1)
+                                }
                                 break
                             }
                             id++
                         }
-                    }
-                    val bottom = categoryView.y
-                    val top = bottom + categoryView.height
-
-                    // If currently checked category is completely hidden, check another
-                    val maxY = content.height - y
-                    val minY = maxY - scrollView.height
-                    val tooHigh = top > maxY && bottom > maxY
-                    val tooLow = top < minY && bottom < minY
-                    if (tooHigh || tooLow) {
-                        // If too high check next category, otherwise check previous.
-                        newId = (oldId + if (tooHigh) 1 else -1).coerceIn(0, menu.items.size - 1)
                     }
                 }
             }
@@ -323,7 +346,8 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
     }
 
     class DefaultGameMenuStyle {
-        lateinit var settingsHelpFontStyle: SdfLabel.FontStyle
+        lateinit var prefsHelpFontStyle: SdfLabel.FontStyle
+
         lateinit var newGameIcon: Drawable
         lateinit var continueIcon: Drawable
         lateinit var settingsIcon: Drawable

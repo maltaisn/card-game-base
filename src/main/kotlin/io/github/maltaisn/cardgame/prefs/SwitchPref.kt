@@ -29,8 +29,10 @@ class SwitchPref : GamePref() {
     /** The switch value. */
     var value = false
         set(value) {
-            field = value
-            notifyValueChanged()
+            if (field != value) {
+                field = value
+                notifyValueChanged()
+            }
         }
 
     /** The switch default value. */
@@ -44,14 +46,15 @@ class SwitchPref : GamePref() {
         value = prefs.getBoolean(key, defaultValue)
     }
 
-    override fun saveValue(prefs: Preferences, flush: Boolean) {
+    override fun saveValue(prefs: Preferences) {
+        @Suppress("LibGDXMissingFlush")
         prefs.putBoolean(key, value)
-        if (flush) prefs.flush()
     }
 
     override fun createView(skin: Skin) = SwitchPrefView(skin, this)
 
 
-    override fun toString() = super.toString().dropLast(1) + ", value: $value, defaultValue: $defaultValue]"
+    override fun toString() = super.toString().dropLast(1) +
+            ", value: $value, defaultValue: $defaultValue]"
 
 }

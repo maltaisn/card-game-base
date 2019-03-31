@@ -38,11 +38,12 @@ class SwitchPrefView(skin: Skin, pref: SwitchPref) : GamePrefView<SwitchPref>(sk
         switch = Switch(style.switchStyle)
         switch.check(pref.value, false)
         switch.checkListener = { pref.value = it }
-        switch.enabled = enabled
 
         pad(5f, 0f, 5f, 0f)
         add(titleLabel).growX().pad(5f, 10f, 5f, 15f)
         add(switch).pad(5f, 5f, 5f, 10f)
+
+        this.enabled = enabled
     }
 
     override fun onPreferenceValueChanged() {

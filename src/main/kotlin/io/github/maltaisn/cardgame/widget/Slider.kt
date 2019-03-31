@@ -151,8 +151,8 @@ class Slider(val style: SliderStyle) : Widget() {
                         pressElapsed = 0f
                         pressOffset = x - trackFilledWidth
                         event.stop()
-                        return true
                     }
+                    return true
                 }
                 return false
             }

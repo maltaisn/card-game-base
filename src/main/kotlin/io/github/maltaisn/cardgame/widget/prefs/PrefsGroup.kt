@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Scaling
 import io.github.maltaisn.cardgame.prefs.GamePref
 import io.github.maltaisn.cardgame.prefs.GamePrefs
+import io.github.maltaisn.cardgame.prefs.ListPref
 
 
 class PrefsGroup(skin: Skin, prefs: GamePrefs) : Table() {
@@ -38,6 +39,18 @@ class PrefsGroup(skin: Skin, prefs: GamePrefs) : Table() {
             }
         }
 
+    /** Listener called when a list preference value is clicked. */
+    var listClickListener: ((ListPref) -> Unit)? = null
+        set(value) {
+            field = value
+            for (child in children) {
+                if (child is PrefCategoryView) {
+                    child.listClickListener = value
+                }
+            }
+        }
+
+
     init {
         val style = skin[PrefsGroupStyle::class.java]
         pad(10f, 0f, 20f, 0f)
@@ -46,11 +59,14 @@ class PrefsGroup(skin: Skin, prefs: GamePrefs) : Table() {
         for ((i, pref) in prefsList.withIndex()) {
             // Add preference view
             val view = pref.createView(skin)
-            if (view is PrefCategoryView) {
-                view.helpListener = helpListener
-            } else if (view is GamePrefView<*>) {
+            if (view is GamePrefView<*>) {
                 view.helpListener = {
-                    helpListener?.invoke(pref as GamePref)
+                    helpListener?.invoke(view.pref)
+                }
+                if (view is ListPrefView) {
+                    view.valueClickListener = {
+                        listClickListener?.invoke(view.pref)
+                    }
                 }
             }
             add(view).growX().row()
@@ -63,6 +79,7 @@ class PrefsGroup(skin: Skin, prefs: GamePrefs) : Table() {
         }
     }
 
+
     /**
      * Detach all preference listeners attached when the views were created.
      * Must be called when the view is not used anymore to prevent memory leak.
@@ -73,6 +90,8 @@ class PrefsGroup(skin: Skin, prefs: GamePrefs) : Table() {
                 child.detachListener()
             }
         }
+        helpListener = null
+        listClickListener = null
     }
 
     class PrefsGroupStyle {

@@ -179,9 +179,25 @@
       sliderStyle: default
     }
   }
+  io.github.maltaisn.cardgame.widget.prefs.ListPrefView$ListPrefViewStyle: {
+    default: {
+      valueFontStyle: {
+        fontSize: 24
+        fontColor: textColorGray
+      }
+      arrowIcon: icon-chevron-right
+      arrowIconColor: textColorGray
+    }
+  }
+  io.github.maltaisn.cardgame.widget.menu.MenuDrawerListItem$DrawerListItemStyle: {
+    default: {
+      fontStyle: normal
+      selectionOverlay: menu-drawer-item-selection
+    }
+  }
   io.github.maltaisn.cardgame.widget.menu.DefaultGameMenu$DefaultGameMenuStyle: {
     default: {
-      settingsHelpFontStyle: normal
+      prefsHelpFontStyle: normal
       newGameIcon: icon-cards
       continueIcon: icon-arrow-right
       settingsIcon: icon-settings

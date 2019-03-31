@@ -52,7 +52,7 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
      */
     var menuPosition = MenuPosition.LEFT
 
-    /** The content of the submenu scroll pane. May be null to show nothing or when the submenu isn't shown. */
+    /** The container in the submenu scroll pane. Change its actor to change the content. */
     val content = Container<Group>()
 
     /** The scroll pane containing the [content] container. */

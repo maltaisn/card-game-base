@@ -22,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Scaling
 import io.github.maltaisn.cardgame.prefs.GamePref
+import io.github.maltaisn.cardgame.prefs.ListPref
 import io.github.maltaisn.cardgame.prefs.PrefCategory
 import io.github.maltaisn.cardgame.widget.SdfLabel
 import io.github.maltaisn.cardgame.widget.menu.MenuContentSection
@@ -47,6 +48,8 @@ class PrefCategoryView(skin: Skin, category: PrefCategory) :
     /** Listener called when a preference help icon is clicked in a preference of the category. */
     var helpListener: ((GamePref) -> Unit)? = null
 
+    /** Listener called when a list preference value is clicked. */
+    var listClickListener: ((ListPref) -> Unit)? = null
 
     private var titleLabel: SdfLabel
 
@@ -56,7 +59,6 @@ class PrefCategoryView(skin: Skin, category: PrefCategory) :
         titleLabel = SdfLabel(category.title, skin, style.titleFontStyle).apply {
             setWrap(true)
             setAlignment(Align.left)
-            enabled = this@PrefCategoryView.enabled
         }
         add(titleLabel).growX().pad(30f, 10f, 30f, 10f).row()
 
@@ -65,9 +67,13 @@ class PrefCategoryView(skin: Skin, category: PrefCategory) :
             // Preference view
             val view = pref.createView(skin)
             view.helpListener = {
-                helpListener?.invoke(pref)
+                helpListener?.invoke(view.pref)
             }
-            view.enabled = enabled && view.pref.enabled
+            if (view is ListPrefView) {
+                view.valueClickListener = {
+                    listClickListener?.invoke(view.pref)
+                }
+            }
             add(view).growX().row()
 
             // Separator between preferences
@@ -76,6 +82,8 @@ class PrefCategoryView(skin: Skin, category: PrefCategory) :
                 add(separator).growX().pad(10f, 15f, 10f, 0f).row()
             }
         }
+
+        this.enabled = enabled
     }
 
     override fun detachListener() {
@@ -86,6 +94,8 @@ class PrefCategoryView(skin: Skin, category: PrefCategory) :
                 child.detachListener()
             }
         }
+        helpListener = null
+        listClickListener = null
     }
 
 

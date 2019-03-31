@@ -38,8 +38,10 @@ class SliderPref : GamePref() {
     /** The slider value. */
     var value = 0f
         set(value) {
-            field = value
-            notifyValueChanged()
+            if (field != value) {
+                field = value
+                notifyValueChanged()
+            }
         }
 
     /** The slider default value. */
@@ -57,9 +59,9 @@ class SliderPref : GamePref() {
         value = prefs.getFloat(key, defaultValue)
     }
 
-    override fun saveValue(prefs: Preferences, flush: Boolean) {
+    override fun saveValue(prefs: Preferences) {
+        @Suppress("LibGDXMissingFlush")
         prefs.putFloat(key, value)
-        if (flush) prefs.flush()
     }
 
     override fun createView(skin: Skin) = SliderPrefView(skin, this)

@@ -29,19 +29,19 @@ abstract class GamePref : PrefEntry() {
     /** Optional help message shown to the user, use `null` for no help message. */
     var help: String? = null
 
-    /** Optional help message title, use `null` for no title. */
-    var helpTitle: String? = null
+    /** Optional shorter title to use in menu drawer, use `null` to use normal title. */
+    var shortTitle: String? = null
 
     /**
      * Load the value of this preference from [prefs] into [progress].
      */
-    abstract fun loadValue(prefs: Preferences)
+    internal abstract fun loadValue(prefs: Preferences)
 
     /**
      * Save the value of this preference to [prefs], if it's not null.
      * Doesn't flush the preferences, must be done after.
      */
-    abstract fun saveValue(prefs: Preferences, flush: Boolean = true)
+    internal abstract fun saveValue(prefs: Preferences)
 
 
     abstract override fun createView(skin: Skin): GamePrefView<out GamePref>

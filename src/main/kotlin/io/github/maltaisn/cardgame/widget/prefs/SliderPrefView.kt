@@ -51,7 +51,6 @@ class SliderPrefView(skin: Skin, pref: SliderPref) : GamePrefView<SliderPref>(sk
 
         valueLabel = SdfLabel(valueText, skin, style.valueFontStyle)
         valueLabel.setAlignment(Align.right)
-        valueLabel.enabled = enabled
 
         slider = Slider(style.sliderStyle).apply {
             minProgress = pref.minValue
@@ -62,13 +61,14 @@ class SliderPrefView(skin: Skin, pref: SliderPref) : GamePrefView<SliderPref>(sk
                 pref.value = it
                 valueLabel.setText(valueText)
             }
-            enabled = this@SliderPrefView.enabled
         }
 
         pad(5f, 0f, 5f, 0f)
         add(titleLabel).growX().pad(5f, 10f, 5f, 10f)
-        add(valueLabel).width(60f).pad(5f, 5f, 5f, 20f).row()
+        add(valueLabel).pad(5f, 5f, 5f, 20f).row()
         add(slider).growX().colspan(2).pad(5f, 0f, 5f, 0f)
+
+        this.enabled = enabled
     }
 
     override fun onPreferenceValueChanged() {

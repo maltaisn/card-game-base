@@ -35,11 +35,11 @@ import ktx.style.get
 /**
  * Wrapper class around [Label] for rendering text with a distance field font.
  */
-open class SdfLabel(text: CharSequence?, private val skin: Skin, sdfStyle: FontStyle) :
-        Label(text, createLabelStyle(skin, sdfStyle)) {
+open class SdfLabel(text: CharSequence?, private val skin: Skin, fontStyle: FontStyle) :
+        Label(text, createLabelStyle(skin, fontStyle)) {
 
     /** The font style of the distance field label, replaces [Label.style]. */
-    var fontStyle: FontStyle = sdfStyle
+    var fontStyle: FontStyle = fontStyle
         set(value) {
             field = value
             style = createLabelStyle(skin, value)
@@ -57,7 +57,7 @@ open class SdfLabel(text: CharSequence?, private val skin: Skin, sdfStyle: FontS
         sdfShader = skin[SHADER_NAME]
 
         // The font size is divided by 32 because that's the glyph size in the texture
-        setFontScale(sdfStyle.fontSize / 32f)
+        setFontScale(fontStyle.fontSize / 32f)
     }
 
     override fun setText(newText: CharSequence?) {
@@ -150,10 +150,10 @@ open class SdfLabel(text: CharSequence?, private val skin: Skin, sdfStyle: FontS
             skin.add(FONT_BOLD_NAME, fontBold)
         }
 
-        private fun createLabelStyle(skin: Skin, style: FontStyle): LabelStyle {
+        private fun createLabelStyle(skin: Skin, fontStyle: FontStyle): LabelStyle {
             load(skin)
-            val font: BitmapFont = skin[if (style.bold) FONT_BOLD_NAME else FONT_NAME]
-            return LabelStyle(font, style.fontColor)
+            val font: BitmapFont = skin[if (fontStyle.bold) FONT_BOLD_NAME else FONT_NAME]
+            return LabelStyle(font, fontStyle.fontColor)
         }
 
     }

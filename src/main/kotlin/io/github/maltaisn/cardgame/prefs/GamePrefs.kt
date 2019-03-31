@@ -165,7 +165,7 @@ class GamePrefs {
             if (it is GamePref) {
                 it.loadValue(preferences)
                 if (!preferences.contains(it.key)) {
-                    it.saveValue(preferences, false)
+                    it.saveValue(preferences)
                     prefsChanged = true
                 }
             }
@@ -181,7 +181,7 @@ class GamePrefs {
     fun save() {
         forEachPref {
             if (it is GamePref) {
-                it.saveValue(preferences, false)
+                it.saveValue(preferences)
             }
         }
         preferences.flush()
@@ -192,7 +192,8 @@ class GamePrefs {
         private val CLASS_TAGS = arrayOf(
                 "category" to PrefCategory::class.java,
                 "switch" to SwitchPref::class.java,
-                "slider" to SliderPref::class.java)
+                "slider" to SliderPref::class.java,
+                "list" to ListPref::class.java)
     }
 
 }
