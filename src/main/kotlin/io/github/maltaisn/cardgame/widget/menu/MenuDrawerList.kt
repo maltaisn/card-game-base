@@ -30,7 +30,6 @@ class MenuDrawerList(skin: Skin) : VerticalGroup() {
                 itemActors += actor
                 addActor(actor)
             }
-            selectedIndex = oldIndex
         }
 
     /** The currently selected index in the list of [items], or `-1` for none. */
