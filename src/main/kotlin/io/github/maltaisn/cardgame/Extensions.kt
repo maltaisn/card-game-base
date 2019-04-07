@@ -16,7 +16,6 @@
 
 package io.github.maltaisn.cardgame
 
-import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Cell
 import com.badlogic.gdx.scenes.scene2d.ui.Value
@@ -36,13 +35,3 @@ fun <T : Actor> Cell<T>.defaultSize(): Cell<T> {
             .maxSize(Value.maxWidth, Value.maxHeight)
     return this
 }
-
-/**
- * Apply an interpolation to an alpha value.
- * Both the parameter and the result are checked to be between 0 and 1.
- */
-fun Interpolation.applyBounded(a: Float) =
-        this.apply(a.coerceIn(0f, 1f)).coerceIn(0f, 1f)
-
-fun Interpolation.applyBounded(start: Float, end: Float, a: Float) =
-        start + (end - start) * applyBounded(a)

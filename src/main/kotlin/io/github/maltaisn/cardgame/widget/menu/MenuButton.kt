@@ -16,25 +16,17 @@
 
 package io.github.maltaisn.cardgame.widget.menu
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.math.Interpolation
-import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
 import com.badlogic.gdx.utils.Scaling
-import io.github.maltaisn.cardgame.applyBounded
 import io.github.maltaisn.cardgame.defaultSize
+import io.github.maltaisn.cardgame.widget.CheckableWidget
 import io.github.maltaisn.cardgame.widget.SdfLabel
 import io.github.maltaisn.cardgame.widget.ShadowImage
-import io.github.maltaisn.cardgame.withinBounds
 import ktx.actors.alpha
 
 
@@ -44,7 +36,7 @@ import ktx.actors.alpha
 class MenuButton(skin: Skin,
                  val style: MenuButtonStyle,
                  val fontStyle: SdfLabel.FontStyle,
-                 title: CharSequence? = null, icon: Drawable? = null) : Table() {
+                 title: CharSequence? = null, icon: Drawable? = null) : CheckableWidget() {
 
     /** The button title, or `null` for none. */
     var title: CharSequence?
@@ -104,48 +96,30 @@ class MenuButton(skin: Skin,
             updateButtonLayout()
         }
 
-    /** Whether the button can be pressed, hovered and clicked */
-    var enabled = true
+    override var enabled
         set(value) {
-            field = value
-            if (!value) {
-                pressed = false
-                hovered = false
-                pressAlpha = 0f
-                hoverAlpha = 0f
-            }
+            super.enabled = value
+
             val color = if (value) fontStyle.fontColor else style.disabledColor
             titleLabel.color.set(color)
             iconImage.color.set(color)
         }
-
-    /**
-     * Click listener, called when the button is clicked. Clicks must end within the bounds.
-     * The listener is not called when the button is disabled.
-     */
-    var clickListener: ((btn: MenuButton) -> Unit)? = null
+        get() = super.enabled
 
 
     private val titleLabel: SdfLabel
     private val iconImage: ShadowImage
 
-    var checked = false
-    private var checkedElapsed = 0f
-    private var checkedAlpha = 0f
 
-    private var hovered = false
-    private var hoverElapsed = 0f
-    private var hoverAlpha = 0f
-
-    private var pressed = false
-    private var pressElapsed = 0f
-    private var pressAlpha = 0f
+    override var pressAlpha
         set(value) {
-            field = value
+            super.pressAlpha = value
             val color = interpolateColors(fontStyle.fontColor, style.selectedColor, value)
             titleLabel.color.set(color)
             iconImage.color.set(color)
         }
+        get() = super.pressAlpha
+
 
     private val tempColor = Color()
 
@@ -163,42 +137,7 @@ class MenuButton(skin: Skin,
             this(skin, skin[MenuButtonStyle::class.java], fontStyle, text, icon)
 
     init {
-        touchable = Touchable.enabled
-
-        addListener(object : InputListener() {
-            override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                if (enabled && button == Input.Buttons.LEFT) {
-                    pressed = true
-                    pressElapsed = 0f
-                }
-                return true
-            }
-
-            override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
-                if (enabled && button == Input.Buttons.LEFT) {
-                    pressed = false
-                    pressElapsed = PRESS_FADE_DURATION * pressAlpha
-
-                    if (clickListener != null && withinBounds(x, y)) {
-                        clickListener!!(this@MenuButton)
-                    }
-                }
-            }
-
-            override fun enter(event: InputEvent, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
-                if (enabled && pointer == -1) {
-                    hovered = true
-                    hoverElapsed = 0f
-                }
-            }
-
-            override fun exit(event: InputEvent, x: Float, y: Float, pointer: Int, toActor: Actor?) {
-                if (enabled && pointer == -1) {
-                    hovered = false
-                    hoverElapsed = HOVER_FADE_DURATION * hoverAlpha
-                }
-            }
-        })
+        addListener(SelectionListener())
 
         titleLabel = SdfLabel(null, skin, fontStyle).apply {
             isVisible = false
@@ -268,67 +207,13 @@ class MenuButton(skin: Skin,
         }
     }
 
-    override fun layout() {
-        super.layout()
-
-        /*
-        transitionAction?.let {
-            it.topStartY = topRow.y
-            it.bottomStartY = bottomRow.y
-        }
-        */
-    }
-
-    override fun act(delta: Float) {
-        super.act(delta)
-
-        var renderingNeeded = false
-
-        // Update check alpha
-        if (checked && checkedElapsed < CHECK_FADE_DURATION) {
-            checkedElapsed += delta
-            checkedAlpha = CHECK_IN_INTERPOLATION.applyBounded(checkedElapsed / CHECK_FADE_DURATION)
-            renderingNeeded = true
-        } else if (!checked && checkedElapsed > 0f) {
-            checkedElapsed -= delta
-            checkedAlpha = CHECK_OUT_INTERPOLATION.applyBounded(checkedElapsed / CHECK_FADE_DURATION)
-            renderingNeeded = true
-        }
-
-        // Update press alpha
-        if (pressed && pressElapsed < PRESS_FADE_DURATION) {
-            pressElapsed += delta
-            pressAlpha = PRESS_IN_INTERPOLATION.applyBounded(pressElapsed / PRESS_FADE_DURATION)
-            renderingNeeded = true
-        } else if (!pressed && pressElapsed > 0f) {
-            pressElapsed -= delta
-            pressAlpha = PRESS_OUT_INTERPOLATION.applyBounded(pressElapsed / PRESS_FADE_DURATION)
-            renderingNeeded = true
-        }
-
-        // Update hover alpha
-        if (hovered && hoverElapsed < HOVER_FADE_DURATION) {
-            hoverElapsed += delta
-            hoverAlpha = HOVER_IN_INTERPOLATION.applyBounded(hoverElapsed / HOVER_FADE_DURATION)
-            renderingNeeded = true
-        } else if (!hovered && hoverElapsed > 0f) {
-            hoverElapsed -= delta
-            hoverAlpha = HOVER_OUT_INTERPOLATION.applyBounded(hoverElapsed / HOVER_FADE_DURATION)
-            renderingNeeded = true
-        }
-
-        if (renderingNeeded) {
-            Gdx.graphics.requestRendering()
-        }
-    }
-
     override fun drawChildren(batch: Batch, parentAlpha: Float) {
         val scale = style.backgroundScale
 
         // Draw background
         // Alpha depends on hovered, checked and enabled states
-        val alpha = (0.2f + 0.2f * checkedAlpha + 0.1f * hoverAlpha) *
-                alpha * parentAlpha * if (enabled) 1f else 0.5f
+        val alpha = (0.2f + 0.2f * checkAlpha + 0.1f * hoverAlpha) *
+                alpha * parentAlpha * if (enabled) 1f else 0.6f
         val background = backgroundDrawable as TransformDrawable
         batch.setColor(color.r, color.g, color.b, alpha)
         background.draw(batch, x, y, 0f, 0f,
@@ -372,24 +257,6 @@ class MenuButton(skin: Skin,
 
     enum class Side {
         NONE, TOP, BOTTOM, LEFT, RIGHT
-    }
-
-    companion object {
-        /** The duration of the check fade. */
-        private const val CHECK_FADE_DURATION = 0.3f
-
-        /** The duration of the hover fade. */
-        private const val HOVER_FADE_DURATION = 0.3f
-
-        /** The duration of the press fade. */
-        private const val PRESS_FADE_DURATION = 0.3f
-
-        private val CHECK_IN_INTERPOLATION: Interpolation = Interpolation.smooth
-        private val CHECK_OUT_INTERPOLATION: Interpolation = Interpolation.smooth
-        private val HOVER_IN_INTERPOLATION: Interpolation = Interpolation.pow2Out
-        private val HOVER_OUT_INTERPOLATION: Interpolation = Interpolation.smooth
-        private val PRESS_IN_INTERPOLATION: Interpolation = Interpolation.smooth
-        private val PRESS_OUT_INTERPOLATION: Interpolation = Interpolation.smooth
     }
 
 }

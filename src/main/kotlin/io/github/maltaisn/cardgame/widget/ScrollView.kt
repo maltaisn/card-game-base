@@ -33,14 +33,13 @@ class ScrollView(actor: Actor? = null, style: ScrollPane.ScrollPaneStyle? = null
      */
     var scrollListener: ((scrollView: ScrollView, x: Float, y: Float,
                           dx: Float, dy: Float) -> Unit)? = null
-        set(listener) {
+        set(value) {
             if (field != null) {
                 // Remove old listener action
-                removeAction(scrollListenerAction)
                 scrollListenerAction = null
             }
-            field = listener
-            if (listener != null) {
+            field = value
+            if (value != null) {
                 // Add new listener action
                 scrollListenerAction = object : Action() {
                     private var lastScrollX = 0f
@@ -52,18 +51,22 @@ class ScrollView(actor: Actor? = null, style: ScrollPane.ScrollPaneStyle? = null
                         val scrollY = view.scrollY
                         if (scrollX != lastScrollX || scrollY != lastScrollY) {
                             // Scroll changed
-                            listener(view, scrollX, scrollY, scrollX - lastScrollX, scrollY - lastScrollY)
+                            value(view, scrollX, scrollY, scrollX - lastScrollX, scrollY - lastScrollY)
                             lastScrollX = scrollX
                             lastScrollY = scrollY
                         }
                         return false
                     }
                 }
-                addAction(scrollListenerAction)
             }
         }
 
     private var scrollListenerAction: Action? = null
+        set(value) {
+            if (field != null) removeAction(field)
+            field = value
+            if (value != null) addAction(value)
+        }
 
 
     fun scrollToTop() = scrollTo(0f, actor?.height ?: 0f, 0f, 0f)

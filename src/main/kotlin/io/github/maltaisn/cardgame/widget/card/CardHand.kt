@@ -18,13 +18,11 @@ package io.github.maltaisn.cardgame.widget.card
 
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Align
-import io.github.maltaisn.cardgame.applyBounded
 import io.github.maltaisn.cardgame.core.Card
 import io.github.maltaisn.cardgame.widget.GameLayer
-import ktx.actors.plusAssign
+import io.github.maltaisn.cardgame.widget.TimeAction
 import ktx.math.vec2
 import kotlin.math.absoluteValue
 import kotlin.math.max
@@ -168,8 +166,8 @@ class CardHand : CardContainer {
             if (actor == null) continue
 
             val actorPos = vec2(actor.x, actor.y)
-            if (actor.actions.isEmpty && actorPos != positions[i]) {
-                actor += HighlightAction(actor)
+            if (actor.highlightAction == null && actorPos != positions[i]) {
+                actor.highlightAction = HighlightAction(actor)
             }
         }
     }
@@ -184,8 +182,8 @@ class CardHand : CardContainer {
         // Call listener and check if highlighted is allowed.
         if (highlightListener?.invoke(actor, highlighted) != false) {
             actor.highlighted = highlighted
-            if (actor.actions.isEmpty) {
-                actor += HighlightAction(actor)
+            if (actor.highlightAction == null) {
+                actor.highlightAction = HighlightAction(actor)
             }
         }
     }
@@ -194,25 +192,24 @@ class CardHand : CardContainer {
      * An action to translate a card actor from its resting
      * position to the highlight position or the opposite.
      */
-    private inner class HighlightAction(private val cardActor: CardActor) : Action() {
-
-        private var elapsed = if (cardActor.highlighted) 0f else HIGHLIGHT_DURATION
+    internal inner class HighlightAction(private val cardActor: CardActor) :
+            TimeAction(0.1f, Interpolation.smooth, reversed = !cardActor.highlighted) {
 
         private val normalPos = (if (horizontal) cardActor.y else cardActor.x) -
                 (if (cardActor.highlighted) 0f else highlightSize)
 
-        override fun act(delta: Float): Boolean {
-            elapsed += if (cardActor.highlighted) delta else -delta
-
-            val pos = HIGHLIGHT_INTERPOLATION.applyBounded(
-                    elapsed / HIGHLIGHT_DURATION) * highlightSize + normalPos
+        override fun update(progress: Float) {
+            reversed = !cardActor.highlighted
+            val pos = progress * highlightSize + normalPos
             if (horizontal) {
                 cardActor.y = pos
             } else {
                 cardActor.x = pos
             }
+        }
 
-            return elapsed <= 0 || elapsed >= HIGHLIGHT_DURATION
+        override fun end() {
+            cardActor.highlightAction = null
         }
     }
 
@@ -326,13 +323,6 @@ class CardHand : CardContainer {
             }
         }
         return size
-    }
-
-    companion object {
-        /** The duration of the highlight animation. */
-        private const val HIGHLIGHT_DURATION = 0.1f
-
-        private val HIGHLIGHT_INTERPOLATION: Interpolation = Interpolation.smooth
     }
 
 }

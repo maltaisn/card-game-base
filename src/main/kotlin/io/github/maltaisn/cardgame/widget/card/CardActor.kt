@@ -16,20 +16,16 @@
 
 package io.github.maltaisn.cardgame.widget.card
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.math.Interpolation
-import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.scenes.scene2d.ui.Widget
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
-import io.github.maltaisn.cardgame.applyBounded
 import io.github.maltaisn.cardgame.core.Card
 import io.github.maltaisn.cardgame.widget.GameLayer
+import io.github.maltaisn.cardgame.widget.SelectableWidget
 import io.github.maltaisn.cardgame.withinBounds
 import ktx.actors.alpha
 import ktx.style.get
@@ -42,28 +38,13 @@ import ktx.style.get
  * @property card Card shown by the actor.
  */
 class CardActor(val coreStyle: GameLayer.CoreStyle,
-                val cardStyle: CardStyle, var card: Card) : Widget() {
+                val cardStyle: CardStyle, var card: Card) : SelectableWidget() {
 
     /**
      * Whether the card value is displayed.
      * If not shown, the back of the card is displayed instead.
      */
     var shown = true
-
-    /**
-     * Whether the card can be pressed, hovered and clicked.
-     * Usually a card is enabled when it's involved in a valid move.
-     */
-    var enabled = true
-        set(value) {
-            field = value
-            if (!value) {
-                pressed = false
-                hovered = false
-                pressAlpha = 0f
-                hoverAlpha = 0f
-            }
-        }
 
     /**
      * Whether the card is highlighted or not.
@@ -109,13 +90,21 @@ class CardActor(val coreStyle: GameLayer.CoreStyle,
     internal var src: CardContainer? = null
     internal var dst: CardContainer? = null
 
-    private var pressed = false
-    private var pressElapsed = 0f
-    private var pressAlpha = 0f
+    // Used internally by CardAnimationLayer
+    internal var moveAction: CardAnimationLayer.MoveCardAction? = null
+        set(value) {
+            if (field != null) removeAction(field)
+            field = value
+            if (value != null) addAction(value)
+        }
 
-    private var hovered = false
-    private var hoverElapsed = 0f
-    private var hoverAlpha = 0f
+    // Used internally by CardHand
+    internal var highlightAction: CardHand.HighlightAction? = null
+        set(value) {
+            if (field != null) removeAction(field)
+            field = value
+            if (value != null) addAction(value)
+        }
 
 
     constructor(skin: Skin, card: Card,
@@ -125,13 +114,11 @@ class CardActor(val coreStyle: GameLayer.CoreStyle,
 
 
     init {
-        setSize(prefWidth, prefHeight)
+        addListener(SelectionListener())
 
         addListener(object : InputListener() {
             override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                 if (enabled && button == Input.Buttons.LEFT) {
-                    pressed = true
-                    pressElapsed = 0f
                     lastTouchDownTime = System.currentTimeMillis()
                     longClicked = false
                 }
@@ -140,28 +127,12 @@ class CardActor(val coreStyle: GameLayer.CoreStyle,
 
             override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
                 if (enabled && button == Input.Buttons.LEFT) {
-                    pressed = false
-                    pressElapsed = PRESS_FADE_DURATION * pressAlpha
                     lastTouchDownTime = 0
 
                     if (clickListener != null && !animated && !longClicked && withinBounds(x, y)) {
                         // Click ended in actor, call listener.
                         clickListener!!(this@CardActor)
                     }
-                }
-            }
-
-            override fun enter(event: InputEvent, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
-                if (enabled && pointer == -1) {
-                    hovered = true
-                    hoverElapsed = 0f
-                }
-            }
-
-            override fun exit(event: InputEvent, x: Float, y: Float, pointer: Int, toActor: Actor?) {
-                if (enabled && pointer == -1) {
-                    hovered = false
-                    hoverElapsed = HOVER_FADE_DURATION * hoverAlpha
                 }
             }
         })
@@ -176,34 +147,6 @@ class CardActor(val coreStyle: GameLayer.CoreStyle,
                 && heldDuration > LONG_CLICK_DELAY && enabled && !animated) {
             longClicked = true
             longClickListener!!(this@CardActor)
-        }
-
-        var renderingNeeded = false
-
-        // Update press alpha
-        if (pressed && pressElapsed < PRESS_FADE_DURATION) {
-            pressElapsed += delta
-            pressAlpha = PRESS_IN_INTERPOLATION.applyBounded(pressElapsed / PRESS_FADE_DURATION)
-            renderingNeeded = true
-        } else if (!pressed && pressElapsed > 0f) {
-            pressElapsed -= delta
-            pressAlpha = PRESS_OUT_INTERPOLATION.applyBounded(pressElapsed / PRESS_FADE_DURATION)
-            renderingNeeded = true
-        }
-
-        // Update hover alpha
-        if (hovered && hoverElapsed < HOVER_FADE_DURATION) {
-            hoverElapsed += delta
-            hoverAlpha = HOVER_IN_INTERPOLATION.applyBounded(hoverElapsed / HOVER_FADE_DURATION)
-            renderingNeeded = true
-        } else if (!hovered && hoverElapsed > 0f) {
-            hoverElapsed -= delta
-            hoverAlpha = HOVER_OUT_INTERPOLATION.applyBounded(hoverElapsed / HOVER_FADE_DURATION)
-            renderingNeeded = true
-        }
-
-        if (renderingNeeded) {
-            Gdx.graphics.requestRendering()
         }
     }
 
@@ -274,19 +217,8 @@ class CardActor(val coreStyle: GameLayer.CoreStyle,
         const val SIZE_BIG = 150f
         const val SIZE_HUGE = 200f
 
-        /** The duration of the hover fade. */
-        private const val HOVER_FADE_DURATION = 0.3f
-
-        /** The duration of the press fade. */
-        private const val PRESS_FADE_DURATION = 0.3f
-
         /** The delay before long click is triggered. */
         private const val LONG_CLICK_DELAY = 0.5f
-
-        private val PRESS_IN_INTERPOLATION: Interpolation = Interpolation.smooth
-        private val PRESS_OUT_INTERPOLATION: Interpolation = Interpolation.smooth
-        private val HOVER_IN_INTERPOLATION: Interpolation = Interpolation.pow2Out
-        private val HOVER_OUT_INTERPOLATION: Interpolation = Interpolation.smooth
     }
 
 }

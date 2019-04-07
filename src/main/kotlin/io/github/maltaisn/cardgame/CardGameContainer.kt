@@ -19,7 +19,6 @@ package io.github.maltaisn.cardgame
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup
 import io.github.maltaisn.cardgame.widget.GameLayer
-import ktx.actors.plusAssign
 
 
 /**
@@ -31,7 +30,7 @@ internal class CardGameContainer(vararg actors: Actor) : WidgetGroup() {
     init {
         setFillParent(true)
         for (actor in actors) {
-            this += actor
+            addActor(actor)
         }
     }
 

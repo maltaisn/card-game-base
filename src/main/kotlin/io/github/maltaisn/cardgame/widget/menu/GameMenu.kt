@@ -20,7 +20,9 @@ import com.badlogic.gdx.Input
 import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
-import ktx.actors.*
+import ktx.actors.onKeyDown
+import ktx.actors.setKeyboardFocus
+import ktx.actors.then
 
 
 /**
@@ -54,7 +56,7 @@ open class GameMenu(skin: Skin) : Stack() {
             if (mainMenuShown) {
                 mainMenu.shown = value
                 if (subMenu != null) {
-                    this -= subMenu!!
+                    removeActor(subMenu)
                     subMenu = null
                 }
             } else {
@@ -70,7 +72,15 @@ open class GameMenu(skin: Skin) : Stack() {
      */
     private var mainMenuShown = true
 
+    private var transitionAction: Action? = null
+        set(value) {
+            if (field != null) removeAction(field)
+            field = value
+            if (value != null) addAction(value)
+        }
+
     private val defaultBackListener = { closeSubMenu() }
+
 
     init {
         onKeyDown { keycode ->
@@ -80,8 +90,8 @@ open class GameMenu(skin: Skin) : Stack() {
             }
         }
 
-        this += mainMenu
-        this += drawer
+        addActor(mainMenu)
+        addActor(drawer)
     }
 
     /**
@@ -104,7 +114,7 @@ open class GameMenu(skin: Skin) : Stack() {
         }
 
         mainMenu.shown = false
-        val newAction = mainMenu.actions.first() then object : Action() {
+        transitionAction = mainMenu.transitionAction!! then object : Action() {
             override fun act(delta: Float): Boolean {
                 if (shown) {
                     subMenu.shown = true
@@ -113,8 +123,6 @@ open class GameMenu(skin: Skin) : Stack() {
                 return true
             }
         }
-        mainMenu.clearActions()
-        mainMenu += newAction
     }
 
     /**
@@ -131,9 +139,9 @@ open class GameMenu(skin: Skin) : Stack() {
         }
 
         menu.shown = false
-        val newAction = menu.actions.first() then object : Action() {
+        transitionAction = menu.transitionAction!! then object : Action() {
             override fun act(delta: Float): Boolean {
-                this@GameMenu -= menu
+                removeActor(menu)
                 subMenu = null
                 if (shown) {
                     mainMenu.shown = true
@@ -142,8 +150,6 @@ open class GameMenu(skin: Skin) : Stack() {
                 return true
             }
         }
-        menu.clearActions()
-        menu += newAction
     }
 
 }

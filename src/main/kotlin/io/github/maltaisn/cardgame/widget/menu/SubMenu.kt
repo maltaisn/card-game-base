@@ -17,16 +17,16 @@
 package io.github.maltaisn.cardgame.widget.menu
 
 import com.badlogic.gdx.math.Interpolation
-import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Align
-import io.github.maltaisn.cardgame.applyBounded
 import io.github.maltaisn.cardgame.widget.ScrollView
 import io.github.maltaisn.cardgame.widget.SdfLabel
+import io.github.maltaisn.cardgame.widget.TimeAction
+import io.github.maltaisn.cardgame.widget.applyBounded
 import ktx.actors.alpha
-import ktx.actors.plusAssign
+import ktx.actors.onClick
 import ktx.actors.setScrollFocus
 import kotlin.math.max
 
@@ -79,8 +79,8 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
                 }
             }
 
-            if (actions.isEmpty) {
-                this += TransitionAction()
+            if (transitionAction == null) {
+                transitionAction = TransitionAction()
             }
         }
 
@@ -98,7 +98,12 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
     /** The listener called when the back arrow is clicked. */
     var backArrowClickListener: (() -> Unit)? = null
 
-    private var transitionAction: TransitionAction? = null
+    internal var transitionAction: TransitionAction? = null
+        set(value) {
+            if (field != null) removeAction(field)
+            field = value
+            if (value != null) addAction(value)
+        }
 
     private val headerTable = Table()
     private val titleLabel = SdfLabel(null, skin, style.titleStyle)
@@ -110,7 +115,7 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
 
         val backBtn = MenuButton(skin, style.titleStyle, null, style.backArrowIcon)
         backBtn.iconSize = 64f
-        backBtn.clickListener = { backArrowClickListener?.invoke() }
+        backBtn.onClick { backArrowClickListener?.invoke() }
 
         headerTable.pad(25f, 25f, 0f, 20f)
         headerTable.add(backBtn).size(75f, 75f)
@@ -171,7 +176,7 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
 
     private fun addButtonToMenuTable(item: MenuItem) {
         val btn = MenuButton(skin, style.itemFontStyle, item.title, item.icon).apply {
-            clickListener = btnClickListener
+            onClick { btnClickListener(this) }
             anchorSide = if (menuPosition == MenuPosition.LEFT) MenuButton.Side.RIGHT else MenuButton.Side.LEFT
             iconSide = MenuButton.Side.LEFT
             iconSize = this@SubMenu.style.itemIconSize
@@ -189,8 +194,8 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
         menuTable.row()
     }
 
-    private inner class TransitionAction : Action() {
-        private var elapsed = if (shown) 0f else TRANSITION_DURATION
+    internal inner class TransitionAction :
+            TimeAction(TRANSITION_DURATION, Interpolation.smooth, reversed = !shown) {
 
         var contentStartY = contentPane.y
 
@@ -198,40 +203,34 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
             isVisible = true
             alpha = if (shown) 0f else 1f
             renderToFrameBuffer = true
-            transitionAction = this
         }
 
-        override fun act(delta: Float): Boolean {
-            elapsed += if (shown) delta else -delta
-            val progress = TRANSITION_INTERPOLATION.applyBounded(elapsed / TRANSITION_DURATION)
+        override fun update(progress: Float) {
+            reversed = !shown
 
             contentPane.y = contentStartY + (1 - progress) * CONTENT_TRANSITION_TRANSLATE
+            alpha = progress
 
             val durationGap = max(0f, TRANSITION_DURATION - ITEM_TRANSITION_DURATION) / items.size
             for ((i, item) in items.withIndex()) {
                 val btn = item.button!!
-                val itemProgress = TRANSITION_INTERPOLATION.applyBounded(
+                val itemProgress = interpolation.applyBounded(
                         elapsed / ITEM_TRANSITION_DURATION - i * durationGap)
                 btn.x = menuTable.padLeft + (1 - itemProgress) * (btn.width + menuTable.padLeft) *
                         if (menuPosition == MenuPosition.LEFT) -1 else 1
             }
+        }
 
-            alpha = progress
+        override fun end() {
+            isVisible = shown
+            renderToFrameBuffer = false
+            transitionAction = null
 
-            if (shown && progress >= 1 || !shown && progress <= 0) {
-                isVisible = shown
-                renderToFrameBuffer = false
-                transitionAction = null
-
-                // Place all animated widgets to their correct position
-                contentPane.y = contentStartY
-                for (item in items) {
-                    item.button?.x = menuTable.padLeft
-                }
-
-                return true
+            // Place all animated widgets to their correct position
+            contentPane.y = contentStartY
+            for (item in items) {
+                item.button?.x = menuTable.padLeft
             }
-            return false
         }
     }
 
@@ -248,12 +247,12 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
     companion object {
         /** The duration of the overall transition. */
         private const val TRANSITION_DURATION = 0.5f
+
         /** The duration of each menu item slide. */
         private const val ITEM_TRANSITION_DURATION = 0.3f
+
         /** The Y translation performed by the content table. */
         private const val CONTENT_TRANSITION_TRANSLATE = -100f
-
-        private val TRANSITION_INTERPOLATION = Interpolation.smooth
     }
 
 }

@@ -27,12 +27,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Align
 import io.github.maltaisn.cardgame.CardGameScreen
-import io.github.maltaisn.cardgame.applyBounded
 import io.github.maltaisn.cardgame.core.Card
 import io.github.maltaisn.cardgame.widget.FboWidgetGroup
 import io.github.maltaisn.cardgame.widget.GameLayer
+import io.github.maltaisn.cardgame.widget.TimeAction
 import ktx.actors.alpha
-import ktx.actors.plusAssign
 import ktx.collections.isNotEmpty
 import ktx.math.minus
 import ktx.math.vec2
@@ -138,6 +137,13 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
 
     private val translate = vec2()
 
+    private var transitionAction: Action? = null
+        set(value) {
+            if (field != null) removeAction(field)
+            field = value
+            if (value != null) addAction(value)
+        }
+
 
     constructor(coreSkin: Skin, cardSkin: Skin) :
             this(coreSkin[GameLayer.CoreStyle::class.java],
@@ -186,7 +192,7 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
                 } else if (visibility == Visibility.NONE) {
                     actor.shown = false
                 }
-                this += actor
+                addActor(actor)
             }
         }
     }
@@ -400,9 +406,8 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
         if (this.shown == shown) return
         this.shown = shown
 
-        if (actions.firstOrNull() !is FadeTransitionAction) {
-            clearActions()
-            this += FadeTransitionAction()
+        if (transitionAction !is FadeTransitionAction) {
+            transitionAction = FadeTransitionAction()
         }
     }
 
@@ -415,17 +420,18 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
         if (this.shown == shown) return
         this.shown = shown
 
-        val first = actions.firstOrNull()
-        if (first is SlideTransitionAction) {
-            first.start(direction)
+        val currentAction = transitionAction
+        if (currentAction is SlideTransitionAction) {
+            currentAction.start(direction)
         } else {
-            clearActions()
-            this += SlideTransitionAction().start(direction)
+            val action = SlideTransitionAction()
+            action.start(direction)
+            transitionAction = action
         }
     }
 
-    private inner class FadeTransitionAction : Action() {
-        private var elapsed = if (shown) 0f else TRANSITION_DURATION
+    private inner class FadeTransitionAction :
+            TimeAction(TRANSITION_DURATION, TRANSITION_INTERPOLATION, reversed = !shown) {
 
         init {
             isVisible = true
@@ -435,27 +441,25 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
             translate.y = 0f
         }
 
-        override fun act(delta: Float): Boolean {
-            elapsed += if (shown) delta else -delta
-            val progress = TRANSITION_INTERPOLATION.applyBounded(
-                    elapsed / TRANSITION_DURATION)
+        override fun update(progress: Float) {
+            reversed = !shown
             alpha = progress
+        }
 
-            if (shown && progress >= 1 || !shown && progress <= 0) {
-                isVisible = shown
-                renderToFrameBuffer = false
-                return true
-            }
-            return false
+        override fun end() {
+            isVisible = shown
+            renderToFrameBuffer = false
+            transitionAction = null
         }
     }
 
-    private inner class SlideTransitionAction : Action() {
-        private var elapsed = 0f
+    private inner class SlideTransitionAction :
+            TimeAction(TRANSITION_DURATION, TRANSITION_INTERPOLATION) {
+
         private val startOffset = vec2()
         private val endOffset = vec2()
 
-        fun start(direction: Direction): SlideTransitionAction {
+        fun start(direction: Direction) {
             elapsed = 0f
 
             isVisible = true
@@ -471,22 +475,16 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
                 Direction.UP -> offset.y += height
                 Direction.DOWN -> offset.y -= height
             }
-
-            return this
         }
 
-        override fun act(delta: Float): Boolean {
-            elapsed += delta
-            val progress = TRANSITION_INTERPOLATION
-                    .applyBounded(elapsed / TRANSITION_DURATION)
+        override fun update(progress: Float) {
             translate.x = startOffset.x + (endOffset.x - startOffset.x) * progress
             translate.y = startOffset.y + (endOffset.y - startOffset.y) * progress
+        }
 
-            if (elapsed >= TRANSITION_DURATION) {
-                isVisible = shown
-                return true
-            }
-            return false
+        override fun end() {
+            isVisible = shown
+            transitionAction = null
         }
     }
 
@@ -549,7 +547,7 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
     }
 
     internal open fun onAnimationStart() {
-        clearActions()
+        transitionAction = null
         alpha = 1f
 
         // Reset old actors

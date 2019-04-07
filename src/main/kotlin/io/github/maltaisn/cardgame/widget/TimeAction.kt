@@ -2,7 +2,6 @@ package io.github.maltaisn.cardgame.widget
 
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Action
-import io.github.maltaisn.cardgame.applyBounded
 
 
 /**
@@ -17,7 +16,12 @@ abstract class TimeAction(var duration: Float,
                           var interpolationOut: Interpolation = interpolationIn,
                           var reversed: Boolean = false) : Action() {
 
-    private var elapsed = if (reversed) duration else 0f
+    var elapsed = if (reversed) duration else 0f
+
+    /** The current interpolation used, depends on [reversed]. */
+    val interpolation: Interpolation
+        get() = if (reversed) interpolationOut else interpolationIn
+
     private var begun = false
 
     final override fun act(delta: Float): Boolean {
@@ -31,7 +35,6 @@ abstract class TimeAction(var duration: Float,
 
         elapsed += if (reversed) -delta else delta
 
-        val interpolation = if (reversed) interpolationOut else interpolationIn
         val progress = interpolation.applyBounded(elapsed / duration)
         update(progress)
 
@@ -53,3 +56,7 @@ abstract class TimeAction(var duration: Float,
     open fun end() {}
 
 }
+
+/** Apply an interpolation to an [alpha] value, returning a value between [start] and [end]. */
+fun Interpolation.applyBounded(alpha: Float, start: Float = 0f, end: Float = 1f) =
+        start + (end - start) * apply(alpha.coerceIn(0f, 1f)).coerceIn(0f, 1f)

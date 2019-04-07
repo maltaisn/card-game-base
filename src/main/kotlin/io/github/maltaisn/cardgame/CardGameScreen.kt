@@ -37,7 +37,6 @@ import io.github.maltaisn.cardgame.widget.PopupGroup
 import io.github.maltaisn.cardgame.widget.SdfLabel
 import io.github.maltaisn.cardgame.widget.card.CardAnimationLayer
 import io.github.maltaisn.cardgame.widget.menu.GameMenu
-import ktx.actors.plusAssign
 import ktx.assets.getAsset
 import ktx.assets.load
 import ktx.assets.setLoader
@@ -64,7 +63,7 @@ abstract class CardGameScreen(val game: CardGame) :
             check(field == null) { "Game menu can only be set once." }
             if (value != null) {
                 field = value
-                rootContainer += value
+                rootContainer.addActor(value)
             }
         }
 

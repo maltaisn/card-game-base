@@ -17,13 +17,12 @@
 package io.github.maltaisn.cardgame.widget.menu
 
 import com.badlogic.gdx.math.Interpolation
-import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
-import io.github.maltaisn.cardgame.applyBounded
+import io.github.maltaisn.cardgame.widget.TimeAction
 import ktx.actors.alpha
-import ktx.actors.plusAssign
+import ktx.actors.onClick
 
 
 /**
@@ -42,12 +41,17 @@ class MainMenu(skin: Skin) : MenuTable(skin) {
             if (field == value) return
             field = value
 
-            if (actions.isEmpty) {
-                this += TransitionAction()
+            if (transitionAction == null) {
+                transitionAction = TransitionAction()
             }
         }
 
-    private var transitionAction: TransitionAction? = null
+    internal var transitionAction: TransitionAction? = null
+        set(value) {
+            if (field != null) removeAction(field)
+            field = value
+            if (value != null) addAction(value)
+        }
 
     init {
         isVisible = false
@@ -76,7 +80,7 @@ class MainMenu(skin: Skin) : MenuTable(skin) {
         for (item in items) {
             val onTopRow = item.position == MenuItem.Position.TOP
             val btn = MenuButton(skin, style.itemFontStyle, item.title, item.icon).apply {
-                clickListener = btnClickListener
+                onClick { btnClickListener(this) }
                 anchorSide = if (onTopRow) MenuButton.Side.TOP else MenuButton.Side.BOTTOM
                 iconSide = MenuButton.Side.LEFT
                 iconSize = this@MainMenu.style.itemIconSize
@@ -87,8 +91,8 @@ class MainMenu(skin: Skin) : MenuTable(skin) {
         }
     }
 
-    private inner class TransitionAction : Action() {
-        private var elapsed = if (shown) 0f else TRANSITION_DURATION
+    internal inner class TransitionAction :
+            TimeAction(0.3f, Interpolation.smooth, reversed = !shown) {
 
         var topStartY = topRow.y
         var bottomStartY = bottomRow.y
@@ -97,39 +101,31 @@ class MainMenu(skin: Skin) : MenuTable(skin) {
             isVisible = true
             alpha = if (shown) 0f else 1f
             renderToFrameBuffer = true
-            transitionAction = this
         }
 
-        override fun act(delta: Float): Boolean {
-            elapsed += if (shown) delta else -delta
-            val progress = TRANSITION_INTERPOLATION.applyBounded(elapsed / TRANSITION_DURATION)
+        override fun update(progress: Float) {
+            reversed = !shown
 
             topRow.y = topStartY + (1 - progress) * MENU_ROW_HEIGHT
             bottomRow.y = bottomStartY + (1 - progress) * -MENU_ROW_HEIGHT
             alpha = progress
+        }
 
-            if (shown && progress >= 1 || !shown && progress <= 0) {
-                isVisible = shown
-                renderToFrameBuffer = false
-                transitionAction = null
+        override fun end() {
+            isVisible = shown
+            renderToFrameBuffer = false
+            transitionAction = null
 
-                // Place all animated widgets to their correct position
-                topRow.y = topStartY
-                bottomRow.y = bottomStartY
-
-                return true
-            }
-            return false
+            // Place all animated widgets to their correct position
+            topRow.y = topStartY
+            bottomRow.y = bottomStartY
         }
     }
 
     class MainMenuStyle : MenuTableStyle()
 
     companion object {
-        private const val TRANSITION_DURATION = 0.3f
         private const val MENU_ROW_HEIGHT = 100f
-
-        private val TRANSITION_INTERPOLATION = Interpolation.smooth
     }
 
 }

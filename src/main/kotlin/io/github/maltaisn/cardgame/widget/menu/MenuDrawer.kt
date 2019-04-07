@@ -19,17 +19,19 @@ package io.github.maltaisn.cardgame.widget.menu
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Interpolation
-import com.badlogic.gdx.scenes.scene2d.*
+import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.InputListener
+import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Scaling
-import io.github.maltaisn.cardgame.applyBounded
 import io.github.maltaisn.cardgame.defaultSize
 import io.github.maltaisn.cardgame.widget.ScrollView
 import io.github.maltaisn.cardgame.widget.SdfLabel
-import ktx.actors.plusAssign
+import io.github.maltaisn.cardgame.widget.TimeAction
 
 
 /**
@@ -90,7 +92,7 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
             field = value
 
             if (actions.isEmpty) {
-                this += TransitionAction()
+                transitionAction = TransitionAction()
             }
         }
 
@@ -110,6 +112,12 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
     private var scrollFocusBefore: Actor? = null
 
     private var transitionAction: TransitionAction? = null
+        set(value) {
+            if (field != null) removeAction(field)
+            field = value
+            if (value != null) addAction(value)
+        }
+
     private var backgroundAlpha = 1f
 
     init {
@@ -165,7 +173,7 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
         drawerTable.add(titleLabel).growX().pad(0f, 30f, 20f, 30f).row()
         drawerTable.add(contentPane).grow()
 
-        this += drawerTable
+        addActor(drawerTable)
 
         title = null  // For setting title label height to 0
     }
@@ -190,31 +198,26 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
         super.draw(batch, parentAlpha)
     }
 
-    private inner class TransitionAction : Action() {
-        private var elapsed = if (shown) 0f else TRANSITION_DURATION
+    private inner class TransitionAction :
+            TimeAction(0.4f, Interpolation.smooth, reversed = !shown) {
 
         var drawerStartX = drawerTable.x
 
         init {
             isVisible = true
             backgroundAlpha = if (shown) 0f else 1f
-            transitionAction = this
         }
 
-        override fun act(delta: Float): Boolean {
-            elapsed += if (shown) delta else -delta
-            val progress = TRANSITION_INTERPOLATION.applyBounded(elapsed / TRANSITION_DURATION)
-
+        override fun update(progress: Float) {
+            reversed = !shown
             drawerTable.x = drawerStartX + (1 - progress) * drawerTable.width
             backgroundAlpha = progress
+        }
 
-            if (shown && progress >= 1 || !shown && progress <= 0) {
-                isVisible = shown
-                transitionAction = null
-                drawerTable.x = drawerStartX
-                return true
-            }
-            return false
+        override fun end() {
+            isVisible = shown
+            transitionAction = null
+            drawerTable.x = drawerStartX
         }
     }
 
@@ -226,12 +229,6 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
         lateinit var backBtnIconColor: Color
         lateinit var titleFontStyle: SdfLabel.FontStyle
         lateinit var headerSeparator: Drawable
-    }
-
-    companion object {
-        private const val TRANSITION_DURATION = 0.4f
-
-        private val TRANSITION_INTERPOLATION: Interpolation = Interpolation.smooth
     }
 
 }

@@ -18,14 +18,11 @@ package io.github.maltaisn.cardgame.widget
 
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Interpolation
-import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
-import io.github.maltaisn.cardgame.applyBounded
 import ktx.actors.alpha
-import ktx.actors.plusAssign
 import ktx.math.vec2
 import kotlin.math.max
 
@@ -54,6 +51,13 @@ class Popup(skin: Skin) : FboTable() {
 
     private var translateX = 0f
     private var translateY = 0f
+
+    private var transitionAction: TransitionAction? = null
+        set(value) {
+            if (field != null) removeAction(field)
+            field = value
+            if (value != null) addAction(value)
+        }
 
     init {
         isVisible = false
@@ -172,8 +176,8 @@ class Popup(skin: Skin) : FboTable() {
         pad(top * scale, left * scale, bottom * scale, right * scale)
         invalidateHierarchy()
 
-        if (actions.isEmpty) {
-            this += TransitionAction()
+        if (transitionAction == null) {
+            transitionAction = TransitionAction()
         }
     }
 
@@ -185,8 +189,8 @@ class Popup(skin: Skin) : FboTable() {
 
         shown = false
 
-        if (actions.isEmpty) {
-            this += TransitionAction()
+        if (transitionAction == null) {
+            transitionAction = TransitionAction()
         }
     }
 
@@ -218,8 +222,8 @@ class Popup(skin: Skin) : FboTable() {
         var rightTipOffsetY = 0f
     }
 
-    private inner class TransitionAction : Action() {
-        private var elapsed = if (shown) 0f else TRANSITION_DURATION
+    private inner class TransitionAction :
+            TimeAction(0.3f, Interpolation.smooth, reversed = !shown) {
 
         init {
             isVisible = true
@@ -229,9 +233,9 @@ class Popup(skin: Skin) : FboTable() {
             renderToFrameBuffer = true
         }
 
-        override fun act(delta: Float): Boolean {
-            elapsed += if (shown) delta else -delta
-            val progress = TRANSITION_INTERPOLATION.applyBounded(elapsed / TRANSITION_DURATION)
+        override fun update(progress: Float) {
+            reversed = !shown
+
             val offset = progress * TRANSITION_DISTANCE
             when (side) {
                 Side.CENTER -> Unit
@@ -241,28 +245,22 @@ class Popup(skin: Skin) : FboTable() {
                 Side.BELOW -> translateY = -offset
             }
             alpha = progress
+        }
 
-            if (shown && progress >= 1 || !shown && progress <= 0) {
-                if (!shown) {
-                    actor = null
-                    side = Side.CENTER
-                }
-                isVisible = shown
-                renderToFrameBuffer = false
-                return true
+        override fun end() {
+            if (!shown) {
+                actor = null
+                side = Side.CENTER
             }
-            return false
+            isVisible = shown
+            renderToFrameBuffer = false
+            transitionAction = null
         }
     }
 
     companion object {
-        /** The duration a popup's show and hide transition. */
-        private const val TRANSITION_DURATION = 0.3f
-
         /** The distance in pixels the popup is translated up when shown and down when hidden. */
         private const val TRANSITION_DISTANCE = 30f
-
-        private val TRANSITION_INTERPOLATION: Interpolation = Interpolation.smooth
     }
 
 }

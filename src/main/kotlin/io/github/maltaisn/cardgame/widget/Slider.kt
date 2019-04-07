@@ -26,12 +26,9 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.scenes.scene2d.ui.Widget
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
-import io.github.maltaisn.cardgame.applyBounded
 import io.github.maltaisn.cardgame.withinBounds
-import ktx.actors.plusAssign
 import ktx.math.vec2
 import kotlin.math.round
 
@@ -39,7 +36,7 @@ import kotlin.math.round
 /**
  * A slider widget that can be dragged to change its progress.
  */
-class Slider(val style: SliderStyle) : Widget() {
+class Slider(val style: SliderStyle) : SelectableWidget() {
 
     /**
      * The slider progress. Will be rounded to a multiple of [step] within min and max,
@@ -48,11 +45,15 @@ class Slider(val style: SliderStyle) : Widget() {
     var progress = 0f
         set(value) {
             if (field == value) return
+
             field = (step * round(value / step)).coerceIn(minProgress, maxProgress)
-            changeListener?.invoke(field)
             realProgress = field
-            posInvalid = true
-            clearActions()
+
+            slideAction = null
+
+            changeListener?.invoke(field)
+
+            Gdx.graphics.requestRendering()
         }
 
     /**
@@ -63,7 +64,6 @@ class Slider(val style: SliderStyle) : Widget() {
         set(value) {
             if (field == value) return
             field = value
-            posInvalid = true
             boundsValidated = false
         }
 
@@ -75,7 +75,6 @@ class Slider(val style: SliderStyle) : Widget() {
         set(value) {
             if (field == value) return
             field = value
-            posInvalid = true
             boundsValidated = false
         }
 
@@ -84,20 +83,7 @@ class Slider(val style: SliderStyle) : Widget() {
         set(value) {
             if (field == value) return
             field = value
-            posInvalid = true
             boundsValidated = false
-        }
-
-    /** Whether the switch can be pressed, hovered and checked. */
-    var enabled = true
-        set(value) {
-            field = value
-            if (!value) {
-                pressed = false
-                hovered = false
-                hoverAlpha = 0f
-                pressAlpha = 0f
-            }
         }
 
     /**
@@ -106,24 +92,20 @@ class Slider(val style: SliderStyle) : Widget() {
      */
     var changeListener: ((Float) -> Unit)? = null
 
+
     private var boundsValidated = false
-    private var posInvalid = true
-
-    private var hovered = false
-    private var hoverElapsed = 0f
-    private var hoverAlpha = 0f
-
-    private var pressed = false
-    private var pressElapsed = 0f
-    private var pressAlpha = 0f
 
     private var sliderPressed = false
 
-    // Information for slider sprites drawing and interaction
+    private var slideAction: Action? = null
+        set(value) {
+            if (field != null) removeAction(field)
+            field = value
+            if (value != null) addAction(value)
+        }
+
+
     private var realProgress = 0f
-    private var percentProgress = 0f
-    private var trackX = 0f
-    private var trackY = 0f
     private var thumbX = 0f
     private var trackWidth = 0f
     private var trackFilledWidth = 0f
@@ -134,8 +116,6 @@ class Slider(val style: SliderStyle) : Widget() {
 
 
     init {
-        setSize(prefWidth, prefHeight)
-
         // A capture listener is used to intercept the touch down event,
         // so that if the slider is in a scroll pane, it won't be able to scroll.
         addCaptureListener(object : InputListener() {
@@ -146,9 +126,10 @@ class Slider(val style: SliderStyle) : Widget() {
                 if (enabled && button == Input.Buttons.LEFT) {
                     sliderPressed = true
                     pressStagePos.set(event.stageX, event.stageY)
+
                     if (isPointInThumb(x, y)) {
                         pressed = true
-                        pressElapsed = 0f
+                        addPressAction()
                         pressOffset = x - trackFilledWidth
                         event.stop()
                     }
@@ -161,13 +142,14 @@ class Slider(val style: SliderStyle) : Widget() {
                 if (enabled && button == Input.Buttons.LEFT) {
                     if (pressed) {
                         pressed = false
-                        pressElapsed = PRESS_FADE_DURATION * pressAlpha
+                        addPressAction()
+
                     } else if (sliderPressed && withinBounds(x, y) &&
                             Vector2.len(event.stageX - pressStagePos.x,
                                     event.stageY - pressStagePos.y) < MAX_SLIDE_DRAG_DISTANCE) {
                         // To slide, touch must start and end within bounds and touch must not have been dragged too much.
                         pressOffset = style.thumb.minWidth * style.scale / 2
-                        slideTo(getProgressForX(x))
+                        slideTo(computeProgressForX(x))
                     }
                     sliderPressed = false
                 }
@@ -178,68 +160,42 @@ class Slider(val style: SliderStyle) : Widget() {
                     updateHoveredState(x, y)
 
                     if (pressed) {
-                        progress = getProgressForX(x)
-                        Gdx.graphics.requestRendering()
+                        progress = computeProgressForX(x)
                     }
                 }
             }
 
-            private fun getProgressForX(x: Float): Float {
-                val newProgress = (x - pressOffset) / trackWidth * (maxProgress - minProgress) + minProgress
-                return (step * round(newProgress / step)).coerceIn(minProgress, maxProgress)
-            }
-        })
-
-        addListener(object : InputListener() {
             override fun mouseMoved(event: InputEvent, x: Float, y: Float): Boolean {
                 updateHoveredState(x, y)
                 return false
             }
 
             override fun exit(event: InputEvent, x: Float, y: Float, pointer: Int, toActor: Actor?) {
-                if (enabled && pointer == -1) {
-                    hovered = false
-                    hoverElapsed = HOVER_FADE_DURATION * hoverAlpha
+                updateHoveredState(x, y)
+            }
+
+            /** Returns the progress for mouse position at [x]. */
+            private fun computeProgressForX(x: Float): Float {
+                val newProgress = (x - pressOffset) / trackWidth * (maxProgress - minProgress) + minProgress
+                return (step * round(newProgress / step)).coerceIn(minProgress, maxProgress)
+            }
+
+            /** Returns true if point at ([x]; [y]) is on the slider thumb. (in actor coordinates) */
+            private fun isPointInThumb(x: Float, y: Float): Boolean {
+                val radius = style.thumb.minWidth * style.scale / 2
+                return Vector2.len(thumbX + radius - x, radius - y) <= radius
+            }
+
+            private fun updateHoveredState(x: Float, y: Float) {
+                if (enabled) {
+                    val newHovered = isPointInThumb(x, y)
+                    if (hovered != newHovered) {
+                        hovered = newHovered
+                        addHoverAction()
+                    }
                 }
             }
         })
-    }
-
-    override fun invalidate() {
-        super.invalidate()
-        posInvalid = true
-    }
-
-    override fun act(delta: Float) {
-        super.act(delta)
-
-        var renderingNeeded = false
-
-        // Update press alpha
-        if (pressed && pressElapsed < PRESS_FADE_DURATION) {
-            pressElapsed += delta
-            pressAlpha = PRESS_IN_INTERPOLATION.applyBounded(pressElapsed / PRESS_FADE_DURATION)
-            renderingNeeded = true
-        } else if (!pressed && pressElapsed > 0f) {
-            pressElapsed -= delta
-            pressAlpha = PRESS_OUT_INTERPOLATION.applyBounded(pressElapsed / PRESS_FADE_DURATION)
-            renderingNeeded = true
-        }
-
-        // Update hover alpha
-        if (hovered && hoverElapsed < HOVER_FADE_DURATION) {
-            hoverElapsed += delta
-            hoverAlpha = HOVER_IN_INTERPOLATION.applyBounded(hoverElapsed / HOVER_FADE_DURATION)
-            renderingNeeded = true
-        } else if (!hovered && hoverElapsed > 0f) {
-            hoverElapsed -= delta
-            hoverAlpha = HOVER_OUT_INTERPOLATION.applyBounded(hoverElapsed / HOVER_FADE_DURATION)
-            renderingNeeded = true
-        }
-
-        if (renderingNeeded) {
-            Gdx.graphics.requestRendering()
-        }
     }
 
     override fun draw(batch: Batch, parentAlpha: Float) {
@@ -247,26 +203,34 @@ class Slider(val style: SliderStyle) : Widget() {
 
         val scale = style.scale
 
-        // Draw track, filled on the left side of the thumb and empty on the right side
         val trackEmpty = style.trackEmpty as TransformDrawable
         val trackFilled = (if (enabled) style.trackFilled else style.trackFilledDisabled) as TransformDrawable
+        val thumb = style.thumb as TransformDrawable
+        val thumbHover = style.thumbHoverOverlay as TransformDrawable
+
+        val percentProgress = (realProgress - minProgress) / (maxProgress - minProgress)
+        val trackX = (thumb.minWidth - trackEmpty.minHeight) * scale / 2
+        val trackY = (thumb.minHeight - trackEmpty.minHeight) * scale / 2
+        trackWidth = width + (trackEmpty.minHeight - thumb.minWidth) * scale
+        trackFilledWidth = trackWidth * percentProgress
+        thumbX = (width - thumb.minWidth * scale) * percentProgress
+
+        // Draw track, filled on the left side of the thumb and empty on the right side
         batch.setColor(color.r, color.g, color.b, parentAlpha)
-        trackEmpty.draw(batch, trackX + trackFilledWidth, trackY, 0f, 0f,
+        trackEmpty.draw(batch, x + trackX + trackFilledWidth, y + trackY, 0f, 0f,
                 (trackWidth - trackFilledWidth) / scale, trackEmpty.minHeight, scale, scale, 0f)
-        trackFilled.draw(batch, trackX, trackY, 0f, 0f, trackFilledWidth / scale,
+        trackFilled.draw(batch, x + trackX, y + trackY, 0f, 0f, trackFilledWidth / scale,
                 trackFilled.minHeight, scale, scale, 0f)
 
         // Draw thumb
-        val thumb = style.thumb as TransformDrawable
         batch.setColor(color.r, color.g, color.b, parentAlpha)
-        thumb.draw(batch, thumbX, y, 0f, 0f, thumb.minWidth,
+        thumb.draw(batch, x + thumbX, y, 0f, 0f, thumb.minWidth,
                 thumb.minHeight, scale, scale, 0f)
 
         // Draw thumb hover/press/disabled overlay
-        val thumbHover = style.thumbHoverOverlay as TransformDrawable
         batch.setColor(color.r, color.g, color.b, parentAlpha *
                 (hoverAlpha + pressAlpha) * 0.1f + if (enabled) 0f else 0.2f)
-        thumbHover.draw(batch, thumbX, y, 0f, 0f, thumbHover.minWidth,
+        thumbHover.draw(batch, x + thumbX, y, 0f, 0f, thumbHover.minWidth,
                 thumbHover.minHeight, scale, scale, 0f)
     }
 
@@ -285,20 +249,6 @@ class Slider(val style: SliderStyle) : Widget() {
 
             boundsValidated = true
         }
-
-        // Update drawing positions for sprites.
-        if (posInvalid) {
-            val scale = style.scale
-            val trackEmpty = style.trackEmpty
-            val thumb = style.thumb
-
-            percentProgress = (realProgress - minProgress) / (maxProgress - minProgress)
-            trackX = x + (thumb.minWidth - trackEmpty.minHeight) * scale / 2
-            trackY = y + (thumb.minHeight - trackEmpty.minHeight) * scale / 2
-            trackWidth = width + (trackEmpty.minHeight - thumb.minWidth) * scale
-            trackFilledWidth = trackWidth * percentProgress
-            thumbX = x + (width - thumb.minWidth * scale) * percentProgress
-        }
     }
 
     override fun getMinWidth() = style.thumb.minWidth * style.scale + 20f
@@ -307,35 +257,21 @@ class Slider(val style: SliderStyle) : Widget() {
 
     override fun getPrefHeight() = style.thumb.minHeight * style.scale
 
-    /** Animate the change of the slider progress to a new [progress] value */
-    fun slideTo(progress: Float) {
+    /**
+     * Animate the change of the slider progress to a new [progress] value.
+     */
+    fun slideTo(newProgress: Float) {
         val startProgress = realProgress
-        this.progress = progress
+        this.progress = newProgress
         realProgress = startProgress
 
-        this += object : Action() {
-            private var elapsed = 0f
-            override fun act(delta: Float): Boolean {
-                elapsed += delta
-                realProgress = SLIDE_INTERPOLATION.applyBounded(
-                        startProgress, progress, elapsed / SLIDE_DURATION)
-                return elapsed >= SLIDE_DURATION
+        slideAction = object : TimeAction(0.3f, Interpolation.smooth) {
+            override fun update(progress: Float) {
+                realProgress = startProgress + (newProgress - startProgress) * progress
             }
-        }
-    }
 
-    /** Returns true if point at ([x]; [y]) is on the slider thumb. (in actor coordinates) */
-    private fun isPointInThumb(x: Float, y: Float): Boolean {
-        val radius = style.thumb.minWidth * style.scale / 2
-        return Vector2.len((trackFilledWidth + radius) - x, radius - y) <= radius
-    }
-
-    private fun updateHoveredState(x: Float, y: Float) {
-        if (enabled) {
-            val newHovered = isPointInThumb(x, y)
-            if (hovered != newHovered) {
-                hovered = newHovered
-                hoverElapsed = if (hovered) 0f else HOVER_FADE_DURATION * hoverAlpha
+            override fun end() {
+                slideAction = null
             }
         }
     }
@@ -351,23 +287,8 @@ class Slider(val style: SliderStyle) : Widget() {
     }
 
     companion object {
-        /** The duration of the press fade. */
-        private const val PRESS_FADE_DURATION = 0.3f
-
-        /** The duration of the hover fade. */
-        private const val HOVER_FADE_DURATION = 0.3f
-
-        /** The duration of the animation when the thumb slides to a new position. */
-        private const val SLIDE_DURATION = 0.3f
-
         /** Maximum distance that touch can be dragged to allow slide when clicking on track. */
         private const val MAX_SLIDE_DRAG_DISTANCE = 10f
-
-        private val PRESS_IN_INTERPOLATION: Interpolation = Interpolation.smooth
-        private val PRESS_OUT_INTERPOLATION: Interpolation = Interpolation.smooth
-        private val HOVER_IN_INTERPOLATION: Interpolation = Interpolation.pow2Out
-        private val HOVER_OUT_INTERPOLATION: Interpolation = Interpolation.smooth
-        private val SLIDE_INTERPOLATION: Interpolation = Interpolation.smooth
     }
 
 }

@@ -16,21 +16,11 @@
 
 package io.github.maltaisn.cardgame.widget
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.math.Interpolation
-import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.InputListener
-import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
-import io.github.maltaisn.cardgame.applyBounded
-import io.github.maltaisn.cardgame.withinBounds
 import ktx.actors.alpha
 import kotlin.math.max
 
@@ -40,7 +30,7 @@ import kotlin.math.max
  * but there are no checked or focused states. Button can be disabled to act like a label.
  * A popup button has a label by default but it can be replaced or more actors can be added.
  */
-class PopupButton(skin: Skin, text: CharSequence? = null) : Table(skin) {
+class PopupButton(skin: Skin, text: CharSequence? = null) : SelectableWidget() {
 
     val style: PopupButtonStyle = skin[PopupButtonStyle::class.java]
 
@@ -54,72 +44,8 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : Table(skin) {
         }
         get() = label.text
 
-    /** Whether the button can be pressed, hovered and clicked */
-    var enabled = true
-        set(value) {
-            field = value
-            if (!value) {
-                pressed = false
-                hovered = false
-                pressAlpha = 0f
-                hoverAlpha = 0f
-            }
-        }
-
-    /**
-     * Click listener, called when the button is clicked. Clicks must end within the bounds.
-     * The listener is not called when the button is disabled.
-     */
-    var clickListener: ((PopupButton) -> Unit)? = null
-
-
-    private var pressed = false
-    private var pressElapsed = 0f
-    private var pressAlpha = 0f
-
-    private var hovered = false
-    private var hoverElapsed = 0f
-    private var hoverAlpha = 0f
-
 
     init {
-        touchable = Touchable.enabled
-
-        addListener(object : InputListener() {
-            override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                if (enabled && button == Input.Buttons.LEFT) {
-                    pressed = true
-                    pressElapsed = 0f
-                }
-                return true
-            }
-
-            override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
-                if (enabled && button == Input.Buttons.LEFT) {
-                    pressed = false
-                    pressElapsed = PRESS_FADE_DURATION * pressAlpha
-
-                    if (clickListener != null && withinBounds(x, y)) {
-                        clickListener!!(this@PopupButton)
-                    }
-                }
-            }
-
-            override fun enter(event: InputEvent, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
-                if (enabled && pointer == -1) {
-                    hovered = true
-                    hoverElapsed = 0f
-                }
-            }
-
-            override fun exit(event: InputEvent, x: Float, y: Float, pointer: Int, toActor: Actor?) {
-                if (enabled && pointer == -1) {
-                    hovered = false
-                    hoverElapsed = HOVER_FADE_DURATION * hoverAlpha
-                }
-            }
-        })
-
         // Apply the background padding to the table
         val background = style.background
         pad(background.topHeight, background.leftWidth, background.bottomHeight, background.rightWidth)
@@ -127,38 +53,8 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : Table(skin) {
         // Add the button label
         label = SdfLabel(text, skin, style.fontStyle)
         add(label).expand().pad(0f, 15f, 0f, 15f)
-    }
 
-    override fun act(delta: Float) {
-        super.act(delta)
-
-        var renderingNeeded = false
-
-        // Update press alpha
-        if (pressed && pressElapsed < PRESS_FADE_DURATION) {
-            pressElapsed += delta
-            pressAlpha = PRESS_IN_INTERPOLATION.applyBounded(pressElapsed / PRESS_FADE_DURATION)
-            renderingNeeded = true
-        } else if (!pressed && pressElapsed > 0f) {
-            pressElapsed -= delta
-            pressAlpha = PRESS_OUT_INTERPOLATION.applyBounded(pressElapsed / PRESS_FADE_DURATION)
-            renderingNeeded = true
-        }
-
-        // Update hover alpha
-        if (hovered && hoverElapsed < HOVER_FADE_DURATION) {
-            hoverElapsed += delta
-            hoverAlpha = HOVER_IN_INTERPOLATION.applyBounded(hoverElapsed / HOVER_FADE_DURATION)
-            renderingNeeded = true
-        } else if (!hovered && hoverElapsed > 0f) {
-            hoverElapsed -= delta
-            hoverAlpha = HOVER_OUT_INTERPOLATION.applyBounded(hoverElapsed / HOVER_FADE_DURATION)
-            renderingNeeded = true
-        }
-
-        if (renderingNeeded) {
-            Gdx.graphics.requestRendering()
-        }
+        addListener(SelectionListener())
     }
 
     override fun drawChildren(batch: Batch, parentAlpha: Float) {
@@ -187,15 +83,11 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : Table(skin) {
         }
     }
 
-    override fun getPrefWidth(): Float {
-        val prefWidth = super.getPrefWidth()
-        return max(style.background.minWidth * style.backgroundScale, prefWidth)
-    }
+    override fun getPrefWidth() = max(style.background.minWidth *
+            style.backgroundScale, super.getPrefWidth())
 
-    override fun getPrefHeight(): Float {
-        val prefHeight = super.getPrefHeight()
-        return max(style.background.minHeight * style.backgroundScale, prefHeight)
-    }
+    override fun getPrefHeight() = max(style.background.minHeight *
+            style.backgroundScale, super.getPrefHeight())
 
     class PopupButtonStyle {
         lateinit var background: Drawable
@@ -203,19 +95,6 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : Table(skin) {
         lateinit var press: Drawable
         lateinit var fontStyle: SdfLabel.FontStyle
         var backgroundScale = 0f
-    }
-
-    companion object {
-        /** The duration of the hover fade. */
-        private const val HOVER_FADE_DURATION = 0.3f
-
-        /** The duration of the press fade. */
-        private const val PRESS_FADE_DURATION = 0.3f
-
-        private val PRESS_IN_INTERPOLATION: Interpolation = Interpolation.smooth
-        private val PRESS_OUT_INTERPOLATION: Interpolation = Interpolation.smooth
-        private val HOVER_IN_INTERPOLATION: Interpolation = Interpolation.pow2Out
-        private val HOVER_OUT_INTERPOLATION: Interpolation = Interpolation.smooth
     }
 
 }
