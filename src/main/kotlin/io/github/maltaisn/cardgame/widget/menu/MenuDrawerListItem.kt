@@ -13,8 +13,9 @@ class MenuDrawerListItem(skin: Skin) : CheckableWidget(), Pool.Poolable {
 
     /** The item text. */
     var text: CharSequence?
-        set(value) = label.setText(value)
         get() = label.text
+        set(value) = label.setText(value)
+
 
     private val itemStyle = skin[DrawerListItemStyle::class.java]
     private val label = SdfLabel(null, skin, itemStyle.fontStyle)

@@ -32,12 +32,12 @@ import ktx.actors.onClick
 class ListPrefView(skin: Skin, pref: ListPref) : GamePrefView<ListPref>(skin, pref) {
 
     override var enabled
+        get() = super.enabled
         set(value) {
             super.enabled = value
             valueLabel.enabled = value
             arrowIcon.alpha = if (value) 1f else 0.5f
         }
-        get() = super.enabled
 
     /** The listener called when the value button is clicked, `null` for none. */
     var valueClickListener: (() -> Unit)? = null

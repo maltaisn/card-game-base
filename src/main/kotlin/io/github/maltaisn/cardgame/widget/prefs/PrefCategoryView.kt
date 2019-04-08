@@ -32,6 +32,7 @@ class PrefCategoryView(skin: Skin, category: PrefCategory) :
         PrefEntryView<PrefCategory>(skin, category), MenuContentSection {
 
     override var enabled
+        get() = super.enabled
         set(value) {
             super.enabled = value
             titleLabel.enabled = enabled
@@ -43,7 +44,6 @@ class PrefCategoryView(skin: Skin, category: PrefCategory) :
                 }
             }
         }
-        get() = super.enabled
 
     /** Listener called when a preference help icon is clicked in a preference of the category. */
     var helpListener: ((GamePref) -> Unit)? = null

@@ -24,11 +24,11 @@ import io.github.maltaisn.cardgame.widget.Switch
 class SwitchPrefView(skin: Skin, pref: SwitchPref) : GamePrefView<SwitchPref>(skin, pref) {
 
     override var enabled
+        get() = super.enabled
         set(value) {
             super.enabled = value
             switch.enabled = value
         }
-        get() = super.enabled
 
     private val switch: Switch
 

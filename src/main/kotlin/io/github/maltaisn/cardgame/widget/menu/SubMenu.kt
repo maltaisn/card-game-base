@@ -41,10 +41,10 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
 
     /** The submenu title, shown at the top. May be null for none. */
     var title: CharSequence?
+        get() = titleLabel.text
         set(value) {
             titleLabel.setText(value)
         }
-        get() = titleLabel.text
 
     /**
      * The position of the menu pane.

@@ -28,20 +28,20 @@ import io.github.maltaisn.cardgame.prefs.GamePref
 abstract class GamePrefView<T : GamePref>(skin: Skin, pref: T) : PrefEntryView<T>(skin, pref) {
 
     override var enabled
+        get() = super.enabled
         set(value) {
             super.enabled = value
             titleLabel.enabled = value
         }
-        get() = super.enabled
 
     protected val titleLabel: PrefTitleLabel
 
     /** The listener called when the help icon is clicked. */
     var helpListener: (() -> Unit)?
+        get() = titleLabel.iconClickListener
         set(value) {
             titleLabel.iconClickListener = value
         }
-        get() = titleLabel.iconClickListener
 
 
     init {

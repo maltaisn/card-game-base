@@ -39,10 +39,10 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : SelectableWidget() {
 
     /** The button text. */
     var text: CharSequence?
+        get() = label.text
         set(value) {
             label.setText(value)
         }
-        get() = label.text
 
 
     init {

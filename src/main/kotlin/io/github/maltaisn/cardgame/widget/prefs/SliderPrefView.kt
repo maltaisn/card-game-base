@@ -27,12 +27,12 @@ import java.text.NumberFormat
 class SliderPrefView(skin: Skin, pref: SliderPref) : GamePrefView<SliderPref>(skin, pref) {
 
     override var enabled
+        get() = super.enabled
         set(value) {
             super.enabled = value
             valueLabel.enabled = value
             slider.enabled = value
         }
-        get() = super.enabled
 
     private val valueLabel: SdfLabel
     private val slider: Slider

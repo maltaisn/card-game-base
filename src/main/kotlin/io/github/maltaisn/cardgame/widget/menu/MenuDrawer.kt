@@ -42,6 +42,7 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
 
     /** The drawer title, can be `null` for none. */
     var title: CharSequence?
+        get() = titleLabel.text
         set(value) {
             val titleShown = (value != null && value.isNotEmpty())
             titleLabel.isVisible = titleShown
@@ -56,14 +57,13 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
                 titleCell.size(0f, 0f).padBottom(0f)
             }
         }
-        get() = titleLabel.text
 
     /** The drawer back button text, can be `null` for none. */
     var backBtnText: CharSequence?
+        get() = backBtnLabel.text
         set(value) {
             backBtnLabel.setText(value)
         }
-        get() = backBtnLabel.text
 
     /** The drawer width. */
     var drawerWidth: Value = Value.percentWidth(0.5f, this)

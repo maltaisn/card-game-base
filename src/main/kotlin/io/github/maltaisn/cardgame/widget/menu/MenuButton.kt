@@ -40,6 +40,7 @@ class MenuButton(skin: Skin,
 
     /** The button title, or `null` for none. */
     var title: CharSequence?
+        get() = titleLabel.text
         set(value) {
             val titleShown = (value != null && value.isNotEmpty())
             titleLabel.isVisible = titleShown
@@ -55,17 +56,16 @@ class MenuButton(skin: Skin,
                 titleCell.size(0f, 0f)
             }
         }
-        get() = titleLabel.text
 
     /** The button icon, or `null` for none. */
     var icon: Drawable?
+        get() = iconImage.drawable
         set(value) {
             iconImage.isVisible = (value != null)
             iconImage.drawable = value
             updateIconViewPadding()
             updateIconSize()
         }
-        get() = iconImage.drawable
 
     /** The icon size (with actually), in pixels. */
     var iconSize = 32f
@@ -97,6 +97,7 @@ class MenuButton(skin: Skin,
         }
 
     override var enabled
+        get() = super.enabled
         set(value) {
             super.enabled = value
 
@@ -104,7 +105,6 @@ class MenuButton(skin: Skin,
             titleLabel.color.set(color)
             iconImage.color.set(color)
         }
-        get() = super.enabled
 
 
     private val titleLabel: SdfLabel
@@ -112,13 +112,13 @@ class MenuButton(skin: Skin,
 
 
     override var pressAlpha
+        get() = super.pressAlpha
         set(value) {
             super.pressAlpha = value
             val color = interpolateColors(fontStyle.fontColor, style.selectedColor, value)
             titleLabel.color.set(color)
             iconImage.color.set(color)
         }
-        get() = super.pressAlpha
 
 
     private val tempColor = Color()
