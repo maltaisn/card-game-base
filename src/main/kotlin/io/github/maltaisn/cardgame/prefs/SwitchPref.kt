@@ -19,6 +19,7 @@ package io.github.maltaisn.cardgame.prefs
 import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import io.github.maltaisn.cardgame.widget.prefs.SwitchPrefView
+import ktx.log.error
 
 
 /**
@@ -43,7 +44,12 @@ class SwitchPref : GamePref() {
 
 
     override fun loadValue(prefs: Preferences) {
-        value = prefs.getBoolean(key, defaultValue)
+        value = try {
+            prefs.getBoolean(key, defaultValue)
+        } catch (e: Exception) {
+            error { "Wrong saved type for preference '$key', using default value." }
+            defaultValue
+        }
     }
 
     override fun saveValue(prefs: Preferences) {

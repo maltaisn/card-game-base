@@ -26,7 +26,7 @@ import io.github.maltaisn.cardgame.prefs.GamePrefs
 import io.github.maltaisn.cardgame.prefs.ListPref
 
 
-class PrefsGroup(skin: Skin, prefs: GamePrefs) : Table() {
+class PrefsGroup(skin: Skin, val prefs: GamePrefs) : Table() {
 
     /** Listener called when a preference help icon is clicked. */
     var helpListener: ((GamePref) -> Unit)? = null

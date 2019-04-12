@@ -19,6 +19,7 @@ package io.github.maltaisn.cardgame.prefs
 import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import io.github.maltaisn.cardgame.widget.prefs.SliderPrefView
+import ktx.log.error
 
 
 /**
@@ -56,7 +57,12 @@ class SliderPref : GamePref() {
 
 
     override fun loadValue(prefs: Preferences) {
-        value = prefs.getFloat(key, defaultValue)
+        value = try {
+            prefs.getFloat(key, defaultValue)
+        } catch (e: Exception) {
+            error { "Wrong saved type for preference '$key', using default value." }
+            defaultValue
+        }
     }
 
     override fun saveValue(prefs: Preferences) {

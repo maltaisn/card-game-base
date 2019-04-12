@@ -19,6 +19,7 @@ package io.github.maltaisn.cardgame.prefs
 import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import io.github.maltaisn.cardgame.widget.prefs.ListPrefView
+import ktx.log.error
 
 
 /**
@@ -54,12 +55,23 @@ class ListPref : GamePref() {
         if (defaultValue == null) {
             defaultValue = keys.first()
         }
-        value = prefs.getString(key, defaultValue)
+
+        value = try {
+            prefs.getString(key, defaultValue)
+        } catch (e: Exception) {
+            error { "Wrong saved type for preference '$key', using default value." }
+            defaultValue
+        }
+
+        // Check if saved value is a valid key
+        if (value !in keys) {
+            value = defaultValue
+        }
     }
 
+    @Suppress("LibGDXMissingFlush")
     override fun saveValue(prefs: Preferences) {
         if (entries.containsKey(value)) {
-            @Suppress("LibGDXMissingFlush")
             prefs.putString(key, value)
         }
     }
