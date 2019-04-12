@@ -16,6 +16,12 @@ class MenuDrawerListItem(skin: Skin) : CheckableWidget(), Pool.Poolable {
         get() = label.text
         set(value) = label.setText(value)
 
+    override var enabled: Boolean
+        get() = super.enabled
+        set(value) {
+            super.enabled = value
+            label.enabled = value
+        }
 
     private val itemStyle = skin[DrawerListItemStyle::class.java]
     private val label = SdfLabel(null, skin, itemStyle.fontStyle)
@@ -37,6 +43,7 @@ class MenuDrawerListItem(skin: Skin) : CheckableWidget(), Pool.Poolable {
 
     override fun reset() {
         text = null
+        enabled = true
         check(false, false)
         hoverAction = null
         hoverAlpha = 0f
@@ -45,6 +52,7 @@ class MenuDrawerListItem(skin: Skin) : CheckableWidget(), Pool.Poolable {
         clearActions()
         clearListeners()
         addListener(inputListener)
+        checkListener = null
     }
 
     override fun draw(batch: Batch, parentAlpha: Float) {

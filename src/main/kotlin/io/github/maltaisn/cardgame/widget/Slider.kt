@@ -257,6 +257,11 @@ class Slider(val style: SliderStyle) : SelectableWidget() {
 
     override fun getPrefHeight() = style.thumb.minHeight * style.scale
 
+    override fun clearActions() {
+        super.clearActions()
+        slideAction = null
+    }
+
     /**
      * Animate the change of the slider progress to a new [progress] value.
      */

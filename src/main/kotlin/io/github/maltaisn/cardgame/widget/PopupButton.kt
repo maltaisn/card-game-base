@@ -17,6 +17,7 @@
 package io.github.maltaisn.cardgame.widget
 
 import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
@@ -44,7 +45,6 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : SelectableWidget() {
             label.setText(value)
         }
 
-
     init {
         // Apply the background padding to the table
         val background = style.background
@@ -52,6 +52,7 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : SelectableWidget() {
 
         // Add the button label
         label = SdfLabel(text, skin, style.fontStyle)
+        label.touchable = Touchable.disabled
         add(label).expand().pad(0f, 15f, 0f, 15f)
 
         addListener(SelectionListener())
@@ -68,19 +69,11 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : SelectableWidget() {
         // Draw button content
         super.drawChildren(batch, parentAlpha)
 
-        // Draw hover
-        if (hoverAlpha != 0f) {
-            batch.setColor(color.r, color.g, color.b, alpha * parentAlpha * hoverAlpha)
-            (style.hover as TransformDrawable).draw(batch, x, y, 0f, 0f,
+        // Draw hover and selection overlay
+        batch.setColor(color.r, color.g, color.b, alpha * parentAlpha *
+                (hoverAlpha * 0.2f + pressAlpha * 0.2f + if (enabled) 0f else 0.2f))
+        (style.selectionOverlay as TransformDrawable).draw(batch, x, y, 0f, 0f,
                     width / scale, height / scale, scale, scale, 0f)
-        }
-
-        // Draw press
-        if (pressAlpha != 0f) {
-            batch.setColor(color.r, color.g, color.b, alpha * parentAlpha * pressAlpha)
-            (style.press as TransformDrawable).draw(batch, x, y, 0f, 0f,
-                    width / scale, height / scale, scale, scale, 0f)
-        }
     }
 
     override fun getPrefWidth() = max(style.background.minWidth *
@@ -91,8 +84,7 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : SelectableWidget() {
 
     class PopupButtonStyle {
         lateinit var background: Drawable
-        lateinit var hover: Drawable
-        lateinit var press: Drawable
+        lateinit var selectionOverlay: Drawable
         lateinit var fontStyle: SdfLabel.FontStyle
         var backgroundScale = 0f
     }

@@ -179,6 +179,11 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
         sizeInvalid = true
     }
 
+    override fun clearActions() {
+        super.clearActions()
+        transitionAction = null
+    }
+
     /**
      * Re-add all actors to the container, with the correct Z-index
      */

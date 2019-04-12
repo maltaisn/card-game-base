@@ -14,7 +14,6 @@ class MenuDrawerList(skin: Skin) : VerticalGroup() {
             field = value
 
             // Clear and free previous items
-            val oldIndex = selectedIndex
             selectedIndex = -1
             for (actor in itemActors) {
                 itemActorPool.free(actor)

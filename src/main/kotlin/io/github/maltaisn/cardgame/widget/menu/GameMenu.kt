@@ -94,6 +94,11 @@ open class GameMenu(skin: Skin) : Stack() {
         addActor(drawer)
     }
 
+    override fun clearActions() {
+        super.clearActions()
+        transitionAction = null
+    }
+
     /**
      * Open a [subMenu]. If another submenu is opened or animated on screen, this does nothing.
      * If no back arrow listener was set, a default one that only returns the main menu is set.

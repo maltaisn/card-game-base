@@ -91,6 +91,12 @@ class MainMenu(skin: Skin) : MenuTable(skin) {
         }
     }
 
+    override fun clearActions() {
+        super.clearActions()
+        transitionAction = null
+    }
+
+
     internal inner class TransitionAction :
             TimeAction(0.3f, Interpolation.smooth, reversed = !shown) {
 

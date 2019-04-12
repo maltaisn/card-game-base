@@ -61,7 +61,6 @@ class Popup(skin: Skin) : FboTable() {
 
     init {
         isVisible = false
-        renderToFrameBuffer = false
     }
 
     override fun validate() {
@@ -99,7 +98,7 @@ class Popup(skin: Skin) : FboTable() {
         }
     }
 
-    override fun drawChildren(batch: Batch, parentAlpha: Float) {
+    override fun delegateDraw(batch: Batch, parentAlpha: Float) {
         batch.setColor(color.r, color.g, color.b, alpha * parentAlpha)
 
         // Draw the body
@@ -144,7 +143,12 @@ class Popup(skin: Skin) : FboTable() {
                     0f, 0f, tip.minWidth, tip.minHeight, scale, scale, 0f)
         }
 
-        super.drawChildren(batch, parentAlpha)
+        super.delegateDraw(batch, parentAlpha)
+    }
+
+    override fun clearActions() {
+        super.clearActions()
+        transitionAction = null
     }
 
     /**

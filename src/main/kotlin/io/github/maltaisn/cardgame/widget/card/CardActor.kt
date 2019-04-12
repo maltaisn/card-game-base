@@ -187,6 +187,12 @@ class CardActor(val coreStyle: GameLayer.CoreStyle,
                 scale, scale, 0f)
     }
 
+    override fun clearActions() {
+        super.clearActions()
+        moveAction = null
+        highlightAction = null
+    }
+
     override fun getPrefWidth() = size
 
     override fun getPrefHeight() = size / cardStyle.cardWidth * cardStyle.cardHeight

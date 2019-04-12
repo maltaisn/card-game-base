@@ -198,6 +198,11 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
         super.draw(batch, parentAlpha)
     }
 
+    override fun clearActions() {
+        super.clearActions()
+        transitionAction = null
+    }
+
     private inner class TransitionAction :
             TimeAction(0.4f, Interpolation.smooth, reversed = !shown) {
 

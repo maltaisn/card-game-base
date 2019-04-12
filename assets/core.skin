@@ -48,8 +48,7 @@
   io.github.maltaisn.cardgame.widget.PopupButton$PopupButtonStyle: {
     default: {
       background: btn-popup-background
-      hover: btn-popup-hover
-      press: btn-popup-selection
+      selectionOverlay: btn-popup-hover
       fontStyle: {
         fontSize: 22
         fontColor: textColorBlack

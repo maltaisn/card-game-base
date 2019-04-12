@@ -194,6 +194,12 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
         menuTable.row()
     }
 
+    override fun clearActions() {
+        super.clearActions()
+        transitionAction = null
+    }
+
+
     internal inner class TransitionAction :
             TimeAction(TRANSITION_DURATION, Interpolation.smooth, reversed = !shown) {
 

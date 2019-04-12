@@ -68,6 +68,12 @@ class ScrollView(actor: Actor? = null, style: ScrollPane.ScrollPaneStyle? = null
             if (value != null) addAction(value)
         }
 
+    override fun clearActions() {
+        super.clearActions()
+        if (scrollListenerAction != null) {
+            addAction(scrollListenerAction)
+        }
+    }
 
     fun scrollToTop() = scrollTo(0f, actor?.height ?: 0f, 0f, 0f)
 
