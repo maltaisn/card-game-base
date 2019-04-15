@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Pool
 import io.github.maltaisn.cardgame.widget.CheckableWidget
+import io.github.maltaisn.cardgame.widget.FontStyle
 import io.github.maltaisn.cardgame.widget.SdfLabel
 
 
@@ -24,7 +25,7 @@ class MenuDrawerListItem(skin: Skin) : CheckableWidget(), Pool.Poolable {
         }
 
     private val itemStyle = skin[DrawerListItemStyle::class.java]
-    private val label = SdfLabel(null, skin, itemStyle.fontStyle)
+    private val label = SdfLabel(skin, itemStyle.fontStyle)
 
     private val inputListener = SelectionListener()
 
@@ -66,7 +67,7 @@ class MenuDrawerListItem(skin: Skin) : CheckableWidget(), Pool.Poolable {
 
 
     class DrawerListItemStyle {
-        lateinit var fontStyle: SdfLabel.FontStyle
+        lateinit var fontStyle: FontStyle
         lateinit var selectionOverlay: Drawable
     }
 

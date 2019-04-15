@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
+import io.github.maltaisn.cardgame.widget.FontStyle
 import io.github.maltaisn.cardgame.widget.SdfLabel
 
 
@@ -31,9 +32,8 @@ import io.github.maltaisn.cardgame.widget.SdfLabel
  * The icon is size proportionally to the font size.
  * This widget must always be drawn
  */
-class PrefTitleLabel(text: CharSequence?, skin: Skin,
-                     sdfStyle: SdfLabel.FontStyle,
-                     private val helpIcon: Drawable?) : SdfLabel(text, skin, sdfStyle) {
+class PrefTitleLabel(skin: Skin, sdfStyle: FontStyle, text: CharSequence? = null,
+                     private val helpIcon: Drawable? = null) : SdfLabel(skin, sdfStyle, text) {
 
     /** The listener called when the icon is clicked. */
     var iconClickListener: (() -> Unit)? = null

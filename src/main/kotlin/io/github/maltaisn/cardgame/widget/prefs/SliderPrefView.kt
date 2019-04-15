@@ -19,6 +19,7 @@ package io.github.maltaisn.cardgame.widget.prefs
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Align
 import io.github.maltaisn.cardgame.prefs.SliderPref
+import io.github.maltaisn.cardgame.widget.FontStyle
 import io.github.maltaisn.cardgame.widget.SdfLabel
 import io.github.maltaisn.cardgame.widget.Slider
 import java.text.NumberFormat
@@ -49,7 +50,7 @@ class SliderPrefView(skin: Skin, pref: SliderPref) : GamePrefView<SliderPref>(sk
     init {
         val style = skin[SliderPrefViewStyle::class.java]
 
-        valueLabel = SdfLabel(valueText, skin, style.valueFontStyle)
+        valueLabel = SdfLabel(skin, style.valueFontStyle, valueText)
         valueLabel.setAlignment(Align.right)
 
         slider = Slider(style.sliderStyle).apply {
@@ -77,7 +78,7 @@ class SliderPrefView(skin: Skin, pref: SliderPref) : GamePrefView<SliderPref>(sk
 
 
     class SliderPrefViewStyle {
-        lateinit var valueFontStyle: SdfLabel.FontStyle
+        lateinit var valueFontStyle: FontStyle
         lateinit var sliderStyle: Slider.SliderStyle
     }
 

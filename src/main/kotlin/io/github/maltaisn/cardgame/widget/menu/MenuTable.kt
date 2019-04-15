@@ -18,7 +18,7 @@ package io.github.maltaisn.cardgame.widget.menu
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import io.github.maltaisn.cardgame.widget.FboTable
-import io.github.maltaisn.cardgame.widget.SdfLabel
+import io.github.maltaisn.cardgame.widget.FontStyle
 
 
 abstract class MenuTable(skin: Skin) : FboTable(skin) {
@@ -84,7 +84,7 @@ abstract class MenuTable(skin: Skin) : FboTable(skin) {
 
 
     abstract class MenuTableStyle {
-        lateinit var itemFontStyle: SdfLabel.FontStyle
+        lateinit var itemFontStyle: FontStyle
         var itemIconSize = 0f
     }
 

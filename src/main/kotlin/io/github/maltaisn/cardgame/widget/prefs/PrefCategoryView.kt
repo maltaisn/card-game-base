@@ -56,7 +56,7 @@ class PrefCategoryView(skin: Skin, category: PrefCategory) :
 
     init {
         val style = skin[PrefCategoryViewStyle::class.java]
-        titleLabel = SdfLabel(category.title, skin, style.titleFontStyle).apply {
+        titleLabel = SdfLabel(skin, style.titleFontStyle, category.title).apply {
             setWrap(true)
             setAlignment(Align.left)
         }

@@ -16,48 +16,28 @@
 
 package io.github.maltaisn.cardgame.widget
 
-import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.StringBuilder
-import io.github.maltaisn.cardgame.Resources
 import ktx.actors.alpha
-import ktx.assets.file
-import ktx.math.vec2
-import ktx.style.get
 
 
 /**
  * Wrapper class around [Label] for rendering text with a distance field font.
  */
-open class SdfLabel(text: CharSequence?, private val skin: Skin, fontStyle: FontStyle) :
-        Label(text, createLabelStyle(skin, fontStyle)) {
-
-    /** The font style of the distance field label, replaces [Label.style]. */
-    var fontStyle: FontStyle = fontStyle
-        set(value) {
-            field = value
-            style = createLabelStyle(skin, value)
-        }
+open class SdfLabel(skin: Skin, val fontStyle: FontStyle, text: CharSequence? = null) :
+        Label(text, LabelStyle(SdfShader.getFont(skin, fontStyle.bold), fontStyle.fontColor)) {
 
     /** Whether the label is enabled or not. If disabled, it's drawn with 50% alpha. */
     var enabled = true
 
-    private var _text = StringBuilder()
+    private val _text = StringBuilder()
 
-    private val sdfShader: SdfShader
-
+    private val shader = SdfShader.load(skin)
 
     init {
-        sdfShader = skin[SHADER_NAME]
-
-        // The font size is divided by 32 because that's the glyph size in the texture
-        setFontScale(fontStyle.fontSize / 32f)
+        setFontScale(fontStyle.fontSize / SdfShader.FONT_GLYPH_SIZE)
     }
 
     override fun setText(newText: CharSequence?) {
@@ -77,85 +57,13 @@ open class SdfLabel(text: CharSequence?, private val skin: Skin, fontStyle: Font
     override fun getText(): StringBuilder = if (fontStyle.allCaps) _text else super.getText()
 
     override fun draw(batch: Batch, parentAlpha: Float) {
-        val alphaBefore = alpha
-        if (!enabled) alpha *= 0.5f
-        batch.shader = sdfShader
-
-        sdfShader.drawShadow = fontStyle.drawShadow
-        sdfShader.shadowColor = fontStyle.shadowColor
-        sdfShader.updateUniforms()
-
-        super.draw(batch, parentAlpha)
-
-        alpha = alphaBefore
-        batch.shader = null
-    }
-
-    private class SdfShader : ShaderProgram(
-            file(Resources.FONT_SHADER_VERT),
-            file(Resources.FONT_SHADER_FRAG)) {
-
-        var smoothing = 0.5f
-
-        var drawShadow = false
-        var shadowSmoothing = 0.2f
-        var shadowColor: Color = Color.BLACK
-
-        init {
-            check(isCompiled) { "Distance field font shader compilation failed: $log" }
-        }
-
-        fun updateUniforms() {
-            setUniformf("u_smoothing", 0.5f * smoothing)
-            setUniformf("u_drawShadow", if (drawShadow) 1f else 0f)
-            if (drawShadow) {
-                setUniformf("u_shadowOffset", SHADOW_OFFSET)
-                setUniformf("u_shadowSmoothing", shadowSmoothing)
-                setUniformf("u_shadowColor", shadowColor)
-            }
+        shader.use(batch, fontStyle) {
+            val alphaBefore = alpha
+            if (!enabled) alpha *= 0.5f
+            super.draw(batch, parentAlpha)
+            alpha = alphaBefore
         }
     }
 
-    class FontStyle {
-        var bold = false
-        var allCaps = false
-        var fontSize = 24f
-        var fontColor: Color = Color.WHITE
-        var drawShadow = false
-        var shadowColor: Color = Color.BLACK
-    }
-
-
-    companion object {
-        private const val SHADER_NAME = "sdf-shader"
-        private const val FONT_NAME = "sdf-font"
-        private const val FONT_BOLD_NAME = "sdf-font-bold"
-
-        private val SHADOW_OFFSET = vec2(0.004f, 0.004f)
-
-        /** Load the shader and bitmap font needed for all labels and add them to a [skin]. */
-        fun load(skin: Skin) {
-            if (skin.has(SHADER_NAME, SdfShader::class.java)) return
-
-            skin.add(SHADER_NAME, SdfShader())
-
-            val fontTexture = Texture(file(Resources.FONT_TEXTURE), true)
-            fontTexture.setFilter(Texture.TextureFilter.MipMapLinearNearest, Texture.TextureFilter.Linear)
-            val font = BitmapFont(file(Resources.FONT_FILE), TextureRegion(fontTexture), false)
-            skin.add(FONT_NAME, font)
-
-            val fontBoldTexture = Texture(file(Resources.FONT_BOLD_TEXTURE), true)
-            fontBoldTexture.setFilter(Texture.TextureFilter.MipMapLinearNearest, Texture.TextureFilter.Linear)
-            val fontBold = BitmapFont(file(Resources.FONT_BOLD_FILE), TextureRegion(fontBoldTexture), false)
-            skin.add(FONT_BOLD_NAME, fontBold)
-        }
-
-        private fun createLabelStyle(skin: Skin, fontStyle: FontStyle): LabelStyle {
-            load(skin)
-            val font: BitmapFont = skin[if (fontStyle.bold) FONT_BOLD_NAME else FONT_NAME]
-            return LabelStyle(font, fontStyle.fontColor)
-        }
-
-    }
 
 }

@@ -24,6 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Scaling
 import io.github.maltaisn.cardgame.prefs.ListPref
+import io.github.maltaisn.cardgame.widget.FontStyle
 import io.github.maltaisn.cardgame.widget.SdfLabel
 import ktx.actors.alpha
 import ktx.actors.onClick
@@ -50,7 +51,7 @@ class ListPrefView(skin: Skin, pref: ListPref) : GamePrefView<ListPref>(skin, pr
     init {
         val style = skin[ListPrefViewStyle::class.java]
 
-        valueLabel = SdfLabel(pref.displayValue, skin, style.valueFontStyle)
+        valueLabel = SdfLabel(skin, style.valueFontStyle, pref.displayValue)
         valueLabel.enabled = enabled
 
         arrowIcon = Image(style.arrowIcon, Scaling.fit)
@@ -78,7 +79,7 @@ class ListPrefView(skin: Skin, pref: ListPref) : GamePrefView<ListPref>(skin, pr
 
 
     class ListPrefViewStyle {
-        lateinit var valueFontStyle: SdfLabel.FontStyle
+        lateinit var valueFontStyle: FontStyle
         lateinit var arrowIcon: Drawable
         lateinit var arrowIconColor: Color
     }

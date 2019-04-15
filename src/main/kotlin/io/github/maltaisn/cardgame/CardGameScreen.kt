@@ -27,14 +27,17 @@ import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.glutils.FrameBuffer
+import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.badlogic.gdx.scenes.scene2d.ui.TextField
 import com.badlogic.gdx.utils.I18NBundle
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import io.github.maltaisn.cardgame.prefs.GamePrefsLoader
 import io.github.maltaisn.cardgame.widget.GameLayer
 import io.github.maltaisn.cardgame.widget.PopupGroup
-import io.github.maltaisn.cardgame.widget.SdfLabel
+import io.github.maltaisn.cardgame.widget.SdfShader
 import io.github.maltaisn.cardgame.widget.card.CardAnimationLayer
 import io.github.maltaisn.cardgame.widget.menu.GameMenu
 import ktx.assets.getAsset
@@ -92,7 +95,7 @@ abstract class CardGameScreen(val game: CardGame) :
             coreSkin = assetManager.getAsset(Resources.CORE_SKIN)
             coreSkin.add(Resources.CORE_STRINGS_NAME, assetManager.getAsset<I18NBundle>(Resources.CORE_STRINGS_FILE))
 
-            SdfLabel.load(coreSkin)
+            SdfShader.load(coreSkin)
         }
 
         // Create the layout
@@ -102,6 +105,17 @@ abstract class CardGameScreen(val game: CardGame) :
 
         rootContainer = CardGameContainer(gameLayer, cardAnimationLayer, popupGroup)
         addActor(rootContainer)
+
+        // Listener to unfocus text field when clicked outside
+        root.addCaptureListener(object : InputListener() {
+            override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                if (event.target !is TextField && keyboardFocus is TextField) {
+                    Gdx.input.setOnscreenKeyboardVisible(false)
+                    keyboardFocus = null
+                }
+                return false
+            }
+        })
     }
 
     override fun show() {

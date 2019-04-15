@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import ktx.actors.onKeyDown
+import ktx.actors.onKeyboardFocusEvent
 import ktx.actors.setKeyboardFocus
 import ktx.actors.then
 
@@ -53,6 +54,8 @@ open class GameMenu(skin: Skin) : Stack() {
             if (field == value) return
             field = value
 
+            setKeyboardFocus(value)
+
             if (mainMenuShown) {
                 mainMenu.shown = value
                 if (subMenu != null) {
@@ -83,10 +86,16 @@ open class GameMenu(skin: Skin) : Stack() {
 
 
     init {
-        onKeyDown { keycode ->
-            if (keycode == Input.Keys.BACK || keycode == Input.Keys.ESCAPE) {
-                // Back arrow closes the submenu
+        onKeyDown {
+            if (it == Input.Keys.BACK || it == Input.Keys.ESCAPE) {
                 closeSubMenu()
+            }
+        }
+        onKeyboardFocusEvent { event, _ ->
+            if (shown && !event.isFocused && event.relatedActor == null) {
+                // When the keyboard focus is set to null and menu is shown, set it to the menu
+                event.cancel()
+                setKeyboardFocus(true)
             }
         }
 
@@ -108,8 +117,6 @@ open class GameMenu(skin: Skin) : Stack() {
             // A submenu is still on screen.
             return
         }
-
-        setKeyboardFocus(true)  // Needed to catch back key press
 
         this.subMenu = subMenu
         this.addActorAt(1, subMenu)
@@ -136,8 +143,6 @@ open class GameMenu(skin: Skin) : Stack() {
     fun closeSubMenu() {
         if (subMenu?.shown != true) return
         val menu = subMenu!!
-
-        setKeyboardFocus(false)
 
         if (menu.backArrowClickListener === defaultBackListener) {
             menu.backArrowClickListener = null

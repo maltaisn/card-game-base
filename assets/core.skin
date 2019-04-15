@@ -8,7 +8,7 @@
     textColorDarkGray: { hex: #3b3b3bff }
     textColorWhite: { hex: #e3e3e3ff }
   }
-  io.github.maltaisn.cardgame.widget.SdfLabel$FontStyle: {
+  io.github.maltaisn.cardgame.widget.FontStyle: {
     normal: {
       fontSize: 22
       fontColor: textColorBlack
@@ -76,6 +76,14 @@
       thumb: slider-thumb
       thumbHoverOverlay: slider-thumb-hover
       scale: 0.75
+    }
+  }
+  TextFieldStyle: {
+    default: {
+      background: text-field-background
+      focusedBackground: text-field-background-focused
+      cursor: text-field-cursor
+      selection: text-field-selection
     }
   }
   io.github.maltaisn.cardgame.widget.menu.MenuButton$MenuButtonStyle: {
@@ -186,6 +194,12 @@
       }
       arrowIcon: icon-chevron-right
       arrowIconColor: textColorGray
+    }
+  }
+  io.github.maltaisn.cardgame.widget.prefs.TextPrefView$TextPrefViewStyle: {
+    default: {
+      fieldStyle: default
+      fieldFontStyle: normal
     }
   }
   io.github.maltaisn.cardgame.widget.menu.MenuDrawerListItem$DrawerListItemStyle: {

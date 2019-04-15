@@ -27,6 +27,7 @@ import io.github.maltaisn.cardgame.prefs.GamePref
 import io.github.maltaisn.cardgame.prefs.GamePrefs
 import io.github.maltaisn.cardgame.prefs.ListPref
 import io.github.maltaisn.cardgame.prefs.PrefCategory
+import io.github.maltaisn.cardgame.widget.FontStyle
 import io.github.maltaisn.cardgame.widget.ScrollView
 import io.github.maltaisn.cardgame.widget.SdfLabel
 import io.github.maltaisn.cardgame.widget.prefs.PrefsGroup
@@ -95,7 +96,7 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
     private var settingsView: PrefsGroup? = null
 
     // Preference help drawer
-    private val prefsHelpLabel = SdfLabel(null, skin, style.prefsHelpFontStyle)
+    private val prefsHelpLabel = SdfLabel(skin, style.prefsHelpFontStyle)
     private val prefsHelpListener: (GamePref) -> Unit = { pref ->
         // When a help icon is clicked, show drawer with help text
         drawer.apply {
@@ -346,7 +347,7 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
     }
 
     class DefaultGameMenuStyle {
-        lateinit var prefsHelpFontStyle: SdfLabel.FontStyle
+        lateinit var prefsHelpFontStyle: FontStyle
 
         lateinit var newGameIcon: Drawable
         lateinit var continueIcon: Drawable

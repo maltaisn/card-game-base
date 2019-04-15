@@ -21,10 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Align
-import io.github.maltaisn.cardgame.widget.ScrollView
-import io.github.maltaisn.cardgame.widget.SdfLabel
-import io.github.maltaisn.cardgame.widget.TimeAction
-import io.github.maltaisn.cardgame.widget.applyBounded
+import io.github.maltaisn.cardgame.widget.*
 import ktx.actors.alpha
 import ktx.actors.onClick
 import ktx.actors.setScrollFocus
@@ -106,7 +103,7 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
         }
 
     private val headerTable = Table()
-    private val titleLabel = SdfLabel(null, skin, style.titleStyle)
+    private val titleLabel = SdfLabel(skin, style.titleStyle)
     private val menuTable = Table()
 
     init {
@@ -241,7 +238,7 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
     }
 
     class SubMenuStyle : MenuTableStyle() {
-        lateinit var titleStyle: SdfLabel.FontStyle
+        lateinit var titleStyle: FontStyle
         lateinit var backArrowIcon: Drawable
         lateinit var contentBackground: Drawable
     }

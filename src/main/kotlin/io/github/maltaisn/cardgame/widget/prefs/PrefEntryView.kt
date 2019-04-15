@@ -19,7 +19,7 @@ package io.github.maltaisn.cardgame.widget.prefs
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import io.github.maltaisn.cardgame.prefs.PrefEntry
-import io.github.maltaisn.cardgame.widget.SdfLabel
+import io.github.maltaisn.cardgame.widget.FontStyle
 
 
 /**
@@ -50,7 +50,7 @@ abstract class PrefEntryView<T : PrefEntry>(skin: Skin, val pref: T) :
 
 
     abstract class PrefEntryViewStyle {
-        lateinit var titleFontStyle: SdfLabel.FontStyle
+        lateinit var titleFontStyle: FontStyle
     }
 
 }

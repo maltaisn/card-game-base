@@ -25,6 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
 import com.badlogic.gdx.utils.Scaling
 import io.github.maltaisn.cardgame.defaultSize
 import io.github.maltaisn.cardgame.widget.CheckableWidget
+import io.github.maltaisn.cardgame.widget.FontStyle
 import io.github.maltaisn.cardgame.widget.SdfLabel
 import io.github.maltaisn.cardgame.widget.ShadowImage
 import ktx.actors.alpha
@@ -35,7 +36,7 @@ import ktx.actors.alpha
  */
 class MenuButton(skin: Skin,
                  val style: MenuButtonStyle,
-                 val fontStyle: SdfLabel.FontStyle,
+                 val fontStyle: FontStyle,
                  title: CharSequence? = null, icon: Drawable? = null) : CheckableWidget() {
 
     /** The button title, or `null` for none. */
@@ -132,14 +133,14 @@ class MenuButton(skin: Skin,
             Side.RIGHT -> style.backgroundRight
         }
 
-    constructor(skin: Skin, fontStyle: SdfLabel.FontStyle,
+    constructor(skin: Skin, fontStyle: FontStyle,
                 text: CharSequence? = null, icon: Drawable? = null) :
             this(skin, skin[MenuButtonStyle::class.java], fontStyle, text, icon)
 
     init {
         addListener(SelectionListener())
 
-        titleLabel = SdfLabel(null, skin, fontStyle).apply {
+        titleLabel = SdfLabel(skin, fontStyle).apply {
             isVisible = false
             touchable = Touchable.disabled
         }

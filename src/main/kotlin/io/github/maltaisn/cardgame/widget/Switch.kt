@@ -26,6 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
 import io.github.maltaisn.cardgame.withinBounds
+import ktx.actors.setKeyboardFocus
 import kotlin.math.absoluteValue
 
 
@@ -50,6 +51,8 @@ class Switch(val style: SwitchStyle) : CheckableWidget() {
                 if (enabled && button == Input.Buttons.LEFT) {
                     pressed = true
                     addPressAction()
+
+                    setKeyboardFocus()
 
                     pressPosX = x
                     checkAlphaOnPress = checkAlpha

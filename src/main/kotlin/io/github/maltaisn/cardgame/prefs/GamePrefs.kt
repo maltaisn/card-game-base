@@ -193,7 +193,8 @@ class GamePrefs {
                 "category" to PrefCategory::class.java,
                 "switch" to SwitchPref::class.java,
                 "slider" to SliderPref::class.java,
-                "list" to ListPref::class.java)
+                "list" to ListPref::class.java,
+                "text" to TextPref::class.java)
     }
 
 }

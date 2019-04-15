@@ -31,7 +31,7 @@ import kotlin.math.max
  * but there are no checked or focused states. Button can be disabled to act like a label.
  * A popup button has a label by default but it can be replaced or more actors can be added.
  */
-class PopupButton(skin: Skin, text: CharSequence? = null) : SelectableWidget() {
+class PopupButton(skin: Skin, text: String? = null) : SelectableWidget() {
 
     val style: PopupButtonStyle = skin[PopupButtonStyle::class.java]
 
@@ -51,7 +51,7 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : SelectableWidget() {
         pad(background.topHeight, background.leftWidth, background.bottomHeight, background.rightWidth)
 
         // Add the button label
-        label = SdfLabel(text, skin, style.fontStyle)
+        label = SdfLabel(skin, style.fontStyle, text)
         label.touchable = Touchable.disabled
         add(label).expand().pad(0f, 15f, 0f, 15f)
 
@@ -85,7 +85,7 @@ class PopupButton(skin: Skin, text: CharSequence? = null) : SelectableWidget() {
     class PopupButtonStyle {
         lateinit var background: Drawable
         lateinit var selectionOverlay: Drawable
-        lateinit var fontStyle: SdfLabel.FontStyle
+        lateinit var fontStyle: FontStyle
         var backgroundScale = 0f
     }
 

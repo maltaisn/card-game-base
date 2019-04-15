@@ -29,6 +29,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Scaling
 import io.github.maltaisn.cardgame.defaultSize
+import io.github.maltaisn.cardgame.widget.FontStyle
 import io.github.maltaisn.cardgame.widget.ScrollView
 import io.github.maltaisn.cardgame.widget.SdfLabel
 import io.github.maltaisn.cardgame.widget.TimeAction
@@ -106,8 +107,8 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
     private val style = skin[MenuDrawerStyle::class.java]
 
     private val drawerTable = Table()
-    private val titleLabel = SdfLabel(null, skin, style.titleFontStyle)
-    private val backBtnLabel = SdfLabel(null, skin, style.backBtnFontStyle)
+    private val titleLabel = SdfLabel(skin, style.titleFontStyle)
+    private val backBtnLabel = SdfLabel(skin, style.backBtnFontStyle)
 
     private var scrollFocusBefore: Actor? = null
 
@@ -229,10 +230,10 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
     class MenuDrawerStyle {
         lateinit var background: Drawable
         lateinit var drawerBackground: Drawable
-        lateinit var backBtnFontStyle: SdfLabel.FontStyle
+        lateinit var backBtnFontStyle: FontStyle
         lateinit var backBtnIcon: Drawable
         lateinit var backBtnIconColor: Color
-        lateinit var titleFontStyle: SdfLabel.FontStyle
+        lateinit var titleFontStyle: FontStyle
         lateinit var headerSeparator: Drawable
     }
 

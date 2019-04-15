@@ -46,7 +46,7 @@ abstract class GamePrefView<T : GamePref>(skin: Skin, pref: T) : PrefEntryView<T
 
     init {
         val style = skin[GamePrefViewStyle::class.java]
-        titleLabel = PrefTitleLabel(pref.title, skin, style.titleFontStyle,
+        titleLabel = PrefTitleLabel(skin, style.titleFontStyle, pref.title,
                 if (pref.help == null) null else style.helpIcon).apply {
             setWrap(true)
             setAlignment(Align.left)
