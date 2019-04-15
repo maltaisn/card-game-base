@@ -160,7 +160,9 @@ class Slider(val style: SliderStyle) : SelectableWidget() {
 
             override fun touchDragged(event: InputEvent, x: Float, y: Float, pointer: Int) {
                 if (enabled) {
-                    updateHoveredState(x, y)
+                    if (pointer == -1) {
+                        updateHoveredState(x, y)
+                    }
 
                     if (pressed) {
                         progress = computeProgressForX(x)
@@ -174,7 +176,9 @@ class Slider(val style: SliderStyle) : SelectableWidget() {
             }
 
             override fun exit(event: InputEvent, x: Float, y: Float, pointer: Int, toActor: Actor?) {
-                updateHoveredState(x, y)
+                if (pointer == -1) {
+                    updateHoveredState(x, y)
+                }
             }
 
             /** Returns the progress for mouse position at [x]. */
