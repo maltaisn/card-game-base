@@ -30,7 +30,7 @@ import ktx.actors.setKeyboardFocus
 
 /**
  * Wrapper class around [Label] for rendering text with a distance field font.
- * Doesn't support [FontStyle.allCaps].
+ * Doesn't support [FontStyle.allCaps] and [messageText].
  */
 class SdfTextField(skin: Skin,
                    fieldStyle: TextFieldStyle,

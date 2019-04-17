@@ -50,8 +50,8 @@ class TextPrefView(skin: Skin, pref: TextPref) : GamePrefView<TextPref>(skin, pr
         }
 
         pad(5f, 10f, 5f, 20f)
-        add(titleLabel).growX().pad(5f, 0f, 5f, 0f).row()
-        add(textField).growX().pad(10f, 0f, 5f, 0f)
+        add(titleLabel).growX().pad(5f, 0f, 10f, 0f).row()
+        add(textField).growX().pad(5f, 0f, 5f, 0f)
 
         this.enabled = enabled
     }

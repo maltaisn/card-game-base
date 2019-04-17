@@ -194,7 +194,8 @@ class GamePrefs {
                 "switch" to SwitchPref::class.java,
                 "slider" to SliderPref::class.java,
                 "list" to ListPref::class.java,
-                "text" to TextPref::class.java)
+                "text" to TextPref::class.java,
+                "player-names" to PlayerNamesPref::class.java)
     }
 
 }
