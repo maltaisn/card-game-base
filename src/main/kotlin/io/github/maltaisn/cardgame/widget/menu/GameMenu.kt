@@ -42,19 +42,20 @@ open class GameMenu(skin: Skin) : Stack() {
     val drawer = MenuDrawer(skin)
 
     /** The currently shown submenu, `null` if main menu is shown. */
-    private var subMenu: SubMenu? = null
+    var subMenu: SubMenu? = null
+        private set
 
     /**
      * Changing this value animates a visibility change by sliding the menu parts in and out of the screen.
      * If changed during an outgoing transition, the previous one will be inverted.
-     * The main menu is always shown when showing the game menu. If a submenu was opened before it gets closed.
+     * The main menu is always shown when showing the game menu. If a submenu was opened before, it gets closed.
      */
     var shown = false
         set(value) {
+            setKeyboardFocus(value)
+
             if (field == value) return
             field = value
-
-            setKeyboardFocus(value)
 
             if (mainMenuShown) {
                 mainMenu.shown = value
@@ -73,7 +74,9 @@ open class GameMenu(skin: Skin) : Stack() {
      * During transitions, this is true until the main menu is completely closed,
      * and false until the submenu is completely closed.
      */
-    private var mainMenuShown = true
+    var mainMenuShown = true
+        private set
+
 
     private var transitionAction: Action? = null
         set(value) {

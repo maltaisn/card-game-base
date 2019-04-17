@@ -18,6 +18,7 @@ package io.github.maltaisn.cardgame
 
 import com.badlogic.gdx.Application
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.SkinLoader
@@ -67,6 +68,7 @@ abstract class CardGameScreen(val game: CardGame) :
             if (value != null) {
                 field = value
                 rootContainer.addActor(value)
+                value.shown = true
             }
         }
 
@@ -133,6 +135,7 @@ abstract class CardGameScreen(val game: CardGame) :
         // Clear with black
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+
         draw()
     }
 
@@ -153,6 +156,15 @@ abstract class CardGameScreen(val game: CardGame) :
         super.dispose()
         assetManager.dispose()
         offscreenFbo.dispose()
+    }
+
+    override fun keyDown(keyCode: Int): Boolean {
+        if (keyCode == Input.Keys.BACK && gameMenu?.shown == true && gameMenu?.mainMenuShown == true) {
+            // Close app on back key press if main menu is shown
+            Gdx.app.exit()
+        }
+
+        return super.keyDown(keyCode)
     }
 
     /**
