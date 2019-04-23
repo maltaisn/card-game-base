@@ -8,13 +8,13 @@
     textColorDarkGray: { hex: #3b3b3bff }
     textColorWhite: { hex: #e3e3e3ff }
   }
-  io.github.maltaisn.cardgame.widget.FontStyle: {
+  com.maltaisn.cardgame.widget.FontStyle: {
     normal: {
       fontSize: 22
       fontColor: textColorBlack
     }
   }
-  io.github.maltaisn.cardgame.widget.GameLayer$CoreStyle: {
+  com.maltaisn.cardgame.widget.GameLayer$CoreStyle: {
     default: {
       background: background
       border: background-border
@@ -25,7 +25,7 @@
       cardSlot: card-slot
     }
   }
-  io.github.maltaisn.cardgame.widget.Popup$PopupStyle: {
+  com.maltaisn.cardgame.widget.Popup$PopupStyle: {
     default: {
       body: popup
       bodyOffsetX: 0
@@ -45,7 +45,7 @@
       backgroundScale: 0.75
     }
   }
-  io.github.maltaisn.cardgame.widget.PopupButton$PopupButtonStyle: {
+  com.maltaisn.cardgame.widget.PopupButton$PopupButtonStyle: {
     default: {
       background: btn-popup-background
       selectionOverlay: btn-popup-hover
@@ -58,7 +58,7 @@
       backgroundScale: 0.75
     }
   }
-  io.github.maltaisn.cardgame.widget.Switch$SwitchStyle: {
+  com.maltaisn.cardgame.widget.Switch$SwitchStyle: {
     default: {
       background: switch-background
       checkOverlay: switch-checked
@@ -68,7 +68,7 @@
       scale: 0.75
     }
   }
-  io.github.maltaisn.cardgame.widget.Slider$SliderStyle: {
+  com.maltaisn.cardgame.widget.Slider$SliderStyle: {
     default: {
       trackEmpty: slider-track-empty
       trackFilled: slider-track-filled
@@ -86,7 +86,7 @@
       selection: text-field-selection
     }
   }
-  io.github.maltaisn.cardgame.widget.menu.MenuButton$MenuButtonStyle: {
+  com.maltaisn.cardgame.widget.menu.MenuButton$MenuButtonStyle: {
     default: {
       backgroundCenter: btn-menu-center
       backgroundTop: btn-menu-top
@@ -99,7 +99,7 @@
       iconTitleMargin: 15
     }
   }
-  io.github.maltaisn.cardgame.widget.menu.MainMenu$MainMenuStyle: {
+  com.maltaisn.cardgame.widget.menu.MainMenu$MainMenuStyle: {
     default: {
       itemFontStyle: {
         bold: true
@@ -112,7 +112,7 @@
       itemIconSize: 48
     }
   }
-  io.github.maltaisn.cardgame.widget.menu.SubMenu$SubMenuStyle: {
+  com.maltaisn.cardgame.widget.menu.SubMenu$SubMenuStyle: {
     default: {
       titleStyle: {
         fontSize: 48
@@ -133,7 +133,7 @@
       contentBackground: submenu-content-background
     }
   }
-  io.github.maltaisn.cardgame.widget.menu.MenuDrawer$MenuDrawerStyle: {
+  com.maltaisn.cardgame.widget.menu.MenuDrawer$MenuDrawerStyle: {
     default: {
       background: menu-drawer-background
       drawerBackground: menu-drawer
@@ -151,18 +151,18 @@
       headerSeparator: separator
     }
   }
-  io.github.maltaisn.cardgame.widget.prefs.GamePrefView$GamePrefViewStyle: {
+  com.maltaisn.cardgame.widget.prefs.GamePrefView$GamePrefViewStyle: {
     default: {
       titleFontStyle: normal
       helpIcon: pref-help
     }
   }
-  io.github.maltaisn.cardgame.widget.prefs.PrefsGroup$PrefsGroupStyle: {
+  com.maltaisn.cardgame.widget.prefs.PrefsGroup$PrefsGroupStyle: {
     default: {
       separator: separator
     }
   }
-  io.github.maltaisn.cardgame.widget.prefs.PrefCategoryView$PrefCategoryViewStyle: {
+  com.maltaisn.cardgame.widget.prefs.PrefCategoryView$PrefCategoryViewStyle: {
     default: {
       titleFontStyle: {
         fontSize: 32
@@ -172,12 +172,12 @@
       separator: separator
     }
   }
-  io.github.maltaisn.cardgame.widget.prefs.SwitchPrefView$SwitchPrefViewStyle: {
+  com.maltaisn.cardgame.widget.prefs.SwitchPrefView$SwitchPrefViewStyle: {
     default: {
       switchStyle: default
     }
   }
-  io.github.maltaisn.cardgame.widget.prefs.SliderPrefView$SliderPrefViewStyle: {
+  com.maltaisn.cardgame.widget.prefs.SliderPrefView$SliderPrefViewStyle: {
     default: {
       valueFontStyle: {
         fontSize: 24
@@ -186,7 +186,7 @@
       sliderStyle: default
     }
   }
-  io.github.maltaisn.cardgame.widget.prefs.ListPrefView$ListPrefViewStyle: {
+  com.maltaisn.cardgame.widget.prefs.ListPrefView$ListPrefViewStyle: {
     default: {
       valueFontStyle: {
         fontSize: 24
@@ -196,19 +196,19 @@
       arrowIconColor: textColorGray
     }
   }
-  io.github.maltaisn.cardgame.widget.prefs.TextPrefView$TextPrefViewStyle: {
+  com.maltaisn.cardgame.widget.prefs.TextPrefView$TextPrefViewStyle: {
     default: {
       fieldStyle: default
       fieldFontStyle: normal
     }
   }
-  io.github.maltaisn.cardgame.widget.prefs.PlayerNamesPrefView$PlayerNamesPrefViewStyle: {
+  com.maltaisn.cardgame.widget.prefs.PlayerNamesPrefView$PlayerNamesPrefViewStyle: {
     default: {
       fieldStyle: default
       fieldFontStyle: normal
     }
   }
-  io.github.maltaisn.cardgame.widget.markdown.MdHeaderView$MdHeaderViewStyle: {
+  com.maltaisn.cardgame.widget.markdown.MdHeaderView$MdHeaderViewStyle: {
     default: {
       fontStyles: [
         {
@@ -225,29 +225,29 @@
       separator: separator
     }
   }
-  io.github.maltaisn.cardgame.widget.markdown.MdListView$MdListViewStyle: {
+  com.maltaisn.cardgame.widget.markdown.MdListView$MdListViewStyle: {
     default: {
       numberFontStyle: normal
       bulletDrawables: [md-bullet-1, md-bullet-2, md-bullet-3]
     }
   }
-  io.github.maltaisn.cardgame.widget.markdown.MdTextView$MdTextViewStyle: {
+  com.maltaisn.cardgame.widget.markdown.MdTextView$MdTextViewStyle: {
     default: {
       fontStyle: normal
     }
   }
-  io.github.maltaisn.cardgame.widget.markdown.MdHLineView$MdHLineViewStyle: {
+  com.maltaisn.cardgame.widget.markdown.MdHLineView$MdHLineViewStyle: {
     default: {
       separator: separator
     }
   }
-  io.github.maltaisn.cardgame.widget.menu.MenuDrawerListItem$DrawerListItemStyle: {
+  com.maltaisn.cardgame.widget.menu.MenuDrawerListItem$DrawerListItemStyle: {
     default: {
       fontStyle: normal
       selectionOverlay: menu-drawer-item-selection
     }
   }
-  io.github.maltaisn.cardgame.widget.menu.DefaultGameMenu$DefaultGameMenuStyle: {
+  com.maltaisn.cardgame.widget.menu.DefaultGameMenu$DefaultGameMenuStyle: {
     default: {
       prefsHelpFontStyle: normal
       newGameIcon: icon-cards
