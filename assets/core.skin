@@ -148,7 +148,7 @@
         fontColor: textColorBlack
         bold: true
       }
-      headerSeparator: pref-separator
+      headerSeparator: separator
     }
   }
   io.github.maltaisn.cardgame.widget.prefs.GamePrefView$GamePrefViewStyle: {
@@ -159,7 +159,7 @@
   }
   io.github.maltaisn.cardgame.widget.prefs.PrefsGroup$PrefsGroupStyle: {
     default: {
-      separator: pref-separator
+      separator: separator
     }
   }
   io.github.maltaisn.cardgame.widget.prefs.PrefCategoryView$PrefCategoryViewStyle: {
@@ -169,7 +169,7 @@
         fontColor: textColorBlack
         bold: true
       }
-      separator: pref-separator
+      separator: separator
     }
   }
   io.github.maltaisn.cardgame.widget.prefs.SwitchPrefView$SwitchPrefViewStyle: {
@@ -206,6 +206,39 @@
     default: {
       fieldStyle: default
       fieldFontStyle: normal
+    }
+  }
+  io.github.maltaisn.cardgame.widget.markdown.MdHeaderView$MdHeaderViewStyle: {
+    default: {
+      fontStyles: [
+        {
+          fontSize: 32
+          fontColor: textColorBlack
+          bold: true
+        },
+        {
+          fontSize: 24
+          fontColor: textColorBlack
+          bold: true
+        }
+      ]
+      separator: separator
+    }
+  }
+  io.github.maltaisn.cardgame.widget.markdown.MdListView$MdListViewStyle: {
+    default: {
+      numberFontStyle: normal
+      bulletDrawables: [md-bullet-1, md-bullet-2, md-bullet-3]
+    }
+  }
+  io.github.maltaisn.cardgame.widget.markdown.MdTextView$MdTextViewStyle: {
+    default: {
+      fontStyle: normal
+    }
+  }
+  io.github.maltaisn.cardgame.widget.markdown.MdHLineView$MdHLineViewStyle: {
+    default: {
+      separator: separator
     }
   }
   io.github.maltaisn.cardgame.widget.menu.MenuDrawerListItem$DrawerListItemStyle: {

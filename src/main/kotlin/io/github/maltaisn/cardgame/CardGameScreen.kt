@@ -35,6 +35,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.TextField
 import com.badlogic.gdx.utils.I18NBundle
 import com.badlogic.gdx.utils.viewport.ExtendViewport
+import io.github.maltaisn.cardgame.markdown.MdLoader
 import io.github.maltaisn.cardgame.prefs.GamePrefsLoader
 import io.github.maltaisn.cardgame.widget.GameLayer
 import io.github.maltaisn.cardgame.widget.PopupGroup
@@ -87,7 +88,9 @@ abstract class CardGameScreen(val game: CardGame) :
         actionsRequestRendering = true
 
         assetManager.apply {
-            setLoader(GamePrefsLoader(InternalFileHandleResolver()))
+            val fileResolver = InternalFileHandleResolver()
+            setLoader(GamePrefsLoader(fileResolver))
+            setLoader(MdLoader(fileResolver))
 
             load<TextureAtlas>(Resources.CORE_SKIN_ATLAS)
             load<Skin>(Resources.CORE_SKIN, SkinLoader.SkinParameter(Resources.CORE_SKIN_ATLAS))

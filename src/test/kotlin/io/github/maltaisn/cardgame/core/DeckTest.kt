@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package io.github.maltaisn.cardgame
+package io.github.maltaisn.cardgame.core
 
-import io.github.maltaisn.cardgame.core.PCard
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals

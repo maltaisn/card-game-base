@@ -21,7 +21,7 @@ background-border
   index: -1
 btn-menu-bottom
   rotate: false
-  xy: 968, 765
+  xy: 968, 718
   size: 19, 19
   split: 9, 9, 9, 9
   pad: 1, 1, 1, 1
@@ -30,7 +30,7 @@ btn-menu-bottom
   index: -1
 btn-menu-center
   rotate: false
-  xy: 536, 405
+  xy: 560, 405
   size: 19, 19
   split: 9, 9, 9, 9
   pad: 1, 1, 1, 1
@@ -39,7 +39,7 @@ btn-menu-center
   index: -1
 btn-menu-left
   rotate: false
-  xy: 968, 742
+  xy: 968, 741
   size: 19, 19
   split: 9, 9, 9, 9
   pad: 1, 1, 1, 1
@@ -48,7 +48,7 @@ btn-menu-left
   index: -1
 btn-menu-right
   rotate: false
-  xy: 968, 719
+  xy: 968, 695
   size: 19, 19
   split: 9, 9, 9, 9
   pad: 1, 1, 1, 1
@@ -57,7 +57,7 @@ btn-menu-right
   index: -1
 btn-menu-top
   rotate: false
-  xy: 559, 405
+  xy: 583, 405
   size: 19, 19
   split: 9, 9, 9, 9
   pad: 1, 1, 1, 1
@@ -102,7 +102,7 @@ card-hover
   index: -1
 card-selection
   rotate: false
-  xy: 582, 406
+  xy: 968, 673
   size: 18, 18
   split: 8, 8, 8, 8
   pad: 0, 0, 0, 0
@@ -174,6 +174,27 @@ icon-settings
   orig: 72, 72
   offset: 0, 0
   index: -1
+md-bullet-1
+  rotate: false
+  xy: 536, 404
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+md-bullet-2
+  rotate: false
+  xy: 968, 764
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+md-bullet-3
+  rotate: false
+  xy: 606, 406
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
 menu-drawer
   rotate: false
   xy: 88, 322
@@ -184,25 +205,9 @@ menu-drawer
   index: -1
 menu-drawer-background
   rotate: false
-  xy: 80, 306
-  size: 2, 2
-  split: 0, 0, 0, 0
-  orig: 2, 2
-  offset: 0, 0
-  index: -1
-menu-drawer-item-selection
-  rotate: false
   xy: 69, 154
   size: 2, 2
   split: 0, 0, 0, 0
-  orig: 2, 2
-  offset: 0, 0
-  index: -1
-text-field-cursor
-  rotate: false
-  xy: 69, 154
-  size: 2, 2
-  split: 0, 2, 0, 0
   orig: 2, 2
   offset: 0, 0
   index: -1
@@ -250,7 +255,7 @@ pref-help
   orig: 64, 64
   offset: 0, 0
   index: -1
-pref-separator
+separator
   rotate: false
   xy: 4, 4
   size: 4, 3
@@ -274,7 +279,7 @@ slider-thumb-hover
   index: -1
 slider-track-empty
   rotate: false
-  xy: 968, 699
+  xy: 968, 653
   size: 16, 16
   split: 7, 7, 0, 16
   orig: 16, 16
@@ -282,7 +287,7 @@ slider-track-empty
   index: -1
 slider-track-filled
   rotate: false
-  xy: 604, 408
+  xy: 968, 633
   size: 16, 16
   split: 7, 7, 0, 16
   orig: 16, 16
@@ -290,7 +295,7 @@ slider-track-filled
   index: -1
 slider-track-filled-disabled
   rotate: false
-  xy: 968, 679
+  xy: 968, 613
   size: 16, 16
   split: 7, 7, 0, 16
   orig: 16, 16
@@ -342,7 +347,7 @@ switch-thumb-hover
   index: -1
 text-field-background
   rotate: false
-  xy: 917, 420
+  xy: 386, 368
   size: 56, 56
   split: 27, 27, 27, 27
   pad: 27, 27, 3, 3
@@ -351,11 +356,27 @@ text-field-background
   index: -1
 text-field-background-focused
   rotate: false
-  xy: 386, 368
+  xy: 917, 420
   size: 56, 56
   split: 27, 27, 27, 27
   pad: 27, 27, 3, 3
   orig: 56, 56
+  offset: 0, 0
+  index: -1
+text-field-cursor
+  rotate: false
+  xy: 80, 306
+  size: 2, 2
+  split: 0, 2, 0, 0
+  orig: 2, 2
+  offset: 0, 0
+  index: -1
+menu-drawer-item-selection
+  rotate: false
+  xy: 80, 306
+  size: 2, 2
+  split: 0, 0, 0, 0
+  orig: 2, 2
   offset: 0, 0
   index: -1
 text-field-selection

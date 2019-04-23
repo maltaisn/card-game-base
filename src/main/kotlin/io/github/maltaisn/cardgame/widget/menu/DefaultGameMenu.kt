@@ -17,12 +17,15 @@
 package io.github.maltaisn.cardgame.widget.menu
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.Value
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.I18NBundle
 import com.gmail.blueboxware.libgdxplugin.annotations.GDXAssets
 import io.github.maltaisn.cardgame.Resources
+import io.github.maltaisn.cardgame.markdown.Markdown
+import io.github.maltaisn.cardgame.markdown.MdElement
 import io.github.maltaisn.cardgame.prefs.GamePref
 import io.github.maltaisn.cardgame.prefs.GamePrefs
 import io.github.maltaisn.cardgame.prefs.ListPref
@@ -58,12 +61,12 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
             field = value
             settingsView?.detachListeners()
             settingsMenu.items.clear()
-            if (value != null) {
-                settingsView = createPreferenceView(settingsMenu, value)
+            settingsView = if (value != null) {
+                createPreferenceView(settingsMenu, value)
             } else {
-                settingsView = null
-                settingsMenu.content.actor = null
+                null
             }
+            settingsMenu.content.actor = settingsView
             settingsMenu.invalidateLayout()
         }
 
@@ -73,13 +76,27 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
             field = value
             newGameView?.detachListeners()
             newGameMenu.items.subList(0, newGameMenu.items.size - 1).clear()
-            if (value != null) {
-                newGameView = createPreferenceView(newGameMenu, value)
+            newGameView = if (value != null) {
+                createPreferenceView(newGameMenu, value)
             } else {
-                newGameView = null
-                newGameMenu.content.actor = null
+                null
             }
+            newGameMenu.content.actor = newGameView
             newGameMenu.invalidateLayout()
+        }
+
+    /** The game rules in markdown. */
+    var rules: Markdown? = null
+        set(value) {
+            field = value
+            rulesMenu.items.clear()
+            rulesView = if (value != null) {
+                createMarkdownView(rulesMenu, value)
+            } else {
+                null
+            }
+            rulesMenu.content.actor = rulesView
+            rulesMenu.invalidateLayout()
         }
 
     private val style = skin[DefaultGameMenuStyle::class.java]
@@ -91,9 +108,10 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
     private val statsMenu = SubMenu(skin)
     private val aboutMenu = SubMenu(skin)
 
-    // The setting views
+    // Submenu views
     private var newGameView: PrefsGroup? = null
     private var settingsView: PrefsGroup? = null
+    private var rulesView: Table? = null
 
     // Preference help drawer
     private val prefsHelpLabel = SdfLabel(skin, style.prefsHelpFontStyle)
@@ -219,9 +237,8 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
         // Rules menu
         rulesMenu.apply {
             title = rulesStr
-            items += MenuItem(0, "Dealing", skin.getDrawable(MenuIcons.CARDS))
-            items += MenuItem(1, "Scoring", skin.getDrawable(MenuIcons.BOOK))
-            items += MenuItem(2, "Contracts", skin.getDrawable(MenuIcons.LIST))
+            itemClickListener = SectionClickListener(rulesMenu)
+            contentPane.scrollListener = SectionScrollListener(rulesMenu)
             invalidateLayout()
         }
 
@@ -248,13 +265,30 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
         val view = PrefsGroup(skin, prefs)
         view.helpListener = prefsHelpListener
         view.listClickListener = prefsListListener
-        menu.content.actor = view
 
         // Add menu items for each preference category
         var id = 0
         for (entry in prefs.prefs.values) {
             if (entry is PrefCategory) {
                 menu.items += MenuItem(id, entry.title,
+                        skin.getDrawable(entry.icon ?: MenuIcons.CARDS))
+                id++
+            }
+        }
+
+        return view
+    }
+
+    private fun createMarkdownView(menu: SubMenu, markdown: Markdown): Table {
+        // Create preference group view and set listeners
+        val view = markdown.createView(skin)
+        menu.content.actor = view
+
+        // Add menu items for each markdown header
+        var id = 0
+        for (entry in markdown.elements) {
+            if (entry is MdElement.Header && entry.text != null) {
+                menu.items += MenuItem(id, entry.text!!,
                         skin.getDrawable(entry.icon ?: MenuIcons.CARDS))
                 id++
             }

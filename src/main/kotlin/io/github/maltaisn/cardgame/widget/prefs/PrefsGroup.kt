@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
+import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Scaling
 import io.github.maltaisn.cardgame.prefs.GamePref
 import io.github.maltaisn.cardgame.prefs.GamePrefs
@@ -54,6 +55,7 @@ class PrefsGroup(skin: Skin, val prefs: GamePrefs) : Table() {
     init {
         val style = skin[PrefsGroupStyle::class.java]
         pad(10f, 0f, 20f, 0f)
+        align(Align.top)
 
         val prefsList = prefs.prefs.values.toList()
         for ((i, pref) in prefsList.withIndex()) {
