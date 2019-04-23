@@ -24,7 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 
 class GameLayer(skin: Skin) : Table(skin) {
 
-    val style = skin[CoreStyle::class.java]
+    private val style = skin[CoreStyle::class.java]
 
     /**
      * The size of the tables hidden on each side in pixels.

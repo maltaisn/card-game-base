@@ -16,6 +16,7 @@
 
 package com.maltaisn.cardgame
 
+import com.badlogic.gdx.Application
 import com.badlogic.gdx.Game
 import com.badlogic.gdx.Gdx
 
@@ -26,6 +27,9 @@ abstract class CardGame : Game() {
         // Disable continuous rendering
         Gdx.graphics.isContinuousRendering = false
         Gdx.graphics.requestRendering()
+
+        @Suppress("LibGDXLogLevel")
+        Gdx.app.logLevel = Application.LOG_DEBUG
     }
 
 }
