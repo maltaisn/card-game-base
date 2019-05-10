@@ -18,6 +18,7 @@ package com.maltaisn.cardgame.widget.prefs
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.TextField
+import com.maltaisn.cardgame.prefs.PrefEntry
 import com.maltaisn.cardgame.prefs.TextPref
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.SdfTextField
@@ -56,8 +57,8 @@ class TextPrefView(skin: Skin, pref: TextPref) : GamePrefView<TextPref>(skin, pr
         this.enabled = enabled
     }
 
-    override fun onPreferenceValueChanged() {
-        textField.text = pref.value
+    override fun onPreferenceValueChanged(pref: PrefEntry) {
+        textField.text = this.pref.value
     }
 
 

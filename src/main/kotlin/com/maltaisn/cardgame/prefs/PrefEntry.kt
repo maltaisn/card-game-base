@@ -37,7 +37,7 @@ abstract class PrefEntry {
         set(value) {
             field = value
             for (listener in listeners) {
-                listener.onPreferenceEnabledStateChanged(enabled)
+                listener.onPreferenceEnabledStateChanged(this, enabled)
             }
         }
 
@@ -53,7 +53,7 @@ abstract class PrefEntry {
 
     protected fun notifyValueChanged() {
         for (listener in listeners) {
-            listener.onPreferenceValueChanged()
+            listener.onPreferenceValueChanged(this)
         }
     }
 
@@ -70,12 +70,12 @@ abstract class PrefEntry {
         /**
          * Called when the preference value is changed.
          */
-        fun onPreferenceValueChanged() {}
+        fun onPreferenceValueChanged(pref: PrefEntry) {}
 
         /**
          * Called when the preference enabled state is changed.
          */
-        fun onPreferenceEnabledStateChanged(enabled: Boolean) {}
+        fun onPreferenceEnabledStateChanged(pref: PrefEntry, enabled: Boolean) {}
     }
 
 }

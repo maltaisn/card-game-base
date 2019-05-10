@@ -56,7 +56,7 @@ class GamePrefsLoader(resolver: FileHandleResolver) :
     }
 
     private fun getBundleName(file: FileHandle, parameter: Parameter?) =
-            parameter?.bundlePath ?: file.nameWithoutExtension()
+            parameter?.bundlePath ?: file.pathWithoutExtension()
 
     /**
      * Parameters for the game preferences loader.

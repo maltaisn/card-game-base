@@ -25,24 +25,30 @@ import kotlin.math.sqrt
  * - Original ISMCTS implementation in Python: [https://gist.github.com/kjlubick/8ea239ede6a026a61f4d].
  * - ISMCTS algorithm: [https://ieeexplore.ieee.org/document/6203567].
  */
-class Mcts {
+object Mcts {
 
     /**
-     * Exploration param balancing exploration and exploitation.
-     * Lower value = more exploitation, higher value = more exploration.
+     * Default theoretical best exploration param.
+     * Equal to `sqrt(2.0) / 2`.
      */
-    var explorationParam = DEFAULT_EXPLORATION
+    const val DEFAULT_EXPLORATION = 0.70710678f
+
 
     /**
      * Find and returns the move with the best outcome from moves
      * available in [rootState] in [iter] simulations.
+     *
+     * @param explorationParam Exploration param balancing exploration and exploitation.
+     * Lower value = more exploitation, higher value = more exploration.
      */
-    fun run(rootState: BaseGameState<out BasePlayer>, iter: Int): BaseMove {
-        val rootNode = Node(null, null, rootState.playerToMove, explorationParam)
+    fun run(rootState: CardGameState, iter: Int,
+            explorationParam: Float = DEFAULT_EXPLORATION): GameEvent.Move {
+
+        val rootNode = Node(null, null, rootState.posToMove, explorationParam)
 
         repeat(iter) {
             var node = rootNode
-            val state = rootState.randomizedClone(rootState.playerToMove)
+            val state = rootState.randomizedClone(rootState.posToMove)
 
             // Select
             var moves = state.getMoves()
@@ -62,7 +68,7 @@ class Mcts {
             // Expand
             if (untriedMoves.isNotEmpty()) {
                 val move = untriedMoves.random()
-                val player = state.playerToMove
+                val player = state.posToMove
                 state.doMove(move)
                 moves = state.getMoves()
                 node = node.addChild(move, player)
@@ -70,7 +76,7 @@ class Mcts {
 
             // Simulate
             if (moves.isNotEmpty()) {
-                var randomMove: BaseMove? = moves.random()
+                var randomMove: GameEvent.Move? = moves.random()
                 do {
                     state.doMove(randomMove!!)
                     randomMove = state.getRandomMove()
@@ -79,7 +85,7 @@ class Mcts {
 
             // Backpropagate
             var parent: Node? = node
-            val result = state.getResult()!!
+            val result = state.result!!
             while (parent != null) {
                 parent.update(result)
                 parent = parent.parent
@@ -89,8 +95,33 @@ class Mcts {
         return rootNode.childNodes.maxBy { it.visits }!!.move!!
     }
 
-    private class Node(val move: BaseMove?, val parent: Node?, val playerThatMoved: Int,
-                       val explorationParam: Double) {
+
+    /**
+     * Compute the average result of [iter] simulations of [rootState] doing a [move].
+     * This is the same as the "Simulate" step of [run].
+     */
+    fun simulate(rootState: CardGameState, move: GameEvent.Move, iter: Int): Float {
+        var score = 0f
+        val player = rootState.posToMove
+        repeat(iter) {
+            val state = rootState.randomizedClone(player)
+            state.doMove(move)
+
+            // Simulate
+            var randomMove = state.getRandomMove()
+            while (randomMove != null) {
+                state.doMove(randomMove)
+                randomMove = state.getRandomMove()
+            }
+
+            score += state.result!!.playerResults[player]
+        }
+        return score / iter
+    }
+
+
+    private class Node(val move: GameEvent.Move?, val parent: Node?, val playerThatMoved: Int,
+                       val explorationParam: Float) {
 
         val childNodes = mutableListOf<Node>()
 
@@ -109,7 +140,7 @@ class Mcts {
          * added, because the list of possible moves is rarely always the same, eg: there may be
          * one move to draw a card that results in many moves depending on the card
          */
-        fun getUntriedMoves(moves: List<BaseMove>): List<BaseMove> {
+        fun getUntriedMoves(moves: List<GameEvent.Move>): List<GameEvent.Move> {
             val tried = List(childNodes.size) { childNodes[it].move }
             return moves.filter { move -> tried.find { it == move } == null }
         }
@@ -119,7 +150,7 @@ class Mcts {
          * All child nodes are not necessarily selectable because there might be more children
          * in total than those available from a particular state (see example above)
          */
-        fun selectUCBChild(moves: List<BaseMove>): Node? {
+        fun selectUCBChild(moves: List<GameEvent.Move>): Node? {
             val selectable = childNodes.filter { child -> moves.find { it == child.move } != null }
             for (node in selectable) {
                 node.avails++
@@ -132,9 +163,9 @@ class Mcts {
          * Cannot be done for the root node.
          * See [https://en.wikipedia.org/wiki/Monte_Carlo_tree_search#Exploration_and_exploitation].
          */
-        fun computeUCB() = wins / visits + explorationParam * sqrt(ln(avails.toDouble()) / visits)
+        fun computeUCB() = wins / visits + explorationParam * sqrt(ln(avails.toFloat()) / visits)
 
-        fun addChild(move: BaseMove, playerThatMoved: Int): Node {
+        fun addChild(move: GameEvent.Move, playerThatMoved: Int): Node {
             val node = Node(move, this, playerThatMoved, explorationParam)
             childNodes += node
             return node
@@ -143,7 +174,7 @@ class Mcts {
         /**
          * Update the node visits and wins from a state [result].
          */
-        fun update(result: BaseResult) {
+        fun update(result: GameResult) {
             visits++
             wins += result.playerResults[playerThatMoved]
         }
@@ -153,11 +184,6 @@ class Mcts {
         } else {
             "[move: $move, ${childNodes.size} children, $wins wins in $visits visits, avails: $avails]"
         }
-    }
-
-
-    companion object {
-        const val DEFAULT_EXPLORATION = 0.70710678  // sqrt(2.0) / 2
     }
 
 }

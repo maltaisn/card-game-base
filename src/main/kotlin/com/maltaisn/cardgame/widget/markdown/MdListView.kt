@@ -19,7 +19,7 @@ class MdListView(skin: Skin, list: MdElement.List) : Table(), MenuContentSection
         pad(0f, 5f, 10f, 0f)
 
         var n = 1
-        for ((i, element) in list.elements.withIndex()) {
+        for (element in list.elements) {
             if (element !is MdElement.List) {
                 // Add list item marker
                 if (list.type == MdElement.List.Type.NUMBER) {

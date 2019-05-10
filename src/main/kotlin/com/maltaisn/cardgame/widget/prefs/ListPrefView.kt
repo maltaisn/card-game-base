@@ -24,6 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Scaling
 import com.maltaisn.cardgame.prefs.ListPref
+import com.maltaisn.cardgame.prefs.PrefEntry
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.SdfLabel
 import ktx.actors.alpha
@@ -73,8 +74,8 @@ class ListPrefView(skin: Skin, pref: ListPref) : GamePrefView<ListPref>(skin, pr
     }
 
 
-    override fun onPreferenceValueChanged() {
-        valueLabel.setText(pref.displayValue)
+    override fun onPreferenceValueChanged(pref: PrefEntry) {
+        valueLabel.setText(this.pref.displayValue)
     }
 
 

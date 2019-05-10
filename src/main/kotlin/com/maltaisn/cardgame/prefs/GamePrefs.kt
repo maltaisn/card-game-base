@@ -107,7 +107,7 @@ class GamePrefs {
                 checkNotNull(depPref) { "Preference '${pref.key}' has dependency that doesn't exists." }
                 check(depPref is SwitchPref) { "Preference '${pref.key}' has dependency that isn't a switch." }
                 depPref.listeners += object : PrefEntry.PrefListener {
-                    override fun onPreferenceValueChanged() {
+                    override fun onPreferenceValueChanged(pref: PrefEntry) {
                         pref.enabled = (depPref.value != depPref.disableDependentsState)
                     }
                 }
@@ -187,6 +187,26 @@ class GamePrefs {
         preferences.flush()
     }
 
+
+    fun getBoolean(key: String) = checkNotNull((this[key] as SwitchPref?)?.value) {
+        "Invalid switch preference key '$key'."
+    }
+
+    fun getFloat(key: String) = checkNotNull((this[key] as SliderPref?)?.value) {
+        "Invalid slider preference key '$key'."
+    }
+
+    fun getInt(key: String) = getFloat(key).toInt()
+
+    fun getChoice(key: String) = checkNotNull((this[key] as ListPref?)?.value) {
+        "Invalid list preference key '$key'."
+    }
+
+    fun getString(key: String) = checkNotNull((this[key] as TextPref?)?.value) {
+        "Invalid text preference key '$key'."
+    }
+
+    override fun toString() = "[name: \"$name\", ${prefs.size} entries]"
 
     companion object {
         private val CLASS_TAGS = arrayOf(

@@ -21,7 +21,7 @@ import com.badlogic.gdx.Game
 import com.badlogic.gdx.Gdx
 
 
-abstract class CardGame : Game() {
+abstract class CardGameApp : Game() {
 
     override fun create() {
         // Disable continuous rendering

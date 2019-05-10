@@ -17,17 +17,9 @@
 package com.maltaisn.cardgame.core
 
 /**
- * The base class for any move in any game made by a [player].
- * All subclasses MUST implement [equals] for MCTS to work.
- * A move must always be immutable.
+ * A result of a game state when game is done.
+ * @property playerResults an arbitrarly chosen result representing the outcome of the game for
+ * each player. A larger value must always indicate a better outcome and a smaller value a worse
+ * for [Mcts] to work correctly.
  */
-@Suppress("EqualsOrHashCode")
-abstract class BaseMove(val player: Int) {
-
-    override fun equals(other: Any?): Boolean {
-        if (other === this) return true
-        if (other !is BaseMove) return false
-        return player == other.player
-    }
-
-}
+class GameResult(val playerResults: List<Float>)

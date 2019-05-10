@@ -621,7 +621,7 @@ class CardAnimationLayer : Group() {
 
     companion object {
         /** The duration of the update  */
-        private const val UPDATE_DURATION = 0.4f
+        const val UPDATE_DURATION = 0.4f
 
         /** The duration between each card dealt. Values less than the update duration look worse. */
         private const val DEAL_DELAY: Float = 0.4f

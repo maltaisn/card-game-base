@@ -34,4 +34,6 @@ class PrefCategory : PrefEntry() {
 
     override fun createView(skin: Skin) = PrefCategoryView(skin, this)
 
+    override fun toString() = super.toString().dropLast(1) + ", ${prefs.size} preferences]"
+
 }

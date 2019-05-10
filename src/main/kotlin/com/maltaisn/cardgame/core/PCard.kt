@@ -186,7 +186,7 @@ class PCard private constructor(val rank: Int, val suit: Int, value: Int) : Card
         /**
          * Return a deck from a string of card strings separated by a [separator].
          */
-        fun parseDeck(separator: Char, deckStr: String): Deck<PCard> {
+        fun parseDeck(deckStr: String, separator: Char = ','): Deck<PCard> {
             val cardsStr = deckStr.split(separator)
             val deck = Deck<PCard>(cardsStr.size)
             for (cardStr in cardsStr) {

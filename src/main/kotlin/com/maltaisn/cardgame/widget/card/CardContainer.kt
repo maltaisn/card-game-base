@@ -155,12 +155,15 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
         }
 
         if (stage != null) {
-            (stage as CardGameScreen).cardAnimationLayer.containers += this
+            (stage as CardGameScreen).cardContainers?.add(this)
         } else if (super.getStage() != null) {
-            (super.getStage() as CardGameScreen).cardAnimationLayer.containers -= this
+            (super.getStage() as CardGameScreen).cardContainers?.remove(this)
         }
         super.setStage(stage)
     }
+
+    private val CardGameScreen.cardContainers
+        get() = this.gameLayout?.cardAnimationLayer?.containers
 
     override fun draw(batch: Batch, parentAlpha: Float) {
         x += translate.x

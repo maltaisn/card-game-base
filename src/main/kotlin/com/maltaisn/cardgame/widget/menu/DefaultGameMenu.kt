@@ -211,7 +211,6 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
             itemClickListener = {
                 if (it === startGameItem) {
                     newGameOptions?.save()
-                    this@DefaultGameMenu.shown = false
                     startGameListener?.invoke()
                 } else {
                     sectionClickListener(it)

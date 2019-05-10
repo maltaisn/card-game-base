@@ -19,6 +19,7 @@ package com.maltaisn.cardgame.widget.prefs
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.TextField
 import com.maltaisn.cardgame.prefs.PlayerNamesPref
+import com.maltaisn.cardgame.prefs.PrefEntry
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.SdfTextField
 import ktx.actors.onKeyboardFocus
@@ -72,8 +73,8 @@ class PlayerNamesPrefView(skin: Skin, pref: PlayerNamesPref) : GamePrefView<Play
         this.enabled = enabled
     }
 
-    override fun onPreferenceValueChanged() {
-        for ((i, name) in pref.names.withIndex()) {
+    override fun onPreferenceValueChanged(pref: PrefEntry) {
+        for ((i, name) in this.pref.names.withIndex()) {
             textFields[i].text = name
         }
     }

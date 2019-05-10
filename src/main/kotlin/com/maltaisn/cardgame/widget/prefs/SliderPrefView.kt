@@ -18,6 +18,7 @@ package com.maltaisn.cardgame.widget.prefs
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Align
+import com.maltaisn.cardgame.prefs.PrefEntry
 import com.maltaisn.cardgame.prefs.SliderPref
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.SdfLabel
@@ -72,7 +73,7 @@ class SliderPrefView(skin: Skin, pref: SliderPref) : GamePrefView<SliderPref>(sk
         this.enabled = enabled
     }
 
-    override fun onPreferenceValueChanged() {
+    override fun onPreferenceValueChanged(pref: PrefEntry) {
         slider.progress = this.pref.value
     }
 

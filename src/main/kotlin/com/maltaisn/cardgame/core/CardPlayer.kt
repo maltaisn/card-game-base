@@ -19,8 +19,7 @@ package com.maltaisn.cardgame.core
 /**
  * Base class for a player in a game state.
  */
-@Suppress("EqualsOrHashCode")
-abstract class BasePlayer : Cloneable {
+abstract class CardPlayer() : Cloneable {
 
     /** Player position, set by the game state. */
     var position = -1
@@ -28,41 +27,35 @@ abstract class BasePlayer : Cloneable {
     /** Player name, can be `null` if not named. */
     var name: String? = null
 
-
-    constructor() : super()
-
     /**
      * Copy constructor.
      */
-    protected constructor(player: BasePlayer) {
+    protected constructor(player: CardPlayer) : this() {
         name = player.name
         position = player.position
     }
 
     /**
-     * Play a move given the game state
-     * Should always get moves from [BaseGameState.getMoves], never create them
-     */
-    abstract fun play(state: BaseGameState<out BasePlayer>): BaseMove
-
-    /**
      * Called when [state] performs a [move] for any player.
      */
-    open fun onMove(state: BaseGameState<out BasePlayer>, move: BaseMove) {
-        // Nothing by default
+    open fun onMove(state: CardGameState, move: GameEvent.Move) {
+
     }
 
     /**
      * Create a deep copy of this player.
      */
-    public abstract override fun clone(): BasePlayer
+    public abstract override fun clone(): CardPlayer
+
 
     override fun equals(other: Any?): Boolean {
         if (other === this) return true
-        if (other !is BasePlayer) return false
+        if (other !is CardPlayer) return false
         return position == other.position
     }
 
-    override fun toString() = name ?: "<unnamed>"
+    override fun hashCode() = name.hashCode()
+
+    override fun toString() = "[name: ${name ?: "<player-${position + 1}>"}, position: $position]"
 
 }

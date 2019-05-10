@@ -23,13 +23,12 @@ import java.util.*
  * Base class for a list of cards that can be sorted, shuffled and compared.
  * @param T Type of card in the deck
  */
-@Suppress("EqualsOrHashCode")
 open class Deck<T : Card> : ArrayList<T> {
 
     /**
-     * Create a new deck from a collection of [cards].
+     * Create a new deck with an initial capacity of 16.
      */
-    constructor(cards: Collection<T>) : super(cards)
+    constructor() : this(16)
 
     /**
      * Create a new deck with an [initialCapacity].
@@ -37,9 +36,9 @@ open class Deck<T : Card> : ArrayList<T> {
     constructor(initialCapacity: Int) : super(initialCapacity)
 
     /**
-     * Create a new deck with an initial capacity of 16.
+     * Create a new deck from a collection of [cards].
      */
-    constructor() : this(16)
+    constructor(cards: Collection<T>) : super(cards)
 
     /**
      * Draw and returns the bottom card.
@@ -129,7 +128,7 @@ open class Deck<T : Card> : ArrayList<T> {
     /**
      * Create a copy of this deck.
      */
-    override fun clone() = Deck<T>(this)
+    override fun clone() = Deck(this)
 
     /**
      * Return a string representation of the deck sorted with a [comparator].

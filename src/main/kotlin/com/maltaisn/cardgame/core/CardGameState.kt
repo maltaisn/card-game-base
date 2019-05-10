@@ -16,86 +16,74 @@
 
 package com.maltaisn.cardgame.core
 
+import com.maltaisn.cardgame.prefs.GamePrefs
+
 /**
  * Defines the state of a game at a particular moment.
- * @param P The type of player in this game state.
+ * @property settings The game settings
+ * @property players List of players in the game.
+ * @property posToMove The position of the next player to move.
+ * [getMoves] will return moves for this player.
  */
-abstract class BaseGameState<P : BasePlayer> : Cloneable {
+abstract class CardGameState(val settings: GamePrefs,
+                             open val players: List<CardPlayer>,
+                             var posToMove: Int) : Cloneable {
 
     /**
-     * List of players in the game.
+     * The result of the game.
+     * If the game is not done, this will return `null`.
      */
-    val players: List<P>
+    abstract val result: GameResult?
 
-    /**
-     * The position of the current player to move.
-     * [getMoves] will return moves for this player.
-     */
-    var playerToMove: Int
+    /** Returns whether the game is done, i.e when [getMoves] is an empty list. */
+    open val isGameDone: Boolean
+        get() = result != null
 
-    /**
-     * Create a game state with [players].
-     * @param playerToMove is the position of the player to move.
-     */
-    constructor(players: List<P>, playerToMove: Int) {
-        this.players = players
-        this.playerToMove = playerToMove
-    }
+    /** Returns the player who has to play next. */
+    open val playerToMove: CardPlayer
+        get() = players[posToMove]
+
 
     /**
      * Create a state copied from another [state].
      */
-    @Suppress("UNCHECKED_CAST")
-    protected constructor(state: BaseGameState<P>) {
-        players = List(state.players.size) { state.players[it].clone() as P }
-        playerToMove = state.playerToMove
-    }
+    protected constructor(state: CardGameState) : this(state.settings,
+            state.players.map { it.clone() }, state.posToMove)
+
 
     /**
-     * Get the position of the player next to [player].
+     * Get the position of the player next to [playerPos].
      */
-    open fun getPlayerNextTo(player: Int) = (player + 1) % players.size
+    open fun getPositionNextTo(playerPos: Int) = (playerPos + 1) % players.size
 
     /**
      * Update the state of the game by doing a [move].
      */
-    abstract fun doMove(move: BaseMove)
+    abstract fun doMove(move: GameEvent.Move)
 
     /**
-     * Get the list of legal moves that can be made by [playerToMove] at the current state of the game.
+     * Get the list of legal moves that can be made by [posToMove] at the current state of the game.
      * The list should be empty when game is done, otherwise must contain at least one move.
      * The state must not be modified from this function: two subsequent calls must return the same moves.
      */
-    abstract fun getMoves(): MutableList<BaseMove>
+    abstract fun getMoves(): MutableList<GameEvent.Move>
 
     /**
-     * Get a random legal move, or null if there is none possible
+     * Get a random legal move, or `null` if there is none possible.
      * By default this picks a random move in [getMoves].
      * In some cases this can be overriden to prevent the instantiation of a lot of move objects.
-     * However, it must always provide all the same possible
-     * moves as [getMoves] and with the same probability.
+     * However, it must always provide all the same possible moves as [getMoves] and with the same probability.
      */
-    open fun getRandomMove(): BaseMove? {
+    open fun getRandomMove(): GameEvent.Move? {
         val moves = getMoves()
         if (moves.size == 0) return null
         return moves.random()
     }
 
     /**
-     * Get the result of the game.
-     * If the game is not done, this will return `null`.
-     */
-    abstract fun getResult(): BaseResult?
-
-    /**
-     * Returns true if this state cannot do any more moves, i.e when [getMoves] is an empty list.
-     */
-    abstract fun isGameDone(): Boolean
-
-    /**
      * Create a deep copy of this game state.
      */
-    public abstract override fun clone(): BaseGameState<P>
+    public abstract override fun clone(): CardGameState
 
     /**
      * Get a randomized deep copy of this game state.

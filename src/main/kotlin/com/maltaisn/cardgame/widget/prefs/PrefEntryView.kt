@@ -38,7 +38,7 @@ abstract class PrefEntryView<T : PrefEntry>(skin: Skin, val pref: T) :
         pref.listeners += this
     }
 
-    final override fun onPreferenceEnabledStateChanged(enabled: Boolean) {
+    final override fun onPreferenceEnabledStateChanged(pref: PrefEntry, enabled: Boolean) {
         val categoryEnabled = (parent as? PrefCategoryView)?.pref?.enabled ?: true
         this.enabled = categoryEnabled && enabled
     }

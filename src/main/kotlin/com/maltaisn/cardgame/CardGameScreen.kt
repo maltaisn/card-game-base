@@ -33,35 +33,39 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.TextField
 import com.badlogic.gdx.utils.I18NBundle
 import com.badlogic.gdx.utils.viewport.ExtendViewport
+import com.maltaisn.cardgame.core.CardGame
 import com.maltaisn.cardgame.core.PCard
 import com.maltaisn.cardgame.markdown.MdLoader
+import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.GamePrefsLoader
-import com.maltaisn.cardgame.widget.GameLayer
-import com.maltaisn.cardgame.widget.PopupGroup
 import com.maltaisn.cardgame.widget.SdfShader
-import com.maltaisn.cardgame.widget.card.CardAnimationLayer
 import com.maltaisn.cardgame.widget.menu.GameMenu
 import ktx.assets.getAsset
 import ktx.assets.load
 import ktx.assets.setLoader
 
 
-abstract class CardGameScreen(val game: CardGame) :
-        Stage(ExtendViewport(960f, 540f)), Screen {
+abstract class CardGameScreen(val gameApp: CardGameApp) : Stage(ExtendViewport(960f, 540f)), Screen {
 
     val assetManager = AssetManager()
 
     /** Skin containing core UI assets. */
     val coreSkin: Skin
 
-    /** Layer where the game takes place, contains the card containers. */
-    val gameLayer: GameLayer
+    var game: CardGame? = null
 
-    /** Layer where the card are placed when animated. */
-    val cardAnimationLayer: CardAnimationLayer
-
-    /** Group where popups are shown. */
-    val popupGroup: PopupGroup
+    /** The game layout. */
+    var gameLayout: CardGameLayout? = null
+        set(value) {
+            check(field == null) { "Game layout can only be set once." }
+            if (value != null) {
+                field = value
+                if (gameMenu != null) {
+                    value.addActor(gameMenu)
+                }
+                addActor(value)
+            }
+        }
 
     /** The game menu. */
     var gameMenu: GameMenu? = null
@@ -69,10 +73,15 @@ abstract class CardGameScreen(val game: CardGame) :
             check(field == null) { "Game menu can only be set once." }
             if (value != null) {
                 field = value
-                rootContainer.addActor(value)
+                if (gameLayout != null) {
+                    gameLayout?.addActor(value)
+                }
                 value.shown = true
             }
         }
+
+    /** List of game prefs to save on pause. */
+    val prefs = mutableListOf<GamePrefs>()
 
     // This frame buffer is used to draw sprites offscreen, not on the screen batch.
     // The buffer can then be rendered to screen, allowing uniform transparency for example.
@@ -80,8 +89,6 @@ abstract class CardGameScreen(val game: CardGame) :
         private set
     lateinit var offscreenFboRegion: TextureRegion
         private set
-
-    private val rootContainer: CardGameContainer
 
     private var started = false
 
@@ -100,14 +107,6 @@ abstract class CardGameScreen(val game: CardGame) :
         // Load core skin
         loadCoreSkin()
         coreSkin = assetManager.get(Resources.CORE_SKIN)
-
-        // Create the layout
-        gameLayer = GameLayer(coreSkin)
-        cardAnimationLayer = CardAnimationLayer()
-        popupGroup = PopupGroup()
-
-        rootContainer = CardGameContainer(gameLayer, cardAnimationLayer, popupGroup)
-        addActor(rootContainer)
 
         // Listener to unfocus text field when clicked outside
         root.addCaptureListener(object : InputListener() {
@@ -173,7 +172,13 @@ abstract class CardGameScreen(val game: CardGame) :
     }
 
     override fun pause() {
+        // Save all preferences when game is paused
+        for (pref in prefs) {
+            pref.save()
+        }
 
+        // Save game if started
+        game?.save(Gdx.files.local(SAVED_GAME))
     }
 
     override fun resume() {
@@ -185,10 +190,21 @@ abstract class CardGameScreen(val game: CardGame) :
         updateOffscreenFrameBuffer()
     }
 
+    /** Hide menu, initialize game and start it. */
+    protected fun initGame(game: CardGame) {
+        this.game = game
+
+        gameMenu?.shown = false
+
+        gameLayout?.initGame(game)
+        game.start()
+    }
+
     override fun dispose() {
         super.dispose()
         assetManager.dispose()
         offscreenFbo.dispose()
+        gameLayout?.dispose()
     }
 
     override fun keyDown(keyCode: Int): Boolean {
@@ -207,6 +223,11 @@ abstract class CardGameScreen(val game: CardGame) :
         offscreenFbo = FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.width, Gdx.graphics.height, false)
         offscreenFboRegion = TextureRegion(offscreenFbo.colorBufferTexture)
         offscreenFboRegion.flip(false, true)
+    }
+
+
+    companion object {
+        const val SAVED_GAME = "saved-game.json"
     }
 
 }
