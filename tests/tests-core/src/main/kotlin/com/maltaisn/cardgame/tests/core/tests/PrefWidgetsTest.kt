@@ -20,7 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.maltaisn.cardgame.CardGameLayout
-import com.maltaisn.cardgame.tests.core.TestGameApp
+import com.maltaisn.cardgame.tests.core.CardGameTest
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.SdfTextField
 import com.maltaisn.cardgame.widget.Slider
@@ -28,7 +28,7 @@ import com.maltaisn.cardgame.widget.Switch
 import ktx.log.debug
 
 
-class PrefWidgetsTest(game: TestGameApp) : CardGameTest(game) {
+class PrefWidgetsTest : CardGameTest() {
 
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)

@@ -16,14 +16,14 @@ package com.maltaisn.cardgame.tests.core.tests
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.CardGameLayout
+import com.maltaisn.cardgame.tests.core.CardGameTest
 import com.maltaisn.cardgame.tests.core.PCard
-import com.maltaisn.cardgame.tests.core.TestGameApp
 import com.maltaisn.cardgame.widget.card.CardActor
 import com.maltaisn.cardgame.widget.card.CardContainer
 import com.maltaisn.cardgame.widget.card.CardHand
 
 
-class SolitaireTest(game: TestGameApp) : CardGameTest(game) {
+class SolitaireTest : CardGameTest() {
 
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)

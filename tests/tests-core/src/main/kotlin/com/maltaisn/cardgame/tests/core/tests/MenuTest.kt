@@ -18,12 +18,12 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.prefs.GamePrefs
-import com.maltaisn.cardgame.tests.core.TestGameApp
+import com.maltaisn.cardgame.tests.core.CardGameTest
 import com.maltaisn.cardgame.widget.menu.DefaultGameMenu
 import ktx.assets.load
 
 
-class MenuTest(game: TestGameApp) : CardGameTest(game) {
+class MenuTest : CardGameTest() {
 
     override fun load() {
         super.load()

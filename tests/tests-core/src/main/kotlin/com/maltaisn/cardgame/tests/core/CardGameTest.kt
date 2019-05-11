@@ -11,20 +11,17 @@
  * limitations under the License.
  */
 
-package com.maltaisn.cardgame.tests.core.tests
+package com.maltaisn.cardgame.tests.core
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.maltaisn.cardgame.CardGameLayout
 import com.maltaisn.cardgame.CardGameScreen
 import com.maltaisn.cardgame.Resources
 import com.maltaisn.cardgame.prefs.GamePrefs
-import com.maltaisn.cardgame.tests.core.CardGame
-import com.maltaisn.cardgame.tests.core.GameEvent
-import com.maltaisn.cardgame.tests.core.TestGameApp
 import ktx.assets.getAsset
 
 
-abstract class CardGameTest(game: TestGameApp) : CardGameScreen(game) {
+abstract class CardGameTest : CardGameScreen() {
 
     protected lateinit var cardSkin: Skin
 

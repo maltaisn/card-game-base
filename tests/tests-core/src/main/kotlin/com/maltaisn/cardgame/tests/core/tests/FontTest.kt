@@ -15,12 +15,12 @@ package com.maltaisn.cardgame.tests.core.tests
 
 import com.badlogic.gdx.graphics.Color
 import com.maltaisn.cardgame.CardGameLayout
-import com.maltaisn.cardgame.tests.core.TestGameApp
+import com.maltaisn.cardgame.tests.core.CardGameTest
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.SdfLabel
 
 
-class FontTest(game: TestGameApp) : CardGameTest(game) {
+class FontTest : CardGameTest() {
 
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)

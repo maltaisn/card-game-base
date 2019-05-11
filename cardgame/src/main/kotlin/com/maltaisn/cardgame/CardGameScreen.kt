@@ -42,7 +42,7 @@ import ktx.assets.load
 import ktx.assets.setLoader
 
 
-abstract class CardGameScreen(val gameApp: CardGameApp) : Stage(ExtendViewport(960f, 540f)), Screen {
+abstract class CardGameScreen : Stage(ExtendViewport(960f, 540f)), Screen {
 
     val assetManager = AssetManager()
 

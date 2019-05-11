@@ -13,22 +13,24 @@
 
 package com.maltaisn.cardgame.tests.core
 
-import com.maltaisn.cardgame.CardGameApp
-import com.maltaisn.cardgame.tests.core.tests.MenuTest
+import com.maltaisn.cardgame.tests.core.tests.*
 
-class TestGameApp : CardGameApp() {
 
-    override fun create() {
-        super.create()
+object CardGameTests {
 
-        setScreen(MenuTest(this))
-        //setScreen(CardLoopTest(this))
-        //setScreen(DealTest(this))
-        //setScreen(FontTest(this))
-        //setScreen(NullDealTest(this))
-        //setScreen(SolitaireTest(this))
-        //setScreen(TrickTest(this))
-        //setScreen(PrefWidgetsTest(this))
-    }
+    private val TESTS = listOf(
+            CardLoopTest::class.java,
+            DealTest::class.java,
+            FontTest::class.java,
+            MenuTest::class.java,
+            NullDealTest::class.java,
+            PrefWidgetsTest::class.java,
+            SolitaireTest::class.java,
+            TrickTest::class.java
+    )
+
+    val TESTS_MAP = TESTS.associateBy { it.simpleName }
+
+    fun newTest(name: String) = TESTS_MAP[name]?.newInstance()
 
 }

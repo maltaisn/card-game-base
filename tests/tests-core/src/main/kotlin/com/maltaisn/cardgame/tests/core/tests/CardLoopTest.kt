@@ -20,15 +20,15 @@ import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.CardGameLayout
+import com.maltaisn.cardgame.tests.core.CardGameTest
 import com.maltaisn.cardgame.tests.core.PCard
-import com.maltaisn.cardgame.tests.core.TestGameApp
 import com.maltaisn.cardgame.widget.card.CardActor
 import com.maltaisn.cardgame.widget.card.CardContainer
 import com.maltaisn.cardgame.widget.card.CardHand
 import com.maltaisn.cardgame.widget.card.CardStack
 
 
-class CardLoopTest(game: TestGameApp) : CardGameTest(game) {
+class CardLoopTest : CardGameTest() {
 
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)

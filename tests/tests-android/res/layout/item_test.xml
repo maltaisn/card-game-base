@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RadioButton
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/radio_test"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+    android:layout_margin="4dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginStart="16dp"
+    tools:text="Game test"
+    tools:checked="true"/>
