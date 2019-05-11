@@ -9,7 +9,7 @@ android {
             manifest.srcFile "AndroidManifest.xml"
             java.srcDirs = ["src/main/kotlin"]
             res.srcDirs = ["res"]
-            assets.srcDirs = ["../assets"]
+            assets.srcDirs = ["assets"]
             jniLibs.srcDirs = ["libs"]
         }
     }
@@ -29,6 +29,11 @@ android {
 }
 
 configurations { natives }
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_6
+    targetCompatibility = JavaVersion.VERSION_1_6
+}
 
 dependencies {
     implementation project(":tests:tests-core")
@@ -78,4 +83,26 @@ tasks.whenTaskAdded { packageTask ->
     if (packageTask.name.contains("package")) {
         packageTask.dependsOn "copyAndroidNatives"
     }
+}
+
+
+// Tasks to copy the tests assets to the android module assets dir
+task copyTestAssets {
+    file("assets/").mkdirs()
+    copy {
+        from "../assets"
+        into "assets/"
+    }
+}
+
+task cleanTestAssets(type: Delete) {
+    setDelete("assets/")
+}
+
+clean {
+    finalizedBy cleanTestAssets
+}
+
+build {
+    finalizedBy copyTestAssets
 }

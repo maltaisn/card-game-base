@@ -18,8 +18,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.CardGameLayout
+import com.maltaisn.cardgame.core.PCard
 import com.maltaisn.cardgame.tests.core.CardGameTest
-import com.maltaisn.cardgame.tests.core.PCard
 import com.maltaisn.cardgame.widget.card.CardHand
 import com.maltaisn.cardgame.widget.card.CardStack
 

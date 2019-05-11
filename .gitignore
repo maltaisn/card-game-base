@@ -1,11 +1,19 @@
 /production
 /local.properties
-/tests/assets/core
 
-## IntelliJ
+## Copied assets
+/tests/assets/core
+/tests/tests-android/assets
+
+## IntelliJ and Android
+/tests/tests-android/libs/armeabi/
+/tests/tests-android/libs/armeabi-v7a/
+/tests/tests-android/libs/arm64-v8a/
+/tests/tests-android/libs/x86/
+/tests/tests-android/libs/x86_64/
+/tests/tests-android/gen/
 .idea/
 *.iml
-
 .gradle/
 build/
 

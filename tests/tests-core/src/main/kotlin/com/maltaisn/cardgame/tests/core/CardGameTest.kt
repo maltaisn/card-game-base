@@ -17,6 +17,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.maltaisn.cardgame.CardGameLayout
 import com.maltaisn.cardgame.CardGameScreen
 import com.maltaisn.cardgame.Resources
+import com.maltaisn.cardgame.core.CardGame
+import com.maltaisn.cardgame.core.GameEvent
 import com.maltaisn.cardgame.prefs.GamePrefs
 import ktx.assets.getAsset
 

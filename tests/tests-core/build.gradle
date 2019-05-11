@@ -1,7 +1,7 @@
 apply plugin: "kotlin"
 
 dependencies {
-    api project(":cardgame")
+    api project(':app')
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     implementation "org.jetbrains.kotlin:kotlin-test:$kotlinVersion"
@@ -29,27 +29,26 @@ java {
 sourceSets {
     main {
         java.srcDirs = ["src/main/kotlin"]
-        resources.srcDirs = ["../assets"]
     }
 }
 
 // Tasks to copy the card game assets to the tests module assets dir
-task copyCardGameAssets {
+task copyAppAssets {
     file("../assets/core").mkdirs()
     copy {
-        from "../../assets"
+        from "../../app/assets"
         into "../assets/core"
     }
 }
 
-task cleanCardGameAssets(type: Delete) {
+task cleanAppAssets(type: Delete) {
     setDelete("../assets/core")
 }
 
 clean {
-    finalizedBy cleanCardGameAssets
+    finalizedBy cleanAppAssets
 }
 
 build {
-    finalizedBy copyCardGameAssets
+    finalizedBy copyAppAssets
 }

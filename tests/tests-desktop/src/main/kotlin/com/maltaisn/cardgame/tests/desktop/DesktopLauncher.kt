@@ -56,8 +56,6 @@ object DesktopLauncher {
                 val testName = list.selectedValue
                 if (testName != null) {
                     // Run selected test
-                    frame.isVisible = false
-                    frame.dispose()
                     runTest(testName)
                 }
             }
