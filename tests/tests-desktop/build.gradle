@@ -1,0 +1,33 @@
+apply plugin: "kotlin"
+
+def mainClassName = "com.maltaisn.cardgame.tests.desktop.DesktopLauncher"
+def assetsDir = "../assets"
+
+dependencies {
+    api project(":tests:tests-core")
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+
+    implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+}
+
+sourceSets {
+    main {
+        java.srcDirs = ["src/main/kotlin"]
+        resources.srcDirs = [assetsDir]
+    }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_6
+    targetCompatibility = JavaVersion.VERSION_1_6
+}
+
+task run(dependsOn: classes, type: JavaExec) {
+    main = mainClassName
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+    workingDir = file(assetsDir)
+    ignoreExitValue = true
+}

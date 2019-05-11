@@ -1,0 +1,55 @@
+apply plugin: "kotlin"
+
+dependencies {
+    api project(":cardgame")
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    implementation "org.jetbrains.kotlin:kotlin-test:$kotlinVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1"
+
+    implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+
+    implementation "io.github.libktx:ktx-actors:$ktxVersion"
+    implementation "io.github.libktx:ktx-assets:$ktxVersion"
+    implementation "io.github.libktx:ktx-collections:$ktxVersion"
+    implementation "io.github.libktx:ktx-math:$ktxVersion"
+    implementation "io.github.libktx:ktx-log:$ktxVersion"
+    implementation "io.github.libktx:ktx-style:$ktxVersion"
+
+    implementation "com.gmail.blueboxware:libgdxpluginannotations:1.16"
+
+    testImplementation "junit:junit:$junitVersion"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_6
+    targetCompatibility = JavaVersion.VERSION_1_6
+}
+
+sourceSets {
+    main {
+        java.srcDirs = ["src/main/kotlin"]
+        resources.srcDirs = ["../assets"]
+    }
+}
+
+// Tasks to copy the card game assets to the tests module assets dir
+task copyCardGameAssets {
+    file("../assets/core").mkdirs()
+    copy {
+        from "../../assets"
+        into "../assets/core"
+    }
+}
+
+task cleanCardGameAssets(type: Delete) {
+    setDelete("../assets/core")
+}
+
+clean {
+    finalizedBy cleanCardGameAssets
+}
+
+build {
+    finalizedBy copyCardGameAssets
+}

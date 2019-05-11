@@ -1,13 +1,12 @@
-production/
+/production
+/local.properties
+/tests/assets/core
 
 ## IntelliJ
 .idea/
 *.iml
 
-## Gradle
-/local.properties
 .gradle/
-out/
 build/
 
 ## OS Specific

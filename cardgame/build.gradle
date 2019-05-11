@@ -1,0 +1,34 @@
+apply plugin: "kotlin"
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1"
+    
+    implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+    
+    implementation "io.github.libktx:ktx-actors:$ktxVersion"
+    implementation "io.github.libktx:ktx-assets:$ktxVersion"
+    implementation "io.github.libktx:ktx-collections:$ktxVersion"
+    implementation "io.github.libktx:ktx-math:$ktxVersion"
+    implementation "io.github.libktx:ktx-log:$ktxVersion"
+    implementation "io.github.libktx:ktx-style:$ktxVersion"
+
+    implementation "com.gmail.blueboxware:libgdxpluginannotations:1.16"
+
+    testImplementation "junit:junit:$junitVersion"
+}
+
+sourceSets {
+    main {
+        java.srcDirs = ["src/main/kotlin"]
+        resources.srcDirs = ["assets"]
+    }
+    test {
+        java.srcDirs = ["src/test/kotlin"]
+    }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_6
+    targetCompatibility = JavaVersion.VERSION_1_6
+}
