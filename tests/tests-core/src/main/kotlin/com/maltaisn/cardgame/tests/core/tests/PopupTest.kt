@@ -72,15 +72,13 @@ class PopupTest : ActionBarTest() {
 
         // Action buttons
         var selectedPopup = popupSimple
-        addActionBtn("Simple") {
-            selectedPopup = if (selectedPopup === popupSimple) {
-                it.title = "Complex"
-                popupSimple.hide()
-                popupComplex
-            } else {
-                it.title = "Simple"
+        addTwoStateActionBtn("Simple", "Complex") { _, isSimple ->
+            selectedPopup = if (isSimple) {
                 popupComplex.hide()
                 popupSimple
+            } else {
+                popupSimple.hide()
+                popupComplex
             }
         }
 
@@ -89,10 +87,9 @@ class PopupTest : ActionBarTest() {
         addActionBtn("Bottom") { selectedPopup.testShow(bottom, Popup.Side.ABOVE) }
         addActionBtn("Right") { selectedPopup.testShow(right, Popup.Side.LEFT) }
 
-        addActionBtn("Debug") {
-            // Toggle debug mode
-            contentTable.debug = !contentTable.debug
-            popupGroup.debug = !popupGroup.debug
+        addToggleBtn("Debug") { _, debug ->
+            contentTable.setDebug(debug, true)
+            popupGroup.setDebug(debug, true)
         }
     }
 

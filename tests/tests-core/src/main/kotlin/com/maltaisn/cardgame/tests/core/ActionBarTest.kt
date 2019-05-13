@@ -41,7 +41,7 @@ abstract class ActionBarTest : CardGameTest() {
     /**
      * Add a button with a [title] and a click [action].
      */
-    protected inline fun addActionBtn(title: String, crossinline action: (MenuButton) -> Unit) {
+    protected inline fun addActionBtn(title: String, crossinline action: (MenuButton) -> Unit): MenuButton {
         val fontStyle = FontStyle(fontSize = 20f, drawShadow = true)
         val btn = MenuButton(coreSkin, fontStyle, title, null)
         btn.addListener(object : ClickListener() {
@@ -50,7 +50,36 @@ abstract class ActionBarTest : CardGameTest() {
             }
         })
         btnTable.add(btn).grow().pad(0f, 5f, 0f, 5f).expand()
+        return btn
     }
 
+    /**
+     * Add a button with an on and off state and a title for each, with a click [action].
+     */
+    protected inline fun addTwoStateActionBtn(titleOn: String, titleOff: String,
+                                              crossinline action: (MenuButton, Boolean) -> Unit): MenuButton {
+        var state = true
+        val btn = addActionBtn(titleOn) {
+            state = !state
+            it.title = if (state) titleOn else titleOff
+            action(it, state)
+        }
+        return btn
+    }
+
+    /**
+     * Add a button that can be toggled on or off with a click [action].
+     */
+    protected inline fun addToggleBtn(title: String, startState: Boolean = false,
+                                      crossinline action: (MenuButton, state: Boolean) -> Unit): MenuButton {
+        var state = startState
+        val btn = addActionBtn(title) {
+            state = !state
+            it.checked = state
+            action(it, state)
+        }
+        btn.checked = state
+        return btn
+    }
 
 }

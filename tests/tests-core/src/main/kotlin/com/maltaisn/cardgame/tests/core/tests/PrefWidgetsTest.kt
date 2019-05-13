@@ -73,14 +73,13 @@ class PrefWidgetsTest : ActionBarTest() {
         addActionBtn("Instant check") {
             switch.check(!switch.checked, false)
         }
-        addActionBtn("Disable") {
-            it.title = if (switch.enabled) "Disable" else "Enable"
-            switch.enabled = !switch.enabled
-            slider.enabled = !slider.enabled
-            textField.isDisabled = !textField.isDisabled
+        addTwoStateActionBtn("Disable", "Enable") { _, enabled ->
+            switch.enabled = enabled
+            slider.enabled = enabled
+            textField.isDisabled = !enabled
         }
-        addActionBtn("Debug") {
-            content.setDebug(!content.debug, true)
+        addToggleBtn("Debug") { _, debug ->
+            content.setDebug(debug, true)
         }
     }
 

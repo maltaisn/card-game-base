@@ -109,11 +109,9 @@ class CardTrickTest : ActionBarTest() {
                 animLayer.update()
             }
         }
-        addActionBtn("Cc") {
+        addTwoStateActionBtn("Cc", "Cw") { _, state ->
             // Toggle clockwise placement
-            val isClockwise = !trick.clockwisePlacement
-            it.title = if (isClockwise) "Cc" else "Cw"
-            trick.clockwisePlacement = isClockwise
+            trick.clockwisePlacement = state
             trick.requestUpdate()
             animLayer.update()
         }
@@ -161,9 +159,8 @@ class CardTrickTest : ActionBarTest() {
             trick.requestUpdate()
             animLayer.update()
         }
-        addActionBtn("Debug") {
-            // Toggle debug mode
-            trick.debug = !trick.debug
+        addToggleBtn("Debug") { _, debug ->
+            trick.debug = debug
         }
 
         // Do the layout
