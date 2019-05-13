@@ -22,17 +22,20 @@ import com.maltaisn.cardgame.tests.core.tests.*
 object CardGameTests {
 
     private val TESTS = listOf(
-            CardLoopTest::class.java,
-            DealTest::class.java,
+            CardAnimationTest::class.java,
+            CardDealTest::class.java,
             FontTest::class.java,
+            CardNullDealTest::class.java,
             MenuTest::class.java,
-            NullDealTest::class.java,
+            MenuButtonTest::class.java,
             PrefWidgetsTest::class.java,
             SolitaireTest::class.java,
-            TrickTest::class.java
+            CardTrickTest::class.java,
+            PopupTest::class.java,
+            ContainerTransitionTest::class.java
     )
 
-    val TESTS_MAP = TESTS.associateBy { it.simpleName }
+    val TESTS_MAP = TESTS.associateBy { it.simpleName }.toSortedMap()
 
     fun newTest(name: String) = TESTS_MAP[name]?.newInstance()
 

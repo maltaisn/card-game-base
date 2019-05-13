@@ -23,7 +23,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.maltaisn.cardgame.core.Card
 import com.maltaisn.cardgame.widget.GameLayer
 import ktx.math.vec2
-import kotlin.math.*
+import kotlin.math.PI
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
 
 
 /**
@@ -33,42 +36,47 @@ class CardTrick : CardContainer {
 
     /**
      * The number of cards this trick can have.
-     * Changing the capacity empties the trick and resets the radius and card angles.
+     * Changing the capacity resets the radius and card angles.
+     * Existing cards are truncated or extended to new capacity.
      */
     var capacity = 0
         set(value) {
             field = value
-            cards = MutableList(value) { null }
-
-            // Set default card angles
-            cardAngles = FloatArray(value) { it / value * TAU }
-
-            // Set default radius
-            val r = if (capacity == 1) 0f else (capacity * cardWidth * 0.75f) / TAU
-            radius.set(r, r)
-
-            sizeInvalid = true
+            cards = MutableList(value) { actors.getOrNull(it)?.card }
+            cardAngles = List(value) { it * TAU / value }
+            setAutoRadius()
         }
 
     /**
      * The angle of the first card on the circle in radians, counterclockwise positive.
-     * `0f` will place the first card at a 3 o'clock position.
+     * `0f` will place the first card at a 3 o'clock position. This can be changed
+     * to tune Z-index (eg: when a card is played first it goes on bottom).
      */
     var startAngle = 0f
 
     /**
-     * The angles at which the cards are placed. The array must be the same size as the
+     * The angles at which the cards are placed. The list must be the same size as the
      * capacity. Use `null` for auto-placement around a circle.
      * Angles are relative to [startAngle] and are affected by [clockwisePlacement].
      * Must be set after [capacity].
      */
-    var cardAngles = FloatArray(0)
+    var cardAngles: List<Float> = emptyList()
         set(value) {
             require(value.size == capacity) {
                 "Card angles array must be the same size as capacity."
             }
-            field = value
+
+            // Sort and clamp angles
+            val angles = value.toMutableList()
+            angles.sort()
+            for (i in angles.indices) {
+                angles[i] = (angles[i] + TAU) % TAU
+            }
+            field = angles
+            intersectionAngles = null
         }
+
+    private var intersectionAngles: List<Float>? = null
 
     /**
      * The radius of the ellipse in pixels.
@@ -109,7 +117,7 @@ class CardTrick : CardContainer {
         val r2x = radius.x + 5f
         val r2y = radius.y + 5f
         for (i in 0 until capacity) {
-            var angle = i.toFloat() / capacity * TAU - startAngle
+            var angle = cardAngles[i] - startAngle
             if (clockwisePlacement) angle = -angle
             val x = cos(angle)
             val y = sin(angle)
@@ -160,19 +168,49 @@ class CardTrick : CardContainer {
     }
 
     override fun findCardPositionForCoordinates(x: Float, y: Float): Int {
-        // Find the angle of the coordinates relative to the center
+        if (capacity == 1) return 0
+
+        var angles = intersectionAngles
+        if (angles == null) {
+            // Find intersection angles, the angles between each card angle.
+            angles = cardAngles.toMutableList()
+            angles.add(0, angles.last() - TAU)
+            angles.add(angles[1] + TAU)
+            for (i in 0..capacity) {
+                angles[i] = (angles[i] + angles[i + 1]) / 2
+            }
+            angles[angles.size - 1] = angles[1] + TAU
+            intersectionAngles = angles
+        }
+
+        // Find the angle of the coordinates relative to the center between 0 and tau.
         var angle = atan2(y - center.y, x - center.x) - startAngle
         if (clockwisePlacement) angle = -angle
+        angle = (angle + TAU) % TAU
 
         // Find the index of the card at the angle
-        val index = (angle / TAU * capacity).roundToInt()
-        return (index % capacity + capacity) % capacity
+        for (i in 0..capacity) {
+            if (angle >= angles[i] && angle < angles[i + 1]) {
+                return i % capacity
+            }
+        }
+
+        error("Could not find card position")  // Should never happen
     }
 
-    /** Returns the same as [findCardPositionForCoordinates] since no cards can only be replaced in a trick. */
+    /** Returns the same as [findCardPositionForCoordinates] since cards can only be replaced in a trick. */
     override fun findInsertPositionForCoordinates(x: Float, y: Float) =
             findCardPositionForCoordinates(x, y)
 
+    /** Set radius auto adjusted for capacity. */
+    fun setAutoRadius() {
+        computeSize()
+
+        val r = if (capacity == 1) 0f else (capacity * cardWidth * 0.75f) / TAU
+        radius.set(r, r)
+
+        sizeInvalid = true
+    }
 
     companion object {
         private const val TAU = (PI * 2).toFloat()

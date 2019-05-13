@@ -16,24 +16,28 @@
 
 package com.maltaisn.cardgame.tests.core.tests
 
-import com.badlogic.gdx.Input
-import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.CardGameLayout
 import com.maltaisn.cardgame.core.PCard
-import com.maltaisn.cardgame.tests.core.CardGameTest
+import com.maltaisn.cardgame.tests.core.SingleActionTest
+import com.maltaisn.cardgame.widget.card.CardAnimationLayer
 import com.maltaisn.cardgame.widget.card.CardHand
 import com.maltaisn.cardgame.widget.card.CardStack
 
 
-class DealTest : CardGameTest() {
+/**
+ * Test [CardAnimationLayer.deal] from a hidden card stack to a card hand.
+ * Test [CardAnimationLayer.completeAnimation] with delayed moves dispatch.
+ */
+class CardDealTest : SingleActionTest() {
 
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
         val deck = PCard.fullDeck(true)
         deck.shuffle()
+
+        val animLayer = layout.cardAnimationLayer
 
         val hand = CardHand(coreSkin, cardSkin)
         hand.align = Align.bottom
@@ -46,15 +50,13 @@ class DealTest : CardGameTest() {
         layout.gameLayer.centerTable.add(hand).grow()
         layout.gameLayer.bottomTable.add(stack).grow()
 
-        addListener(object : InputListener() {
-            override fun keyUp(event: InputEvent, keycode: Int): Boolean {
-                if (keycode == Input.Keys.A) {
-                    layout.cardAnimationLayer.deal(stack, hand, 12)
-                    return true
-                }
-                return false
+        action = {
+            if (animLayer.animationRunning) {
+                // Force complete last deal
+                animLayer.completeAnimation(true)
             }
-        })
+            animLayer.deal(stack, hand, 12)
+        }
     }
 
 }

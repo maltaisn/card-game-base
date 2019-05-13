@@ -21,11 +21,16 @@ import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.CardGameLayout
 import com.maltaisn.cardgame.core.PCard
 import com.maltaisn.cardgame.tests.core.CardGameTest
+import com.maltaisn.cardgame.tests.core.CenterLayout
 import com.maltaisn.cardgame.widget.card.CardActor
 import com.maltaisn.cardgame.widget.card.CardContainer
 import com.maltaisn.cardgame.widget.card.CardHand
 
 
+/**
+ * Test to show feasibility of a solitaire-like game.
+ * Cards of multiple vertical card hands can be moved to other hands or dragged in hand.
+ */
 class SolitaireTest : CardGameTest() {
 
     override fun layout(layout: CardGameLayout) {
@@ -36,7 +41,7 @@ class SolitaireTest : CardGameTest() {
 
         repeat(4) {
             val column = CardHand(coreSkin, cardSkin)
-            layout.gameLayer.centerTable.add(column).pad(30f, 20f, 30f, 20f).grow()
+            layout.gameLayer.centerTable.add(CenterLayout(column)).pad(30f, 20f, 30f, 20f).grow()
             column.apply {
                 horizontal = false
                 cardSize = CardActor.SIZE_NORMAL

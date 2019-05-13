@@ -16,17 +16,18 @@
 
 package com.maltaisn.cardgame.tests.core.tests
 
-import com.badlogic.gdx.Input
-import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.prefs.GamePrefs
-import com.maltaisn.cardgame.tests.core.CardGameTest
+import com.maltaisn.cardgame.tests.core.SingleActionTest
 import com.maltaisn.cardgame.widget.menu.DefaultGameMenu
 import ktx.assets.load
 
 
-class MenuTest : CardGameTest() {
+/**
+ * Test [DefaultGameMenu] with settings and rules.
+ * Test [GamePrefs.save] on pause.
+ */
+class MenuTest : SingleActionTest() {
 
     override fun load() {
         super.load()
@@ -48,6 +49,9 @@ class MenuTest : CardGameTest() {
 
         val newGamePrefs = assetManager.get<GamePrefs>(PREFS_NEW_GAME)
         menu.newGameOptions = newGamePrefs
+        menu.startGameListener = {
+            menu.shown = false
+        }
         prefs += newGamePrefs
 
         val settingsPrefs = assetManager.get<GamePrefs>(PREFS_SETTINGS)
@@ -56,15 +60,9 @@ class MenuTest : CardGameTest() {
 
         menu.rules = assetManager.get(MD_RULES)
 
-        addListener(object : InputListener() {
-            override fun keyUp(event: InputEvent, keycode: Int): Boolean {
-                if (keycode == Input.Keys.M) {
-                    menu.shown = !menu.shown
-                    return true
-                }
-                return false
-            }
-        })
+        action = {
+            menu.shown = !menu.shown
+        }
     }
 
     override fun pause() {

@@ -19,13 +19,15 @@ package com.maltaisn.cardgame.widget
 import com.badlogic.gdx.graphics.Color
 
 
-class FontStyle {
+data class FontStyle(
+        var bold: Boolean = false,
+        var allCaps: Boolean = false,
+        var fontSize: Float = 24f,
+        var fontColor: Color = Color.WHITE,
+        var drawShadow: Boolean = false,
+        var shadowColor: Color = Color.BLACK) {
 
-    var bold = false
-    var allCaps = false
-    var fontSize = 24f
-    var fontColor: Color = Color.WHITE
-    var drawShadow = false
-    var shadowColor: Color = Color.BLACK
+    /** Constructor for reflection */
+    constructor() : this(bold = false)
 
 }

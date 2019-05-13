@@ -53,7 +53,10 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
     val actors: List<CardActor?>
         get() = _actors
 
-    /** The cards in this container. When a card is moved, this list is immediately updated. */
+    /**
+     * The cards in this container. When a card is moved, this list is immediately updated.
+     * If reused, this value should be cached because a new list is created on every get call.
+     */
     var cards: List<Card?>
         get() = actors.map { it?.card }
         set(value) {
@@ -292,6 +295,7 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
                 actor.enabled = enabled
                 actor.highlightable = true
                 actor.highlighted = false
+                _actors += actor
             } else {
                 _actors.add(null)
             }

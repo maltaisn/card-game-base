@@ -16,28 +16,29 @@
 
 package com.maltaisn.cardgame.tests.core.tests
 
-import com.badlogic.gdx.Input
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.CardGameLayout
 import com.maltaisn.cardgame.core.PCard
-import com.maltaisn.cardgame.tests.core.CardGameTest
-import com.maltaisn.cardgame.widget.card.CardActor
-import com.maltaisn.cardgame.widget.card.CardContainer
-import com.maltaisn.cardgame.widget.card.CardHand
-import com.maltaisn.cardgame.widget.card.CardStack
+import com.maltaisn.cardgame.tests.core.SingleActionTest
+import com.maltaisn.cardgame.widget.card.*
 
 
-class CardLoopTest : CardGameTest() {
+/**
+ * Test [CardAnimationLayer] animations between card containers,
+ * test play listeners and dragging, etc.
+ */
+class CardAnimationTest : SingleActionTest() {
 
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
         val deck = PCard.fullDeck(false)
         deck.shuffle()
+
+        val animLayer = layout.cardAnimationLayer
+        val centerTable = layout.gameLayer.centerTable
 
         val group1 = CardHand(coreSkin, cardSkin)
         val group2 = CardHand(coreSkin, cardSkin)
@@ -50,8 +51,8 @@ class CardLoopTest : CardGameTest() {
         table.add(stack2).pad(20f).grow()
         table.row()
         table.add(group2).colspan(2).pad(20f).padBottom(0f).grow()
-        layout.gameLayer.centerTable.add(group1).pad(20f).fill()
-        layout.gameLayer.centerTable.add(table).grow()
+        centerTable.add(group1).pad(20f).fill()
+        centerTable.add(table).grow()
 
         group1.apply {
             sorter = PCard.DEFAULT_SORTER
@@ -60,19 +61,19 @@ class CardLoopTest : CardGameTest() {
             cards = deck.drawTop(3)
             sort()
             clickListener = { _, index ->
-                layout.cardAnimationLayer.moveCard(group1, stack2, index, stack2.size)
+                animLayer.moveCard(group1, stack2, index, stack2.size)
                 group1.sort()
-                layout.cardAnimationLayer.update()
+                animLayer.update()
             }
             longClickListener = { _, index ->
-                layout.cardAnimationLayer.moveCard(group1, group2, index, 0)
+                animLayer.moveCard(group1, group2, index, 0)
                 group1.sort()
                 group2.sort()
-                layout.cardAnimationLayer.update()
+                animLayer.update()
             }
             dragListener = { actor ->
                 if ((actor.card as PCard).color == PCard.RED) {
-                    layout.cardAnimationLayer.dragCards(actor)
+                    animLayer.dragCards(actor)
                 } else {
                     null
                 }
@@ -83,7 +84,7 @@ class CardLoopTest : CardGameTest() {
                 }
 
                 override fun onCardsPlayed(actors: List<CardActor>, src: CardContainer, pos: Vector2) {
-                    layout.cardAnimationLayer.moveCard(src, group1,
+                    animLayer.moveCard(src, group1,
                             src.actors.indexOf(actors.first()), 0)
                     group1.sort()
                     (src as? CardHand)?.sort()
@@ -99,13 +100,13 @@ class CardLoopTest : CardGameTest() {
             cards = deck.drawTop(6)
             sort()
             clickListener = { _, index ->
-                layout.cardAnimationLayer.moveCard(group2, group1, index, 0)
+                animLayer.moveCard(group2, group1, index, 0)
                 group1.sort()
                 group2.sort()
-                layout.cardAnimationLayer.update()
+                animLayer.update()
             }
             dragListener = { actor ->
-                layout.cardAnimationLayer.dragCards(actor)
+                animLayer.dragCards(actor)
             }
         }
 
@@ -118,18 +119,18 @@ class CardLoopTest : CardGameTest() {
             visibility = CardContainer.Visibility.NONE
             cards = stackCards
             clickListener = { _, index ->
-                layout.cardAnimationLayer.moveCard(stack1, group2, index, 0)
+                animLayer.moveCard(stack1, group2, index, 0)
                 group2.sort()
-                layout.cardAnimationLayer.update()
+                animLayer.update()
             }
-            dragListener = { actor -> layout.cardAnimationLayer.dragCards(actor) }
+            dragListener = { actor -> animLayer.dragCards(actor) }
             playListener = object : CardContainer.PlayListener {
                 override fun canCardsBePlayed(actors: List<CardActor>, src: CardContainer, pos: Vector2): Boolean {
                     return src === group1
                 }
 
                 override fun onCardsPlayed(actors: List<CardActor>, src: CardContainer, pos: Vector2) {
-                    layout.cardAnimationLayer.moveCard(src, stack1,
+                    animLayer.moveCard(src, stack1,
                             src.actors.indexOf(actors.first()), stack1.size)
                     (src as? CardHand)?.sort()
                 }
@@ -142,8 +143,8 @@ class CardLoopTest : CardGameTest() {
             cardSize = CardActor.SIZE_NORMAL
             cards = deck.drawTop(1)
             clickListener = { _, index ->
-                layout.cardAnimationLayer.moveCard(stack2, stack1, index, stack1.size)
-                layout.cardAnimationLayer.update()
+                animLayer.moveCard(stack2, stack1, index, stack1.size)
+                animLayer.update()
             }
             playListener = object : CardContainer.PlayListener {
                 override fun canCardsBePlayed(actors: List<CardActor>, src: CardContainer, pos: Vector2): Boolean {
@@ -151,24 +152,18 @@ class CardLoopTest : CardGameTest() {
                 }
 
                 override fun onCardsPlayed(actors: List<CardActor>, src: CardContainer, pos: Vector2) {
-                    layout.cardAnimationLayer.moveCard(src, stack2,
+                    animLayer.moveCard(src, stack2,
                             src.actors.indexOf(actors.first()), stack2.size)
                     (src as? CardHand)?.sort()
                 }
             }
         }
 
-        addListener(object : InputListener() {
-            override fun keyUp(event: InputEvent, keycode: Int): Boolean {
-                if (keycode == Input.Keys.A) {
-                    layout.cardAnimationLayer.deal(stack1, group2, 10) {
-                        group2.sort()
-                    }
-                    return true
-                }
-                return false
+        action = {
+            animLayer.deal(stack1, group2, 10) {
+                group2.sort()
             }
-        })
+        }
     }
 
 }

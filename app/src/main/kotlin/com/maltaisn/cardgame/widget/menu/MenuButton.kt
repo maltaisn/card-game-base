@@ -68,7 +68,7 @@ class MenuButton(skin: Skin,
             updateIconSize()
         }
 
-    /** The icon size (with actually), in pixels. */
+    /** The icon size (width actually), in pixels. */
     var iconSize = 32f
         set(value) {
             field = value

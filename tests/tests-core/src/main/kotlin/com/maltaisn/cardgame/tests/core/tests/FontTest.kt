@@ -23,6 +23,9 @@ import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.SdfLabel
 
 
+/**
+ * Test distance field font rendering at different sizes.
+ */
 class FontTest : CardGameTest() {
 
     override fun layout(layout: CardGameLayout) {

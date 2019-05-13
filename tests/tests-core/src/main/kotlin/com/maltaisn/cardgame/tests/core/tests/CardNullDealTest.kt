@@ -16,17 +16,18 @@
 
 package com.maltaisn.cardgame.tests.core.tests
 
-import com.badlogic.gdx.Input
-import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.maltaisn.cardgame.CardGameLayout
 import com.maltaisn.cardgame.core.Card
 import com.maltaisn.cardgame.core.PCard
-import com.maltaisn.cardgame.tests.core.CardGameTest
+import com.maltaisn.cardgame.tests.core.SingleActionTest
 import com.maltaisn.cardgame.widget.card.CardHand
 
 
-class NullDealTest : CardGameTest() {
+/**
+ * Test null card slots in [CardHand].
+ * Cards are exchanged between two card hands on keypress.
+ */
+class CardNullDealTest : SingleActionTest() {
 
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
@@ -44,23 +45,18 @@ class NullDealTest : CardGameTest() {
         hand2.cards = arrayOfNulls<Card>(count).toList()
         layout.gameLayer.centerTable.add(hand2).pad(30f).grow()
 
-        addListener(object : InputListener() {
-            override fun keyUp(event: InputEvent, keycode: Int): Boolean {
-                if (keycode == Input.Keys.A) {
-                    if (layout.cardAnimationLayer.animationRunning) {
-                        layout.cardAnimationLayer.completeAnimation(true)
-                    }
-                    if (hand1.actors.first() != null) {
-                        layout.cardAnimationLayer.deal(hand1, hand2, count, replaceSrc = true, replaceDst = true)
-                    } else {
-                        layout.cardAnimationLayer.deal(hand2, hand1, count, replaceSrc = true, replaceDst = true)
-                    }
-                    return true
-                }
-                return false
-
+        action = {
+            if (layout.cardAnimationLayer.animationRunning) {
+                layout.cardAnimationLayer.completeAnimation(true)
             }
-        })
+            if (hand1.actors.first() != null) {
+                layout.cardAnimationLayer.deal(hand1, hand2, count,
+                        replaceSrc = true, replaceDst = true)
+            } else {
+                layout.cardAnimationLayer.deal(hand2, hand1, count,
+                        replaceSrc = true, replaceDst = true)
+            }
+        }
     }
 
 }

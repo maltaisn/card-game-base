@@ -16,14 +16,10 @@
 
 package com.maltaisn.cardgame.tests.core.tests
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.maltaisn.cardgame.CardGameLayout
-import com.maltaisn.cardgame.tests.core.CardGameTest
+import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.SdfTextField
 import com.maltaisn.cardgame.widget.Slider
@@ -31,30 +27,14 @@ import com.maltaisn.cardgame.widget.Switch
 import ktx.log.debug
 
 
-class PrefWidgetsTest : CardGameTest() {
+/**
+ * Test widgets used by preferences: [Switch], [Slider] and [SdfTextField].
+ * Test checked state, enabled state, animations.
+ */
+class PrefWidgetsTest : ActionBarTest() {
 
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
-
-        isDebugAll = true
-
-        val content = Table()
-        content.background = coreSkin.getDrawable("submenu-content-background")
-
-        // Switch
-        val switch = Switch(coreSkin)
-        switch.checkListener = { checked ->
-            debug { "Switch checked change to $checked" }
-        }
-        content.add(switch).size(300f, 100f).expand().row()
-
-        // Slider
-        val slider = Slider(coreSkin)
-        slider.progress = 50f
-        slider.changeListener = { value ->
-            debug { "Slider value changed to $value" }
-        }
-        content.add(slider).width(300f).expand().row()
 
         // Text field
         val textField = SdfTextField(coreSkin, FontStyle().apply {
@@ -62,21 +42,46 @@ class PrefWidgetsTest : CardGameTest() {
             fontColor = Color.BLACK
         }, "Text input")
         textField.maxLength = 20
-        content.add(textField).width(300f).expand().row()
 
-        layout.gameLayer.centerTable.add(content).grow().pad(20f, 20f, 0f, 20f)
+        // Switch
+        val switch = Switch(coreSkin)
+        switch.checkListener = { checked ->
+            debug { "Switch checked change to $checked" }
+        }
 
-        addListener(object : InputListener() {
-            override fun keyUp(event: InputEvent, keycode: Int): Boolean {
-                if (keycode == Input.Keys.C) {
-                    switch.check(!switch.checked, !Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
-                } else if (keycode == Input.Keys.E) {
-                    switch.enabled = !switch.enabled
-                    slider.enabled = !slider.enabled
-                }
-                return false
-            }
-        })
+        // Slider
+        val slider = Slider(coreSkin)
+        slider.progress = 50f
+        slider.changeListener = { value ->
+            debug { "Slider value changed to $value" }
+        }
+
+        // Do the layout
+        val content = Table().apply {
+            background = coreSkin.getDrawable("submenu-content-background")
+            add(textField).width(300f).expand().row()
+            add(switch).size(300f, 100f).expand().row()
+            add(slider).width(500f).expand().row()
+        }
+        layout.gameLayer.centerTable.add(content).grow()
+                .pad(0f, 20f, 0f, 20f)
+
+        // Action buttons
+        addActionBtn("Check") {
+            switch.check(!switch.checked, true)
+        }
+        addActionBtn("Instant check") {
+            switch.check(!switch.checked, false)
+        }
+        addActionBtn("Disable") {
+            it.title = if (switch.enabled) "Disable" else "Enable"
+            switch.enabled = !switch.enabled
+            slider.enabled = !slider.enabled
+            textField.isDisabled = !textField.isDisabled
+        }
+        addActionBtn("Debug") {
+            content.setDebug(!content.debug, true)
+        }
     }
 
 }
