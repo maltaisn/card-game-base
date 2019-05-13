@@ -30,6 +30,7 @@ import com.maltaisn.cardgame.widget.card.CardHand
 /**
  * Test to show feasibility of a solitaire-like game.
  * Cards of multiple vertical card hands can be moved to other hands or dragged in hand.
+ * Also to test drag and play animations and listeners in [CardHand].
  */
 class SolitaireTest : CardGameTest() {
 

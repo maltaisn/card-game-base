@@ -384,6 +384,15 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
         cardHeight = cardStyle.cardHeight * cardScale
     }
 
+    override fun sizeChanged() {
+        super.sizeChanged()
+
+        // Set origin to center for good rotation.
+        // Rotation is not supported by animations though.
+        originX = width / 2
+        originY = height / 2
+    }
+
     /**
      * Returns a vector of the offset needed to respect
      * the align and the padding, given a required size.
