@@ -131,16 +131,20 @@ class CardHand : CardContainer {
     override val cardClickListener: (CardActor) -> Unit = { actor: CardActor ->
         super.cardClickListener(actor)
 
+        // Toggle card highlight if highlightable
         if (highlightable) {
-            highlightActor(actor, !actor.highlighted)
+            val newHighlighted = !actor.highlighted
+            if (highlightListener?.invoke(actor, newHighlighted) != false) {
+                highlightActor(actor, newHighlighted)
+            }
         }
     }
 
     ////////// HIGHLIGHTING //////////
     /**
-     * Change the highlighted state of [cards].
+     * Change the highlighted state of [cards] without calling highlight listener.
      */
-    fun highlightCards(highlighted: Boolean, vararg cards: Card) {
+    fun highlightCards(cards: List<Card>, highlighted: Boolean) {
         for (card in cards) {
             val actor = actors.find { it?.card == card } ?: continue
             highlightActor(actor, highlighted)
@@ -148,7 +152,7 @@ class CardHand : CardContainer {
     }
 
     /**
-     * Change the highlighted state of all cards.
+     * Change the highlighted state of all cards without calling highlight listener.
      */
     fun highlightAllCards(highlighted: Boolean) {
         for (actor in actors) {
@@ -157,8 +161,22 @@ class CardHand : CardContainer {
     }
 
     /**
+     * Change the highlighted state of a card [actor] to [highlighted],
+     * if actor is highlightable. Doesn't call highlight listener.
+     */
+    fun highlightActor(actor: CardActor, highlighted: Boolean) {
+        if (!actor.highlightable || actor.highlighted == highlighted) return
+
+        // Call listener and check if highlighted is allowed.
+        actor.highlighted = highlighted
+        if (actor.highlightAction == null) {
+            actor.highlightAction = HighlightAction(actor)
+        }
+    }
+
+    /**
      * Animate the highlight state change of all cards.
-     * This must be called to have animation when [CardActor.highlighted] is changed.
+     * This must be called to have animation when [CardActor.highlighted] is changed manually.
      */
     fun updateHighlight() {
         val positions = computeActorsPosition()
@@ -167,22 +185,6 @@ class CardHand : CardContainer {
 
             val actorPos = vec2(actor.x, actor.y)
             if (actor.highlightAction == null && actorPos != positions[i]) {
-                actor.highlightAction = HighlightAction(actor)
-            }
-        }
-    }
-
-    /**
-     * If hand and actor are highlightable and listener returns true,
-     * change the highlighted state of a card actor.
-     */
-    private fun highlightActor(actor: CardActor, highlighted: Boolean) {
-        if (!actor.highlightable || actor.highlighted == highlighted) return
-
-        // Call listener and check if highlighted is allowed.
-        if (highlightListener?.invoke(actor, highlighted) != false) {
-            actor.highlighted = highlighted
-            if (actor.highlightAction == null) {
                 actor.highlightAction = HighlightAction(actor)
             }
         }
