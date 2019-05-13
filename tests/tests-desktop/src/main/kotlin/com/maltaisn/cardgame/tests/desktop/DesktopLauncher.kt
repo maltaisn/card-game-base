@@ -24,6 +24,7 @@ import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.Font
 import java.awt.Insets
+import java.util.prefs.Preferences
 import javax.swing.*
 import javax.swing.border.EmptyBorder
 
@@ -32,6 +33,9 @@ object DesktopLauncher {
 
     @JvmStatic
     fun main(args: Array<String>) {
+        val prefs = Preferences.userNodeForPackage(DesktopLauncher::class.java)
+        val lastTest = prefs.get("lastTest", null)
+
         val frame = JFrame().apply {
             defaultCloseOperation = JFrame.EXIT_ON_CLOSE
             size = Dimension(300, 500)
@@ -46,6 +50,7 @@ object DesktopLauncher {
 
         val list = JList(listModel).apply {
             selectionMode = ListSelectionModel.SINGLE_SELECTION
+            selectedIndex = listModel.indexOf(lastTest)
             layoutOrientation = JList.VERTICAL
             font = Font(font.name, Font.PLAIN, 16)
             border = EmptyBorder(5, 5, 5, 5)
@@ -58,6 +63,8 @@ object DesktopLauncher {
             addActionListener {
                 val testName = list.selectedValue
                 if (testName != null) {
+                    prefs.put("lastTest", testName)
+
                     // Run selected test
                     runTest(testName)
                 }

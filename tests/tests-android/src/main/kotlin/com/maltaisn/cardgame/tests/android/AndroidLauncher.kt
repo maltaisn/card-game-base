@@ -16,6 +16,7 @@
 
 package com.maltaisn.cardgame.tests.android
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -38,16 +39,22 @@ class AndroidLauncher : AppCompatActivity() {
         super.onCreate(state)
         setContentView(R.layout.activity_chooser)
 
+        val prefs = getSharedPreferences("testPrefs", Context.MODE_PRIVATE)
+
         runBtn = findViewById(R.id.btn_run)
         testRcv = findViewById(R.id.rcv_tests)
 
-        val adapter = TestAdapter(CardGameTests.TESTS_MAP.keys.map { TestItem(it, false) })
+        val keys = CardGameTests.TESTS_MAP.keys.toList()
+        val adapter = TestAdapter(keys.map { TestItem(it, false) })
+        adapter.selectAt(keys.indexOf(prefs.getString("lastTest", null) ?: ""))
         testRcv.layoutManager = LinearLayoutManager(this)
         testRcv.adapter = adapter
 
-        runBtn.isEnabled = false
+        runBtn.isEnabled = (adapter.selectedIndex != RecyclerView.NO_POSITION)
         runBtn.setOnClickListener {
-            runTest(adapter.selectedItem!!.name)
+            val testName = adapter.selectedItem!!.name
+            prefs.edit().putString("lastTest", testName).apply()
+            runTest(testName)
         }
     }
 
@@ -73,22 +80,28 @@ class AndroidLauncher : AppCompatActivity() {
             holder.bind(items[position])
             holder.radioBtn.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
-                    // Uncheck last item
-                    if (selectedIndex != RecyclerView.NO_POSITION) {
-                        items[selectedIndex].checked = false
-                        notifyItemChanged(selectedIndex)
-                    }
-
-                    // Check new item
-                    selectedIndex = position
-                    items[selectedIndex].checked = true
-
-                    runBtn.isEnabled = true
+                    selectAt(position)
                 }
             }
         }
 
         override fun getItemCount() = items.size
+
+        fun selectAt(index: Int) {
+            if (index !in items.indices) return
+
+            // Uncheck last item
+            if (selectedIndex != RecyclerView.NO_POSITION) {
+                items[selectedIndex].checked = false
+                notifyItemChanged(selectedIndex)
+            }
+
+            // Check new item
+            selectedIndex = index
+            items[selectedIndex].checked = true
+
+            runBtn.isEnabled = true
+        }
     }
 
     private class TestViewHolder(view: View) : RecyclerView.ViewHolder(view) {
