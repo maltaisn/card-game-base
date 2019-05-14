@@ -98,7 +98,7 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
         }
 
     /** The container in the drawer scroll pane. Change its actor to change the content. */
-    var content = Container<Actor>()
+    val content = Container<Actor>()
 
     /** The scroll pane containing the [content] container. */
     val contentPane = ScrollView(content)
@@ -167,6 +167,8 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
         backBtn.pad(20f, 30f, 15f, 30f)
 
         val headerSep = Image(style.headerSeparator, Scaling.stretchX)
+
+        titleLabel.setWrap(true)
 
         // Do the layout
         drawerTable.add(backBtn).expandX().align(Align.left).row()

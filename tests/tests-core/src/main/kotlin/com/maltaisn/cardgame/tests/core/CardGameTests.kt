@@ -37,7 +37,8 @@ object CardGameTests {
             CardHandClipTest::class.java,
             CardStackTest::class.java,
             MarkdownViewTest::class.java,
-            PrefsViewTest::class.java
+            PrefsViewTest::class.java,
+            MenuDrawerTest::class.java
     )
 
     val TESTS_MAP = TESTS.associateBy { it.simpleName }.toSortedMap()

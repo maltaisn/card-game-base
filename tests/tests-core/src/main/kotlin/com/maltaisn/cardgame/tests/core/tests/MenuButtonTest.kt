@@ -55,16 +55,16 @@ class MenuButtonTest : CardGameTest() {
                 coreSkin.getDrawable(MenuIcons.CARDS)).apply {
             anchorSide = MenuButton.Side.BOTTOM
             iconSide = MenuButton.Side.BOTTOM
-            iconSize = 64f
+            iconSize = 32f
         }
         val leftBtn = MenuButton(coreSkin, fontStyle, "Left button", null).apply {
             anchorSide = MenuButton.Side.LEFT
         }
-        val rightBtn = MenuButton(coreSkin, fontStyle, "Bottom button",
+        val rightBtn = MenuButton(coreSkin, fontStyle, "Right\nbutton",
                 coreSkin.getDrawable(MenuIcons.LIST)).apply {
             anchorSide = MenuButton.Side.RIGHT
             iconSide = MenuButton.Side.RIGHT
-            iconSize = 32f
+            iconSize = 64f
         }
         val sideBtns = listOf(topBtn, bottomBtn, leftBtn, rightBtn)
 
