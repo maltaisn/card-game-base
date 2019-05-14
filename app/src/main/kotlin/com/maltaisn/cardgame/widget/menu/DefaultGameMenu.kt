@@ -33,6 +33,7 @@ import com.maltaisn.cardgame.prefs.PrefCategory
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.ScrollView
 import com.maltaisn.cardgame.widget.SdfLabel
+import com.maltaisn.cardgame.widget.markdown.MarkdownView
 import com.maltaisn.cardgame.widget.prefs.PrefsGroup
 import ktx.style.get
 
@@ -280,7 +281,7 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
 
     private fun createMarkdownView(menu: SubMenu, markdown: Markdown): Table {
         // Create preference group view and set listeners
-        val view = markdown.createView(skin)
+        val view = MarkdownView(skin, markdown)
         menu.content.actor = view
 
         // Add menu items for each markdown header

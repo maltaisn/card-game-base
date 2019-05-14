@@ -33,6 +33,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.TextField
 import com.badlogic.gdx.utils.I18NBundle
 import com.badlogic.gdx.utils.viewport.ExtendViewport
+import com.gmail.blueboxware.libgdxplugin.annotations.GDXAssets
 import com.maltaisn.cardgame.core.CardGame
 import com.maltaisn.cardgame.core.PCard
 import com.maltaisn.cardgame.markdown.MdLoader
@@ -50,6 +51,7 @@ abstract class CardGameScreen : Stage(ExtendViewport(960f, 540f)), Screen {
     val assetManager = AssetManager()
 
     /** Skin containing core UI assets. */
+    @GDXAssets(skinFiles = ["app/assets/core.skin"])
     val coreSkin: Skin
 
     var game: CardGame? = null

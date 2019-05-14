@@ -17,9 +17,6 @@
 package com.maltaisn.cardgame.markdown
 
 import com.badlogic.gdx.files.FileHandle
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.utils.Align
 
 
 /**
@@ -177,15 +174,6 @@ class Markdown(content: CharSequence) {
     constructor(file: FileHandle, encoding: String) :
             this(file.reader(encoding).use { it.readText() })
 
-    /** Create a view for this markdown object. */
-    fun createView(skin: Skin): Table {
-        val view = Table()
-        view.pad(20f, 20f, 20f, 20f).align(Align.top)
-        for (element in elements) {
-            view.add(element.createView(skin)).growX().row()
-        }
-        return view
-    }
 
     companion object {
         private const val INDENT_SIZE = 4

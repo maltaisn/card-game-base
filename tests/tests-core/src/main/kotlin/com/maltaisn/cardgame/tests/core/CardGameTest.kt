@@ -17,6 +17,7 @@
 package com.maltaisn.cardgame.tests.core
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.gmail.blueboxware.libgdxplugin.annotations.GDXAssets
 import com.maltaisn.cardgame.CardGameLayout
 import com.maltaisn.cardgame.CardGameScreen
 import com.maltaisn.cardgame.Resources
@@ -28,6 +29,7 @@ import ktx.assets.getAsset
 
 abstract class CardGameTest : CardGameScreen() {
 
+    @GDXAssets(skinFiles = ["tests/assets/core/pcard/pcard.skin"])
     protected lateinit var cardSkin: Skin
 
 

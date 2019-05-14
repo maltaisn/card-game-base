@@ -34,7 +34,10 @@ object CardGameTests {
             PopupTest::class.java,
             ContainerTransitionTest::class.java,
             CardHandHighlightTest::class.java,
-            CardHandClipTest::class.java
+            CardHandClipTest::class.java,
+            CardStackTest::class.java,
+            MarkdownViewTest::class.java,
+            PrefsViewTest::class.java
     )
 
     val TESTS_MAP = TESTS.associateBy { it.simpleName }.toSortedMap()
