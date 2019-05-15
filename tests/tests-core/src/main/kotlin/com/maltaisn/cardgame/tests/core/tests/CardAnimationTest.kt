@@ -45,6 +45,8 @@ class CardAnimationTest : SingleActionTest() {
         val stack1 = CardStack(coreSkin, cardSkin)
         val stack2 = CardStack(coreSkin, cardSkin)
 
+        animLayer.register(group1, group2, stack1, stack2)
+
         // Do the layout
         val table = Table()
         table.add(stack1).pad(20f).grow()

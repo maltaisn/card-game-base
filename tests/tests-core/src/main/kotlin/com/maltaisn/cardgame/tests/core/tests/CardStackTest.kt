@@ -63,6 +63,8 @@ class CardStackTest : CardGameTest() {
             }
         }
 
+        animLayer.register(leftStack, rightStack)
+
         layout.gameLayer.centerTable.apply {
             add(leftStack).grow()
             add(rightStack).grow()

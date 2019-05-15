@@ -23,10 +23,8 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
-import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Align
-import com.maltaisn.cardgame.CardGameScreen
 import com.maltaisn.cardgame.core.Card
 import com.maltaisn.cardgame.widget.FboWidgetGroup
 import com.maltaisn.cardgame.widget.GameLayer
@@ -41,8 +39,7 @@ import kotlin.math.min
 
 /**
  * The base class for a widget group that contains card actors.
- * All card containers support animations with the [CardAnimationLayer],
- * however the container must be in a [CardGameScreen] stage to support animations.
+ * All card containers can support animations when registered to the [CardAnimationLayer].
  */
 abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
                              val cardStyle: CardActor.CardStyle) : FboWidgetGroup() {
@@ -151,22 +148,6 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
     constructor(coreSkin: Skin, cardSkin: Skin) :
             this(coreSkin[GameLayer.CoreStyle::class.java],
                     cardSkin[CardActor.CardStyle::class.java])
-
-    override fun setStage(stage: Stage?) {
-        require(stage == null || stage is CardGameScreen) {
-            "CardContainer must be added to a CardGameScreen stage."
-        }
-
-        if (stage != null) {
-            (stage as CardGameScreen).cardContainers?.add(this)
-        } else if (super.getStage() != null) {
-            (super.getStage() as CardGameScreen).cardContainers?.remove(this)
-        }
-        super.setStage(stage)
-    }
-
-    private val CardGameScreen.cardContainers
-        get() = this.gameLayout?.cardAnimationLayer?.containers
 
     override fun draw(batch: Batch, parentAlpha: Float) {
         x += translate.x

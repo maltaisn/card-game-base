@@ -40,8 +40,6 @@ class MenuTest : SingleActionTest() {
     override fun start() {
         super.start()
 
-        //isDebugAll = true
-
         val menu = DefaultGameMenu(coreSkin)
         menu.continueItem.enabled = false
         menu.shown = true

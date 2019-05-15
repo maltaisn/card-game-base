@@ -36,9 +36,11 @@ import ktx.math.vec2
 
 class CardAnimationLayer : Group() {
 
-    /** The list of all card containers on the stage.
-     * It's update by the container themselves when they are added to the stage. */
-    internal val containers = mutableListOf<CardContainer>()
+    /**
+     * The list of all card containers on the stage.
+     * It's update by the container themselves when they are added to the stage.
+     */
+    private val containers = mutableListOf<CardContainer>()
 
     private val delayedCardMoves = mutableListOf<DelayedCardMove>()
 
@@ -91,6 +93,17 @@ class CardAnimationLayer : Group() {
     }
 
     /**
+     * Register card [containers] to allow them to animate card moves.
+     */
+    fun register(vararg containers: CardContainer) {
+        for (container in containers) {
+            if (container !in this.containers) {
+                this.containers += container
+            }
+        }
+    }
+
+    /**
      * Move a card from a container to another container.
      * This can be animated later with [update].
      * @param replaceSrc If true, the card in source at [srcIndex] will be replaced with null.
@@ -98,8 +111,12 @@ class CardAnimationLayer : Group() {
      */
     fun moveCard(src: CardContainer, dst: CardContainer, srcIndex: Int, dstIndex: Int,
                  replaceSrc: Boolean = false, replaceDst: Boolean = false) {
-        assert(src !== dst)
-
+        require(src !== dst) {
+            "Cannot move card within the same card container."
+        }
+        require(src in containers || dst in containers) {
+            "Cannot perform move on an unregistered card container."
+        }
         require((replaceSrc || src !is CardTrick) && (replaceDst || dst !is CardTrick)) {
             "Cards cannot be inserted or removed from a card trick, they must be replaced."
         }
@@ -137,8 +154,9 @@ class CardAnimationLayer : Group() {
     fun deal(src: CardContainer, dst: CardContainer, count: Int,
              replaceSrc: Boolean = false, replaceDst: Boolean = false,
              callback: (() -> Unit)? = null) {
-        assert(src !== dst)
-        assert(src.size >= count)
+        require(src.size >= count) {
+            "Not enough cards in source container to perform deal."
+        }
 
         val srcStartSize = src.size
         val dstStartSize = dst.size
@@ -224,7 +242,7 @@ class CardAnimationLayer : Group() {
      * are added to the animation layer and animated to their end position.
      */
     private fun startAnimation() {
-        setKeyboardFocus(true)  // For ESC canceling
+        setKeyboardFocus(true)  // For ESC instant complete
 
         animationPending = false
         animationRunning = true

@@ -19,6 +19,7 @@ package com.maltaisn.cardgame.tests.core.tests
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.CardGameLayout
 import com.maltaisn.cardgame.core.PCard
+import com.maltaisn.cardgame.tests.core.CenterLayout
 import com.maltaisn.cardgame.tests.core.SingleActionTest
 import com.maltaisn.cardgame.widget.card.CardAnimationLayer
 import com.maltaisn.cardgame.widget.card.CardHand
@@ -37,26 +38,34 @@ class CardDealTest : SingleActionTest() {
         val deck = PCard.fullDeck(true)
         deck.shuffle()
 
+        val hand = CardHand(coreSkin, cardSkin).apply {
+            align = Align.bottom
+            clipPercent = 0.3f
+        }
+
+        val stack = CardStack(coreSkin, cardSkin).apply {
+            isVisible = false
+            cards = deck
+        }
+
         val animLayer = layout.cardAnimationLayer
-
-        val hand = CardHand(coreSkin, cardSkin)
-        hand.align = Align.bottom
-        hand.clipPercent = 0.3f
-
-        val stack = CardStack(coreSkin, cardSkin)
-        stack.isVisible = false
-        stack.cards = deck
-
-        layout.gameLayer.centerTable.add(hand).grow()
-        layout.gameLayer.bottomTable.add(stack).grow()
+        animLayer.register(hand, stack)
 
         action = {
             if (animLayer.animationRunning) {
                 // Force complete last deal
                 animLayer.completeAnimation(true)
             }
-            animLayer.deal(stack, hand, 12)
+            if (stack.size >= 12) {
+                animLayer.deal(stack, hand, 12)
+            }
         }
+
+        // Do the layout
+        layout.gameLayer.centerTable.add(CenterLayout(hand)).grow()
+        layout.gameLayer.bottomTable.add(stack).grow()
+
+        isDebugAll = true
     }
 
 }

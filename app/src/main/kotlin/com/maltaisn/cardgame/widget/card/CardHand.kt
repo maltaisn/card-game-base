@@ -31,7 +31,6 @@ import kotlin.math.min
 
 /**
  * A card container that displays a list of card actors to form a hand, that can be sorted.
- * When using [setCards], sort is not immediately called.
  */
 class CardHand : CardContainer {
 

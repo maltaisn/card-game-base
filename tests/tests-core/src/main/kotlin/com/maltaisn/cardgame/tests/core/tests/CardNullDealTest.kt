@@ -38,24 +38,29 @@ class CardNullDealTest : SingleActionTest() {
         val count = 16
 
         val hand1 = CardHand(coreSkin, cardSkin)
-        layout.gameLayer.centerTable.add(hand1).pad(30f).grow().row()
         hand1.cards = deck.drawTop(count)
 
         val hand2 = CardHand(coreSkin, cardSkin)
         hand2.cards = arrayOfNulls<Card>(count).toList()
-        layout.gameLayer.centerTable.add(hand2).pad(30f).grow()
+
+        val animLayer = layout.cardAnimationLayer
+        animLayer.register(hand1, hand2)
 
         action = {
-            if (layout.cardAnimationLayer.animationRunning) {
-                layout.cardAnimationLayer.completeAnimation(true)
+            if (animLayer.animationRunning) {
+                animLayer.completeAnimation(true)
             }
             if (hand1.actors.first() != null) {
-                layout.cardAnimationLayer.deal(hand1, hand2, count,
-                        replaceSrc = true, replaceDst = true)
+                animLayer.deal(hand1, hand2, count, replaceSrc = true, replaceDst = true)
             } else {
-                layout.cardAnimationLayer.deal(hand2, hand1, count,
-                        replaceSrc = true, replaceDst = true)
+                animLayer.deal(hand2, hand1, count, replaceSrc = true, replaceDst = true)
             }
+        }
+
+        // Do the layout
+        layout.gameLayer.centerTable.apply {
+            add(hand1).pad(30f).grow().row()
+            add(hand2).pad(30f).grow()
         }
     }
 

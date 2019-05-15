@@ -19,6 +19,7 @@ package com.maltaisn.cardgame
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup
+import com.badlogic.gdx.scenes.scene2d.utils.Layout
 import com.badlogic.gdx.utils.Disposable
 import com.maltaisn.cardgame.core.CardGame
 import com.maltaisn.cardgame.core.GameEvent
@@ -83,6 +84,9 @@ abstract class CardGameLayout(assetManager: AssetManager,
                 child.setBounds(-side, -side, width + 2 * side, height + 2 * side)
             } else {
                 child.setBounds(0f, 0f, width, height)
+            }
+            if (child is Layout) {
+                child.validate()
             }
         }
     }

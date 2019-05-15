@@ -19,11 +19,12 @@ package com.maltaisn.cardgame.tests.core
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup
+import com.badlogic.gdx.scenes.scene2d.utils.Layout
 import kotlin.math.max
 
 
 /**
- * Layout that centers all its children on itself, without taking any space.
+ * Layout that aligns its children in itself but without changing its size.
  */
 class CenterLayout(vararg actors: Actor) : WidgetGroup() {
 
@@ -36,10 +37,23 @@ class CenterLayout(vararg actors: Actor) : WidgetGroup() {
 
     override fun layout() {
         for (child in children) {
-            val childWidth = max(width, child.width)
-            val childHeight = max(height, child.height)
+            var childWidth: Float
+            var childHeight: Float
+            if (child is Layout) {
+                childWidth = child.prefWidth
+                childHeight = child.prefHeight
+            } else {
+                childWidth = child.width
+                childHeight = child.height
+            }
+            childWidth = max(width, childWidth)
+            childHeight = max(height, childHeight)
             child.setBounds((width - childWidth) / 2, (height - childHeight) / 2,
                     childWidth, childHeight)
+
+            if (child is Layout) {
+                child.validate()
+            }
         }
     }
 }

@@ -71,6 +71,8 @@ class CardTrickTest : ActionBarTest() {
             dragListener = { animLayer.dragCards(it) }
         }
 
+        animLayer.register(trick, stack)
+
         // Action buttons
         addActionBtn("Clear") {
             // Move cards from trick to stack

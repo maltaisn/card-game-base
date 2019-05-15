@@ -42,8 +42,7 @@ abstract class CardGameTest : CardGameScreen() {
         super.start()
         cardSkin = assetManager.getAsset(Resources.PCARD_SKIN)
 
-        val settings = GamePrefs("unused")
-        gameLayout = object : CardGameLayout(assetManager, settings) {
+        gameLayout = object : CardGameLayout(assetManager, GamePrefs("unused")) {
             override var shown = true
 
             init {
