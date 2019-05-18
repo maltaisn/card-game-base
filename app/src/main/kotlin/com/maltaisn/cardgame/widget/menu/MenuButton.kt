@@ -35,9 +35,9 @@ import ktx.actors.alpha
  * A button for a menu, with an optional title and icon.
  */
 class MenuButton(skin: Skin,
-                 val style: MenuButtonStyle,
                  val fontStyle: FontStyle,
-                 title: CharSequence? = null, icon: Drawable? = null) : CheckableWidget() {
+                 title: CharSequence? = null, icon: Drawable? = null,
+                 val style: MenuButtonStyle = skin[MenuButtonStyle::class.java]) : CheckableWidget() {
 
     /** The button title, or `null` for none. */
     var title: CharSequence?
@@ -133,10 +133,6 @@ class MenuButton(skin: Skin,
             Side.RIGHT -> style.backgroundRight
         }
 
-    constructor(skin: Skin, fontStyle: FontStyle,
-                text: CharSequence? = null, icon: Drawable? = null) :
-            this(skin, skin[MenuButtonStyle::class.java], fontStyle, text, icon)
-
     init {
         addListener(SelectionListener())
 
@@ -158,6 +154,14 @@ class MenuButton(skin: Skin,
         this.title = title
         this.icon = icon
     }
+
+    /**
+     * Create a menu button with only an [icon].
+     */
+    constructor(skin: Skin, iconColor: Color, icon: Drawable,
+                style: MenuButtonStyle = skin[MenuButtonStyle::class.java]) :
+            this(skin, FontStyle(fontColor = iconColor), null, icon, style)
+
 
     /** Clear the children and redo the correct label and icon layout. */
     private fun updateButtonLayout() {

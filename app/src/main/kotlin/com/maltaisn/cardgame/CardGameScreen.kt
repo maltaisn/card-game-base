@@ -17,7 +17,6 @@
 package com.maltaisn.cardgame
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.SkinLoader
@@ -39,8 +38,8 @@ import com.maltaisn.cardgame.core.PCard
 import com.maltaisn.cardgame.markdown.MdLoader
 import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.GamePrefsLoader
+import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.SdfShader
-import com.maltaisn.cardgame.widget.menu.GameMenu
 import ktx.assets.getAsset
 import ktx.assets.load
 import ktx.assets.setLoader
@@ -62,23 +61,7 @@ abstract class CardGameScreen : Stage(ExtendViewport(960f, 540f)), Screen {
             check(field == null) { "Game layout can only be set once." }
             if (value != null) {
                 field = value
-                if (gameMenu != null) {
-                    value.addActor(gameMenu)
-                }
                 addActor(value)
-            }
-        }
-
-    /** The game menu. */
-    var gameMenu: GameMenu? = null
-        set(value) {
-            check(field == null) { "Game menu can only be set once." }
-            if (value != null) {
-                field = value
-                if (gameLayout != null) {
-                    gameLayout?.addActor(value)
-                }
-                value.shown = true
             }
         }
 
@@ -196,8 +179,6 @@ abstract class CardGameScreen : Stage(ExtendViewport(960f, 540f)), Screen {
     protected fun initGame(game: CardGame) {
         this.game = game
 
-        gameMenu?.shown = false
-
         gameLayout?.initGame(game)
         game.start()
     }
@@ -207,15 +188,6 @@ abstract class CardGameScreen : Stage(ExtendViewport(960f, 540f)), Screen {
         assetManager.dispose()
         offscreenFbo.dispose()
         gameLayout?.dispose()
-    }
-
-    override fun keyDown(keyCode: Int): Boolean {
-        if (keyCode == Input.Keys.BACK && gameMenu?.shown != false && gameMenu?.mainMenuShown != false) {
-            // Close app on back key press if main menu is shown
-            Gdx.app.exit()
-        }
-
-        return super.keyDown(keyCode)
     }
 
     private fun updateOffscreenFrameBuffer() {

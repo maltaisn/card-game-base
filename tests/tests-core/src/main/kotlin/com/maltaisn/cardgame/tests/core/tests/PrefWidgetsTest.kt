@@ -18,12 +18,8 @@ package com.maltaisn.cardgame.tests.core.tests
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.maltaisn.cardgame.CardGameLayout
 import com.maltaisn.cardgame.tests.core.ActionBarTest
-import com.maltaisn.cardgame.widget.FontStyle
-import com.maltaisn.cardgame.widget.SdfTextField
-import com.maltaisn.cardgame.widget.Slider
-import com.maltaisn.cardgame.widget.Switch
+import com.maltaisn.cardgame.widget.*
 import ktx.log.debug
 
 

@@ -23,11 +23,12 @@ import com.maltaisn.cardgame.widget.menu.MenuItem.Companion.NO_ID
 /**
  * An item in a menu, with an [id], a [title], an [icon] and a [position] in the menu.
  * Each item should have an unique ID to identify them in click listener, different than [NO_ID].
+ * Implementation should have item position constants.
  */
 class MenuItem(val id: Int,
-               val title: CharSequence,
-               val icon: Drawable,
-               val position: Position = Position.TOP) {
+               val title: CharSequence?,
+               val icon: Drawable?,
+               val position: Int) {
 
     init {
         require(id != NO_ID) { "A menu item cannot have an ID of $NO_ID." }
@@ -61,12 +62,7 @@ class MenuItem(val id: Int,
 
     override fun toString() = "[id: $id, title: $title" +
             (if (checked) ", checked" else "") +
-            (if (!enabled) ", disabled" else "")
-
-
-    enum class Position {
-        TOP, BOTTOM
-    }
+            (if (!enabled) ", disabled" else "") + "]"
 
     companion object {
         const val NO_ID = -1

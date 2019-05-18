@@ -16,11 +16,16 @@
 
 package com.maltaisn.cardgame.widget.menu
 
+import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.maltaisn.cardgame.widget.FboTable
 import com.maltaisn.cardgame.widget.FontStyle
 
 
+/**
+ * The base class for a menu widget that can be shown and hidden with an animation.
+ * Do update the layout after items are changed, call [invalidateLayout].
+ */
 abstract class MenuTable(skin: Skin) : FboTable(skin) {
 
     val items = mutableListOf<MenuItem>()
@@ -32,7 +37,14 @@ abstract class MenuTable(skin: Skin) : FboTable(skin) {
      * Changing this value animates a visibility change by sliding the menu parts in and out of the screen.
      * If changed during an outgoing transition, the previous one will be inverted.
      */
-    abstract var shown: Boolean
+    open var shown = false
+
+    internal open var transitionAction: Action? = null
+        set(value) {
+            if (field != null) removeAction(field)
+            field = value
+            if (value != null) addAction(value)
+        }
 
     /** The listener called when a menu item is clicked, `null` for none. */
     var itemClickListener: ((item: MenuItem) -> Unit)? = null
@@ -46,6 +58,15 @@ abstract class MenuTable(skin: Skin) : FboTable(skin) {
                 item.checked = false
             }
         }
+    }
+
+    init {
+        isVisible = false
+    }
+
+    override fun clearActions() {
+        super.clearActions()
+        transitionAction = null
     }
 
     /**

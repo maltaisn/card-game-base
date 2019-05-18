@@ -24,7 +24,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.*
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Scaling
@@ -33,6 +32,7 @@ import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.ScrollView
 import com.maltaisn.cardgame.widget.SdfLabel
 import com.maltaisn.cardgame.widget.TimeAction
+import ktx.actors.onClick
 
 
 /**
@@ -155,12 +155,10 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
         val backBtn = Table()
         val backBtnIcon = Image(style.backBtnIcon, Scaling.fit)
         backBtnIcon.color = style.backBtnIconColor
-        backBtn.addListener(object : ClickListener() {
-            override fun clicked(event: InputEvent, x: Float, y: Float) {
-                // If back button is clicked, dismiss the drawer.
-                shown = false
-            }
-        })
+        backBtn.onClick {
+            // If back button is clicked, dismiss the drawer.
+            shown = false
+        }
         backBtn.touchable = Touchable.enabled
         backBtn.add(backBtnIcon).size(style.backBtnFontStyle.fontSize + 6f)
         backBtn.add(backBtnLabel).padLeft(10f)

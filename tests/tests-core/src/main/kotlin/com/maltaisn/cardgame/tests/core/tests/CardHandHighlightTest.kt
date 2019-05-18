@@ -17,10 +17,10 @@
 package com.maltaisn.cardgame.tests.core.tests
 
 import com.badlogic.gdx.utils.Align
-import com.maltaisn.cardgame.CardGameLayout
 import com.maltaisn.cardgame.core.Card
 import com.maltaisn.cardgame.core.PCard
 import com.maltaisn.cardgame.tests.core.ActionBarTest
+import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.card.CardHand
 import kotlin.random.Random
 

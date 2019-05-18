@@ -41,6 +41,7 @@ import ktx.style.get
 /**
  * The default implementation of the [GameMenu], with 6 items in main menu:
  * new game, continue, settings, rules, statistics and about.
+ * The in game menu has a back button and a scoreboard button.
  */
 class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
 
@@ -52,6 +53,13 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
      * When the item is clicked, the options are automatically saved and the game menu is closed.
      */
     var startGameListener: (() -> Unit)? = null
+
+    /** Listener called when the back button is clicked in game. */
+    var exitGameListener: (() -> Unit)? = null
+
+    /** Listener called when the scoreboard button is clicked in game. */
+    var scoreboardListener: (() -> Unit)? = null
+
 
     /** The continue menu item. Can be disabled. */
     val continueItem: MenuItem
@@ -146,7 +154,7 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
     }
 
     init {
-        @GDXAssets(propertiesFiles = ["assets/core/strings.properties"])
+        @GDXAssets(propertiesFiles = ["app/assets/strings.properties"])
         val bundle: I18NBundle = skin[Resources.CORE_STRINGS_NAME]
 
         drawer.backBtnText = bundle.get("menu_drawer_back")
@@ -161,12 +169,12 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
         mainMenu.apply {
             // Add main menu items
             val icons = this@DefaultGameMenu.style
-            items += MenuItem(ITEM_ID_NEW_GAME, newGameStr, icons.newGameIcon, MenuItem.Position.BOTTOM)
-            items += MenuItem(ITEM_ID_CONTINUE, continueStr, icons.continueIcon, MenuItem.Position.BOTTOM)
-            items += MenuItem(ITEM_ID_SETTINGS, settingsStr, icons.settingsIcon, MenuItem.Position.BOTTOM)
-            items += MenuItem(ITEM_ID_RULES, rulesStr, icons.rulesIcon, MenuItem.Position.TOP)
-            items += MenuItem(ITEM_ID_STATS, statsStr, icons.statsIcon, MenuItem.Position.TOP)
-            items += MenuItem(ITEM_ID_ABOUT, aboutStr, icons.aboutIcon, MenuItem.Position.TOP)
+            items += MenuItem(ITEM_ID_NEW_GAME, newGameStr, icons.newGameIcon, MainMenu.ITEM_POS_BOTTOM)
+            items += MenuItem(ITEM_ID_CONTINUE, continueStr, icons.continueIcon, MainMenu.ITEM_POS_BOTTOM)
+            items += MenuItem(ITEM_ID_SETTINGS, settingsStr, icons.settingsIcon, MainMenu.ITEM_POS_BOTTOM)
+            items += MenuItem(ITEM_ID_RULES, rulesStr, icons.rulesIcon, MainMenu.ITEM_POS_TOP)
+            items += MenuItem(ITEM_ID_STATS, statsStr, icons.statsIcon, MainMenu.ITEM_POS_TOP)
+            items += MenuItem(ITEM_ID_ABOUT, aboutStr, icons.aboutIcon, MainMenu.ITEM_POS_TOP)
             invalidateLayout()
 
             continueItem = items[1]
@@ -174,11 +182,11 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
             itemClickListener = {
                 when (it.id) {
                     ITEM_ID_CONTINUE -> continueListener?.invoke()
-                    ITEM_ID_NEW_GAME -> openSubMenu(newGameMenu)
-                    ITEM_ID_SETTINGS -> openSubMenu(settingsMenu)
-                    ITEM_ID_RULES -> openSubMenu(rulesMenu)
-                    ITEM_ID_STATS -> openSubMenu(statsMenu)
-                    ITEM_ID_ABOUT -> openSubMenu(aboutMenu)
+                    ITEM_ID_NEW_GAME -> showSubMenu(newGameMenu)
+                    ITEM_ID_SETTINGS -> showSubMenu(settingsMenu)
+                    ITEM_ID_RULES -> showSubMenu(rulesMenu)
+                    ITEM_ID_STATS -> showSubMenu(statsMenu)
+                    ITEM_ID_ABOUT -> showSubMenu(aboutMenu)
                 }
             }
         }
@@ -199,18 +207,19 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
             menuPosition = SubMenu.MenuPosition.RIGHT
 
             val startGameItem = MenuItem(1000, bundle.get("menu_start_game"),
-                    this@DefaultGameMenu.style.startGameIcon, MenuItem.Position.BOTTOM)
+                    this@DefaultGameMenu.style.startGameIcon, SubMenu.ITEM_POS_BOTTOM)
             startGameItem.checkable = false
             items += startGameItem
 
             backArrowClickListener = {
                 newGameOptions?.save()
-                closeSubMenu()
+                showMainMenu()
             }
 
             val sectionClickListener = SectionClickListener(newGameMenu)
             itemClickListener = {
                 if (it === startGameItem) {
+                    showInGameMenu()
                     newGameOptions?.save()
                     startGameListener?.invoke()
                 } else {
@@ -227,7 +236,7 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
             title = settingsStr
             backArrowClickListener = {
                 settings?.save()
-                closeSubMenu()
+                showMainMenu()
             }
             itemClickListener = SectionClickListener(settingsMenu)
             contentPane.scrollListener = SectionScrollListener(settingsMenu)
@@ -251,9 +260,31 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
         // About menu
         aboutMenu.apply {
             title = aboutStr
-            items += MenuItem(0, "About", skin.getDrawable(MenuIcons.INFO))
-            items += MenuItem(1, "Donate", skin.getDrawable(MenuIcons.ARROW_RIGHT))
+            items += MenuItem(0, "About", skin.getDrawable(MenuIcons.INFO), SubMenu.ITEM_POS_TOP)
+            items += MenuItem(1, "Donate", skin.getDrawable(MenuIcons.ARROW_RIGHT), SubMenu.ITEM_POS_TOP)
             invalidateLayout()
+        }
+
+        // In game menu
+        inGameMenu.apply {
+            val icons = this@DefaultGameMenu.style
+            items += MenuItem(ITEM_ID_BACK, null, icons.backBtnIcon, InGameMenu.ITEM_POS_LEFT)
+            items += MenuItem(ITEM_ID_SCOREBOARD, null, icons.scoreboardBtnIcon, InGameMenu.ITEM_POS_RIGHT)
+            invalidateLayout()
+
+            itemClickListener = {
+                when (it.id) {
+                    ITEM_ID_BACK -> {
+                        // Exit game
+                        showMainMenu()
+                        exitGameListener?.invoke()
+                    }
+                    ITEM_ID_SCOREBOARD -> {
+                        // Show scoreboard maybe?
+                        scoreboardListener?.invoke()
+                    }
+                }
+            }
         }
     }
 
@@ -270,8 +301,8 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
         var id = 0
         for (entry in prefs.prefs.values) {
             if (entry is PrefCategory) {
-                menu.items += MenuItem(id, entry.title,
-                        skin.getDrawable(entry.icon ?: MenuIcons.CARDS))
+                val icon = if (entry.icon == null) style.defaultIcon else skin.getDrawable(entry.icon)
+                menu.items += MenuItem(id, entry.title, icon, SubMenu.ITEM_POS_TOP)
                 id++
             }
         }
@@ -288,8 +319,8 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
         var id = 0
         for (entry in markdown.elements) {
             if (entry is MdElement.Header && entry.text != null) {
-                menu.items += MenuItem(id, entry.text!!,
-                        skin.getDrawable(entry.icon ?: MenuIcons.CARDS))
+                val icon = if (entry.icon == null) style.defaultIcon else skin.getDrawable(entry.icon)
+                menu.items += MenuItem(id, entry.text!!, icon, SubMenu.ITEM_POS_TOP)
                 id++
             }
         }
@@ -381,6 +412,8 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
     }
 
     class DefaultGameMenuStyle {
+        lateinit var defaultIcon: Drawable
+
         lateinit var prefsHelpFontStyle: FontStyle
 
         lateinit var newGameIcon: Drawable
@@ -389,7 +422,11 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
         lateinit var rulesIcon: Drawable
         lateinit var statsIcon: Drawable
         lateinit var aboutIcon: Drawable
+
         lateinit var startGameIcon: Drawable
+        lateinit var backBtnIcon: Drawable
+
+        lateinit var scoreboardBtnIcon: Drawable
     }
 
     companion object {
@@ -399,6 +436,9 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
         private const val ITEM_ID_RULES = 3
         private const val ITEM_ID_STATS = 4
         private const val ITEM_ID_ABOUT = 5
+
+        private const val ITEM_ID_BACK = 0
+        private const val ITEM_ID_SCOREBOARD = 1
     }
 
 }

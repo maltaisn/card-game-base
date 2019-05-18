@@ -22,8 +22,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Value
 import com.badlogic.gdx.utils.Align
-import com.maltaisn.cardgame.CardGameLayout
 import com.maltaisn.cardgame.tests.core.ActionBarTest
+import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.SdfLabel
 import com.maltaisn.cardgame.widget.menu.MenuDrawer

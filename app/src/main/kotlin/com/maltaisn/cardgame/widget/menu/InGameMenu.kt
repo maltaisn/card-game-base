@@ -17,8 +17,8 @@
 package com.maltaisn.cardgame.widget.menu
 
 import com.badlogic.gdx.math.Interpolation
+import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.widget.TimeAction
 import ktx.actors.alpha
@@ -26,14 +26,11 @@ import ktx.actors.onClick
 
 
 /**
- * The main menu of the game, has a row of items on top and one on bottom.
+ * A menu shown during the game, with a top bar for buttons.
  */
-class MainMenu(skin: Skin) : MenuTable(skin) {
+class InGameMenu(skin: Skin) : MenuTable(skin) {
 
-    val style = skin[MainMenuStyle::class.java]
-
-    private val topRow = Table()
-    private val bottomRow = Table()
+    val style = skin[InGameMenuStyle::class.java]
 
     override var shown
         get() = super.shown
@@ -46,50 +43,43 @@ class MainMenu(skin: Skin) : MenuTable(skin) {
             }
         }
 
+    private val leftGroup = HorizontalGroup()
+    private val rightGroup = HorizontalGroup()
+
 
     init {
         checkable = false
 
         // Do the layout
-        add(topRow).growX().expandY().height(MENU_ROW_HEIGHT)
-                .align(Align.top).pad(0f, 10f, 0f, 10f).row()
-        add(bottomRow).growX().expandY().height(MENU_ROW_HEIGHT)
-                .align(Align.bottom).pad(0f, 10f, 0f, 10f).growX()
-    }
-
-    override fun layout() {
-        super.layout()
-
-        (transitionAction as TransitionAction?)?.let {
-            it.topStartY = topRow.y
-            it.bottomStartY = bottomRow.y
-        }
+        pad(25f)
+        add(leftGroup).expandY().align(Align.top)
+        add().minWidth(100f).grow()
+        add(rightGroup).expandY().align(Align.top)
+        leftGroup.space(15f)
+        rightGroup.space(15f)
     }
 
     override fun invalidateLayout() {
-        topRow.clearChildren()
-        bottomRow.clearChildren()
+        leftGroup.clearChildren()
+        rightGroup.clearChildren()
 
         for (item in items) {
-            val onTopRow = (item.position == ITEM_POS_TOP)
             val btn = MenuButton(skin, style.itemFontStyle, item.title, item.icon).apply {
+                pad(10f)
                 onClick { btnClickListener(this) }
-                anchorSide = if (onTopRow) MenuButton.Side.TOP else MenuButton.Side.BOTTOM
+                anchorSide = MenuButton.Side.NONE
                 iconSide = MenuButton.Side.LEFT
-                iconSize = this@MainMenu.style.itemIconSize
+                iconSize = this@InGameMenu.style.itemIconSize
             }
             item.menu = this
             item.button = btn
-            (if (onTopRow) topRow else bottomRow).add(btn).grow().pad(0f, 15f, 0f, 15f)
+            (if (item.position == ITEM_POS_LEFT) leftGroup else rightGroup).addActor(btn)
         }
     }
 
 
     internal inner class TransitionAction :
             TimeAction(0.3f, Interpolation.smooth, reversed = !shown) {
-
-        var topStartY = topRow.y
-        var bottomStartY = bottomRow.y
 
         init {
             isVisible = true
@@ -99,9 +89,6 @@ class MainMenu(skin: Skin) : MenuTable(skin) {
 
         override fun update(progress: Float) {
             reversed = !shown
-
-            topRow.y = topStartY + (1 - progress) * MENU_ROW_HEIGHT
-            bottomRow.y = bottomStartY + (1 - progress) * -MENU_ROW_HEIGHT
             alpha = progress
         }
 
@@ -109,20 +96,14 @@ class MainMenu(skin: Skin) : MenuTable(skin) {
             isVisible = shown
             renderToFrameBuffer = false
             transitionAction = null
-
-            // Place all animated widgets to their correct position
-            topRow.y = topStartY
-            bottomRow.y = bottomStartY
         }
     }
 
-    class MainMenuStyle : MenuTableStyle()
+    class InGameMenuStyle : MenuTableStyle()
 
     companion object {
-        const val ITEM_POS_TOP = 0
-        const val ITEM_POS_BOTTOM = 1
-
-        private const val MENU_ROW_HEIGHT = 100f
+        const val ITEM_POS_LEFT = 0
+        const val ITEM_POS_RIGHT = 1
     }
 
 }

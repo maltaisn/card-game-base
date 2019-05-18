@@ -30,13 +30,13 @@ import kotlin.math.max
 
 /**
  * A sub menu of the game, has a title, a back arrow, a list of menu items and a content pane.
- * When the menu is created, it is hidden.
+ * The list of items is optional and can be either on the left or the right side.
  */
 class SubMenu(skin: Skin) : MenuTable(skin) {
 
     val style = skin[SubMenuStyle::class.java]
 
-    /** The submenu title, shown at the top. May be null for none. */
+    /** The submenu title, shown at the top. May be `null` for none. */
     var title: CharSequence?
         get() = titleLabel.text
         set(value) {
@@ -56,10 +56,11 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
     val contentPane = ScrollView(content, ScrollPane.ScrollPaneStyle(
             style.contentBackground, null, null, null, null))
 
-    override var shown = false
+    override var shown
+        get() = super.shown
         set(value) {
-            if (field == value) return
-            field = value
+            if (super.shown == value) return
+            super.shown = value
 
             contentPane.setScrollFocus(value)
 
@@ -95,19 +96,11 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
     /** The listener called when the back arrow is clicked. */
     var backArrowClickListener: (() -> Unit)? = null
 
-    internal var transitionAction: TransitionAction? = null
-        set(value) {
-            if (field != null) removeAction(field)
-            field = value
-            if (value != null) addAction(value)
-        }
-
     private val headerTable = Table()
     private val titleLabel = SdfLabel(skin, style.titleStyle)
     private val menuTable = Table()
 
     init {
-        isVisible = false
         checkable = true
 
         val backBtn = MenuButton(skin, style.titleStyle, null, style.backArrowIcon)
@@ -127,9 +120,7 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
     override fun layout() {
         super.layout()
 
-        transitionAction?.let {
-            it.contentStartY = contentPane.y
-        }
+        (transitionAction as TransitionAction?)?.contentStartY = contentPane.y
     }
 
     override fun invalidateLayout() {
@@ -159,13 +150,13 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
         // Create the menu buttons and add them the menu table
         menuTable.clearChildren()
         for (item in items) {
-            if (item.position == MenuItem.Position.TOP) {
+            if (item.position == ITEM_POS_TOP) {
                 addButtonToMenuTable(item)
             }
         }
         menuTable.add().grow().row()
         for (item in items) {
-            if (item.position == MenuItem.Position.BOTTOM) {
+            if (item.position == ITEM_POS_BOTTOM) {
                 addButtonToMenuTable(item)
             }
         }
@@ -189,11 +180,6 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
             btn.pad(10f, 20f, 10f, 10f)
         }
         menuTable.row()
-    }
-
-    override fun clearActions() {
-        super.clearActions()
-        transitionAction = null
     }
 
 
@@ -248,6 +234,9 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
     }
 
     companion object {
+        const val ITEM_POS_TOP = 0
+        const val ITEM_POS_BOTTOM = 1
+
         /** The duration of the overall transition. */
         private const val TRANSITION_DURATION = 0.5f
 

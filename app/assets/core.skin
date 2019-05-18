@@ -13,6 +13,14 @@
       fontSize: 22
       fontColor: textColorBlack
     }
+    menuItem: {
+      bold: true
+      allCaps: true
+      fontSize: 22
+      fontColor: textColorWhite
+      drawShadow: true
+      shadowColor: black
+    }
   }
   com.maltaisn.cardgame.widget.GameLayer$CoreStyle: {
     default: {
@@ -101,14 +109,7 @@
   }
   com.maltaisn.cardgame.widget.menu.MainMenu$MainMenuStyle: {
     default: {
-      itemFontStyle: {
-        bold: true
-        allCaps: true
-        fontSize: 22
-        fontColor: textColorWhite
-        drawShadow: true
-        shadowColor: black
-      }
+      itemFontStyle: menuItem
       itemIconSize: 48
     }
   }
@@ -121,16 +122,15 @@
         shadowColor: black
       }
       backArrowIcon: icon-chevron-left
-      itemFontStyle: {
-        bold: true
-        allCaps: true
-        fontSize: 22
-        fontColor: textColorWhite
-        drawShadow: true
-        shadowColor: black
-      }
+      itemFontStyle: menuItem
       itemIconSize: 32
       contentBackground: submenu-content-background
+    }
+  }
+  com.maltaisn.cardgame.widget.menu.InGameMenu$InGameMenuStyle: {
+    default: {
+      itemFontStyle: menuItem
+      itemIconSize: 48
     }
   }
   com.maltaisn.cardgame.widget.menu.MenuDrawer$MenuDrawerStyle: {
@@ -249,6 +249,7 @@
   }
   com.maltaisn.cardgame.widget.menu.DefaultGameMenu$DefaultGameMenuStyle: {
     default: {
+      defaultIcon: icon-cards
       prefsHelpFontStyle: normal
       newGameIcon: icon-cards
       continueIcon: icon-arrow-right
@@ -257,6 +258,8 @@
       statsIcon: icon-list
       aboutIcon: icon-info
       startGameIcon: icon-arrow-right
+      backBtnIcon: icon-chevron-left
+      scoreboardBtnIcon: icon-list
     }
   }
 }

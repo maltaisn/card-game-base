@@ -17,13 +17,12 @@
 package com.maltaisn.cardgame.tests.core.tests
 
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
-import com.maltaisn.cardgame.CardGameLayout
 import com.maltaisn.cardgame.tests.core.CardGameTest
+import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.menu.MenuButton
 import com.maltaisn.cardgame.widget.menu.MenuIcons
+import ktx.actors.onClick
 
 
 /**
@@ -74,17 +73,15 @@ class MenuButtonTest : CardGameTest() {
             iconSide = MenuButton.Side.RIGHT
             iconSize = 32f
         }
-        centerBtn.addListener(object : ClickListener() {
-            override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                // Enable or disable all
-                val enabled = !topBtn.enabled
-                for (btn in sideBtns) {
-                    btn.enabled = enabled
-                }
-
-                centerBtn.title = if (enabled) "Enable all" else "Disable all"
+        centerBtn.onClick {
+            // Enable or disable all
+            val enabled = !topBtn.enabled
+            for (btn in sideBtns) {
+                btn.enabled = enabled
             }
-        })
+
+            centerBtn.title = if (enabled) "Enable all" else "Disable all"
+        }
 
         // Add buttons to table
         table.add()

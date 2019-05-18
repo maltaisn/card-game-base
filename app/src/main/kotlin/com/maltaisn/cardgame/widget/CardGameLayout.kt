@@ -14,36 +14,34 @@
  * limitations under the License.
  */
 
-package com.maltaisn.cardgame
+package com.maltaisn.cardgame.widget
 
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup
 import com.badlogic.gdx.scenes.scene2d.utils.Layout
 import com.badlogic.gdx.utils.Disposable
+import com.maltaisn.cardgame.Resources
 import com.maltaisn.cardgame.core.CardGame
 import com.maltaisn.cardgame.core.GameEvent
 import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.PrefEntry
-import com.maltaisn.cardgame.widget.GameLayer
-import com.maltaisn.cardgame.widget.PopupGroup
 import com.maltaisn.cardgame.widget.card.CardAnimationLayer
+import com.maltaisn.cardgame.widget.menu.GameMenu
 
 
 /**
  * Custom container that places its children on top of each other, matching its size.
  * Game layer uses custom bounds to account for its side tables.
  *
- * The game layout manages the game actors (card containers, popups, markers, etc) and update them after a move.
+ * The game layout manages the game actors (card containers, popups, markers, etc)
+ * and updates them after a game event.
  */
 abstract class CardGameLayout(assetManager: AssetManager,
                               val settings: GamePrefs) :
         WidgetGroup(), Disposable, PrefEntry.PrefListener {
 
     protected var game: CardGame? = null
-
-    /** Whether the card game layout is shown or not. */
-    abstract var shown: Boolean
 
     protected val coreSkin: Skin = assetManager[Resources.CORE_SKIN]
 
@@ -55,6 +53,16 @@ abstract class CardGameLayout(assetManager: AssetManager,
 
     /** Group where popups are shown. */
     val popupGroup: PopupGroup
+
+    /** The game menu. */
+    var gameMenu: GameMenu? = null
+        set(value) {
+            check(field == null) { "Game menu can only be set once." }
+            if (value != null) {
+                field = value
+                addActor(value)
+            }
+        }
 
 
     init {
@@ -99,6 +107,8 @@ abstract class CardGameLayout(assetManager: AssetManager,
         this.game?.dispose()
         this.game = game
         game.eventListener = { doEvent(it) }
+
+        gameMenu?.showInGameMenu()
     }
 
     /**

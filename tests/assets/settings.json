@@ -6,6 +6,16 @@
       title: "@string/pref_interface"
       icon: "icon-book"
       prefs: {
+        debug: {
+          type: "switch"
+          title: "Enable debug mode"
+          defaultValue: false
+        }
+        enable_continue: {
+          type: "switch"
+          title: "Enable continue menu item"
+          defaultValue: false
+        }
         fullscreen: {
           type: "switch"
           title: "@string/pref_fullscreen"

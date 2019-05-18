@@ -54,6 +54,10 @@ object DesktopLauncher {
             layoutOrientation = JList.VERTICAL
             font = Font(font.name, Font.PLAIN, 16)
             border = EmptyBorder(5, 5, 5, 5)
+        }
+
+        JScrollPane().apply {
+            setViewportView(list)
             frame.add(this, BorderLayout.CENTER)
         }
 

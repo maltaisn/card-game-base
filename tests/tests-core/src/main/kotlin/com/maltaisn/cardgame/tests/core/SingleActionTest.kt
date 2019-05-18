@@ -19,7 +19,7 @@ package com.maltaisn.cardgame.tests.core
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
-import com.maltaisn.cardgame.CardGameLayout
+import com.maltaisn.cardgame.widget.CardGameLayout
 
 
 /**

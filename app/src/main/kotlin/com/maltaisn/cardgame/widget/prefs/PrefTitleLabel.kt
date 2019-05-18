@@ -18,13 +18,12 @@ package com.maltaisn.cardgame.widget.prefs
 
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Rectangle
-import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.SdfLabel
+import ktx.actors.onClickEvent
 
 
 /**
@@ -44,13 +43,11 @@ class PrefTitleLabel(skin: Skin, sdfStyle: FontStyle, text: CharSequence? = null
 
 
     init {
-        addListener(object : ClickListener() {
-            override fun clicked(event: InputEvent, x: Float, y: Float) {
-                if (enabled && helpIcon != null && iconRect.contains(x, y)) {
-                    iconClickListener?.invoke()
-                }
+        onClickEvent { _, _, x, y ->
+            if (enabled && helpIcon != null && iconRect.contains(x, y)) {
+                iconClickListener?.invoke()
             }
-        })
+        }
     }
 
     override fun draw(batch: Batch, parentAlpha: Float) {

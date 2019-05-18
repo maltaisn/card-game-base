@@ -25,6 +25,7 @@ object MenuIcons {
 
     const val CARDS = "icon-cards"
     const val CHEVRON_LEFT = "icon-chevron-left"
+    const val CHEVRON_RIGHT = "icon-chevron-right"
     const val ARROW_RIGHT = "icon-arrow-right"
     const val BOOK = "icon-book"
     const val SETTINGS = "icon-settings"

@@ -17,10 +17,10 @@
 package com.maltaisn.cardgame.tests.core.tests
 
 import com.badlogic.gdx.utils.Align
-import com.maltaisn.cardgame.CardGameLayout
 import com.maltaisn.cardgame.core.PCard
 import com.maltaisn.cardgame.tests.core.CenterLayout
 import com.maltaisn.cardgame.tests.core.SingleActionTest
+import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.card.CardAnimationLayer
 import com.maltaisn.cardgame.widget.card.CardHand
 import com.maltaisn.cardgame.widget.card.CardStack

@@ -18,16 +18,23 @@ package com.maltaisn.cardgame.tests.core.tests
 
 import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.prefs.GamePrefs
-import com.maltaisn.cardgame.tests.core.SingleActionTest
+import com.maltaisn.cardgame.prefs.PrefEntry
+import com.maltaisn.cardgame.prefs.SwitchPref
+import com.maltaisn.cardgame.tests.core.CardGameTest
+import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.menu.DefaultGameMenu
 import ktx.assets.load
+import ktx.log.info
 
 
 /**
  * Test [DefaultGameMenu] with settings and rules.
  * Test [GamePrefs.save] on pause.
  */
-class MenuTest : SingleActionTest() {
+class DefaultGameMenuTest : CardGameTest() {
+
+    private lateinit var debugPref: SwitchPref
+    private lateinit var continuePref: SwitchPref
 
     override fun load() {
         super.load()
@@ -37,30 +44,58 @@ class MenuTest : SingleActionTest() {
         assetManager.load<Markdown>(MD_RULES)
     }
 
-    override fun start() {
-        super.start()
+    override fun layout(layout: CardGameLayout) {
+        super.layout(layout)
 
         val menu = DefaultGameMenu(coreSkin)
-        menu.continueItem.enabled = false
-        menu.shown = true
-        gameMenu = menu
+        layout.gameMenu = menu
 
+        // New game
         val newGamePrefs = assetManager.get<GamePrefs>(PREFS_NEW_GAME)
         menu.newGameOptions = newGamePrefs
         menu.startGameListener = {
-            menu.shown = false
+            menu.showInGameMenu()
+            info { "Start game clicked." }
         }
         prefs += newGamePrefs
 
+        // Settings
         val settingsPrefs = assetManager.get<GamePrefs>(PREFS_SETTINGS)
         menu.settings = settingsPrefs
         prefs += settingsPrefs
 
+        // Rules
         menu.rules = assetManager.get(MD_RULES)
 
-        action = {
-            menu.shown = !menu.shown
+        // Continue
+        continuePref = settingsPrefs["enable_continue"] as SwitchPref
+        continuePref.listeners += object : PrefEntry.PrefListener {
+            override fun onPreferenceValueChanged(pref: PrefEntry) {
+                menu.continueItem.enabled = continuePref.value
+            }
         }
+        menu.continueItem.enabled = continuePref.value
+        menu.continueListener = {
+            info { "Continue clicked." }
+            menu.showInGameMenu()
+        }
+
+        // In game
+        menu.exitGameListener = {
+            info { "Exit game clicked." }
+        }
+        menu.scoreboardListener = {
+            info { "Show scoreboard clicked." }
+        }
+
+        // Debug
+        debugPref = settingsPrefs["debug"] as SwitchPref
+        debugPref.listeners += object : PrefEntry.PrefListener {
+            override fun onPreferenceValueChanged(pref: PrefEntry) {
+                isDebugAll = debugPref.value
+            }
+        }
+        isDebugAll = debugPref.value
     }
 
     override fun pause() {
@@ -70,6 +105,12 @@ class MenuTest : SingleActionTest() {
         for (pref in prefs) {
             pref.save()
         }
+    }
+
+    override fun dispose() {
+        super.dispose()
+        continuePref.listeners.clear()
+        debugPref.listeners.clear()
     }
 
     companion object {

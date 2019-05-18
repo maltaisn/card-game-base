@@ -16,12 +16,11 @@
 
 package com.maltaisn.cardgame.tests.core
 
-import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
-import com.maltaisn.cardgame.CardGameLayout
+import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.menu.MenuButton
+import ktx.actors.onClick
 
 
 /**
@@ -44,11 +43,7 @@ abstract class ActionBarTest : CardGameTest() {
     protected inline fun addActionBtn(title: String, crossinline action: (MenuButton) -> Unit): MenuButton {
         val fontStyle = FontStyle(fontSize = 20f, drawShadow = true)
         val btn = MenuButton(coreSkin, fontStyle, title, null)
-        btn.addListener(object : ClickListener() {
-            override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                action(btn)
-            }
-        })
+        btn.onClick { action(btn) }
         btnTable.add(btn).grow().pad(0f, 5f, 0f, 5f).expand()
         return btn
     }

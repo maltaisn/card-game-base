@@ -100,18 +100,18 @@ class GamePrefs {
         }
 
         // Add dependency listeners
-        forEachPref(true) { pref ->
-            val dep = pref.dependency
-            if (dep != null) {
-                val depPref = this[dep]
-                checkNotNull(depPref) { "Preference '${pref.key}' has dependency that doesn't exists." }
-                check(depPref is SwitchPref) { "Preference '${pref.key}' has dependency that isn't a switch." }
+        forEachPref(true) { dependant ->
+            val dependency = dependant.dependency
+            if (dependency != null) {
+                val depPref = this[dependency]
+                checkNotNull(depPref) { "Preference '${dependant.key}' has dependency that doesn't exists." }
+                check(depPref is SwitchPref) { "Preference '${dependant.key}' has dependency that isn't a switch." }
                 depPref.listeners += object : PrefEntry.PrefListener {
                     override fun onPreferenceValueChanged(pref: PrefEntry) {
-                        pref.enabled = (depPref.value != depPref.disableDependentsState)
+                        dependant.enabled = (depPref.value != depPref.disableDependentsState)
                     }
                 }
-                pref.enabled = (depPref.value != depPref.disableDependentsState)
+                dependant.enabled = (depPref.value != depPref.disableDependentsState)
             }
         }
     }
@@ -120,7 +120,7 @@ class GamePrefs {
      * Do an [action] on each game preference, including those inside categories.
      * @param includeCategories Whether to also do the action on categories.
      */
-    inline fun forEachPref(includeCategories: Boolean = false, action: (PrefEntry) -> Unit) {
+    fun forEachPref(includeCategories: Boolean = false, action: (PrefEntry) -> Unit) {
         for (pref in prefs.values) {
             if (pref is PrefCategory) {
                 if (includeCategories) {
