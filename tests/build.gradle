@@ -1,0 +1,24 @@
+plugins {
+    id "kotlin"
+}
+
+// Tasks to copy the card game assets to the tests module assets dir
+task copyAssets {
+    file("assets").mkdirs()
+    copy {
+        from "../assets"
+        into "assets"
+    }
+}
+
+task cleanAssets(type: Delete) {
+    delete "assets/core"
+}
+
+clean {
+    finalizedBy cleanAssets
+}
+
+build {
+    finalizedBy copyAssets
+}

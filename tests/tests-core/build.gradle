@@ -1,4 +1,12 @@
-apply plugin: "kotlin"
+plugins {
+    id "kotlin"
+}
+
+sourceSets {
+    main {
+        java.srcDirs = ["src/main/kotlin"]
+    }
+}
 
 dependencies {
     api project(':app')
@@ -16,7 +24,7 @@ dependencies {
     implementation "io.github.libktx:ktx-log:$ktxVersion"
     implementation "io.github.libktx:ktx-style:$ktxVersion"
 
-    implementation "com.gmail.blueboxware:libgdxpluginannotations:1.16"
+    compileOnly "com.gmail.blueboxware:libgdxpluginannotations:1.16"
 
     testImplementation "junit:junit:$junitVersion"
 }
@@ -24,31 +32,4 @@ dependencies {
 java {
     sourceCompatibility = JavaVersion.VERSION_1_6
     targetCompatibility = JavaVersion.VERSION_1_6
-}
-
-sourceSets {
-    main {
-        java.srcDirs = ["src/main/kotlin"]
-    }
-}
-
-// Tasks to copy the card game assets to the tests module assets dir
-task copyAppAssets {
-    file("../assets/core").mkdirs()
-    copy {
-        from "../../app/assets"
-        into "../assets/core"
-    }
-}
-
-task cleanAppAssets(type: Delete) {
-    setDelete("../assets/core")
-}
-
-clean {
-    finalizedBy cleanAppAssets
-}
-
-build {
-    finalizedBy copyAppAssets
 }

@@ -1,5 +1,7 @@
-apply plugin: "com.android.application"
-apply plugin: "kotlin-android"
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+}
 
 android {
     buildToolsVersion "28.0.3"
@@ -18,7 +20,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 28
         versionCode 1
-        versionName "1.0.0"
+        versionName "0.0.1"
     }
     buildTypes {
         release {
@@ -29,11 +31,6 @@ android {
 }
 
 configurations { natives }
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_6
-    targetCompatibility = JavaVersion.VERSION_1_6
-}
 
 dependencies {
     implementation project(":tests:tests-core")
@@ -49,6 +46,11 @@ dependencies {
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_6
+    targetCompatibility = JavaVersion.VERSION_1_6
 }
 
 // called every time gradle gets executed, takes the native dependencies of
@@ -88,15 +90,15 @@ tasks.whenTaskAdded { packageTask ->
 
 // Tasks to copy the tests assets to the android module assets dir
 task copyTestAssets {
-    file("assets/").mkdirs()
+    file("assets").mkdirs()
     copy {
         from "../assets"
-        into "assets/"
+        into "assets"
     }
 }
 
 task cleanTestAssets(type: Delete) {
-    setDelete("assets/")
+    delete "assets"
 }
 
 clean {
