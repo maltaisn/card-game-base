@@ -206,7 +206,7 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
             title = newGameStr
             menuPosition = SubMenu.MenuPosition.RIGHT
 
-            val startGameItem = MenuItem(1000, bundle["menu_start_game"],
+            val startGameItem = MenuItem(1000, bundle.get("menu_start_game"),
                     this@DefaultGameMenu.style.startGameIcon, SubMenu.ITEM_POS_BOTTOM)
             startGameItem.checkable = false
             items += startGameItem
