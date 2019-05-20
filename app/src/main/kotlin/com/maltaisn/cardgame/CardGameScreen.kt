@@ -198,7 +198,12 @@ abstract class CardGameScreen : Stage(ExtendViewport(960f, 540f)), Screen {
         super.dispose()
         assetManager.dispose()
         offscreenFbo.dispose()
-        gameLayout?.dispose()
+
+        // Clear all remaining preference listeners.
+        // This is usually done by then but just to make sure.
+        for (gamePrefs in prefs) {
+            gamePrefs.clearAllListeners()
+        }
     }
 
     private fun updateOffscreenFrameBuffer() {

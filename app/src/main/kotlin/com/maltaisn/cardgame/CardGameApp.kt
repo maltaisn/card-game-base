@@ -32,4 +32,9 @@ abstract class CardGameApp : Game() {
         Gdx.app.logLevel = Application.LOG_DEBUG
     }
 
+    override fun dispose() {
+        super.dispose()
+        screen.dispose()
+    }
+
 }

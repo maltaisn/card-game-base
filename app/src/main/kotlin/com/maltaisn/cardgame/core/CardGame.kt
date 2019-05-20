@@ -58,12 +58,12 @@ abstract class CardGame(val settings: GamePrefs) : PrefEntry.PrefListener, Dispo
 
 
     init {
-        for (pref in settings.prefs.values) {
-            pref.listeners += this
-        }
+        settings.addListener(this)
     }
 
-
+    /**
+     * Load a game object from a [file].
+     */
     constructor(settings: GamePrefs, file: FileHandle) : this(settings)
 
 
@@ -130,9 +130,7 @@ abstract class CardGame(val settings: GamePrefs) : PrefEntry.PrefListener, Dispo
     override fun dispose() {
         // Detach all listeners
         eventListener = null
-        for (pref in settings.prefs.values) {
-            pref.listeners -= this
-        }
+        settings.removeListener(this)
 
         // Cancel all coroutines
         coroutineScope.cancel()

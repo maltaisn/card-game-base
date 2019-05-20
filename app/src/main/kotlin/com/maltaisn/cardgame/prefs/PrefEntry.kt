@@ -47,7 +47,7 @@ abstract class PrefEntry {
     /** Optional dependency, the key of a switch preference. */
     var dependency: String? = null
 
-    /** Listeners called when the value of this preference has changed. */
+    /** Listeners called when the value or enabled state of this preference has changed. */
     val listeners = mutableListOf<PrefListener>()
 
 

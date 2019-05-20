@@ -82,20 +82,6 @@ class PrefsGroup(skin: Skin, val prefs: GamePrefs) : Table() {
     }
 
 
-    /**
-     * Detach all preference listeners attached when the views were created.
-     * Must be called when the view is not used anymore to prevent memory leak.
-     */
-    fun detachListeners() {
-        for (child in children) {
-            if (child is PrefEntryView<*>) {
-                child.detachListener()
-            }
-        }
-        helpListener = null
-        listClickListener = null
-    }
-
     class PrefsGroupStyle {
         lateinit var separator: Drawable
     }

@@ -17,10 +17,10 @@
 package com.maltaisn.cardgame.widget
 
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup
 import com.badlogic.gdx.scenes.scene2d.utils.Layout
-import com.badlogic.gdx.utils.Disposable
 import com.maltaisn.cardgame.Resources
 import com.maltaisn.cardgame.core.CardGame
 import com.maltaisn.cardgame.core.GameEvent
@@ -39,7 +39,7 @@ import com.maltaisn.cardgame.widget.menu.GameMenu
  */
 abstract class CardGameLayout(assetManager: AssetManager,
                               val settings: GamePrefs) :
-        WidgetGroup(), Disposable, PrefEntry.PrefListener {
+        WidgetGroup(), PrefEntry.PrefListener {
 
     protected var game: CardGame? = null
 
@@ -76,12 +76,20 @@ abstract class CardGameLayout(assetManager: AssetManager,
         addActor(gameLayer)
         addActor(cardAnimationLayer)
         addActor(popupGroup)
-
-        for (pref in settings.prefs.values) {
-            pref.listeners += this
-        }
     }
 
+    override fun setStage(stage: Stage?) {
+        super.setStage(stage)
+        if (stage == null) {
+            settings.removeListener(this)
+
+            // Dispose game
+            game?.dispose()
+            game = null
+        } else {
+            settings.addListener(this)
+        }
+    }
 
     override fun layout() {
         super.layout()
@@ -116,15 +124,5 @@ abstract class CardGameLayout(assetManager: AssetManager,
      * Layout should be updated accordingly.
      */
     abstract fun doEvent(event: GameEvent)
-
-
-    override fun dispose() {
-        // Detach listeners
-        for (pref in settings.prefs.values) {
-            pref.listeners -= this
-        }
-        game?.dispose()
-        game = null
-    }
 
 }

@@ -86,18 +86,6 @@ class PrefCategoryView(skin: Skin, category: PrefCategory) :
         this.enabled = enabled
     }
 
-    override fun detachListener() {
-        // Detach all preferences listeners
-        super.detachListener()
-        for (child in children) {
-            if (child is GamePrefView<*>) {
-                child.detachListener()
-            }
-        }
-        helpListener = null
-        listClickListener = null
-    }
-
 
     class PrefCategoryViewStyle : PrefEntryView.PrefEntryViewStyle() {
         lateinit var separator: Drawable

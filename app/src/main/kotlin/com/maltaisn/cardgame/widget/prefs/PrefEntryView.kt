@@ -16,6 +16,7 @@
 
 package com.maltaisn.cardgame.widget.prefs
 
+import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.maltaisn.cardgame.prefs.PrefEntry
@@ -24,8 +25,8 @@ import com.maltaisn.cardgame.widget.FontStyle
 
 /**
  * Base class for a preference view.
- * The view attaches a listener to the preference when created and
- * [detachListener] must be called when view becomes unused to prevent a memory leak.
+ * The view attaches a listener to the preference when added to the stage and
+ * the listener is removed when removed from the stage.
  */
 abstract class PrefEntryView<T : PrefEntry>(skin: Skin, val pref: T) :
         Table(skin), PrefEntry.PrefListener {
@@ -34,18 +35,18 @@ abstract class PrefEntryView<T : PrefEntry>(skin: Skin, val pref: T) :
     open var enabled = pref.enabled
 
 
-    init {
-        pref.listeners += this
+    override fun setStage(stage: Stage?) {
+        super.setStage(stage)
+        if (stage == null) {
+            pref.listeners -= this
+        } else {
+            pref.listeners += this
+        }
     }
 
     final override fun onPreferenceEnabledStateChanged(pref: PrefEntry, enabled: Boolean) {
         val categoryEnabled = (parent as? PrefCategoryView)?.pref?.enabled ?: true
         this.enabled = categoryEnabled && enabled
-    }
-
-    /** Detach the preference listener attached when the view was created. */
-    open fun detachListener() {
-        pref.listeners -= this
     }
 
 

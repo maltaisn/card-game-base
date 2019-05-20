@@ -206,6 +206,34 @@ class GamePrefs {
         "Invalid text preference key '$key'."
     }
 
+    /**
+     * Add a preference listener for all preferences.
+     */
+    fun addListener(listener: PrefEntry.PrefListener) {
+        for (pref in prefs.values) {
+            pref.listeners += listener
+        }
+    }
+
+    /**
+     * Remove a preference listener for all preferences.
+     */
+    fun removeListener(listener: PrefEntry.PrefListener) {
+        for (pref in prefs.values) {
+            pref.listeners -= listener
+        }
+    }
+
+    /**
+     * Clear all preference listeners.
+     * Preference object should not but used after calling this.
+     */
+    fun clearAllListeners() {
+        for (pref in prefs.values) {
+            pref.listeners.clear()
+        }
+    }
+
     override fun toString() = "[name: \"$name\", ${prefs.size} entries]"
 
     companion object {

@@ -33,9 +33,6 @@ import ktx.log.info
  */
 class DefaultGameMenuTest : CardGameTest() {
 
-    private lateinit var debugPref: SwitchPref
-    private lateinit var continuePref: SwitchPref
-
     override fun load() {
         super.load()
 
@@ -68,7 +65,7 @@ class DefaultGameMenuTest : CardGameTest() {
         menu.rules = assetManager.get(MD_RULES)
 
         // Continue
-        continuePref = settingsPrefs["enable_continue"] as SwitchPref
+        val continuePref = settingsPrefs[PREF_CONTINUE] as SwitchPref
         continuePref.listeners += object : PrefEntry.PrefListener {
             override fun onPreferenceValueChanged(pref: PrefEntry) {
                 menu.continueItem.enabled = continuePref.value
@@ -89,7 +86,7 @@ class DefaultGameMenuTest : CardGameTest() {
         }
 
         // Debug
-        debugPref = settingsPrefs["debug"] as SwitchPref
+        val debugPref = settingsPrefs[PREF_DEBUG] as SwitchPref
         debugPref.listeners += object : PrefEntry.PrefListener {
             override fun onPreferenceValueChanged(pref: PrefEntry) {
                 isDebugAll = debugPref.value
@@ -107,16 +104,13 @@ class DefaultGameMenuTest : CardGameTest() {
         }
     }
 
-    override fun dispose() {
-        super.dispose()
-        continuePref.listeners.clear()
-        debugPref.listeners.clear()
-    }
-
     companion object {
         private const val PREFS_NEW_GAME = "new-game-options.json"
         private const val PREFS_SETTINGS = "settings.json"
         private const val MD_RULES = "lorem-ipsum"
+
+        private const val PREF_CONTINUE = "enable_continue"
+        private const val PREF_DEBUG = "debug"
     }
 
 }

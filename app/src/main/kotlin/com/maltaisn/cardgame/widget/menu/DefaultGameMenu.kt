@@ -68,7 +68,6 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
     var settings: GamePrefs? = null
         set(value) {
             field = value
-            settingsView?.detachListeners()
             settingsMenu.items.clear()
             settingsView = if (value != null) {
                 createPreferenceView(settingsMenu, value)
@@ -83,7 +82,6 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
     var newGameOptions: GamePrefs? = null
         set(value) {
             field = value
-            newGameView?.detachListeners()
             newGameMenu.items.subList(0, newGameMenu.items.size - 1).clear()
             newGameView = if (value != null) {
                 createPreferenceView(newGameMenu, value)
@@ -206,7 +204,7 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
             title = newGameStr
             menuPosition = SubMenu.MenuPosition.RIGHT
 
-            val startGameItem = MenuItem(1000, bundle.get("menu_start_game"),
+            val startGameItem = MenuItem(1000, bundle["menu_start_game"],
                     this@DefaultGameMenu.style.startGameIcon, SubMenu.ITEM_POS_BOTTOM)
             startGameItem.checkable = false
             items += startGameItem
