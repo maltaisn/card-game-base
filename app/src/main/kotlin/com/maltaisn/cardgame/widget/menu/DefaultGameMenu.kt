@@ -154,17 +154,17 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
     }
 
     init {
-        @GDXAssets(propertiesFiles = ["app/assets/strings.properties"])
+        @GDXAssets(propertiesFiles = ["assets/core/strings.properties"])
         val bundle: I18NBundle = skin[Resources.CORE_STRINGS_NAME]
 
-        drawer.backBtnText = bundle.get("menu_drawer_back")
+        drawer.backBtnText = bundle["menu_drawer_back"]
 
-        val newGameStr = bundle.get("menu_new_game")
-        val continueStr = bundle.get("menu_continue")
-        val settingsStr = bundle.get("menu_settings")
-        val rulesStr = bundle.get("menu_rules")
-        val statsStr = bundle.get("menu_stats")
-        val aboutStr = bundle.get("menu_about")
+        val newGameStr = bundle["menu_new_game"]
+        val continueStr = bundle["menu_continue"]
+        val settingsStr = bundle["menu_settings"]
+        val rulesStr = bundle["menu_rules"]
+        val statsStr = bundle["menu_stats"]
+        val aboutStr = bundle["menu_about"]
 
         mainMenu.apply {
             // Add main menu items
@@ -206,7 +206,7 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
             title = newGameStr
             menuPosition = SubMenu.MenuPosition.RIGHT
 
-            val startGameItem = MenuItem(1000, bundle.get("menu_start_game"),
+            val startGameItem = MenuItem(1000, bundle["menu_start_game"],
                     this@DefaultGameMenu.style.startGameIcon, SubMenu.ITEM_POS_BOTTOM)
             startGameItem.checkable = false
             items += startGameItem

@@ -65,7 +65,7 @@ open class GameMenu(skin: Skin) : Stack() {
 
 
     init {
-        onKeyDown {
+        onKeyDown(true) {
             if (it == Input.Keys.BACK || it == Input.Keys.ESCAPE) {
                 if (shownMenu is MainMenu && nextShownMenu == null) {
                     // Exit if main menu is shown but not in animation

@@ -23,7 +23,6 @@ import com.maltaisn.cardgame.widget.markdown.MarkdownView
 import com.maltaisn.cardgame.widget.menu.MenuIcons
 import com.maltaisn.cardgame.widget.menu.MenuItem
 import com.maltaisn.cardgame.widget.menu.SubMenu
-import ktx.actors.setKeyboardFocus
 import ktx.assets.load
 import ktx.log.info
 
@@ -49,25 +48,32 @@ class SubMenuTest : ActionBarTest() {
                 MenuItem(2, "Bottom aligned", coreSkin.getDrawable(MenuIcons.CHEVRON_RIGHT), SubMenu.ITEM_POS_BOTTOM))
 
         val markdown = assetManager.get<Markdown>("lorem-ipsum")
+        val mdView = MarkdownView(coreSkin, markdown)
+
         val menu = SubMenu(coreSkin).apply {
-            backArrowClickListener = { info { "Back arrow clicked" } }
             itemClickListener = { info { "Item checked: $it" } }
             title = "Sub menu test"
             items += menuItems
-            content.actor = MarkdownView(coreSkin, markdown)
+            content.actor = mdView
             invalidateLayout()
         }
-        menu.shown = true
-        menu.setKeyboardFocus()
 
         layout.gameLayer.centerTable.apply {
             getCell(btnTable).padBottom(0f)
             add(menu).grow()
         }
 
+        menu.shown = true
+
         // Action buttons
-        addTwoStateActionBtn("Hide", "Show") { _, shown ->
-            menu.shown = shown
+        val showBtn = addActionBtn("Hide") {
+            menu.shown = !menu.shown
+            it.title = if (menu.shown) "Hide" else "Show"
+        }
+        menu.backArrowClickListener = {
+            menu.shown = false
+            showBtn.title = "Show"
+            info { "Back arrow clicked" }
         }
 
         var option = 0

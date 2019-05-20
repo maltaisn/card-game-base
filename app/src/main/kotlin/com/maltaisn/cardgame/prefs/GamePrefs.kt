@@ -65,7 +65,7 @@ class GamePrefs {
                 if (jsonData.isString && jsonData.asString().startsWith("@string/")) {
                     // The string is a reference, resolve it.
                     @Suppress("UNCHECKED_CAST")
-                    return bundle.get(jsonData.asString().substring(8)) as T
+                    return bundle[jsonData.asString().substring(8)] as T
                 }
                 return super.readValue(type, elementType, jsonData)
             }

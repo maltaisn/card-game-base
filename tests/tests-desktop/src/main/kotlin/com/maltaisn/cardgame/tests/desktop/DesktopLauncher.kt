@@ -60,6 +60,7 @@ object DesktopLauncher {
             setViewportView(list)
             frame.add(this, BorderLayout.CENTER)
         }
+        list.ensureIndexIsVisible(list.selectedIndex)
 
         JButton("Run test").apply {
             font = Font(font.name, Font.BOLD, 16)

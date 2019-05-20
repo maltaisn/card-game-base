@@ -56,6 +56,9 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
     val contentPane = ScrollView(content, ScrollPane.ScrollPaneStyle(
             style.contentBackground, null, null, null, null))
 
+    /**
+     * Sub menu should be shown after being added to the stage to properly gain scroll focus.
+     */
     override var shown
         get() = super.shown
         set(value) {

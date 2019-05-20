@@ -41,20 +41,25 @@ class AndroidLauncher : AppCompatActivity() {
 
         val prefs = getSharedPreferences("testPrefs", Context.MODE_PRIVATE)
 
-        runBtn = findViewById(R.id.btn_run)
         testRcv = findViewById(R.id.rcv_tests)
-
         val keys = CardGameTests.TESTS_MAP.keys.toList()
         val adapter = TestAdapter(keys.map { TestItem(it, false) })
-        adapter.selectAt(keys.indexOf(prefs.getString("lastTest", null) ?: ""))
         testRcv.layoutManager = LinearLayoutManager(this)
         testRcv.adapter = adapter
 
-        runBtn.isEnabled = (adapter.selectedIndex != RecyclerView.NO_POSITION)
+        runBtn = findViewById(R.id.btn_run)
         runBtn.setOnClickListener {
             val testName = adapter.selectedItem!!.name
             prefs.edit().putString("lastTest", testName).apply()
             runTest(testName)
+        }
+
+        // Select last ran test
+        val lastTestIndex = keys.indexOf(prefs.getString("lastTest", null) ?: "")
+        if (lastTestIndex != -1) {
+            adapter.selectAt(lastTestIndex)
+            testRcv.scrollToPosition(lastTestIndex)
+            runBtn.isEnabled = true
         }
     }
 

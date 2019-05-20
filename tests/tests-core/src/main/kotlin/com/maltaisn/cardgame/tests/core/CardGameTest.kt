@@ -43,10 +43,6 @@ abstract class CardGameTest : CardGameScreen() {
         cardSkin = assetManager.getAsset(Resources.PCARD_SKIN)
 
         gameLayout = object : CardGameLayout(assetManager, GamePrefs("unused")) {
-            init {
-                layout(this)
-            }
-
             override fun initGame(game: CardGame) {
                 throw UnsupportedOperationException()
             }
@@ -55,6 +51,7 @@ abstract class CardGameTest : CardGameScreen() {
                 throw UnsupportedOperationException()
             }
         }
+        layout(gameLayout!!)
     }
 
     open fun layout(layout: CardGameLayout) {
