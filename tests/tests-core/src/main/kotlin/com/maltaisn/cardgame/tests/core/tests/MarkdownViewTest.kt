@@ -71,7 +71,7 @@ class MarkdownViewTest : CardGameTest() {
     }
 
     companion object {
-        private const val MARKDOWN_FILE = "rules"
+        private const val MARKDOWN_FILE = "lorem-ipsum"
     }
 
 }

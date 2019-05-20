@@ -103,12 +103,14 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
     init {
         checkable = true
 
-        val backBtn = MenuButton(skin, style.titleStyle, null, style.backArrowIcon)
-        backBtn.iconSize = 64f
-        backBtn.onClick { backArrowClickListener?.invoke() }
+        val backBtn = MenuButton(skin, style.titleStyle, null, style.backArrowIcon).apply {
+            pad(5f)
+            iconSize = this@SubMenu.style.backArrowSize
+            onClick { backArrowClickListener?.invoke() }
+        }
 
-        headerTable.pad(25f, 25f, 0f, 20f)
-        headerTable.add(backBtn).size(75f, 75f)
+        headerTable.pad(25f, 25f, 0f, 25f)
+        headerTable.add(backBtn)
         headerTable.add(titleLabel).padLeft(15f).grow()
 
         content.fill().pad(0f, 20f, 0f, 20f)
@@ -173,11 +175,12 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
         item.menu = this
         item.button = btn
 
+        val iconPadding = if (item.icon == null) btn.iconSize + btn.style.iconTitleMargin else 0f
         menuTable.add(btn).growX().pad(2f, 0f, 2f, 0f).prefHeight(70f)
         if (menuPosition == MenuPosition.LEFT) {
-            btn.pad(10f, 10f, 10f, 20f)
+            btn.pad(10f, 10f + iconPadding, 10f, 20f)
         } else {
-            btn.pad(10f, 20f, 10f, 10f)
+            btn.pad(10f, 20f + iconPadding, 10f, 10f)
         }
         menuTable.row()
     }
@@ -226,6 +229,7 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
     class SubMenuStyle : MenuTableStyle() {
         lateinit var titleStyle: FontStyle
         lateinit var backArrowIcon: Drawable
+        var backArrowSize = 0f
         lateinit var contentBackground: Drawable
     }
 

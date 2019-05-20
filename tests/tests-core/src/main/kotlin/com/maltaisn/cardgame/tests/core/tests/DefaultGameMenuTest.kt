@@ -116,7 +116,7 @@ class DefaultGameMenuTest : CardGameTest() {
     companion object {
         private const val PREFS_NEW_GAME = "new-game-options.json"
         private const val PREFS_SETTINGS = "settings.json"
-        private const val MD_RULES = "rules"
+        private const val MD_RULES = "lorem-ipsum"
     }
 
 }

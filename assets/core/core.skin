@@ -122,6 +122,7 @@
         shadowColor: black
       }
       backArrowIcon: icon-chevron-left
+      backArrowSize: 64
       itemFontStyle: menuItem
       itemIconSize: 32
       contentBackground: submenu-content-background
@@ -130,7 +131,7 @@
   com.maltaisn.cardgame.widget.menu.InGameMenu$InGameMenuStyle: {
     default: {
       itemFontStyle: menuItem
-      itemIconSize: 48
+      itemIconSize: 64
     }
   }
   com.maltaisn.cardgame.widget.menu.MenuDrawer$MenuDrawerStyle: {

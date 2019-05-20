@@ -65,7 +65,7 @@ class InGameMenu(skin: Skin) : MenuTable(skin) {
 
         for (item in items) {
             val btn = MenuButton(skin, style.itemFontStyle, item.title, item.icon).apply {
-                pad(10f)
+                pad(5f)
                 onClick { btnClickListener(this) }
                 anchorSide = MenuButton.Side.NONE
                 iconSide = MenuButton.Side.LEFT
