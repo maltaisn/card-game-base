@@ -104,6 +104,7 @@ class PCard private constructor(val rank: Int, val suit: Int, value: Int) : Card
 
         /**
          * Get a card by its [rank] and [suit].
+         * TODO replaceable with invoke
          */
         fun get(rank: Int, suit: Int): PCard {
             var card: PCard? = null
@@ -122,6 +123,7 @@ class PCard private constructor(val rank: Int, val suit: Int, value: Int) : Card
 
         /**
          * Get a card from its string representation.
+         * TODO replaceable with invoke
          */
         fun parse(cardStr: String): PCard {
             val suit = SUIT_STR.indexOf(cardStr.last())

@@ -72,6 +72,7 @@ open class Deck<T : Card> : ArrayList<T> {
 
     /**
      * Remove duplicate cards from this deck, keeping the order.
+     * FIXME assumes there are no more than 128 cards possible...
      */
     fun removeDuplicates() {
         val found = BitSet(128)
@@ -109,20 +110,6 @@ open class Deck<T : Card> : ArrayList<T> {
         deck1.sortWith(comparator)
         deck2.sortWith(comparator)
         return deck1 == deck2
-    }
-
-    override fun toString(): String {
-        val sb = StringBuilder()
-        sb.append('[')
-        for (card in this) {
-            sb.append(card)
-            sb.append(", ")
-        }
-        if (sb.length > 1) {
-            sb.delete(sb.length - 2, sb.length)
-        }
-        sb.append(']')
-        return sb.toString()
     }
 
     /**

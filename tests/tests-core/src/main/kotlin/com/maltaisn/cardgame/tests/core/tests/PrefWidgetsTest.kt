@@ -20,7 +20,7 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.widget.*
-import ktx.log.debug
+import ktx.log.info
 
 
 /**
@@ -42,14 +42,14 @@ class PrefWidgetsTest : ActionBarTest() {
         // Switch
         val switch = Switch(coreSkin)
         switch.checkListener = { checked ->
-            debug { "Switch checked change to $checked" }
+            info { "Switch checked change to $checked" }
         }
 
         // Slider
         val slider = Slider(coreSkin)
         slider.progress = 50f
         slider.changeListener = { value ->
-            debug { "Slider value changed to $value" }
+            info { "Slider value changed to $value" }
         }
 
         // Do the layout

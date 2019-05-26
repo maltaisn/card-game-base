@@ -44,7 +44,6 @@ dependencies {
     val junitVersion: String by project
 
     implementation(kotlin("stdlib"))
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1")
 
     implementation("com.badlogicgames.gdx:gdx:$gdxVersion")
 
@@ -117,7 +116,7 @@ publishing {
             }
             from(components["java"])
             artifact(tasks["sourcesJar"])
-            artifact(tasks["javadocJar"])
+            //artifact(tasks["javadocJar"])
         }
     }
 }

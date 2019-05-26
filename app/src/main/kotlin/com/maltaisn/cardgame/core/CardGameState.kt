@@ -59,14 +59,14 @@ abstract class CardGameState(val settings: GamePrefs,
     /**
      * Update the state of the game by doing a [move].
      */
-    abstract fun doMove(move: GameEvent.Move)
+    abstract fun doMove(move: CardGameEvent.Move)
 
     /**
      * Get the list of legal moves that can be made by [posToMove] at the current state of the game.
      * The list should be empty when game is done, otherwise must contain at least one move.
      * The state must not be modified from this function: two subsequent calls must return the same moves.
      */
-    abstract fun getMoves(): MutableList<GameEvent.Move>
+    abstract fun getMoves(): MutableList<CardGameEvent.Move>
 
     /**
      * Get a random legal move, or `null` if there is none possible.
@@ -74,7 +74,7 @@ abstract class CardGameState(val settings: GamePrefs,
      * In some cases this can be overriden to prevent the instantiation of a lot of move objects.
      * However, it must always provide all the same possible moves as [getMoves] and with the same probability.
      */
-    open fun getRandomMove(): GameEvent.Move? {
+    open fun getRandomMove(): CardGameEvent.Move? {
         val moves = getMoves()
         if (moves.size == 0) return null
         return moves.random()

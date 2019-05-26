@@ -181,7 +181,6 @@ abstract class CardGameScreen : Stage(ExtendViewport(960f, 540f)), Screen {
         this.game = game
 
         gameLayout?.initGame(game)
-        game.start()
     }
 
     override fun keyDown(keyCode: Int): Boolean {

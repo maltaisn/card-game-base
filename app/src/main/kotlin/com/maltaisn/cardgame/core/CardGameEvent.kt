@@ -18,32 +18,15 @@ package com.maltaisn.cardgame.core
 
 
 /**
+ * Marker interface for a game event.
  * Represents any event that can happen in a game.
  * All events should be immutable.
  */
-sealed class GameEvent {
-
-    object Start : GameEvent()
-
-    object End : GameEvent()
-
-    object RoundStart : GameEvent()
-
-    object RoundEnd : GameEvent()
+interface CardGameEvent {
 
     /**
-     * The base class for any move in any game made by a player at [playerPos].
-     * All subclasses MUST implement [equals] for [Mcts] to work.
+     * Marker interface for a move event.
      */
-    abstract class Move(val playerPos: Int) : GameEvent() {
-
-        override fun equals(other: Any?): Boolean {
-            if (other === this) return true
-            if (other !is Move) return false
-            return playerPos == other.playerPos
-        }
-
-        override fun hashCode() = playerPos
-    }
+    interface Move
 
 }

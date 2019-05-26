@@ -23,7 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup
 import com.badlogic.gdx.scenes.scene2d.utils.Layout
 import com.maltaisn.cardgame.Resources
 import com.maltaisn.cardgame.core.CardGame
-import com.maltaisn.cardgame.core.GameEvent
+import com.maltaisn.cardgame.core.CardGameEvent
 import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.PrefEntry
 import com.maltaisn.cardgame.widget.card.CardAnimationLayer
@@ -123,6 +123,6 @@ abstract class CardGameLayout(assetManager: AssetManager,
      * Called when a game [event] happens.
      * Layout should be updated accordingly.
      */
-    abstract fun doEvent(event: GameEvent)
+    abstract fun doEvent(event: CardGameEvent)
 
 }

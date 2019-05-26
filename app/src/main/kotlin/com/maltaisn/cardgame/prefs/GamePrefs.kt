@@ -36,7 +36,7 @@ import kotlin.collections.component2
 class GamePrefs {
 
     /** The name under which the preferences are stored. */
-    val name: String
+    val name: String?
 
     /** The map of preferences and categories by key, can be safely edited. */
     val prefs = linkedMapOf<String, PrefEntry>()
@@ -44,13 +44,20 @@ class GamePrefs {
     /**
      * The preferences where the values get stored.
      */
-    private val preferences: Preferences
+    private val preferences: Preferences?
 
 
-    /** Create empty game preferences object with a [name]. */
-    constructor(name: String) {
+    /**
+     * Create empty game preferences object with a [name].
+     * Name can be `null` for test preferences.
+     */
+    constructor(name: String?) {
         this.name = name
-        preferences = Gdx.app.getPreferences(name)
+        preferences = if (name != null) {
+            Gdx.app.getPreferences(name)
+        } else {
+            null
+        }
     }
 
     /**
@@ -136,7 +143,14 @@ class GamePrefs {
     }
 
     /**
-     * Get a preference by name by searching in all categories.
+     * Set or replace a preference by key.
+     */
+    operator fun set(key: String, pref: PrefEntry) {
+        prefs[key] = pref
+    }
+
+    /**
+     * Get a preference by key by searching in all categories.
      * Returns `null` if the preference key doesn't exist.
      */
     operator fun get(key: String): PrefEntry? {
@@ -160,6 +174,8 @@ class GamePrefs {
      * Load values from the file. If default values were not saved, save them.
      */
     fun load() {
+        checkNotNull(preferences) { "Cannot save preferences without name." }
+
         var prefsChanged = false
         forEachPref {
             if (it is GamePref) {
@@ -179,6 +195,8 @@ class GamePrefs {
      * Save the value of all entries to the file.
      */
     fun save() {
+        checkNotNull(preferences) { "Cannot save preferences without name." }
+
         forEachPref {
             if (it is GamePref) {
                 it.saveValue(preferences)

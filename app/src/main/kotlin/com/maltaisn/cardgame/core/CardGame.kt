@@ -20,9 +20,6 @@ import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.utils.Disposable
 import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.PrefEntry
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 
 
 /**
@@ -31,9 +28,6 @@ import kotlinx.coroutines.cancel
  */
 abstract class CardGame(val settings: GamePrefs) : PrefEntry.PrefListener, Disposable {
 
-    /** The current phase of the game. */
-    var phase = Phase.ENDED
-
     /** The state of the game in the current round, or `null` if game is not ongoing. */
     var gameState: CardGameState? = null
 
@@ -41,20 +35,10 @@ abstract class CardGame(val settings: GamePrefs) : PrefEntry.PrefListener, Dispo
      * The list of events that happened in the game.
      * Cleared when the game is started.
      */
-    val events: List<GameEvent>
-        get() = _events
-
-    private val _events = mutableListOf<GameEvent>()
+    abstract val events: List<CardGameEvent>
 
     /** The listener called when a game event happens, or `null` for none. */
-    var eventListener: ((GameEvent) -> Unit)? = null
-
-    /** The current round. */
-    var round = 0
-        protected set
-
-
-    protected var coroutineScope = CoroutineScope(Dispatchers.Default)
+    var eventListener: ((CardGameEvent) -> Unit)? = null
 
 
     init {
@@ -67,60 +51,6 @@ abstract class CardGame(val settings: GamePrefs) : PrefEntry.PrefListener, Dispo
     constructor(settings: GamePrefs, file: FileHandle) : this(settings)
 
 
-    /** Start the game. */
-    open fun start() {
-        check(phase == Phase.ENDED) { "Game has already started." }
-        phase = Phase.GAME_STARTED
-
-        round = 0
-        gameState = null
-        _events.clear()
-        _events += GameEvent.Start
-        eventListener?.invoke(GameEvent.Start)
-    }
-
-    /** End the game. */
-    open fun end() {
-        if (phase == Phase.ROUND_STARTED) {
-            // End round if necessary
-            endRound()
-        }
-        check(phase == Phase.GAME_STARTED) { "Game has already ended." }
-        phase = Phase.ENDED
-
-        _events += GameEvent.End
-        eventListener?.invoke(GameEvent.End)
-    }
-
-    /** Start a new round. */
-    open fun startRound() {
-        check(phase == Phase.GAME_STARTED) { "Round has already started or game has not started." }
-        phase = Phase.ROUND_STARTED
-
-        round++
-        gameState = null
-        _events += GameEvent.RoundStart
-        eventListener?.invoke(GameEvent.RoundStart)
-    }
-
-    /** End the current round. */
-    open fun endRound() {
-        check(phase == Phase.ROUND_STARTED) { "Round has already ended or game has not started." }
-        phase = Phase.GAME_STARTED
-
-        _events += GameEvent.RoundEnd
-        eventListener?.invoke(GameEvent.RoundEnd)
-    }
-
-    /** Do a [move] on the game state. */
-    open fun doMove(move: GameEvent.Move) {
-        check(phase != Phase.ENDED) { "Game has not started." }
-
-        _events += move
-        gameState?.doMove(move)
-        eventListener?.invoke(move)
-    }
-
     /**
      * Save the game options and current state to a local [file].
      */
@@ -131,21 +61,8 @@ abstract class CardGame(val settings: GamePrefs) : PrefEntry.PrefListener, Dispo
         // Detach all listeners
         eventListener = null
         settings.removeListener(this)
-
-        // Cancel all coroutines
-        coroutineScope.cancel()
     }
 
-    override fun toString() = "[phase: $phase, round $round, ${events.size} events]"
-
-
-    enum class Phase {
-        /** Game has not started or is done. */
-        ENDED,
-        /** Game is started but round is done. */
-        GAME_STARTED,
-        /** Round has started and is being played. */
-        ROUND_STARTED
-    }
+    override fun toString() = "[${events.size} events]"
 
 }

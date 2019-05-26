@@ -305,6 +305,8 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
         }
 
         update()
+
+        invalidateHierarchy()
     }
 
     protected fun sortWith(comparator: Comparator<CardActor?>) {

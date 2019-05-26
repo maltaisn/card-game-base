@@ -42,7 +42,7 @@ object Mcts {
      * Lower value = more exploitation, higher value = more exploration.
      */
     fun run(rootState: CardGameState, iter: Int,
-            explorationParam: Float = DEFAULT_EXPLORATION): GameEvent.Move {
+            explorationParam: Float = DEFAULT_EXPLORATION): CardGameEvent.Move {
 
         val rootNode = Node(null, null, rootState.posToMove, explorationParam)
 
@@ -76,7 +76,7 @@ object Mcts {
 
             // Simulate
             if (moves.isNotEmpty()) {
-                var randomMove: GameEvent.Move? = moves.random()
+                var randomMove: CardGameEvent.Move? = moves.random()
                 do {
                     state.doMove(randomMove!!)
                     randomMove = state.getRandomMove()
@@ -100,7 +100,7 @@ object Mcts {
      * Compute the average result of [iter] simulations of [rootState] doing a [move].
      * This is the same as the "Simulate" step of [run].
      */
-    fun simulate(rootState: CardGameState, move: GameEvent.Move, iter: Int): Float {
+    fun simulate(rootState: CardGameState, move: CardGameEvent.Move, iter: Int): Float {
         var score = 0f
         val player = rootState.posToMove
         repeat(iter) {
@@ -120,7 +120,7 @@ object Mcts {
     }
 
 
-    private class Node(val move: GameEvent.Move?, val parent: Node?, val playerThatMoved: Int,
+    private class Node(val move: CardGameEvent.Move?, val parent: Node?, val playerThatMoved: Int,
                        val explorationParam: Float) {
 
         val childNodes = mutableListOf<Node>()
@@ -140,7 +140,7 @@ object Mcts {
          * added, because the list of possible moves is rarely always the same, eg: there may be
          * one move to draw a card that results in many moves depending on the card
          */
-        fun getUntriedMoves(moves: List<GameEvent.Move>): List<GameEvent.Move> {
+        fun getUntriedMoves(moves: List<CardGameEvent.Move>): List<CardGameEvent.Move> {
             val tried = List(childNodes.size) { childNodes[it].move }
             return moves.filter { move -> tried.find { it == move } == null }
         }
@@ -150,7 +150,7 @@ object Mcts {
          * All child nodes are not necessarily selectable because there might be more children
          * in total than those available from a particular state (see example above)
          */
-        fun selectUCBChild(moves: List<GameEvent.Move>): Node? {
+        fun selectUCBChild(moves: List<CardGameEvent.Move>): Node? {
             val selectable = childNodes.filter { child -> moves.find { it == child.move } != null }
             for (node in selectable) {
                 node.avails++
@@ -165,7 +165,7 @@ object Mcts {
          */
         fun computeUCB() = wins / visits + explorationParam * sqrt(ln(avails.toFloat()) / visits)
 
-        fun addChild(move: GameEvent.Move, playerThatMoved: Int): Node {
+        fun addChild(move: CardGameEvent.Move, playerThatMoved: Int): Node {
             val node = Node(move, this, playerThatMoved, explorationParam)
             childNodes += node
             return node

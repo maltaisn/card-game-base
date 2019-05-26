@@ -38,7 +38,7 @@ abstract class CardPlayer() : Cloneable {
     /**
      * Called when [state] performs a [move] for any player.
      */
-    open fun onMove(state: CardGameState, move: GameEvent.Move) {
+    open fun onMove(state: CardGameState, move: CardGameEvent.Move) {
 
     }
 
