@@ -20,6 +20,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.core.PCard
+import com.maltaisn.cardgame.core.drawTop
 import com.maltaisn.cardgame.tests.core.SingleActionTest
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.card.*
@@ -34,8 +35,7 @@ class CardAnimationTest : SingleActionTest() {
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
-        val deck = PCard.fullDeck(false)
-        deck.shuffle()
+        val deck = PCard.fullDecks(shuffled = true)
 
         val animLayer = layout.cardAnimationLayer
         val centerTable = layout.gameLayer.centerTable
@@ -113,13 +113,8 @@ class CardAnimationTest : SingleActionTest() {
         }
 
         stack1.apply {
-            val stackCards = PCard.fullDeck(false)
-            PCard.DEFAULT_SORTER.initialize(stackCards)
-            stackCards.sortWith(PCard.DEFAULT_SORTER)
-            stackCards.reverse()
-
             visibility = CardContainer.Visibility.NONE
-            cards = stackCards
+            cards = PCard.fullDecks(shuffled = true)
             clickListener = { _, index ->
                 animLayer.moveCard(stack1, group2, index, 0)
                 group2.sort()

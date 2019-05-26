@@ -32,7 +32,6 @@ import ktx.actors.alpha
 import ktx.collections.isNotEmpty
 import ktx.math.minus
 import ktx.math.vec2
-import java.util.*
 import kotlin.math.min
 
 
@@ -43,11 +42,11 @@ import kotlin.math.min
 abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
                              val cardStyle: CardActor.CardStyle) : FboWidgetGroup() {
 
-    private val _actors = mutableListOf<CardActor?>()
-
     /** The actors for the cards. When an actor is moved, this list is immediately updated. */
     val actors: List<CardActor?>
         get() = _actors
+
+    protected val _actors = mutableListOf<CardActor?>()
 
     /**
      * The cards in this container. When a card is moved, this list is immediately updated.
@@ -329,10 +328,6 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
         update()
 
         invalidateHierarchy()
-    }
-
-    protected fun sortWith(comparator: Comparator<CardActor?>) {
-        _actors.sortWith(comparator)
     }
 
     enum class Visibility {

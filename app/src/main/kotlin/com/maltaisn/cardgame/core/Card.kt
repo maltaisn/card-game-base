@@ -24,19 +24,22 @@ package com.maltaisn.cardgame.core
  */
 abstract class Card(val value: Int) {
 
-    interface Sorter<T : Card> : Comparator<T> {
+    interface Sorter<T : Card> {
         /**
-         * Whether the sorter is transitive or not.
-         * If not transitive, the order might depends on what cards
-         * are being sorted, so [initialize] must be called
+         * Sort a list of [cards] with this sorter.
          */
-        val transitive: Boolean
+        fun sort(cards: MutableList<T>) = sortBy(cards) { it }
 
         /**
-         * Initialize the sorter to sort [cards], if sorter is not [transitive].
-         * Then, the deck can be sorted with `deck.sortWith(Sorter)`.
+         * Sort a [list] by the order of the cards given by the [selector].
          */
-        fun initialize(cards: List<T>)
+        fun <R> sortBy(list: MutableList<R>, selector: (R) -> T)
     }
 
 }
+
+fun <T : Card> MutableList<T>.sortWith(sorter: Card.Sorter<T>) =
+        sorter.sort(this)
+
+fun <T : Card, R> MutableList<R>.sortWith(sorter: Card.Sorter<T>, selector: (R) -> T) =
+        sorter.sortBy(this, selector)

@@ -28,6 +28,7 @@ java {
 }
 
 tasks.register<JavaExec>("run") {
+    dependsOn(tasks.build)
     main = mainClassName
     classpath = sourceSets.main.get().runtimeClasspath
     standardInput = System.`in`

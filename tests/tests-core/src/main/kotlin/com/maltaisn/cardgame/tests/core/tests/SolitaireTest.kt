@@ -19,6 +19,7 @@ package com.maltaisn.cardgame.tests.core.tests
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.core.PCard
+import com.maltaisn.cardgame.core.drawTop
 import com.maltaisn.cardgame.tests.core.CardGameTest
 import com.maltaisn.cardgame.tests.core.CenterLayout
 import com.maltaisn.cardgame.widget.CardGameLayout
@@ -37,8 +38,7 @@ class SolitaireTest : CardGameTest() {
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
-        val deck = PCard.fullDeck(false)
-        deck.shuffle()
+        val deck = PCard.fullDecks(shuffled = true)
 
         val animLayer = layout.cardAnimationLayer
 

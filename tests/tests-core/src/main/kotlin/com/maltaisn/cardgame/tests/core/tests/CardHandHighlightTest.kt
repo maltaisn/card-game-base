@@ -19,6 +19,7 @@ package com.maltaisn.cardgame.tests.core.tests
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.core.Card
 import com.maltaisn.cardgame.core.PCard
+import com.maltaisn.cardgame.core.drawTop
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.card.CardHand
@@ -33,8 +34,7 @@ class CardHandHighlightTest : ActionBarTest() {
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
-        val deck = PCard.fullDeck(false)
-        deck.shuffle()
+        val deck = PCard.fullDecks(shuffled = true)
 
         val hand = CardHand(coreSkin, cardSkin).apply {
             cards = deck.drawTop(13)

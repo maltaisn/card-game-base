@@ -17,27 +17,20 @@
 package com.maltaisn.cardgame.core
 
 import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertTrue
-import org.junit.Assert.assertNotEquals
 import org.junit.Test
 
 
 internal class DeckTest {
 
     @Test
-    fun removeDuplicates() {
-        val deck = PCard.parseDeck("2♥", "2♥", "4♥", "3♥", "3♥", "4♥", "5♥")
-        deck.removeDuplicates()
-
-        assertEquals(PCard.parseDeck("2♥", "4♥", "3♥", "5♥"), deck)
-    }
-
-    @Test
     fun drawTop() {
         val deck1 = PCard.parseDeck("2♥", "3♥", "4♥")
         deck1.drawTop()
         assertEquals(PCard.parseDeck("2♥", "3♥"), deck1)
+    }
 
+    @Test
+    fun drawTopMany() {
         val deck2 = PCard.parseDeck("2♥", "3♥", "4♥", "5♥", "6♥")
         deck2.drawTop(3)
         assertEquals(PCard.parseDeck("2♥", "3♥"), deck2)
@@ -48,38 +41,12 @@ internal class DeckTest {
         val deck1 = PCard.parseDeck("2♥", "3♥", "4♥")
         deck1.drawBottom()
         assertEquals(PCard.parseDeck("3♥", "4♥"), deck1)
+    }
 
+    @Test
+    fun drawBottomMany() {
         val deck2 = PCard.parseDeck("2♥", "3♥", "4♥", "5♥", "6♥")
         deck2.drawBottom(3)
         assertEquals(PCard.parseDeck("5♥", "6♥"), deck2)
     }
-
-    @Test
-    fun equals() {
-        val deck1 = PCard.fullDeck(true)
-        val deck2 = PCard.fullDeck(true)
-
-        assertEquals(deck1, deck2)
-        assertEquals(deck1.hashCode(), deck2.hashCode())
-    }
-
-    @Test
-    fun equalsContent() {
-        val deck1 = PCard.fullDeck(true)
-        deck1.shuffle()
-
-        val deck2 = PCard.fullDeck(true)
-
-        assertTrue(deck1.equalsContent(deck2))
-        assertNotEquals(deck1.hashCode(), deck2.hashCode())
-        assertNotEquals(deck1, deck2)
-    }
-
-    @Test
-    fun clone() {
-        val deck1 = PCard.fullDeck(false)
-        val deck2 = deck1.clone()
-        assertEquals(deck1, deck2)
-    }
-
 }

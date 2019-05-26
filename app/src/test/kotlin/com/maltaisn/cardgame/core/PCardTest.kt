@@ -16,35 +16,34 @@
 
 package com.maltaisn.cardgame.core
 
-import com.maltaisn.cardgame.core.PCard
-import junit.framework.Assert.*
+import org.junit.Assert.*
 import org.junit.Test
 
 internal class PCardTest {
 
     @Test
     fun parse() {
-        val card1 = PCard.get(PCard.ACE, PCard.DIAMOND)
-        val card2 = PCard.parse("A♦")
+        val card1 = PCard(PCard.ACE, PCard.DIAMOND)
+        val card2 = PCard("A♦")
         assertEquals(card1, card2)
 
-        val card3 = PCard.get(10, PCard.HEART)
-        val card4 = PCard.parse("10♥")
+        val card3 = PCard(10, PCard.HEART)
+        val card4 = PCard("10♥")
         assertEquals(card3, card4)
 
         val card5 = PCard.BLACK_JOKER
-        val card6 = PCard.parse("*B")
+        val card6 = PCard("*B")
         assertEquals(card5, card6)
     }
 
     @Test
     fun color() {
-        val card1 = PCard.get(PCard.ACE, PCard.DIAMOND)
+        val card1 = PCard(PCard.ACE, PCard.DIAMOND)
         assertEquals(PCard.ACE, card1.rank)
         assertEquals(PCard.DIAMOND, card1.suit)
         assertEquals(PCard.RED, card1.color)
 
-        val card2 = PCard.get(PCard.KING, PCard.SPADE)
+        val card2 = PCard(PCard.KING, PCard.SPADE)
         assertEquals(PCard.KING, card2.rank)
         assertEquals(PCard.SPADE, card2.suit)
         assertEquals(PCard.BLACK, card2.color)
@@ -57,30 +56,30 @@ internal class PCardTest {
 
     @Test
     fun comparison() {
-        assertFalse(PCard.parse("5♥").greaterThan(PCard.parse("6♣"), false))
-        assertTrue(PCard.parse("A♥").greaterThan(PCard.parse("K♦"), true))
-        assertFalse(PCard.parse("A♥").greaterThan(PCard.parse("K♦"), false))
-        assertFalse(PCard.parse("A♥").greaterThan(PCard.parse("*R"), true))
-        assertFalse(PCard.parse("5♥").greaterThan(PCard.parse("5♦"), true))
-        assertFalse(PCard.parse("2♥").greaterThan(PCard.parse("A♦"), true))
+        assertFalse(PCard("5♥").greaterThan(PCard("6♣"), false))
+        assertTrue(PCard("A♥").greaterThan(PCard("K♦"), true))
+        assertFalse(PCard("A♥").greaterThan(PCard("K♦"), false))
+        assertFalse(PCard("A♥").greaterThan(PCard("*R"), true))
+        assertFalse(PCard("5♥").greaterThan(PCard("5♦"), true))
+        assertFalse(PCard("2♥").greaterThan(PCard("A♦"), true))
 
-        assertTrue(PCard.parse("5♥").lessThan(PCard.parse("6♣"), false))
-        assertFalse(PCard.parse("A♥").lessThan(PCard.parse("K♦"), true))
-        assertTrue(PCard.parse("A♥").lessThan(PCard.parse("K♦"), false))
-        assertTrue(PCard.parse("A♥").lessThan(PCard.parse("*R"), true))
-        assertFalse(PCard.parse("5♥").lessThan(PCard.parse("5♦"), true))
-        assertTrue(PCard.parse("2♥").lessThan(PCard.parse("A♦"), true))
+        assertTrue(PCard("5♥").lessThan(PCard("6♣"), false))
+        assertFalse(PCard("A♥").lessThan(PCard("K♦"), true))
+        assertTrue(PCard("A♥").lessThan(PCard("K♦"), false))
+        assertTrue(PCard("A♥").lessThan(PCard("*R"), true))
+        assertFalse(PCard("5♥").lessThan(PCard("5♦"), true))
+        assertTrue(PCard("2♥").lessThan(PCard("A♦"), true))
     }
 
     @Test
     fun equals() {
-        val card1 = PCard.get(PCard.QUEEN, PCard.CLUB)
-        val card2 = PCard.get(PCard.QUEEN, PCard.CLUB)
+        val card1 = PCard(PCard.QUEEN, PCard.CLUB)
+        val card2 = PCard(PCard.QUEEN, PCard.CLUB)
         assertEquals(card1, card2)
         assertEquals(card1.hashCode(), card2.hashCode())
 
         val card3 = PCard.BLACK_JOKER
-        val card4 = PCard.get(PCard.JOKER, PCard.BLACK)
+        val card4 = PCard(PCard.JOKER, PCard.BLACK)
         assertEquals(card3, card4)
         assertEquals(card3.hashCode(), card4.hashCode())
     }
@@ -88,38 +87,33 @@ internal class PCardTest {
     @Test
     fun parseDeck() {
         val deck1 = PCard.parseDeck("A♦", "10♥", "*B")
-        val deck2 = Deck(mutableListOf(PCard.get(PCard.ACE, PCard.DIAMOND),
-                PCard.get(10, PCard.HEART), PCard.BLACK_JOKER))
+        val deck2 = mutableListOf(PCard(PCard.ACE, PCard.DIAMOND),
+                PCard(10, PCard.HEART), PCard.BLACK_JOKER)
         assertEquals(deck1, deck2)
     }
 
     @Test
-    fun sort() {
-        // Transitive
+    fun sortBySuit() {
         val sorter1 = PCard.Sorter(PCard.Sorter.BY_SUIT, PCard.Sorter.ASCENDING, true,
                 intArrayOf(PCard.HEART, PCard.SPADE, PCard.DIAMOND, PCard.CLUB, PCard.BLACK, PCard.RED), false)
         val deck1 = PCard.parseDeck("2♥", "3♥", "A♥", "3♠", "A♠", "2♣", "K♣", "*B", "*R")
-        val deck1shuffled = deck1.clone()
-        deck1shuffled.shuffle()
-        deck1.sortWith(sorter1)
+        val deck1shuffled = deck1.shuffled().toMutableList()
+        deck1shuffled.sortWith(sorter1)
         assertEquals(deck1, deck1shuffled)
+    }
 
-        // Non-transitive 1
+    @Test
+    fun sortSeparateColors() {
         val sorter2 = PCard.Sorter(PCard.Sorter.BY_SUIT, PCard.Sorter.ASCENDING, true,
                 intArrayOf(PCard.HEART, PCard.SPADE, PCard.DIAMOND, PCard.CLUB, PCard.BLACK, PCard.RED), true)
-        val deck2 = PCard.parseDeck("2♥", "3♥", "A♥", "K♣", "3♦", "A♦", "2♦")
-        val deck2shuffled = deck2.clone()
-        deck2shuffled.shuffle()
-        sorter2.initialize(deck2shuffled)
+        val deck2 = PCard.parseDeck("2♥", "3♥", "A♥", "K♣", "2♦", "3♦", "A♦")
+        val deck2shuffled = deck2.shuffled().toMutableList()
         deck2shuffled.sortWith(sorter2)
         assertEquals(deck2, deck2shuffled)
 
-        // Non-transitive 2
-        val deck3 = PCard.parseDeck("2♠", "3♠", "A♠", "K♥", "3♣", "A♣", "2♣")
-        val deck3shuffled = deck3.clone()
-        deck3shuffled.shuffle()
-        sorter2.initialize(deck3shuffled)
-        deck2shuffled.sortWith(sorter2)
+        val deck3 = PCard.parseDeck("2♠", "3♠", "A♠", "K♥", "2♣", "3♣", "A♣")
+        val deck3shuffled = deck3.shuffled().toMutableList()
+        deck3shuffled.sortWith(sorter2)
         assertEquals(deck3, deck3shuffled)
     }
 

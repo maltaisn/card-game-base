@@ -16,12 +16,6 @@
 
 package com.maltaisn.cardgame.core
 
-import com.maltaisn.cardgame.core.PCard.Sorter.Companion.ASCENDING
-import com.maltaisn.cardgame.core.PCard.Sorter.Companion.BY_RANK
-import com.maltaisn.cardgame.core.PCard.Sorter.Companion.BY_SUIT
-import com.maltaisn.cardgame.core.PCard.Sorter.Companion.DESCENDING
-import java.util.*
-
 
 /**
  * A standard playing card.
@@ -104,9 +98,8 @@ class PCard private constructor(val rank: Int, val suit: Int, value: Int) : Card
 
         /**
          * Get a card by its [rank] and [suit].
-         * TODO replaceable with invoke
          */
-        fun get(rank: Int, suit: Int): PCard {
+        operator fun invoke(rank: Int, suit: Int): PCard {
             var card: PCard? = null
             if (rank == JOKER) {
                 if (suit == BLACK) {
@@ -123,87 +116,73 @@ class PCard private constructor(val rank: Int, val suit: Int, value: Int) : Card
 
         /**
          * Get a card from its string representation.
-         * TODO replaceable with invoke
          */
-        fun parse(cardStr: String): PCard {
+        operator fun invoke(cardStr: String): PCard {
             val suit = SUIT_STR.indexOf(cardStr.last())
             val rank = RANK_STR.indexOf(cardStr.dropLast(1)) + 1
             require(suit != -1 && rank != -1) { "No playing card exist for '$cardStr'." }
-            return get(rank, suit)
+            return PCard(rank, suit)
         }
 
-        ////////////////////// DECKS //////////////////////
+
         /**
          * Create [count] full decks of cards.
-         * @param withJokers Whetehr to include jokers or not.
+         * @param withJokers Whether to include jokers or not.
          */
-        fun fullDecks(count: Int, withJokers: Boolean): Deck<PCard> {
-            val deck = Deck<PCard>((if (withJokers) 54 else 52) * count)
+        fun fullDecks(count: Int = 1, withJokers: Boolean = false,
+                      shuffled: Boolean = false): MutableList<PCard> {
+            val cards = ArrayList<PCard>((if (withJokers) 54 else 52) * count)
             for (i in 0 until count) {
                 for (suit in 0..3) {
                     for (rank in 1..13) {
-                        deck += get(rank, suit)
+                        cards += PCard(rank, suit)
                     }
                 }
                 if (withJokers) {
-                    deck += BLACK_JOKER
-                    deck += RED_JOKER
+                    cards += BLACK_JOKER
+                    cards += RED_JOKER
                 }
             }
-            return deck
+            if (shuffled) {
+                cards.shuffle()
+            }
+            return cards
         }
-
-        /**
-         * Create a single full deck.
-         * @param withJokers Whetehr to include jokers or not.
-         */
-        fun fullDeck(withJokers: Boolean) = fullDecks(1, withJokers)
 
         /**
          * Create a new 36 cards deck
          * All suits from 6 to ace, without jokers
          */
-        fun deck36(): Deck<PCard> {
-            val deck = Deck<PCard>(36)
+        fun deck36(): MutableList<PCard> {
+            val cards = ArrayList<PCard>(36)
             for (suit in 0..3) {
                 for (rank in 6..13) {
-                    deck += get(rank, suit)
+                    cards += PCard(rank, suit)
                 }
-                deck += get(ACE, suit)
+                cards += PCard(ACE, suit)
             }
-            return deck
+            return cards
         }
 
         /**
          * Return a deck from a list of card strings
          */
-        fun parseDeck(vararg cardsStr: String): Deck<PCard> {
-            val deck = Deck<PCard>(cardsStr.size)
-            for (cardStr in cardsStr) {
-                deck += parse(cardStr)
-            }
-            return deck
-        }
+        fun parseDeck(vararg cardsStr: String): MutableList<PCard> =
+                MutableList(cardsStr.size) { PCard(cardsStr[it]) }
 
         /**
          * Return a deck from a string of card strings separated by a [separator].
          */
-        fun parseDeck(deckStr: String, separator: Char = ','): Deck<PCard> {
-            val cardsStr = deckStr.split(separator)
-            val deck = Deck<PCard>(cardsStr.size)
-            for (cardStr in cardsStr) {
-                deck += parse(cardStr)
-            }
-            return deck
-        }
+        fun parseDeck(deckStr: String, separator: Char = ','): MutableList<PCard> =
+                deckStr.split(separator).mapTo(mutableListOf()) { PCard(it) }
 
-        val DEFAULT_SORTER = Sorter(BY_SUIT, ASCENDING, true,
-                intArrayOf(HEART, SPADE, DIAMOND,
-                        CLUB, BLACK, RED), true)
+        val DEFAULT_SORTER = Sorter(Sorter.BY_SUIT, Sorter.ASCENDING, true,
+                intArrayOf(HEART, SPADE, DIAMOND, CLUB, BLACK, RED), true)
     }
 
     /**
      * A specialized comparator for sorting decks of [PCard].
+     *
      * @property order The primary sort field, [BY_RANK] or [BY_SUIT].
      * @property rankOrder The rank order, [ASCENDING] or [DESCENDING].
      * @property aceHigh Whether the ace is considered bigger than king or not.
@@ -218,23 +197,22 @@ class PCard private constructor(val rank: Int, val suit: Int, value: Int) : Card
                  private val rankOrder: Int,
                  private val aceHigh: Boolean,
                  private var suitOrder: IntArray,
-                 private val separateColors: Boolean) :
-            Card.Sorter<PCard>, Comparator<PCard> {
-
-        override val transitive = !(separateColors && order == BY_SUIT)
-        private val originalSuitOrder = suitOrder.clone()
+                 private val separateColors: Boolean) : Card.Sorter<PCard> {
 
         init {
             require(suitOrder.size == 6) { "Suit order array must have length of 6." }
         }
 
-        override fun initialize(cards: List<PCard>) {
-            if (!transitive) {
-                val suitsList = originalSuitOrder.toMutableList()
+        override fun <R> sortBy(list: MutableList<R>, selector: (R) -> PCard) {
+            var suitOrder = suitOrder
+
+            if (separateColors && order == BY_SUIT) {
+                // Colors need to be separated so suit order might change.
+                val suitsList = suitOrder.toMutableList()
 
                 var suitsFound = 0
-                for (card in cards) {
-                    suitsFound = suitsFound or (1 shl card.suit)
+                for (item in list) {
+                    suitsFound = suitsFound or (1 shl selector(item).suit)
                 }
                 suitsFound = suitsFound and 0xF // Ignore red and black
                 if (Integer.bitCount(suitsFound) == 3) {
@@ -269,9 +247,13 @@ class PCard private constructor(val rank: Int, val suit: Int, value: Int) : Card
 
                 suitOrder = suitsList.toIntArray()
             }
+
+            list.sortWith(Comparator { o1, o2 ->
+                compare(suitOrder, selector(o1), selector(o2))
+            })
         }
 
-        override fun compare(card1: PCard, card2: PCard): Int {
+        private fun compare(suitOrder: IntArray, card1: PCard, card2: PCard): Int {
             var result: Int
             if (order == BY_RANK) {
                 result = compareRank(rankOrder, aceHigh, card1, card2)

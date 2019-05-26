@@ -35,8 +35,7 @@ class CardDealTest : SingleActionTest() {
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
-        val deck = PCard.fullDeck(true)
-        deck.shuffle()
+        val deck = PCard.fullDecks(shuffled = true)
 
         val hand = CardHand(coreSkin, cardSkin).apply {
             align = Align.bottom

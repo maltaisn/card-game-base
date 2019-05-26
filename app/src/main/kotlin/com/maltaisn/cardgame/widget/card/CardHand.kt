@@ -119,11 +119,7 @@ class CardHand : CardContainer {
 
             // Apply new sorting order.
             @Suppress("UNCHECKED_CAST")
-            val sorter = sorter as Card.Sorter<Card>
-            if (!sorter.transitive) {
-                sorter.initialize(actors.map { it!!.card })
-            }
-            sortWith(Comparator { o1, o2 -> sorter.compare(o1!!.card, o2!!.card) })
+            (sorter as Card.Sorter<Card>).sortBy(_actors) { it!!.card }
         }
     }
 
