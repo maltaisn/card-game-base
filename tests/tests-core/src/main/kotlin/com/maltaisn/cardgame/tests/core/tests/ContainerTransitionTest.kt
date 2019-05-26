@@ -38,6 +38,7 @@ class ContainerTransitionTest : ActionBarTest() {
         hand.cards = deck.drawTop(13)
         layout.gameLayer.centerTable.add(hand).grow()
 
+        addActionBtn("Instant") { hand.isVisible = !hand.shown }
         addActionBtn("Fade") { hand.fade(!hand.shown) }
         addActionBtn("Up") { hand.slide(!hand.shown, CardContainer.Direction.UP) }
         addActionBtn("Down") { hand.slide(!hand.shown, CardContainer.Direction.DOWN) }

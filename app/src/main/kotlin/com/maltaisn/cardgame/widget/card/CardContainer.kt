@@ -20,7 +20,6 @@ import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
@@ -70,9 +69,28 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
     /** Whether the cards in this container are shown. */
     var visibility = Visibility.ALL
 
-    /** Whether the container is shown or not. Like [isVisible] but with the correct value during a transition. */
-    var shown = true
-        private set
+    /**
+     * Whether the container is shown or not.
+     * Like [isVisible] but with the correct value during a transition.
+     * When changed directly, behaves like [setVisible].
+     */
+    var shown: Boolean
+        get() = _shown
+        set(value) {
+            _shown = value
+            _isVisible = value
+            transitionAction?.end()
+            transitionAction = null
+        }
+
+    private var _shown = true
+
+    private var _isVisible
+        get() = isVisible
+        set(value) {
+            super.setVisible(value)
+        }
+
 
     /**
      * Whether this card container is enabled. If disabled, card actors will be too,
@@ -137,7 +155,7 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
 
     private val translate = vec2()
 
-    private var transitionAction: Action? = null
+    private var transitionAction: TimeAction? = null
         set(value) {
             if (field != null) removeAction(field)
             field = value
@@ -169,6 +187,10 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
     override fun clearActions() {
         super.clearActions()
         transitionAction = null
+    }
+
+    override fun setVisible(visible: Boolean) {
+        shown = visible
     }
 
     /**
@@ -408,7 +430,7 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
      */
     fun fade(shown: Boolean) {
         if (this.shown == shown) return
-        this.shown = shown
+        _shown = shown
 
         if (transitionAction !is FadeTransitionAction) {
             transitionAction = FadeTransitionAction()
@@ -422,7 +444,7 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
      */
     fun slide(shown: Boolean, direction: Direction) {
         if (this.shown == shown) return
-        this.shown = shown
+        _shown = shown
 
         val currentAction = transitionAction
         if (currentAction is SlideTransitionAction) {
@@ -438,7 +460,7 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
             TimeAction(TRANSITION_DURATION, TRANSITION_INTERPOLATION, reversed = !shown) {
 
         init {
-            isVisible = true
+            _isVisible = true
             renderToFrameBuffer = true
             alpha = if (shown) 1f else 0f
             translate.x = 0f
@@ -451,7 +473,8 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
         }
 
         override fun end() {
-            isVisible = shown
+            _isVisible = shown
+            alpha = 1f
             renderToFrameBuffer = false
             transitionAction = null
         }
@@ -466,7 +489,7 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
         fun start(direction: Direction) {
             elapsed = 0f
 
-            isVisible = true
+            _isVisible = true
             renderToFrameBuffer = false
             alpha = 1f
 
@@ -487,7 +510,8 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
         }
 
         override fun end() {
-            isVisible = shown
+            _isVisible = shown
+            translate.setZero()
             transitionAction = null
         }
     }
