@@ -27,16 +27,6 @@ dependencies {
     testImplementation("junit:junit:$junitVersion")
 }
 
-sourceSets {
-    main {
-        java.srcDir("src/main/kotlin")
-        // Assets folder is not specified to prevent bundling it in jar
-    }
-    test {
-        java.srcDir("src/test/kotlin")
-    }
-}
-
 java {
     sourceCompatibility = JavaVersion.VERSION_1_6
     targetCompatibility = JavaVersion.VERSION_1_6

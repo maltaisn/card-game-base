@@ -2,12 +2,6 @@ plugins {
     kotlin("jvm")
 }
 
-sourceSets {
-    main {
-        java.srcDir("src/main/kotlin")
-    }
-}
-
 dependencies {
     val gdxVersion: String by project
     val ktxVersion: String by project

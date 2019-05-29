@@ -26,7 +26,6 @@ import com.badlogic.gdx.scenes.scene2d.*
 import com.maltaisn.cardgame.widget.TimeAction
 import com.maltaisn.cardgame.widget.applyBounded
 import com.maltaisn.cardgame.withinBounds
-import com.oracle.util.Checksums.update
 import ktx.actors.setKeyboardFocus
 import ktx.math.div
 import ktx.math.minus
@@ -642,7 +641,7 @@ class CardAnimationLayer : Group() {
         const val UPDATE_DURATION = 0.4f
 
         /** The duration between each card dealt. Values less than the update duration look worse. */
-        private const val DEAL_DELAY: Float = 0.4f
+        const val DEAL_DELAY: Float = 0.4f
     }
 
 }

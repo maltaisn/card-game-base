@@ -23,7 +23,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.maltaisn.cardgame.Resources
+import com.maltaisn.cardgame.CoreRes
 import ktx.assets.file
 import ktx.math.vec2
 import ktx.style.get
@@ -34,7 +34,7 @@ import ktx.style.get
  * Normal and bold text can be drawn with optional shadow.
  */
 internal class SdfShader private constructor() :
-        ShaderProgram(file(Resources.FONT_SHADER_VERT), file(Resources.FONT_SHADER_FRAG)) {
+        ShaderProgram(file(CoreRes.FONT_SHADER_VERT), file(CoreRes.FONT_SHADER_FRAG)) {
 
     /** Smoothing factor, between 0 and 1. Higher values result in smoother text. */
     var smoothing = 0.5f
@@ -91,8 +91,8 @@ internal class SdfShader private constructor() :
                 return skin[SdfShader::class.java]
             }
 
-            skin.add(FONT_NAME, loadFont(Resources.FONT_NAME))
-            skin.add(FONT_BOLD_NAME, loadFont(Resources.FONT_BOLD_NAME))
+            skin.add(FONT_NAME, loadFont(CoreRes.FONT_NAME))
+            skin.add(FONT_BOLD_NAME, loadFont(CoreRes.FONT_BOLD_NAME))
 
             val shader = SdfShader()
             skin.add("default", shader)

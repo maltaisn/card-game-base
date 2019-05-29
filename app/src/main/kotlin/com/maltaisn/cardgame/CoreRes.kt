@@ -21,7 +21,7 @@ package com.maltaisn.cardgame
  * Stores the paths of core game resources.
  * Project should use a Gradle task to copy the core assets to an `core/` folder under their assets.
  */
-object Resources {
+object CoreRes {
 
     const val PCARD_SKIN = "core/pcard/pcard.skin"
     const val PCARD_SKIN_ATLAS = "core/pcard/pcard.atlas"

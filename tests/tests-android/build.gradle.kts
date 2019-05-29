@@ -6,14 +6,6 @@ plugins {
 android {
     buildToolsVersion("28.0.3")
     compileSdkVersion(28)
-    sourceSets {
-        named("main") {
-            java.srcDir("src/main/kotlin")
-            res.srcDir("res")
-            assets.srcDir("assets")
-            jniLibs.srcDir("libs")
-        }
-    }
     defaultConfig {
         applicationId = "com.maltaisn.cardgame.tests.android"
         minSdkVersion(14)
@@ -59,7 +51,8 @@ dependencies {
 tasks.register("copyAndroidNatives") {
     doFirst {
         natives.files.forEach { jar ->
-            val outputDir = file("libs/" + jar.nameWithoutExtension.substringAfterLast("natives-"))
+            val nativeName = jar.nameWithoutExtension.substringAfterLast("natives-")
+            val outputDir = file("src/main/jniLibs/$nativeName")
             outputDir.mkdirs()
             copy {
                 from(zipTree(jar))
@@ -80,12 +73,12 @@ tasks.register("copyTestAssets") {
     file("assets").mkdirs()
     copy {
         from("../assets")
-        into("assets")
+        into("src/main/assets")
     }
 }
 
 tasks.register<Delete>("cleanTestAssets") {
-    delete("assets")
+    delete("src/main/assets")
 }
 
 tasks.named("clean") {

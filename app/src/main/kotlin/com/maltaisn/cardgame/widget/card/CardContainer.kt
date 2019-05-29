@@ -539,7 +539,7 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
         if (replaceDst) {
             val replaced = dst.actors[dstIndex]
             require(replaced == null) {
-                "Card must replaced a null card in destination, found '$replaced' instead."
+                "Card must replace a null card in destination, found '$replaced' instead."
             }
             dst._actors[dstIndex] = actor
         } else {
@@ -608,7 +608,7 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
 
     companion object {
         /** The duration of the transitions. */
-        private const val TRANSITION_DURATION = 0.5f
+        const val TRANSITION_DURATION = 0.5f
 
         /** The minimum dragging distance in pixels for a card to be effectively dragged. */
         private const val MIN_DRAG_DISTANCE = 10f

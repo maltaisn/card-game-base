@@ -19,7 +19,7 @@ package com.maltaisn.cardgame.tests.core
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.gmail.blueboxware.libgdxplugin.annotations.GDXAssets
 import com.maltaisn.cardgame.CardGameScreen
-import com.maltaisn.cardgame.Resources
+import com.maltaisn.cardgame.CoreRes
 import com.maltaisn.cardgame.core.CardGame
 import com.maltaisn.cardgame.core.CardGameEvent
 import com.maltaisn.cardgame.prefs.GamePrefs
@@ -40,7 +40,7 @@ abstract class CardGameTest : CardGameScreen() {
 
     override fun start() {
         super.start()
-        cardSkin = assetManager.getAsset(Resources.PCARD_SKIN)
+        cardSkin = assetManager.getAsset(CoreRes.PCARD_SKIN)
 
         gameLayout = object : CardGameLayout(assetManager, GamePrefs("unused")) {
             override fun initGame(game: CardGame) {

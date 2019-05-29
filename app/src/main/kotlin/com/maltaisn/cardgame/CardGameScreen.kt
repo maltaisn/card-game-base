@@ -92,7 +92,7 @@ abstract class CardGameScreen : Stage(ExtendViewport(960f, 540f)), Screen {
 
         // Load core skin
         loadCoreSkin()
-        coreSkin = assetManager.get(Resources.CORE_SKIN)
+        coreSkin = assetManager.get(CoreRes.CORE_SKIN)
 
         // Listener to unfocus text field when clicked outside
         root.addCaptureListener(object : InputListener() {
@@ -111,22 +111,22 @@ abstract class CardGameScreen : Stage(ExtendViewport(960f, 540f)), Screen {
 
     /** Called when the game is created to load resources asynchronously. */
     open fun load() {
-        assetManager.load<I18NBundle>(Resources.CORE_STRINGS_FILE)
+        assetManager.load<I18NBundle>(CoreRes.CORE_STRINGS_FILE)
     }
 
     /** Called when the asset manager is done loading. */
     open fun start() {
-        coreSkin.add(Resources.CORE_STRINGS_NAME, assetManager.getAsset<I18NBundle>(Resources.CORE_STRINGS_FILE))
+        coreSkin.add(CoreRes.CORE_STRINGS_NAME, assetManager.getAsset<I18NBundle>(CoreRes.CORE_STRINGS_FILE))
         SdfShader.load(coreSkin)
     }
 
     /** Load the [PCard] skin, containing standard playing cards sprites. */
     protected fun loadPCardSkin() {
-        assetManager.load<Skin>(Resources.PCARD_SKIN, SkinLoader.SkinParameter(Resources.PCARD_SKIN_ATLAS))
+        assetManager.load<Skin>(CoreRes.PCARD_SKIN, SkinLoader.SkinParameter(CoreRes.PCARD_SKIN_ATLAS))
     }
 
     private fun loadCoreSkin() {
-        assetManager.load<Skin>(Resources.CORE_SKIN, SkinLoader.SkinParameter(Resources.CORE_SKIN_ATLAS))
+        assetManager.load<Skin>(CoreRes.CORE_SKIN, SkinLoader.SkinParameter(CoreRes.CORE_SKIN_ATLAS))
         assetManager.finishLoading()
     }
 
