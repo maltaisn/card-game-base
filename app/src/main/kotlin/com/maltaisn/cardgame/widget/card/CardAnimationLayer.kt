@@ -73,7 +73,7 @@ class CardAnimationLayer : Group() {
         // Do delayed card moves.
         for (i in delayedCardMoves.indices.reversed()) {
             val move = delayedCardMoves[i]
-            move.timeLeft -= delta
+            move.timeLeft -= delta * TimeAction.SPEED_MULTIPLIER
             if (move.timeLeft < 0) {
                 delayedCardMoves.removeAt(i)
                 move.doMove(this)
@@ -84,7 +84,7 @@ class CardAnimationLayer : Group() {
         if (animationPending) {
             startAnimation()
         } else if (animationRunning) {
-            animationTimeLeft -= delta
+            animationTimeLeft -= delta * TimeAction.SPEED_MULTIPLIER
             if (animationTimeLeft <= 0f) {
                 completeAnimation()
             }
@@ -434,7 +434,8 @@ class CardAnimationLayer : Group() {
             elapsed += delta
 
             // Change position and size
-            val progress = Interpolation.smooth.applyBounded(elapsed / duration)
+            val progress = Interpolation.smooth.applyBounded(
+                    elapsed * TimeAction.SPEED_MULTIPLIER / duration)
             cardActor.x = startX + progress * distance.x
             cardActor.y = startY + progress * distance.y
             cardActor.size = startSize + progress * (dst.cardSize - startSize)
@@ -448,7 +449,7 @@ class CardAnimationLayer : Group() {
         /**
          * Change the Z-index of the actor to the correct Z-index in its destination container.
          */
-        fun changeLayer() {
+        private fun changeLayer() {
             if (containerRect == null) return
 
             // Check if the card actor's center is within the destination container rectangle bounds.

@@ -46,6 +46,6 @@ object CardGameTests {
 
     val TESTS_MAP = TESTS.associateBy { it.simpleName }.toSortedMap()
 
-    fun newTest(name: String) = TESTS_MAP[name]?.constructors?.first()?.newInstance() as CardGameTest
+    fun newTest(name: String) = TESTS_MAP[name]?.getConstructor()?.newInstance() as CardGameTest
 
 }
