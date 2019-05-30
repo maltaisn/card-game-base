@@ -32,7 +32,7 @@ abstract class TimeAction(var duration: Float,
                           var interpolationOut: Interpolation = interpolationIn,
                           var reversed: Boolean = false) : Action() {
 
-    var elapsed = if (reversed) duration else 0f
+    var elapsed = if (reversed) duration / SPEED_MULTIPLIER else 0f
 
     /** The current interpolation used, depends on [reversed]. */
     val interpolation: Interpolation
@@ -51,7 +51,7 @@ abstract class TimeAction(var duration: Float,
 
         elapsed += if (reversed) -delta else delta
 
-        val progress = interpolation.applyBounded(elapsed / duration)
+        val progress = interpolation.applyBounded(elapsed * SPEED_MULTIPLIER / duration)
         update(progress)
 
         val done = !reversed && progress >= 1f || reversed && progress <= 0f
@@ -70,6 +70,15 @@ abstract class TimeAction(var duration: Float,
 
     /** Called the last time [act] is called. */
     open fun end() {}
+
+    companion object {
+        /**
+         * Global speed modifier applied on all time actions.
+         * Can be used for debug purposes to see animations better.
+         * Higher values result in faster actions.
+         */
+        var SPEED_MULTIPLIER = 1f
+    }
 
 }
 

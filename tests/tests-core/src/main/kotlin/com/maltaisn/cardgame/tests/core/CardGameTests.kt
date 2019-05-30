@@ -40,11 +40,12 @@ object CardGameTests {
             PrefsViewTest::class.java,
             MenuDrawerTest::class.java,
             InGameMenuTest::class.java,
-            SubMenuTest::class.java
+            SubMenuTest::class.java,
+            TimeActionTest::class.java
     )
 
     val TESTS_MAP = TESTS.associateBy { it.simpleName }.toSortedMap()
 
-    fun newTest(name: String) = TESTS_MAP[name]?.newInstance()
+    fun newTest(name: String) = TESTS_MAP[name]?.constructors?.first()?.newInstance() as CardGameTest
 
 }

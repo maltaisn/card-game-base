@@ -107,10 +107,10 @@ class CardActor(val coreStyle: GameLayer.CoreStyle,
         }
 
 
-    constructor(skin: Skin, card: Card,
+    constructor(coreSkin: Skin, cardSkin: Skin, card: Card,
                 coreStyleName: String = "default",
                 cardStyleName: String = "default") :
-            this(skin[coreStyleName], skin[cardStyleName], card)
+            this(coreSkin.get<GameLayer.CoreStyle>(coreStyleName), cardSkin[cardStyleName], card)
 
 
     init {
