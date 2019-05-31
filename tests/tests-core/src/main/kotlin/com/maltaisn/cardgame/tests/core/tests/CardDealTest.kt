@@ -16,55 +16,72 @@
 
 package com.maltaisn.cardgame.tests.core.tests
 
-import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.core.PCard
-import com.maltaisn.cardgame.tests.core.CenterLayout
-import com.maltaisn.cardgame.tests.core.SingleActionTest
+import com.maltaisn.cardgame.core.drawTop
+import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.card.CardAnimationLayer
+import com.maltaisn.cardgame.widget.card.CardContainer
 import com.maltaisn.cardgame.widget.card.CardHand
-import com.maltaisn.cardgame.widget.card.CardStack
 
 
 /**
- * Test [CardAnimationLayer.deal] from a hidden card stack to a card hand.
- * Test [CardAnimationLayer.completeAnimation] with delayed moves dispatch.
+ * Test all possible combinations of options for [CardAnimationLayer.deal].
  */
-class CardDealTest : SingleActionTest() {
+class CardDealTest : ActionBarTest() {
 
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
-        val deck = PCard.fullDecks(shuffled = true)
-
-        val hand = CardHand(coreSkin, cardSkin).apply {
-            align = Align.bottom
-            clipPercent = 0.3f
+        val topHand = CardHand(coreSkin, cardSkin).apply {
+            cards = PCard.fullDecks().drawTop(16)
         }
 
-        val stack = CardStack(coreSkin, cardSkin).apply {
-            isVisible = false
-            cards = deck
-        }
+        val bottomHand = CardHand(coreSkin, cardSkin)
 
         val animLayer = layout.cardAnimationLayer
-        animLayer.register(hand, stack)
+        animLayer.register(topHand, bottomHand)
 
-        action = {
+        // Action buttons
+        var dealToTop = false
+        var replaceSrc = false
+        var replaceDst = false
+        var fromLast = true
+        var toLast = true
+
+        addActionBtn("Deal") {
             if (animLayer.animationRunning) {
-                // Force complete last deal
                 animLayer.completeAnimation(true)
             }
-            if (stack.size >= 12) {
-                animLayer.deal(stack, hand, 12)
+
+            val src: CardContainer
+            val dst: CardContainer
+            if (dealToTop) {
+                src = bottomHand
+                dst = topHand
+            } else {
+                src = topHand
+                dst = bottomHand
             }
+
+            dst.cards = if (replaceDst) {
+                arrayOfNulls<PCard>(src.size).toList()
+            } else {
+                emptyList()
+            }
+            animLayer.deal(src, dst, src.size, replaceSrc, replaceDst, fromLast, toLast)
+            dealToTop = !dealToTop
         }
+        addToggleBtn("Replace src", startState = replaceSrc) { _, state -> replaceSrc = state }
+        addToggleBtn("Replace dst", startState = replaceDst) { _, state -> replaceDst = state }
+        addToggleBtn("Src from last", startState = fromLast) { _, state -> fromLast = state }
+        addToggleBtn("Dst to last", startState = toLast) { _, state -> toLast = state }
 
         // Do the layout
-        layout.gameLayer.centerTable.add(CenterLayout(hand)).grow()
-        layout.gameLayer.bottomTable.add(stack).grow()
-
-        isDebugAll = true
+        layout.gameLayer.centerTable.apply {
+            add(topHand).pad(30f).grow().row()
+            add(bottomHand).pad(30f).grow()
+        }
     }
 
 }

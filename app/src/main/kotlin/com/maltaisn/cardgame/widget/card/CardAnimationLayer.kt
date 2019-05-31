@@ -149,9 +149,13 @@ class CardAnimationLayer : Group() {
      * @param callback Called after each card is passed.
      * @param replaceSrc If true, cards removed from source will be replaced with null.
      * @param replaceDst If true, cards will replace null cards in destination.
+     * @param fromLast If true, cards will be taken from the last indexes of [src]. If false,
+     * they will be taken from the first indexes.
+     * @param toLast Same as [fromLast] for the [dst] container.
      */
     fun deal(src: CardContainer, dst: CardContainer, count: Int,
              replaceSrc: Boolean = false, replaceDst: Boolean = false,
+             fromLast: Boolean = true, toLast: Boolean = true,
              callback: (() -> Unit)? = null) {
         require(src.size >= count) {
             "Not enough cards in source container to perform deal."
@@ -160,8 +164,16 @@ class CardAnimationLayer : Group() {
         val srcStartSize = src.size
         val dstStartSize = dst.size
         for (i in 0 until count) {
-            val srcIndex = if (replaceSrc) i else srcStartSize - i - 1
-            val dstIndex = if (replaceDst) i else dstStartSize + i
+            val srcIndex = if (replaceSrc) {
+                if (fromLast) srcStartSize - i - 1 else i
+            } else {
+                if (fromLast) srcStartSize - i - 1 else 0
+            }
+            val dstIndex = if (replaceDst) {
+                if (toLast) dstStartSize - i - 1 else i
+            } else {
+                if (toLast) dstStartSize + i else 0
+            }
             moveCardDelayed(src, dst, srcIndex, dstIndex,
                     replaceSrc, replaceDst, i * DEAL_DELAY) {
                 callback?.invoke()

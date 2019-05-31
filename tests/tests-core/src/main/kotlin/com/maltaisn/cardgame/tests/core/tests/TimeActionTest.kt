@@ -1,3 +1,19 @@
+/*
+ * Copyright 2019 Nicolas Maltais
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.maltaisn.cardgame.tests.core.tests
 
 import com.badlogic.gdx.math.Interpolation
@@ -6,6 +22,7 @@ import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.TimeAction
 import com.maltaisn.cardgame.widget.card.CardActor
+import com.maltaisn.cardgame.widget.menu.MenuButton
 import ktx.actors.alpha
 import ktx.log.info
 import kotlin.math.max
@@ -17,12 +34,7 @@ import kotlin.math.min
  */
 class TimeActionTest : ActionBarTest() {
 
-    private var rotateAction: TimeAction? = null
-        set(value) {
-            if (field != null) root.removeAction(field)
-            field = value
-            if (value != null) addAction(value)
-        }
+    private var fadeAction: TimeAction? = null
 
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
@@ -37,8 +49,8 @@ class TimeActionTest : ActionBarTest() {
 
         addActionBtn("Fade") {
             cardShown = !cardShown
-            if (rotateAction == null) {
-                rotateAction = object : TimeAction(1f,
+            if (fadeAction == null) {
+                fadeAction = object : TimeAction(1f,
                         INTERPOLATIONS[intpIn].second,
                         INTERPOLATIONS[intpOut].second,
                         reversed = !cardShown) {
@@ -56,11 +68,11 @@ class TimeActionTest : ActionBarTest() {
 
                     override fun end() {
                         card.isVisible = cardShown
-                        rotateAction = null
+                        fadeAction = null
                         info { "Animation ended" }
                     }
                 }
-                card.addAction(rotateAction)
+                card.addAction(fadeAction)
             }
         }
 
@@ -69,23 +81,25 @@ class TimeActionTest : ActionBarTest() {
             intpIn = (intpIn + 1) % INTERPOLATIONS.size
             val intp = INTERPOLATIONS[intpIn]
             it.title = "In: ${intp.first}"
-            rotateAction?.end()
+            fadeAction?.end()
         }
         addActionBtn("Out: ${INTERPOLATIONS[intpOut].first}") {
             intpOut = (intpOut + 1) % INTERPOLATIONS.size
             val intp = INTERPOLATIONS[intpOut]
             it.title = "Out: ${intp.first}"
-            rotateAction?.end()
+            fadeAction?.end()
         }
 
         // Speed
         addActionBtn("Speed -") {
-            rotateAction?.end()
+            fadeAction?.end()
             TimeAction.SPEED_MULTIPLIER = max(0.125f, TimeAction.SPEED_MULTIPLIER / 2)
+            info { "Speed: ${TimeAction.SPEED_MULTIPLIER}" }
         }
         addActionBtn("Speed +") {
-            rotateAction?.end()
+            fadeAction?.end()
             TimeAction.SPEED_MULTIPLIER = min(8f, TimeAction.SPEED_MULTIPLIER * 2)
+            info { "Speed: ${TimeAction.SPEED_MULTIPLIER}" }
         }
     }
 
