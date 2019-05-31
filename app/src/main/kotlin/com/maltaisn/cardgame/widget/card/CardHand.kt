@@ -139,7 +139,7 @@ class CardHand : CardContainer {
     /**
      * Change the highlighted state of [cards] without calling highlight listener.
      */
-    fun highlightCards(cards: List<Card>, highlighted: Boolean) {
+    fun highlightCards(cards: List<Card>, highlighted: Boolean = true) {
         for (card in cards) {
             val actor = actors.find { it?.card == card } ?: continue
             highlightActor(actor, highlighted)
@@ -149,7 +149,7 @@ class CardHand : CardContainer {
     /**
      * Change the highlighted state of all cards without calling highlight listener.
      */
-    fun highlightAllCards(highlighted: Boolean) {
+    fun highlightAllCards(highlighted: Boolean = true) {
         for (actor in actors) {
             highlightActor(actor ?: continue, highlighted)
         }
@@ -157,9 +157,9 @@ class CardHand : CardContainer {
 
     /**
      * Change the highlighted state of a card [actor] to [highlighted],
-     * if actor is highlightable. Doesn't call highlight listener.
+     * if actor is highlightable, without calling highlight listener.
      */
-    fun highlightActor(actor: CardActor, highlighted: Boolean) {
+    fun highlightActor(actor: CardActor, highlighted: Boolean = true) {
         if (!actor.highlightable || actor.highlighted == highlighted) return
 
         // Call listener and check if highlighted is allowed.
