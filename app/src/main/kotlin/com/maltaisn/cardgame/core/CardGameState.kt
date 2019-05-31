@@ -22,12 +22,12 @@ import com.maltaisn.cardgame.prefs.GamePrefs
  * Defines the state of a game at a particular moment.
  * @property settings The game settings
  * @property players List of players in the game.
- * @property posToMove The position of the next player to move.
+ * @param startPos The position of the first player to play.
  * [getMoves] will return moves for this player.
  */
 abstract class CardGameState(val settings: GamePrefs,
                              open val players: List<CardPlayer>,
-                             var posToMove: Int) : Cloneable {
+                             startPos: Int) : Cloneable {
 
     /**
      * The result of the game.
@@ -38,6 +38,16 @@ abstract class CardGameState(val settings: GamePrefs,
     /** Returns whether the game is done, i.e when [getMoves] is an empty list. */
     open val isGameDone: Boolean
         get() = result != null
+
+    /**
+     * The position of the next player to move.
+     * Any value set will always be changed to a value between 0 and `players.size`.
+     */
+    open var posToMove = startPos
+        protected set(value) {
+            val playerCount = players.size
+            field = (value % playerCount + playerCount) % playerCount
+        }
 
     /** Returns the player who has to play next. */
     open val playerToMove: CardPlayer
