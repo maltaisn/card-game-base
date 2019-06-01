@@ -27,6 +27,7 @@ import com.maltaisn.cardgame.widget.card.CardActor
 import com.maltaisn.cardgame.widget.card.CardContainer
 import com.maltaisn.cardgame.widget.card.CardStack
 import com.maltaisn.cardgame.widget.card.CardTrick
+import ktx.log.info
 import kotlin.math.PI
 import kotlin.math.max
 import kotlin.math.min
@@ -102,6 +103,7 @@ class CardTrickTest : ActionBarTest() {
                 trick.requestUpdate()
                 animLayer.update()
             }
+            info { "Capacity: ${trick.capacity}" }
         }
         addActionBtn("+") {
             // Increase capacity
@@ -111,6 +113,7 @@ class CardTrickTest : ActionBarTest() {
                 trick.requestUpdate()
                 animLayer.update()
             }
+            info { "Capacity: ${trick.capacity}" }
         }
         addTwoStateActionBtn("Cc", "Cw") { _, state ->
             // Toggle clockwise placement
@@ -125,30 +128,35 @@ class CardTrickTest : ActionBarTest() {
             trick.cardAngles = angles
             trick.requestUpdate()
             animLayer.update()
+            info { "Random angles: ${trick.cardAngles}" }
         }
         addActionBtn("Rx-") {
             // Decrease horizontal radius
             trick.radius.x = max(trick.radius.x - 10f, 20f)
             trick.requestUpdate()
             animLayer.update()
+            info { "Radius X: ${trick.radius.x}" }
         }
         addActionBtn("Rx+") {
             // Increase horizontal radius
             trick.radius.x = min(trick.radius.x + 10f, 200f)
             trick.requestUpdate()
             animLayer.update()
+            info { "Radius X: ${trick.radius.x}" }
         }
         addActionBtn("Ry-") {
             // Decrease vertical radius
             trick.radius.y = max(trick.radius.y - 10f, 20f)
             trick.requestUpdate()
             animLayer.update()
+            info { "Radius Y: ${trick.radius.y}" }
         }
         addActionBtn("Ry+") {
             // Increase vertical radius
             trick.radius.y = min(trick.radius.y + 10f, 200f)
             trick.requestUpdate()
             animLayer.update()
+            info { "Radius Y: ${trick.radius.y}" }
         }
         addActionBtn("Auto R") {
             // Set auto radius
@@ -158,9 +166,10 @@ class CardTrickTest : ActionBarTest() {
         }
         addActionBtn("Angle+") {
             // Increase start angle
-            trick.startAngle += (PI / 8).toFloat()
+            trick.startAngle = ((trick.startAngle + PI / 8) % (PI * 2)).toFloat()
             trick.requestUpdate()
             animLayer.update()
+            info { "Start angle: ${trick.startAngle}" }
         }
         addToggleBtn("Debug") { _, debug ->
             trick.debug = debug

@@ -190,7 +190,7 @@ class CardHand : CardContainer {
      * position to the highlight position or the opposite.
      */
     internal inner class HighlightAction(private val cardActor: CardActor) :
-            TimeAction(0.1f, Interpolation.smooth, reversed = !cardActor.highlighted) {
+            TimeAction(HIGHLIGHT_DURATION, Interpolation.smooth, reversed = !cardActor.highlighted) {
 
         private val normalPos = (if (horizontal) cardActor.y else cardActor.x) -
                 (if (cardActor.highlighted) 0f else highlightSize)
@@ -320,6 +320,11 @@ class CardHand : CardContainer {
             }
         }
         return size
+    }
+
+    companion object {
+        /** The duration of the highlight animation. */
+        const val HIGHLIGHT_DURATION = 0.2f
     }
 
 }

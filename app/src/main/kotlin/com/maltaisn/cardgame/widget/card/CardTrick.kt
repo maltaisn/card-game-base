@@ -84,7 +84,7 @@ class CardTrick : CardContainer {
      */
     val radius = vec2()
 
-    /** Whether cards are displayed in clockwise order or counterclocwise order. */
+    /** Whether cards are displayed in clockwise order or counterclockwise order. */
     var clockwisePlacement = true
 
 
