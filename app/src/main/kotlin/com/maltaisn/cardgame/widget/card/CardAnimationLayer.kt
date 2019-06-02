@@ -93,6 +93,7 @@ class CardAnimationLayer : Group() {
 
     /**
      * Register card [containers] to allow them to animate card moves.
+     * The order of registration matters for Z-index, the first containers will be put below.
      */
     fun register(vararg containers: CardContainer) {
         for (container in containers) {

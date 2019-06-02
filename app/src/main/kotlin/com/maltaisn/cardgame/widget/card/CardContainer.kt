@@ -200,6 +200,7 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
         for (actor in actors) {
             if (actor != null) {
                 actor.size = cardSize
+                actor.enabled = enabled
                 if (visibility == Visibility.ALL) {
                     actor.shown = true
                 } else if (visibility == Visibility.NONE) {
@@ -587,10 +588,12 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
 
         // Apply this container visibility to the new actors
         for (actor in actors) {
+            actor ?: continue
+            actor.enabled = enabled
             if (visibility == Visibility.ALL) {
-                actor?.shown = true
+                actor.shown = true
             } else if (visibility == Visibility.NONE) {
-                actor?.shown = false
+                actor.shown = false
             }
         }
     }
