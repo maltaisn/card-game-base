@@ -19,12 +19,31 @@ package com.maltaisn.cardgame
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Cell
 import com.badlogic.gdx.scenes.scene2d.ui.Value
+import com.maltaisn.cardgame.widget.TimeAction
 
 
 /**
  * Returns whether a point ([x], [y]) in the actor's coordinates is within its bounds.
  */
 internal fun Actor.withinBounds(x: Float, y: Float) = x >= 0 && y >= 0 && x <= width && y <= height
+
+/**
+ * Add an [action] to be done after a [delay] in seconds.
+ * The added action is returned if delay is greater than zero.
+ */
+inline fun Actor.postDelayed(delay: Float, crossinline action: () -> Unit): TimeAction? =
+        if (delay <= 0f) {
+            action()
+            null
+        } else {
+            val delayedAction = object : TimeAction(delay) {
+                override fun end() {
+                    action()
+                }
+            }
+            addAction(delayedAction)
+            delayedAction
+        }
 
 /**
  * Set the default size parameter on a cell.
