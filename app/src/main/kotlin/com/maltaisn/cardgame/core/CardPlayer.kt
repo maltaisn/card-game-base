@@ -16,36 +16,35 @@
 
 package com.maltaisn.cardgame.core
 
+import com.badlogic.gdx.utils.Json
+import com.badlogic.gdx.utils.JsonValue
+
 /**
  * Base class for a player in a game state.
  */
-abstract class CardPlayer() : Cloneable {
+abstract class CardPlayer : Cloneable, Json.Serializable {
 
     /** Player position, set by the game state. */
-    var position = -1
+    var position = NO_POSITION
 
     /** Player name, can be `null` if not named. */
     var name: String? = null
 
     /**
-     * Copy constructor.
-     */
-    protected constructor(player: CardPlayer) : this() {
-        name = player.name
-        position = player.position
-    }
-
-    /**
      * Called when [state] performs a [move] for any player.
      */
-    open fun onMove(state: CardGameState, move: CardGameEvent.Move) {
-
-    }
+    open fun onMove(state: CardGameState<*>, move: CardGameEvent.Move) = Unit
 
     /**
      * Create a deep copy of this player.
      */
     public abstract override fun clone(): CardPlayer
+
+
+    protected fun <T : CardPlayer> cloneTo(player: T) = player.also {
+        it.name = name
+        it.position = position
+    }
 
 
     override fun equals(other: Any?): Boolean {
@@ -56,6 +55,22 @@ abstract class CardPlayer() : Cloneable {
 
     override fun hashCode() = name.hashCode()
 
-    override fun toString() = "[name: ${name ?: "<player-${position + 1}>"}, position: $position]"
+    override fun toString() = "[name: ${name ?: "<unnamed>"}, position: $position]"
+
+
+    override fun read(json: Json, jsonData: JsonValue) {
+        position = jsonData.getInt("pos")
+        name = jsonData.getString("name")
+    }
+
+    override fun write(json: Json) {
+        json.writeValue("pos", position)
+        json.writeValue("name", name)
+    }
+
+
+    companion object {
+        const val NO_POSITION = -1
+    }
 
 }

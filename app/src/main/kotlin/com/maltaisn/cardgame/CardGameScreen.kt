@@ -54,7 +54,7 @@ abstract class CardGameScreen : Stage(ExtendViewport(960f, 540f)), Screen {
     @GDXAssets(skinFiles = ["assets/core/core.skin"])
     val coreSkin: Skin
 
-    var game: CardGame? = null
+    var game: CardGame<*>? = null
 
     /** The game layout. */
     var gameLayout: CardGameLayout? = null
@@ -162,9 +162,6 @@ abstract class CardGameScreen : Stage(ExtendViewport(960f, 540f)), Screen {
         for (pref in prefs) {
             pref.save()
         }
-
-        // Save game if started
-        game?.save(Gdx.files.local(SAVED_GAME))
     }
 
     override fun resume() {
@@ -177,7 +174,7 @@ abstract class CardGameScreen : Stage(ExtendViewport(960f, 540f)), Screen {
     }
 
     /** Hide menu, initialize game and start it. */
-    protected fun initGame(game: CardGame) {
+    protected fun initGame(game: CardGame<*>) {
         this.game = game
 
         gameLayout?.initGame(game)
@@ -212,11 +209,6 @@ abstract class CardGameScreen : Stage(ExtendViewport(960f, 540f)), Screen {
         offscreenFbo = FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.width, Gdx.graphics.height, false)
         offscreenFboRegion = TextureRegion(offscreenFbo.colorBufferTexture)
         offscreenFboRegion.flip(false, true)
-    }
-
-
-    companion object {
-        const val SAVED_GAME = "saved-game.json"
     }
 
 }

@@ -41,7 +41,7 @@ abstract class CardGameLayout(assetManager: AssetManager,
                               val settings: GamePrefs) :
         WidgetGroup(), PrefEntry.PrefListener {
 
-    protected var game: CardGame? = null
+    protected var game: CardGame<*>? = null
 
     protected val coreSkin: Skin = assetManager[CoreRes.CORE_SKIN]
 
@@ -111,7 +111,7 @@ abstract class CardGameLayout(assetManager: AssetManager,
      * Initialize layout for a [game]. The game could be at any state.
      * When this is called, the layout is always hidden.
      */
-    open fun initGame(game: CardGame) {
+    open fun initGame(game: CardGame<*>) {
         this.game?.dispose()
         this.game = game
         game.eventListener = { doEvent(it) }

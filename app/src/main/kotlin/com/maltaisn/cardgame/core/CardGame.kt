@@ -18,6 +18,7 @@ package com.maltaisn.cardgame.core
 
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.utils.Disposable
+import com.badlogic.gdx.utils.Json
 import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.PrefEntry
 
@@ -26,10 +27,19 @@ import com.maltaisn.cardgame.prefs.PrefEntry
  * Base class for managing the game itself. Takes care of creating game states,
  * saving and loading the game, listening to settings changes, etc.
  */
-abstract class CardGame(val settings: GamePrefs) : PrefEntry.PrefListener, Disposable {
+abstract class CardGame<S : CardGameState<*>> :
+        PrefEntry.PrefListener, Disposable, Json.Serializable {
 
-    /** The state of the game in the current round, or `null` if game is not ongoing. */
-    var gameState: CardGameState? = null
+    /**
+     * The game settings.
+     */
+    lateinit var settings: GamePrefs
+
+    /**
+     * The state of the game in the current round, or `null` if game is not ongoing.
+     */
+    var gameState: S? = null
+        protected set
 
     /**
      * The list of events that happened in the game.
@@ -37,30 +47,33 @@ abstract class CardGame(val settings: GamePrefs) : PrefEntry.PrefListener, Dispo
      */
     abstract val events: List<CardGameEvent>
 
-    /** The listener called when a game event happens, or `null` for none. */
+    /**
+     * The listener called when a game event happens, or `null` for none.
+     */
     var eventListener: ((CardGameEvent) -> Unit)? = null
 
 
-    init {
+    /**
+     * Initialize the card game with [settings] before playing.
+     */
+    open fun initialize(settings: GamePrefs) {
+        this.settings = settings
         settings.addListener(this)
+        gameState?.settings = settings
     }
 
     /**
-     * Load a game object from a [file].
+     * Synchronously save the card game to a [file] using [json].
      */
-    constructor(settings: GamePrefs, file: FileHandle) : this(settings)
-
-
-    /**
-     * Save the game options and current state to a local [file].
-     */
-    abstract fun save(file: FileHandle)
+    abstract fun save(json: Json, file: FileHandle)
 
 
     override fun dispose() {
         // Detach all listeners
+        if (::settings.isInitialized) {
+            settings.removeListener(this)
+        }
         eventListener = null
-        settings.removeListener(this)
     }
 
     override fun toString() = "[${events.size} events]"

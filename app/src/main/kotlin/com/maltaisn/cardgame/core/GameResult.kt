@@ -16,10 +16,39 @@
 
 package com.maltaisn.cardgame.core
 
+import com.badlogic.gdx.utils.Json
+import com.badlogic.gdx.utils.JsonValue
+
 /**
  * A result of a game state when game is done.
- * @property playerResults an arbitrarly chosen result representing the outcome of the game for
- * each player. A larger value must always indicate a better outcome and a smaller value a worse
- * for [Mcts] to work correctly.
  */
-class GameResult(val playerResults: List<Float>)
+class GameResult() : Cloneable, Json.Serializable {
+
+    /**
+     * Arbitrarly chosen results representing the outcome of the game for
+     * each player. A larger value must always indicate a better outcome and a smaller value a worse
+     * for [Mcts] to work correctly.
+     */
+    lateinit var playerResults: List<Float>
+        private set
+
+
+    constructor(playerResults: List<Float>) : this() {
+        this.playerResults = playerResults
+    }
+
+
+    public override fun clone() = GameResult(playerResults.toList())
+
+    override fun toString() = playerResults.toString()
+
+
+    override fun read(json: Json, jsonData: JsonValue) {
+        playerResults = jsonData.get("results").asFloatArray().toList()
+    }
+
+    override fun write(json: Json) {
+        json.writeValue("results", playerResults)
+    }
+
+}

@@ -26,7 +26,14 @@ interface CardGameEvent {
 
     /**
      * Marker interface for a move event.
+     * All subclasses must implement [equals] for [Mcts] to work.
      */
-    interface Move
+    interface Move {
+
+        override fun equals(other: Any?): Boolean
+
+        override fun hashCode(): Int
+
+    }
 
 }

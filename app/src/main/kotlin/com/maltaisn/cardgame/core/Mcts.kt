@@ -41,7 +41,7 @@ object Mcts {
      * @param explorationParam Exploration param balancing exploration and exploitation.
      * Lower value = more exploitation, higher value = more exploration.
      */
-    fun run(rootState: CardGameState, iter: Int,
+    fun run(rootState: CardGameState<*>, iter: Int,
             explorationParam: Float = DEFAULT_EXPLORATION): CardGameEvent.Move {
 
         val rootNode = Node(null, null, rootState.posToMove, explorationParam)
@@ -100,7 +100,7 @@ object Mcts {
      * Compute the average result of [iter] simulations of [rootState] doing a [move].
      * This is the same as the "Simulate" step of [run].
      */
-    fun simulate(rootState: CardGameState, move: CardGameEvent.Move, iter: Int): Float {
+    fun simulate(rootState: CardGameState<*>, move: CardGameEvent.Move, iter: Int): Float {
         var score = 0f
         val player = rootState.posToMove
         repeat(iter) {

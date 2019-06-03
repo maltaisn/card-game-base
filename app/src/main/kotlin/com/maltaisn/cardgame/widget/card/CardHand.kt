@@ -38,7 +38,7 @@ class CardHand : CardContainer {
      * Sorter to use for sorting the group before displaying. Use `null` for no sorting.
      * If changed and group has cards, [sort] must be called to sort the cards.
      */
-    var sorter: Card.Sorter<out Card>? = null
+    var sorter: Card.Sorter<*>? = null
 
     /**
      * Whether the cards highlight state can be changed by clicking on them.

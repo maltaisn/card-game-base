@@ -58,7 +58,7 @@ abstract class PrefEntry {
     }
 
     /** Create a view for this preference. */
-    abstract fun createView(skin: Skin): PrefEntryView<out PrefEntry>
+    abstract fun createView(skin: Skin): PrefEntryView<*>
 
 
     override fun toString() = "[key: \"$key\", title: \"$title\"" +
@@ -70,12 +70,12 @@ abstract class PrefEntry {
         /**
          * Called when the preference value is changed.
          */
-        fun onPreferenceValueChanged(pref: PrefEntry) {}
+        fun onPreferenceValueChanged(pref: PrefEntry) = Unit
 
         /**
          * Called when the preference enabled state is changed.
          */
-        fun onPreferenceEnabledStateChanged(pref: PrefEntry, enabled: Boolean) {}
+        fun onPreferenceEnabledStateChanged(pref: PrefEntry, enabled: Boolean) = Unit
     }
 
 }

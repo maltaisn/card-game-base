@@ -16,6 +16,9 @@
 
 package com.maltaisn.cardgame.core
 
+import com.badlogic.gdx.utils.Json
+import com.badlogic.gdx.utils.JsonValue
+
 
 /**
  * A standard playing card.
@@ -24,7 +27,8 @@ package com.maltaisn.cardgame.core
  */
 class PCard private constructor(val rank: Int, val suit: Int, value: Int) : Card(value) {
 
-    val color = if (suit == HEART || suit == DIAMOND || suit == RED) RED else BLACK
+    val color: Int
+        get() = if (suit == HEART || suit == DIAMOND || suit == RED) RED else BLACK
 
     /**
      * Returns true if [card]'s rank is higher than this card's rank.
@@ -94,6 +98,13 @@ class PCard private constructor(val rank: Int, val suit: Int, value: Int) : Card
                     i++
                 }
             }
+        }
+
+        /**
+         * Get a card by its [value].
+         */
+        operator fun invoke(value: Int) = requireNotNull(cards.getOrNull(value)) {
+            "No playing card exist with this value."
         }
 
         /**
@@ -183,8 +194,8 @@ class PCard private constructor(val rank: Int, val suit: Int, value: Int) : Card
     /**
      * A specialized comparator for sorting decks of [PCard].
      *
-     * @property order The primary sort field, [BY_RANK] or [BY_SUIT].
-     * @property rankOrder The rank order, [ASCENDING] or [DESCENDING].
+     * @property order The primary sort field, [Sorter.BY_RANK] or [BSorter.Y_SUIT].
+     * @property rankOrder The rank order, [Sorter.ASCENDING] or [Sorter.DESCENDING].
      * @property aceHigh Whether the ace is considered bigger than king or not.
      * @property suitOrder The suit order, should be an int array of length 6, containing:
      * [PCard.HEART], [PCard.SPADE], [PCard.DIAMOND], [PCard.CLUB],
@@ -280,7 +291,18 @@ class PCard private constructor(val rank: Int, val suit: Int, value: Int) : Card
             const val ASCENDING = 1
             const val DESCENDING = -1
         }
+    }
 
+    /**
+     * The [PCard] serializer for a JSON instance, to serialize only the value
+     * and prevent creating new instances when deserializing.
+     */
+    object JsonSerializer : Json.Serializer<PCard> {
+        override fun read(json: Json, jsonData: JsonValue, type: Class<*>?) = PCard(jsonData.asInt())
+
+        override fun write(json: Json, card: PCard, knownType: Class<*>?) {
+            json.writeValue(card.value)
+        }
     }
 
 }

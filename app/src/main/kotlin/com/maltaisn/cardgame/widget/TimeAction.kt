@@ -63,13 +63,13 @@ abstract class TimeAction(var duration: Float,
     }
 
     /** Called the first time [act] is called. */
-    open fun begin() {}
+    open fun begin() = Unit
 
     /** Called everytime [act] is called with the interpolated progress value. */
-    open fun update(progress: Float) {}
+    open fun update(progress: Float) = Unit
 
     /** Called the last time [act] is called. */
-    open fun end() {}
+    open fun end() = Unit
 
     companion object {
         /**

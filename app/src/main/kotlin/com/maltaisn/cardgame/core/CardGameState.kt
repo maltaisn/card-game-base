@@ -16,26 +16,36 @@
 
 package com.maltaisn.cardgame.core
 
+import com.badlogic.gdx.utils.Json
+import com.badlogic.gdx.utils.JsonValue
 import com.maltaisn.cardgame.prefs.GamePrefs
+import com.maltaisn.cardgame.readValue
 
 /**
  * Defines the state of a game at a particular moment.
- * @property settings The game settings
- * @property players List of players in the game.
- * @param startPos The position of the first player to play.
- * [getMoves] will return moves for this player.
  */
-abstract class CardGameState(val settings: GamePrefs,
-                             open val players: List<CardPlayer>,
-                             startPos: Int) : Cloneable {
+abstract class CardGameState<P : CardPlayer> : Cloneable, Json.Serializable {
+
+    /**
+     * The game settings.
+     */
+    lateinit var settings: GamePrefs
+
+    /**
+     * List of players in the game.
+     */
+    lateinit var players: List<P>
 
     /**
      * The result of the game.
-     * If the game is not done, this will return `null`.
+     * If the game is not done, this is `null`.
      */
-    abstract val result: GameResult?
+    var result: GameResult? = null
+        protected set
 
-    /** Returns whether the game is done, i.e when [getMoves] is an empty list. */
+    /**
+     * Returns whether the game is done, i.e when [getMoves] is an empty list.
+     */
     open val isGameDone: Boolean
         get() = result != null
 
@@ -43,22 +53,27 @@ abstract class CardGameState(val settings: GamePrefs,
      * The position of the next player to move.
      * Any value set will always be changed to a value between 0 and `players.size`.
      */
-    open var posToMove = startPos
+    open var posToMove = CardPlayer.NO_POSITION
         protected set(value) {
             val playerCount = players.size
             field = (value % playerCount + playerCount) % playerCount
         }
 
-    /** Returns the player who has to play next. */
-    open val playerToMove: CardPlayer
+    /**
+     * Returns the player who has to play next.
+     */
+    open val playerToMove: P
         get() = players[posToMove]
 
 
     /**
-     * Create a state copied from another [state].
+     * Initialize the game state, needed before making moves.
      */
-    protected constructor(state: CardGameState) : this(state.settings,
-            state.players.map { it.clone() }, state.posToMove)
+    open fun initialize(settings: GamePrefs, players: List<P>, posToMove: Int) {
+        this.settings = settings
+        this.players = players
+        this.posToMove = posToMove
+    }
 
 
     /**
@@ -93,7 +108,16 @@ abstract class CardGameState(val settings: GamePrefs,
     /**
      * Create a deep copy of this game state.
      */
-    public abstract override fun clone(): CardGameState
+    public abstract override fun clone(): CardGameState<P>
+
+
+    @Suppress("UNCHECKED_CAST")
+    protected fun <T : CardGameState<P>> cloneTo(state: T) = state.also { s ->
+        s.settings = settings
+        s.players = players.map { it.clone() as P }
+        s.posToMove = posToMove
+        s.result = result?.clone()
+    }
 
     /**
      * Get a randomized deep copy of this game state.
@@ -103,5 +127,22 @@ abstract class CardGameState(val settings: GamePrefs,
      */
     open fun randomizedClone(observer: Int) = clone()
 
+
+    override fun read(json: Json, jsonData: JsonValue) {
+        result = json.readValue("result", jsonData)
+        posToMove = jsonData.getInt("posToMove")
+    }
+
+    /**
+     * Write the game state to [json].
+     * The players are not written, the [CardGame] must save them
+     * and set them back when loading its game state.
+     */
+    override fun write(json: Json) {
+        if (result != null) {
+            json.writeValue("result", result)
+        }
+        json.writeValue("posToMove", posToMove)
+    }
 
 }

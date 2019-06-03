@@ -44,6 +44,6 @@ abstract class GamePref : PrefEntry() {
     internal abstract fun saveValue(prefs: Preferences)
 
 
-    abstract override fun createView(skin: Skin): GamePrefView<out GamePref>
+    abstract override fun createView(skin: Skin): GamePrefView<*>
 
 }

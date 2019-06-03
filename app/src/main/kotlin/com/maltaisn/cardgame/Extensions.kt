@@ -19,6 +19,8 @@ package com.maltaisn.cardgame
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Cell
 import com.badlogic.gdx.scenes.scene2d.ui.Value
+import com.badlogic.gdx.utils.Json
+import com.badlogic.gdx.utils.JsonValue
 import com.maltaisn.cardgame.widget.TimeAction
 
 
@@ -54,3 +56,17 @@ fun <T : Actor> Cell<T>.defaultSize(): Cell<T> {
             .maxSize(Value.maxWidth, Value.maxHeight)
     return this
 }
+
+inline fun <reified T> Json.addClassTag(tag: String) = addClassTag(tag, T::class.java)
+
+inline fun <reified T> Json.setSerializer(serializer: Json.Serializer<T>) =
+        setSerializer(T::class.java, serializer)
+
+inline fun <reified T> Json.readValue(jsonData: JsonValue): T =
+        readValue(T::class.java, jsonData)
+
+inline fun <reified T> Json.readValue(name: String, jsonData: JsonValue): T =
+        readValue(name, T::class.java, jsonData)
+
+inline fun <reified T : Iterable<E>, reified E> Json.readArrayValue(name: String, jsonData: JsonValue): T =
+        readValue(name, T::class.java, E::class.java, jsonData)
