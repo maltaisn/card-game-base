@@ -19,6 +19,7 @@ package com.maltaisn.cardgame.widget
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
@@ -229,11 +230,14 @@ class Popup(skin: Skin) : FboTable() {
     private inner class TransitionAction :
             TimeAction(0.3f, Interpolation.smooth, reversed = !shown) {
 
+        private val touchableBefore = touchable
+
         init {
             isVisible = true
             translateX = 0f
             translateY = 0f
             alpha = if (shown) 0f else 1f
+            touchable = Touchable.disabled
             renderToFrameBuffer = true
         }
 
@@ -257,6 +261,7 @@ class Popup(skin: Skin) : FboTable() {
                 side = Side.CENTER
             }
             isVisible = shown
+            touchable = touchableBefore
             renderToFrameBuffer = false
             transitionAction = null
         }
