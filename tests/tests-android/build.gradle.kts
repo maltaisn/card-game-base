@@ -50,9 +50,10 @@ dependencies {
 // so they get packed with the APK.
 tasks.register("copyAndroidNatives") {
     doFirst {
+        val jniLibsPath = android.sourceSets.named("main").get().jniLibs.srcDirs.last().path
         natives.files.forEach { jar ->
             val nativeName = jar.nameWithoutExtension.substringAfterLast("natives-")
-            val outputDir = file("src/main/jniLibs/$nativeName")
+            val outputDir = File(jniLibsPath, nativeName)
             outputDir.mkdirs()
             copy {
                 from(zipTree(jar))
@@ -69,16 +70,18 @@ tasks.whenTaskAdded {
 }
 
 // Tasks to copy the tests assets to the android module assets dir
+val assetsPath = android.sourceSets.named("main").get().assets.srcDirs.last().path
+
 tasks.register("copyTestAssets") {
-    file("assets").mkdirs()
+    file(assetsPath).mkdirs()
     copy {
         from("../assets")
-        into("src/main/assets")
+        into(assetsPath)
     }
 }
 
 tasks.register<Delete>("cleanTestAssets") {
-    delete("src/main/assets")
+    delete(assetsPath)
 }
 
 tasks.named("clean") {
