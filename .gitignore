@@ -6,7 +6,7 @@
 /tests/tests-android/src/main/assets
 
 ## IntelliJ and Android
-/tests/tests-android/src/main/jniLibs/*/*.so
+/tests/tests-android/src/main/jniLibs/*/libgdx.so
 /tests/tests-android/gen/
 .idea/
 *.iml

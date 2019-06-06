@@ -48,7 +48,7 @@ class GameResult() : Cloneable, Json.Serializable {
     }
 
     override fun write(json: Json) {
-        json.writeValue("results", playerResults)
+        json.writeValue("results", playerResults.toTypedArray())
     }
 
 }

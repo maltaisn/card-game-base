@@ -60,12 +60,11 @@ abstract class CardPlayer : Cloneable, Json.Serializable {
 
     override fun read(json: Json, jsonData: JsonValue) {
         position = jsonData.getInt("pos")
-        name = jsonData.getString("name")
     }
 
     override fun write(json: Json) {
+        // Don't write name to Json, should be set after deserializing.
         json.writeValue("pos", position)
-        json.writeValue("name", name)
     }
 
 

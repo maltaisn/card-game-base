@@ -42,7 +42,7 @@ abstract class CardGameTest : CardGameScreen() {
         super.start()
         cardSkin = assetManager.getAsset(CoreRes.PCARD_SKIN)
 
-        gameLayout = object : CardGameLayout(assetManager, GamePrefs("unused")) {
+        gameLayout = object : CardGameLayout(assetManager, GamePrefs(null)) {
             override fun initGame(game: CardGame<*>) {
                 throw UnsupportedOperationException()
             }

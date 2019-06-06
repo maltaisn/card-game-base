@@ -40,7 +40,7 @@ abstract class CardGameState<P : CardPlayer> : Cloneable, Json.Serializable {
      * The result of the game.
      * If the game is not done, this is `null`.
      */
-    var result: GameResult? = null
+    open var result: GameResult? = null
         protected set
 
     /**
@@ -54,10 +54,6 @@ abstract class CardGameState<P : CardPlayer> : Cloneable, Json.Serializable {
      * Any value set will always be changed to a value between 0 and `players.size`.
      */
     open var posToMove = CardPlayer.NO_POSITION
-        protected set(value) {
-            val playerCount = players.size
-            field = (value % playerCount + playerCount) % playerCount
-        }
 
     /**
      * Returns the player who has to play next.
