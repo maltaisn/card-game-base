@@ -59,7 +59,8 @@ class CardAnimationLayer : Group() {
             override fun keyUp(event: InputEvent, keycode: Int): Boolean {
                 if (keycode == Input.Keys.ESCAPE) {
                     // Stop all animations with escape.
-                    completeAnimation(true)
+                    dispatchDelayedMoves()
+                    completeAnimation()
                     return true
                 }
                 return false
@@ -364,21 +365,9 @@ class CardAnimationLayer : Group() {
 
     /**
      * Complete all animations and send the card actors to their final position and container.
-     * @param dispatchDelayedMoves If true and there was any delayed card moves, they are also completed.
      */
-    fun completeAnimation(dispatchDelayedMoves: Boolean = false) {
+    fun completeAnimation() {
         if (!animationRunning) return
-
-        if (dispatchDelayedMoves && delayedCardMoves.isNotEmpty()) {
-            // Dispatch all delayed card moves if there are any.
-            for (move in delayedCardMoves) {
-                move.doMove(this)
-            }
-            delayedCardMoves.clear()
-
-            // Restart animation to update end positions and destinations
-            startAnimation()
-        }
 
         // Add animated actors to their container, keeping the same position on screen.
         for (container in containers) {
@@ -416,6 +405,27 @@ class CardAnimationLayer : Group() {
         animationPending = false
         animationRunning = false
         animationTimeLeft = 0f
+    }
+
+    /**
+     * Dispatch all remaining delayed moves, without completing them.
+     */
+    fun dispatchDelayedMoves() {
+        if (delayedCardMoves.isNotEmpty()) {
+            for (move in delayedCardMoves) {
+                move.doMove(this)
+            }
+            delayedCardMoves.clear()
+
+            startAnimation()
+        }
+    }
+
+    /**
+     * CLear all delayed moves so they won't be performed.
+     */
+    fun clearDelayedMoves() {
+        delayedCardMoves.clear()
     }
 
     internal inner class MoveCardAction(

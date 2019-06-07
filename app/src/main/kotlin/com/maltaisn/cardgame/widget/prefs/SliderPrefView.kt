@@ -23,6 +23,7 @@ import com.maltaisn.cardgame.prefs.SliderPref
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.SdfLabel
 import com.maltaisn.cardgame.widget.Slider
+import ktx.style.get
 import java.text.NumberFormat
 
 
@@ -49,12 +50,12 @@ class SliderPrefView(skin: Skin, pref: SliderPref) : GamePrefView<SliderPref>(sk
         }
 
     init {
-        val style = skin[SliderPrefViewStyle::class.java]
+        val style: SliderPrefViewStyle = skin.get()
 
         valueLabel = SdfLabel(skin, style.valueFontStyle, valueText)
         valueLabel.setAlignment(Align.right)
 
-        slider = Slider(style.sliderStyle).apply {
+        slider = Slider(skin).apply {
             minProgress = pref.minValue
             maxProgress = pref.maxValue
             step = pref.step
@@ -80,7 +81,6 @@ class SliderPrefView(skin: Skin, pref: SliderPref) : GamePrefView<SliderPref>(sk
 
     class SliderPrefViewStyle {
         lateinit var valueFontStyle: FontStyle
-        lateinit var sliderStyle: Slider.SliderStyle
     }
 
     companion object {

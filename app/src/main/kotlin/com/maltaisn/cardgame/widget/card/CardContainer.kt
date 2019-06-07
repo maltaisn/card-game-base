@@ -32,6 +32,7 @@ import ktx.actors.alpha
 import ktx.collections.isNotEmpty
 import ktx.math.minus
 import ktx.math.vec2
+import ktx.style.get
 import kotlin.math.min
 
 
@@ -163,8 +164,8 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
 
 
     constructor(coreSkin: Skin, cardSkin: Skin) :
-            this(coreSkin[GameLayer.CoreStyle::class.java],
-                    cardSkin[CardActor.CardStyle::class.java])
+            this(coreSkin.get<GameLayer.CoreStyle>(),
+                    cardSkin.get<CardActor.CardStyle>())
 
     override fun draw(batch: Batch, parentAlpha: Float) {
         x += translate.x

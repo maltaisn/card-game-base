@@ -106,7 +106,7 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
             rulesMenu.invalidateLayout()
         }
 
-    private val style = skin[DefaultGameMenuStyle::class.java]
+    private val style: DefaultGameMenuStyle = skin.get()
 
     // The submenus
     private val newGameMenu = SubMenu(skin)

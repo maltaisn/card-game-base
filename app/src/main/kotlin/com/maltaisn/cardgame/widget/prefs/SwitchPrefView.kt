@@ -31,12 +31,9 @@ class SwitchPrefView(skin: Skin, pref: SwitchPref) : GamePrefView<SwitchPref>(sk
             switch.enabled = value
         }
 
-    private val switch: Switch
+    private val switch = Switch(skin)
 
     init {
-        val style = skin[SwitchPrefViewStyle::class.java]
-
-        switch = Switch(style.switchStyle)
         switch.check(pref.value, false)
         switch.checkListener = { pref.value = it }
 
@@ -49,10 +46,6 @@ class SwitchPrefView(skin: Skin, pref: SwitchPref) : GamePrefView<SwitchPref>(sk
 
     override fun onPreferenceValueChanged(pref: PrefEntry) {
         switch.checked = this.pref.value
-    }
-
-    class SwitchPrefViewStyle {
-        lateinit var switchStyle: Switch.SwitchStyle
     }
 
 }

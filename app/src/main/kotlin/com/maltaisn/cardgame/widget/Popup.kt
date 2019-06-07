@@ -25,6 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
 import ktx.actors.alpha
 import ktx.math.vec2
+import ktx.style.get
 import kotlin.math.max
 
 
@@ -33,7 +34,7 @@ import kotlin.math.max
  */
 class Popup(skin: Skin) : FboTable() {
 
-    val style = skin[PopupStyle::class.java]
+    val style: PopupStyle = skin.get()
 
     /** Distance of the popup from the actor. */
     var distance = 5f

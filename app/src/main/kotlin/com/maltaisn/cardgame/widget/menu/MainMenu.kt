@@ -23,6 +23,7 @@ import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.widget.TimeAction
 import ktx.actors.alpha
 import ktx.actors.onClick
+import ktx.style.get
 
 
 /**
@@ -30,7 +31,7 @@ import ktx.actors.onClick
  */
 class MainMenu(skin: Skin) : MenuTable(skin) {
 
-    val style = skin[MainMenuStyle::class.java]
+    val style: MainMenuStyle = skin.get()
 
     private val topRow = Table()
     private val bottomRow = Table()

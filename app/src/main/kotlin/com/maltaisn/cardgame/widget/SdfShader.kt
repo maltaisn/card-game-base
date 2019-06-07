@@ -88,7 +88,7 @@ internal class SdfShader private constructor() :
         fun load(skin: Skin): SdfShader {
             if (skin.has("default", SdfShader::class.java)) {
                 // Shader was already loaded.
-                return skin[SdfShader::class.java]
+                return skin.get()
             }
 
             skin.add(FONT_NAME, loadFont(CoreRes.FONT_NAME))

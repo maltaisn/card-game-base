@@ -27,17 +27,16 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
 import com.maltaisn.cardgame.withinBounds
 import ktx.actors.setKeyboardFocus
+import ktx.style.get
 import kotlin.math.absoluteValue
 
 
 /**
  * A switch widget that can be checked and unchecked with animation.
  */
-class Switch(val style: SwitchStyle) : CheckableWidget() {
+class Switch(skin: Skin) : CheckableWidget() {
 
-    constructor(skin: Skin, styleName: String = "default") :
-            this(skin[styleName, SwitchStyle::class.java])
-
+    val style: SwitchStyle = skin.get()
 
     init {
         // A capture listener is used to intercept the touch down event,

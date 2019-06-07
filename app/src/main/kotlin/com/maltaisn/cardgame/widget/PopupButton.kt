@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
 import ktx.actors.alpha
+import ktx.style.get
 import kotlin.math.max
 
 
@@ -33,7 +34,7 @@ import kotlin.math.max
  */
 class PopupButton(skin: Skin, text: String? = null) : SelectableWidget() {
 
-    val style: PopupButtonStyle = skin[PopupButtonStyle::class.java]
+    val style: PopupButtonStyle = skin.get()
 
     /** The button label showing its text. */
     val label: SdfLabel

@@ -31,13 +31,16 @@ import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
 import com.maltaisn.cardgame.withinBounds
 import ktx.actors.setKeyboardFocus
 import ktx.math.vec2
+import ktx.style.get
 import kotlin.math.round
 
 
 /**
  * A slider widget that can be dragged to change its progress.
  */
-class Slider(val style: SliderStyle) : SelectableWidget() {
+class Slider(skin: Skin) : SelectableWidget() {
+
+    val style: SliderStyle = skin.get()
 
     /**
      * The slider progress. Will be rounded to a multiple of [step] within min and max,
@@ -110,10 +113,6 @@ class Slider(val style: SliderStyle) : SelectableWidget() {
     private var thumbX = 0f
     private var trackWidth = 0f
     private var trackFilledWidth = 0f
-
-
-    constructor(skin: Skin, styleName: String = "default") :
-            this(skin[styleName, SliderStyle::class.java])
 
 
     init {

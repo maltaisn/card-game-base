@@ -33,6 +33,7 @@ import com.maltaisn.cardgame.widget.ScrollView
 import com.maltaisn.cardgame.widget.SdfLabel
 import com.maltaisn.cardgame.widget.TimeAction
 import ktx.actors.onClick
+import ktx.style.get
 
 
 /**
@@ -104,7 +105,7 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
     val contentPane = ScrollView(content)
 
 
-    private val style = skin[MenuDrawerStyle::class.java]
+    private val style: MenuDrawerStyle = skin.get()
 
     private val drawerTable = Table()
     private val titleLabel = SdfLabel(skin, style.titleFontStyle)

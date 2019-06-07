@@ -26,12 +26,13 @@ import com.maltaisn.cardgame.markdown.MdElement
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.SdfLabel
 import com.maltaisn.cardgame.widget.menu.MenuContentSection
+import ktx.style.get
 
 
 class MdListView(skin: Skin, list: MdElement.List) : Table(), MenuContentSection {
 
     init {
-        val style = skin[MdListViewStyle::class.java]
+        val style: MdListViewStyle = skin.get()
         pad(0f, 5f, 10f, 0f)
 
         var n = 1

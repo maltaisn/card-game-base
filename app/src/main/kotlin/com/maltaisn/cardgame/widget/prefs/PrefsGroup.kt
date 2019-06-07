@@ -25,6 +25,7 @@ import com.badlogic.gdx.utils.Scaling
 import com.maltaisn.cardgame.prefs.GamePref
 import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.ListPref
+import ktx.style.get
 
 
 class PrefsGroup(skin: Skin, val prefs: GamePrefs) : Table() {
@@ -53,7 +54,7 @@ class PrefsGroup(skin: Skin, val prefs: GamePrefs) : Table() {
 
 
     init {
-        val style = skin[PrefsGroupStyle::class.java]
+        val style: PrefsGroupStyle = skin.get()
         pad(10f, 0f, 20f, 0f)
         align(Align.top)
 

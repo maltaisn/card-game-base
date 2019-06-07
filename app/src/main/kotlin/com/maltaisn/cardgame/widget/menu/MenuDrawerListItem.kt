@@ -24,6 +24,7 @@ import com.badlogic.gdx.utils.Pool
 import com.maltaisn.cardgame.widget.CheckableWidget
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.SdfLabel
+import ktx.style.get
 
 
 class MenuDrawerListItem(skin: Skin) : CheckableWidget(), Pool.Poolable {
@@ -40,7 +41,7 @@ class MenuDrawerListItem(skin: Skin) : CheckableWidget(), Pool.Poolable {
             label.enabled = value
         }
 
-    private val itemStyle = skin[DrawerListItemStyle::class.java]
+    private val itemStyle: DrawerListItemStyle = skin.get()
     private val label = SdfLabel(skin, itemStyle.fontStyle)
 
     private val inputListener = SelectionListener()

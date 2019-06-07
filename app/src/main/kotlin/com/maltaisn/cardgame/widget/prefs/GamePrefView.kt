@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.prefs.GamePref
+import ktx.style.get
 
 
 /**
@@ -45,7 +46,7 @@ abstract class GamePrefView<T : GamePref>(skin: Skin, pref: T) : PrefEntryView<T
 
 
     init {
-        val style = skin[GamePrefViewStyle::class.java]
+        val style: GamePrefViewStyle = skin.get()
         titleLabel = PrefTitleLabel(skin, style.titleFontStyle, pref.title,
                 if (pref.help == null) null else style.helpIcon).apply {
             setWrap(true)

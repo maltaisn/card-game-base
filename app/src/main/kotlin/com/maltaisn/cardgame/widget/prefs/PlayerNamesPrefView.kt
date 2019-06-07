@@ -23,6 +23,7 @@ import com.maltaisn.cardgame.prefs.PrefEntry
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.SdfTextField
 import ktx.actors.onKeyboardFocus
+import ktx.style.get
 
 
 class PlayerNamesPrefView(skin: Skin, pref: PlayerNamesPref) : GamePrefView<PlayerNamesPref>(skin, pref) {
@@ -39,7 +40,7 @@ class PlayerNamesPrefView(skin: Skin, pref: PlayerNamesPref) : GamePrefView<Play
     private val textFields: Array<SdfTextField>
 
     init {
-        val style = skin[PlayerNamesPrefViewStyle::class.java]
+        val style: PlayerNamesPrefViewStyle = skin.get()
 
         pad(5f, 0f, 5f, 10f)
         add(titleLabel).colspan(2).growX().pad(5f, 10f, 10f, 10f).row()

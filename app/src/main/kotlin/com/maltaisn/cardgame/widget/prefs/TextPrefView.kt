@@ -23,6 +23,7 @@ import com.maltaisn.cardgame.prefs.TextPref
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.SdfTextField
 import ktx.actors.onKeyboardFocus
+import ktx.style.get
 
 
 class TextPrefView(skin: Skin, pref: TextPref) : GamePrefView<TextPref>(skin, pref) {
@@ -37,7 +38,7 @@ class TextPrefView(skin: Skin, pref: TextPref) : GamePrefView<TextPref>(skin, pr
     private val textField: SdfTextField
 
     init {
-        val style = skin[TextPrefViewStyle::class.java]
+        val style: TextPrefViewStyle = skin.get()
 
         textField = SdfTextField(skin, style.fieldStyle, style.fieldFontStyle, pref.value).apply {
             maxLength = pref.maxLength

@@ -51,7 +51,8 @@ class CardDealTest : ActionBarTest() {
 
         addActionBtn("Deal") {
             if (animLayer.animationRunning) {
-                animLayer.completeAnimation(true)
+                animLayer.dispatchDelayedMoves()
+                animLayer.completeAnimation()
             }
 
             val src: CardContainer

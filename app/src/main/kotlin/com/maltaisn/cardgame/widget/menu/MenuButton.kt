@@ -29,6 +29,7 @@ import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.SdfLabel
 import com.maltaisn.cardgame.widget.ShadowImage
 import ktx.actors.alpha
+import ktx.style.get
 
 
 /**
@@ -37,7 +38,7 @@ import ktx.actors.alpha
 class MenuButton(skin: Skin,
                  val fontStyle: FontStyle,
                  title: CharSequence? = null, icon: Drawable? = null,
-                 val style: MenuButtonStyle = skin[MenuButtonStyle::class.java]) : CheckableWidget() {
+                 val style: MenuButtonStyle = skin.get()) : CheckableWidget() {
 
     /** The button title, or `null` for none. */
     var title: CharSequence?
@@ -159,7 +160,7 @@ class MenuButton(skin: Skin,
      * Create a menu button with only an [icon].
      */
     constructor(skin: Skin, iconColor: Color, icon: Drawable,
-                style: MenuButtonStyle = skin[MenuButtonStyle::class.java]) :
+                style: MenuButtonStyle = skin.get()) :
             this(skin, FontStyle(fontColor = iconColor), null, icon, style)
 
 

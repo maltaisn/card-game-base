@@ -23,6 +23,7 @@ import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.widget.TimeAction
 import ktx.actors.alpha
 import ktx.actors.onClick
+import ktx.style.get
 
 
 /**
@@ -30,7 +31,7 @@ import ktx.actors.onClick
  */
 class InGameMenu(skin: Skin) : MenuTable(skin) {
 
-    val style = skin[InGameMenuStyle::class.java]
+    val style: InGameMenuStyle = skin.get()
 
     override var shown
         get() = super.shown

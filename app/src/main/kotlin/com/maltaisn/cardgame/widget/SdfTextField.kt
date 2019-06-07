@@ -26,6 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.TextField
 import ktx.actors.onKeyDownEvent
 import ktx.actors.setKeyboardFocus
+import ktx.style.get
 
 
 /**
@@ -41,7 +42,7 @@ class SdfTextField(skin: Skin,
     private val shader = SdfShader.load(skin)
 
     constructor(skin: Skin, fontStyle: FontStyle, text: String? = null) :
-            this(skin, skin[TextFieldStyle::class.java], fontStyle, text)
+            this(skin, skin.get(), fontStyle, text)
 
 
     init {

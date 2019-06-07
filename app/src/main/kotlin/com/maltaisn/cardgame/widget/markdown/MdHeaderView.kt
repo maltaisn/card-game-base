@@ -25,12 +25,13 @@ import com.maltaisn.cardgame.markdown.MdElement
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.SdfLabel
 import com.maltaisn.cardgame.widget.menu.MenuContentSection
+import ktx.style.get
 
 
 class MdHeaderView(skin: Skin, header: MdElement.Header) : Table(), MenuContentSection {
 
     init {
-        val style = skin[MdHeaderViewStyle::class.java]
+        val style: MdHeaderViewStyle = skin.get()
         val headerLabel = SdfLabel(skin, style.fontStyles[header.size - 1], header.text)
         headerLabel.setWrap(true)
         add(headerLabel).growX().pad(20f, 0f, 5f, 0f).row()

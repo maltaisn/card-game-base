@@ -22,6 +22,9 @@ import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.utils.I18NBundle
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
+import com.maltaisn.cardgame.addClassTag
+import com.maltaisn.cardgame.fromJson
+import com.maltaisn.cardgame.readValue
 import kotlin.collections.component1
 import kotlin.collections.component2
 
@@ -64,10 +67,22 @@ class GamePrefs {
      * Load game preferences to this preferences object, from a [file] and using a [bundle] for resolving
      * the string references. Any previous preferences are cleared.
      */
-    @Suppress("UNCHECKED_CAST")
     constructor(file: FileHandle, bundle: I18NBundle) {
         // Create JSON parser
         val json = object : Json() {
+            init {
+                setTypeName("type")
+                setUsePrototypes(false)
+
+                // Add class tags
+                addClassTag<PrefCategory>("category")
+                addClassTag<SwitchPref>("switch")
+                addClassTag<SliderPref>("slider")
+                addClassTag<ListPref>("list")
+                addClassTag<TextPref>("text")
+                addClassTag<PlayerNamesPref>("player-names")
+            }
+
             override fun <T : Any?> readValue(type: Class<T>?, elementType: Class<*>?, jsonData: JsonValue): T {
                 if (jsonData.isString && jsonData.asString().startsWith("@string/")) {
                     // The string is a reference, resolve it.
@@ -77,13 +92,8 @@ class GamePrefs {
                 return super.readValue(type, elementType, jsonData)
             }
         }
-        json.setTypeName("type")
-        json.setUsePrototypes(false)
-        for ((tag, type) in CLASS_TAGS) {
-            json.addClassTag(tag, type)
-        }
 
-        val data = json.fromJson(HashMap::class.java, file) as HashMap<String, Any>
+        val data: HashMap<String, Any> = json.fromJson(file)
 
         // Get name and create a preferences handle
         name = checkNotNull(data["name"] as? String) { "JSON preferences file must specify a name attribute." }
@@ -93,7 +103,7 @@ class GamePrefs {
         val entryData = data["prefs"] as? JsonValue
         if (entryData != null) {
             // Parse preference entries, and set the keys
-            prefs += json.readValue(LinkedHashMap::class.java, entryData) as LinkedHashMap<String, PrefEntry>
+            prefs += json.readValue<LinkedHashMap<String, PrefEntry>>(entryData)
             for ((key, pref) in prefs.entries) {
                 pref.key = key
                 if (pref is PrefCategory) {
@@ -253,15 +263,5 @@ class GamePrefs {
     }
 
     override fun toString() = "[name: \"$name\", ${prefs.size} entries]"
-
-    companion object {
-        private val CLASS_TAGS = arrayOf(
-                "category" to PrefCategory::class.java,
-                "switch" to SwitchPref::class.java,
-                "slider" to SliderPref::class.java,
-                "list" to ListPref::class.java,
-                "text" to TextPref::class.java,
-                "player-names" to PlayerNamesPref::class.java)
-    }
 
 }

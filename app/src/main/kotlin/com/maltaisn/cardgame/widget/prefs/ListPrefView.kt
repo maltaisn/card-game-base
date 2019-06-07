@@ -29,6 +29,7 @@ import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.SdfLabel
 import ktx.actors.alpha
 import ktx.actors.onClick
+import ktx.style.get
 
 
 class ListPrefView(skin: Skin, pref: ListPref) : GamePrefView<ListPref>(skin, pref) {
@@ -50,7 +51,7 @@ class ListPrefView(skin: Skin, pref: ListPref) : GamePrefView<ListPref>(skin, pr
 
 
     init {
-        val style = skin[ListPrefViewStyle::class.java]
+        val style: ListPrefViewStyle = skin.get()
 
         valueLabel = SdfLabel(skin, style.valueFontStyle, pref.displayValue)
         valueLabel.enabled = enabled

@@ -1,7 +1,7 @@
 buildscript {
     val kotlinVersion by extra("1.3.31")
     val gdxVersion by extra("1.9.9")
-    val ktxVersion by extra("1.9.9-b1")
+    val ktxVersion by extra("1.9.9-b2")
     val junitVersion by extra("4.12")
     val cardGameVersion by extra("0.0.1")
 

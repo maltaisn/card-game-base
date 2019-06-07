@@ -26,6 +26,7 @@ import com.maltaisn.cardgame.prefs.ListPref
 import com.maltaisn.cardgame.prefs.PrefCategory
 import com.maltaisn.cardgame.widget.SdfLabel
 import com.maltaisn.cardgame.widget.menu.MenuContentSection
+import ktx.style.get
 
 
 class PrefCategoryView(skin: Skin, category: PrefCategory) :
@@ -55,7 +56,7 @@ class PrefCategoryView(skin: Skin, category: PrefCategory) :
 
 
     init {
-        val style = skin[PrefCategoryViewStyle::class.java]
+        val style: PrefCategoryViewStyle = skin.get()
         titleLabel = SdfLabel(skin, style.titleFontStyle, category.title).apply {
             setWrap(true)
             setAlignment(Align.left)

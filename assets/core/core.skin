@@ -173,18 +173,12 @@
       separator: separator
     }
   }
-  com.maltaisn.cardgame.widget.prefs.SwitchPrefView$SwitchPrefViewStyle: {
-    default: {
-      switchStyle: default
-    }
-  }
   com.maltaisn.cardgame.widget.prefs.SliderPrefView$SliderPrefViewStyle: {
     default: {
       valueFontStyle: {
         fontSize: 24
         fontColor: textColorGray
       }
-      sliderStyle: default
     }
   }
   com.maltaisn.cardgame.widget.prefs.ListPrefView$ListPrefViewStyle: {

@@ -25,6 +25,7 @@ import com.maltaisn.cardgame.widget.*
 import ktx.actors.alpha
 import ktx.actors.onClick
 import ktx.actors.setScrollFocus
+import ktx.style.get
 import kotlin.math.max
 
 
@@ -34,7 +35,7 @@ import kotlin.math.max
  */
 class SubMenu(skin: Skin) : MenuTable(skin) {
 
-    val style = skin[SubMenuStyle::class.java]
+    val style: SubMenuStyle = skin.get()
 
     /** The submenu title, shown at the top. May be `null` for none. */
     var title: CharSequence?
