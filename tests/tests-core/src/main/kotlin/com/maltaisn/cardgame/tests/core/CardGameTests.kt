@@ -40,7 +40,8 @@ object CardGameTests {
             MenuDrawerTest::class.java,
             InGameMenuTest::class.java,
             SubMenuTest::class.java,
-            TimeActionTest::class.java
+            TimeActionTest::class.java,
+            PlayerLabelTest::class.java
     )
 
     val TESTS_MAP = TESTS.associateBy { it.simpleName }.toSortedMap()
