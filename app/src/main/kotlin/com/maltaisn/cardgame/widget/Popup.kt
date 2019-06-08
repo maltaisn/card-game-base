@@ -150,7 +150,7 @@ class Popup(skin: Skin) : FboTable() {
 
     override fun clearActions() {
         super.clearActions()
-        transitionAction = null
+        transitionAction?.end()
     }
 
     /**
