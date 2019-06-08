@@ -94,7 +94,7 @@
       selection: text-field-selection
     }
   }
-  com.maltaisn.cardgame.widget.prefs.PlayerLabel$PlayerLabelStyle: {
+  com.maltaisn.cardgame.widget.PlayerLabel$PlayerLabelStyle: {
     default: {
       arrowDrawable: player-arrow
       nameFontStyle: {

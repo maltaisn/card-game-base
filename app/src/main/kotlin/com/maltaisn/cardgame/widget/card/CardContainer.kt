@@ -80,7 +80,6 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
             _shown = value
             _isVisible = value
             transitionAction?.end()
-            transitionAction = null
         }
 
     private var _shown = true
@@ -186,7 +185,7 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
 
     override fun clearActions() {
         super.clearActions()
-        transitionAction = null
+        transitionAction?.end()
     }
 
     override fun setVisible(visible: Boolean) {
@@ -572,7 +571,7 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
     }
 
     internal open fun onAnimationStart() {
-        transitionAction = null
+        transitionAction?.end()
         alpha = 1f
 
         // Reset old actors
@@ -582,7 +581,6 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
                 longClickListener = null
                 listeners.removeValue(cardInputListener, true)
                 enabled = true
-                //highlighted = false
                 highlightable = true
             }
         }

@@ -16,10 +16,10 @@
 
 package com.maltaisn.cardgame.widget.menu
 
-import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.maltaisn.cardgame.widget.FboTable
 import com.maltaisn.cardgame.widget.FontStyle
+import com.maltaisn.cardgame.widget.TimeAction
 
 
 /**
@@ -39,7 +39,7 @@ abstract class MenuTable(skin: Skin) : FboTable(skin) {
      */
     open var shown = false
 
-    internal open var transitionAction: Action? = null
+    internal open var transitionAction: TimeAction? = null
         set(value) {
             if (field != null) removeAction(field)
             field = value
@@ -66,7 +66,7 @@ abstract class MenuTable(skin: Skin) : FboTable(skin) {
 
     override fun clearActions() {
         super.clearActions()
-        transitionAction = null
+        transitionAction?.end()
     }
 
     /**

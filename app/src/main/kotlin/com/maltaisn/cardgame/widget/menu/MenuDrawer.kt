@@ -202,7 +202,7 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
 
     override fun clearActions() {
         super.clearActions()
-        transitionAction = null
+        transitionAction?.end()
     }
 
     private inner class TransitionAction :
@@ -223,8 +223,8 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
 
         override fun end() {
             isVisible = shown
-            transitionAction = null
             drawerTable.x = drawerStartX
+            transitionAction = null
         }
     }
 
