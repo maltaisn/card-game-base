@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package com.maltaisn.cardgame.widget.prefs
+package com.maltaisn.cardgame.widget
 
+import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Scaling
-import com.maltaisn.cardgame.widget.FontStyle
-import com.maltaisn.cardgame.widget.SdfLabel
+import ktx.actors.alpha
 import ktx.style.get
+import kotlin.math.abs
 
 
 class PlayerLabel(skin: Skin, name: CharSequence? = null) : Table() {
@@ -42,15 +43,22 @@ class PlayerLabel(skin: Skin, name: CharSequence? = null) : Table() {
     /**
      * The player score displayed, `null` for none.
      */
-    var score: CharSequence?
-        get() = scoreLabel.text
+    var score: CharSequence? = null
         set(value) {
-            scoreLabel.setText(value)
+            scoreTransitionAction?.end()
+            field = value
+            scoreTransitionAction = ScoreTransitionAction()
         }
 
-    val nameLabel = SdfLabel(skin, style.nameFontStyle, name)
+    private val nameLabel = SdfLabel(skin, style.nameFontStyle, name)
+    private val scoreLabel = SdfLabel(skin, style.scoreFontStyle)
 
-    val scoreLabel = SdfLabel(skin, style.scoreFontStyle)
+    private var scoreTransitionAction: TimeAction? = null
+        set(value) {
+            if (field != null) removeAction(field)
+            field = value
+            if (value != null) addAction(value)
+        }
 
     init {
         val arrowImage = Image(style.arrowDrawable, Scaling.fit)
@@ -59,6 +67,27 @@ class PlayerLabel(skin: Skin, name: CharSequence? = null) : Table() {
         add(arrowImage).size(30f, 30f).row()
         add(nameLabel).row()
         add(scoreLabel)
+    }
+
+    override fun clearActions() {
+        super.clearActions()
+        scoreTransitionAction?.end()
+    }
+
+    private inner class ScoreTransitionAction :
+            TimeAction(0.2f, Interpolation.smooth) {
+
+        override fun update(progress: Float) {
+            scoreLabel.alpha = abs(1 - progress * 2)
+            if (progress >= 0.5f) {
+                scoreLabel.setText(score)
+            }
+        }
+
+        override fun end() {
+            scoreLabel.setText(score)
+            scoreTransitionAction = null
+        }
     }
 
     class PlayerLabelStyle {

@@ -19,7 +19,7 @@ package com.maltaisn.cardgame.tests.core.tests
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.tests.core.SingleActionTest
 import com.maltaisn.cardgame.widget.CardGameLayout
-import com.maltaisn.cardgame.widget.prefs.PlayerLabel
+import com.maltaisn.cardgame.widget.PlayerLabel
 
 
 /**
