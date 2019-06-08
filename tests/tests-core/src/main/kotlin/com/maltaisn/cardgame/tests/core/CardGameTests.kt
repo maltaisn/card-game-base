@@ -23,7 +23,7 @@ object CardGameTests {
 
     private val TESTS = listOf(
             CardAnimationTest::class.java,
-            FontTest::class.java,
+            SdfLabelTest::class.java,
             CardDealTest::class.java,
             DefaultGameMenuTest::class.java,
             MenuButtonTest::class.java,

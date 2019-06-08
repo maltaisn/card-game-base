@@ -27,7 +27,7 @@ import ktx.actors.alpha
  * Wrapper class around [Label] for rendering text with a distance field font.
  */
 open class SdfLabel(skin: Skin, val fontStyle: FontStyle, text: CharSequence? = null) :
-        Label(text, LabelStyle(SdfShader.getFont(skin, fontStyle.bold), fontStyle.fontColor)) {
+        Label(null, LabelStyle(SdfShader.getFont(skin, fontStyle.bold), fontStyle.fontColor)) {
 
     /** Whether the label is enabled or not. If disabled, it's drawn with 50% alpha. */
     var enabled = true
@@ -38,6 +38,7 @@ open class SdfLabel(skin: Skin, val fontStyle: FontStyle, text: CharSequence? = 
 
     init {
         setFontScale(fontStyle.fontSize / SdfShader.FONT_GLYPH_SIZE)
+        setText(text)
     }
 
     override fun setText(newText: CharSequence?) {
