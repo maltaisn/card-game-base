@@ -33,7 +33,7 @@ abstract class PrefEntry {
      * Whether the preference is enabled or not.
      * A preference can be enabled in a disabled category.
      */
-    var enabled = true
+    open var enabled = true
         set(value) {
             field = value
             for (listener in listeners) {

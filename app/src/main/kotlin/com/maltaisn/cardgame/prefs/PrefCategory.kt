@@ -32,6 +32,18 @@ class PrefCategory : PrefEntry() {
     var icon: String? = null
 
 
+    override var enabled: Boolean
+        get() = super.enabled
+        set(value) {
+            super.enabled = value
+
+            // Change the enabled state for children too.
+            for (pref in prefs.values) {
+                pref.enabled = value
+            }
+        }
+
+
     override fun createView(skin: Skin) = PrefCategoryView(skin, this)
 
     override fun toString() = super.toString().dropLast(1) + ", ${prefs.size} preferences]"

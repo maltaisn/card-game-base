@@ -37,13 +37,6 @@ class PrefCategoryView(skin: Skin, category: PrefCategory) :
         set(value) {
             super.enabled = value
             titleLabel.enabled = enabled
-
-            // Enable or disable all children views
-            for (view in children) {
-                if (view is PrefEntryView<*>) {
-                    view.enabled = value && view.pref.enabled
-                }
-            }
         }
 
     /** Listener called when a preference help icon is clicked in a preference of the category. */

@@ -238,8 +238,8 @@ class GamePrefs {
      * Add a preference listener for all preferences.
      */
     fun addListener(listener: PrefEntry.PrefListener) {
-        for (pref in prefs.values) {
-            pref.listeners += listener
+        forEachPref(true) {
+            it.listeners += listener
         }
     }
 
@@ -247,8 +247,8 @@ class GamePrefs {
      * Remove a preference listener for all preferences.
      */
     fun removeListener(listener: PrefEntry.PrefListener) {
-        for (pref in prefs.values) {
-            pref.listeners -= listener
+        forEachPref(true) {
+            it.listeners -= listener
         }
     }
 

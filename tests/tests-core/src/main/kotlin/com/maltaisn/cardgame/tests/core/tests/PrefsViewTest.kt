@@ -22,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.maltaisn.cardgame.prefs.GamePrefs
+import com.maltaisn.cardgame.prefs.PrefEntry
 import com.maltaisn.cardgame.tests.core.CardGameTest
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.ScrollView
@@ -34,7 +35,7 @@ import ktx.log.info
 /**
  * Test for preference group and views, preference parsing and inflating.
  */
-class PrefsViewTest : CardGameTest() {
+class PrefsViewTest : CardGameTest(), PrefEntry.PrefListener {
 
     override fun load() {
         super.load()
@@ -52,6 +53,10 @@ class PrefsViewTest : CardGameTest() {
         prefsView.listClickListener = { pref ->
             info { "List preference clicked. Available choices: ${pref.values.joinToString()}." }
         }
+
+        prefs.addListener(this)
+
+        this.prefs += prefs
 
         // Do the layout
         val content = Container(prefsView)
@@ -75,6 +80,14 @@ class PrefsViewTest : CardGameTest() {
                 }
             })
         }
+    }
+
+    override fun onPreferenceValueChanged(pref: PrefEntry) {
+        info { "Preference '${pref.key}' value changed." }
+    }
+
+    override fun onPreferenceEnabledStateChanged(pref: PrefEntry, enabled: Boolean) {
+        info { "Preference '${pref.key}' enabled state changed." }
     }
 
     companion object {
