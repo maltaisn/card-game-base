@@ -19,7 +19,7 @@ void main() {
     vec4 glyph = vec4(v_color.rgb, v_color.a * alpha);
 
     // Shadow
-    if (u_drawShadow) {
+    if (u_drawShadow && alpha < 0.1) {
         float shadowDistance = texture2D(u_texture, v_texCoord - u_shadowOffset).a;
         float shadowAlpha = smoothstep(0.5 - u_shadowSmoothing, 0.5 + u_shadowSmoothing, shadowDistance);
         vec4 shadow = vec4(u_shadowColor.rgb, u_shadowColor.a * shadowAlpha);

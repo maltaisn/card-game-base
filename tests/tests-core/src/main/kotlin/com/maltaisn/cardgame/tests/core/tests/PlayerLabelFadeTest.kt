@@ -61,6 +61,7 @@ class PlayerLabelFadeTest : ActionBarTest() {
             score += 1
             label.score = CharArray(10) { Random.nextInt(65, 91).toChar() }.joinToString("")
         }
+        addToggleBtn("Debug") { _, debug -> table.setDebug(debug, true) }
     }
 
 }

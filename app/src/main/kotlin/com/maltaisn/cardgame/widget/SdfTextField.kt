@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.TextField
+import ktx.actors.alpha
 import ktx.actors.onKeyDownEvent
 import ktx.actors.setKeyboardFocus
 import ktx.style.get
@@ -40,6 +41,8 @@ class SdfTextField(skin: Skin,
         TextField(text, createStyle(skin, fieldStyle, fontStyle)) {
 
     private val shader = SdfShader.load(skin)
+    private val tempColor = Color()
+
 
     constructor(skin: Skin, fontStyle: FontStyle, text: String? = null) :
             this(skin, skin.get(), fontStyle, text)
@@ -58,9 +61,22 @@ class SdfTextField(skin: Skin,
 
 
     override fun drawText(batch: Batch, font: BitmapFont, x: Float, y: Float) {
-        shader.use(batch, fontStyle) {
-            super.drawText(batch, font, x, y)
+        batch.shader = shader
+
+        // Update shader parameters
+        shader.drawShadow = fontStyle.drawShadow
+        if (fontStyle.drawShadow) {
+            // Adjust shadow alpha to font color alpha and label alpha
+            val sc = fontStyle.shadowColor
+            tempColor.set(sc.r, sc.g, sc.b, sc.a * fontStyle.fontColor.a * alpha)
+            shader.shadowColor = tempColor
         }
+        shader.updateUniforms()
+
+        // Draw the text
+        super.drawText(batch, font, x, y)
+
+        batch.shader = null
     }
 
 

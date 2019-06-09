@@ -16,6 +16,7 @@
 
 package com.maltaisn.cardgame.widget
 
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
@@ -35,6 +36,7 @@ open class SdfLabel(skin: Skin, val fontStyle: FontStyle, text: CharSequence? = 
     private val _text = StringBuilder()
 
     private val shader = SdfShader.load(skin)
+    private val tempColor = Color()
 
     init {
         setFontScale(fontStyle.fontSize / SdfShader.FONT_GLYPH_SIZE)
@@ -58,12 +60,27 @@ open class SdfLabel(skin: Skin, val fontStyle: FontStyle, text: CharSequence? = 
     override fun getText(): StringBuilder = if (fontStyle.allCaps) _text else super.getText()
 
     override fun draw(batch: Batch, parentAlpha: Float) {
-        shader.use(batch, fontStyle) {
-            val alphaBefore = alpha
-            if (!enabled) alpha *= 0.5f
-            super.draw(batch, parentAlpha)
-            alpha = alphaBefore
+        val alphaBefore = alpha
+        if (!enabled) alpha *= 0.5f
+
+        batch.shader = shader
+
+        // Update shader parameters
+        shader.drawShadow = fontStyle.drawShadow
+        if (fontStyle.drawShadow) {
+            // Adjust shadow alpha to font color alpha and label alpha
+            val sc = fontStyle.shadowColor
+            tempColor.set(sc.r, sc.g, sc.b, sc.a * fontStyle.fontColor.a * alpha)
+            shader.shadowColor = tempColor
         }
+        shader.updateUniforms()
+
+        // Draw the text
+        super.draw(batch, parentAlpha)
+
+        batch.shader = null
+
+        alpha = alphaBefore
     }
 
 

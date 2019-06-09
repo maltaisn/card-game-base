@@ -18,7 +18,6 @@ package com.maltaisn.cardgame.widget
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
@@ -43,15 +42,16 @@ internal class SdfShader private constructor() :
     var shadowSmoothing = 0.2f
 
     /** Whether to draw a drop shadow under the text. */
-    private var drawShadow = false
+    var drawShadow = false
 
     /** Drop shadow color when drawn. */
-    private var shadowColor: Color = Color.BLACK
+    var shadowColor: Color = Color.BLACK
 
 
     init {
         check(isCompiled) { "Distance field font shader compilation failed: $log" }
     }
+
 
     /** Used to update shader parameters before drawing. */
     fun updateUniforms() {
@@ -62,19 +62,6 @@ internal class SdfShader private constructor() :
             setUniformf("u_shadowSmoothing", shadowSmoothing)
             setUniformf("u_shadowColor", shadowColor)
         }
-    }
-
-    inline fun use(batch: Batch, fontStyle: FontStyle, block: () -> Unit) {
-        batch.shader = this
-
-        // Update parameters
-        drawShadow = fontStyle.drawShadow
-        shadowColor = fontStyle.shadowColor
-        updateUniforms()
-
-        block()
-
-        batch.shader = null
     }
 
 

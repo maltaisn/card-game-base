@@ -45,6 +45,7 @@ class PlayerLabel(skin: Skin, name: CharSequence? = null) : Table() {
      */
     var score: CharSequence? = null
         set(value) {
+            if (field == value) return
             scoreTransitionAction?.end()
             field = value
             scoreTransitionAction = ScoreTransitionAction()
@@ -75,10 +76,11 @@ class PlayerLabel(skin: Skin, name: CharSequence? = null) : Table() {
     }
 
     private inner class ScoreTransitionAction :
-            TimeAction(0.2f, Interpolation.smooth) {
+            TimeAction(0.25f, Interpolation.linear) {
 
         override fun update(progress: Float) {
-            scoreLabel.alpha = abs(1 - progress * 2)
+            // Fade to 50% alpha, change text, then fade back to full alpha.
+            scoreLabel.alpha = abs(0.5f - progress) + 0.5f
             if (progress >= 0.5f) {
                 scoreLabel.setText(score)
             }

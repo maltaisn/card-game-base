@@ -33,6 +33,7 @@ class SdfLabelTest : ActionBarTest() {
 
     private var selectedText = 0
     private var selectedColors = 0
+    private var fontAlpha = 100
 
     private val fontStyle = FontStyle().apply {
         bold = false
@@ -79,12 +80,11 @@ class SdfLabelTest : ActionBarTest() {
             }
         }
 
-        var alpha = 100
         addActionBtn("Alpha: 100%") {
-            alpha = (alpha + 100) % 110
-            it.title = "Alpha: $alpha%"
+            fontAlpha = (fontAlpha + 100) % 110
+            it.title = "Alpha: $fontAlpha%"
             for (label in labels) {
-                label.alpha = alpha / 100f
+                label.alpha = fontAlpha / 100f
             }
         }
 
@@ -98,9 +98,11 @@ class SdfLabelTest : ActionBarTest() {
             add(btnTable).growX().colspan(100).pad(25f, 20f, 25f, 20f).row()
 
             val labelTable = Table()
-            labels = List(10) { SdfLabel(coreSkin, fontStyle.copy(fontSize = 12f + it * 4), TEXTS[selectedText]) }
-            for (label in labels) {
+            labels = List(10) {
+                val label = SdfLabel(coreSkin, fontStyle.copy(fontSize = 12f + it * 4), TEXTS[selectedText])
+                label.alpha = fontAlpha / 100f
                 labelTable.add(label).expand().center().row()
+                label
             }
             add(CenterLayout(labelTable)).grow()
         }
@@ -116,7 +118,7 @@ class SdfLabelTest : ActionBarTest() {
                 Color.WHITE to Color.BLACK,
                 Color.BLACK to Color.WHITE,
                 Color.RED to Color.WHITE,
-                Color.BLUE to Color.CYAN)
+                Color.BLUE to Color.WHITE)
     }
 
 }
