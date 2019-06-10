@@ -24,7 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 /**
  * Custom class that provides extended functionality to the built-in [ScrollPane].
  */
-class ScrollView(actor: Actor? = null, style: ScrollPane.ScrollPaneStyle? = null) :
+class ScrollView(actor: Actor? = null, style: ScrollPaneStyle? = null) :
         ScrollPane(actor, style ?: ScrollPaneStyle()) {
 
     /**

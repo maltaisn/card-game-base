@@ -31,7 +31,6 @@ import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.ListPref
 import com.maltaisn.cardgame.prefs.PrefCategory
 import com.maltaisn.cardgame.widget.FontStyle
-import com.maltaisn.cardgame.widget.ScrollView
 import com.maltaisn.cardgame.widget.SdfLabel
 import com.maltaisn.cardgame.widget.markdown.MarkdownView
 import com.maltaisn.cardgame.widget.prefs.PrefsGroup
@@ -74,7 +73,7 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
             } else {
                 null
             }
-            settingsMenu.content.actor = settingsView
+            settingsMenu.scrollContent.actor = settingsView
             settingsMenu.invalidateLayout()
         }
 
@@ -88,7 +87,7 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
             } else {
                 null
             }
-            newGameMenu.content.actor = newGameView
+            newGameMenu.scrollContent.actor = newGameView
             newGameMenu.invalidateLayout()
         }
 
@@ -102,17 +101,17 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
             } else {
                 null
             }
-            rulesMenu.content.actor = rulesView
+            rulesMenu.scrollContent.actor = rulesView
             rulesMenu.invalidateLayout()
         }
 
     private val style: DefaultGameMenuStyle = skin.get()
 
     // The submenus
-    private val newGameMenu = SubMenu(skin)
-    private val settingsMenu = SubMenu(skin)
-    private val rulesMenu = SubMenu(skin)
-    private val statsMenu = SubMenu(skin)
+    private val newGameMenu = ScrollSubMenu(skin)
+    private val settingsMenu = ScrollSubMenu(skin)
+    private val rulesMenu = ScrollSubMenu(skin)
+    private val statsMenu = ScrollSubMenu(skin)
     private val aboutMenu = SubMenu(skin)
 
     // Submenu views
@@ -214,17 +213,13 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
                 showMainMenu()
             }
 
-            val sectionClickListener = SectionClickListener(newGameMenu)
             itemClickListener = {
                 if (it === startGameItem) {
                     showInGameMenu()
                     newGameOptions?.save()
                     startGameListener?.invoke()
-                } else {
-                    sectionClickListener(it)
                 }
             }
-            contentPane.scrollListener = SectionScrollListener(newGameMenu)
 
             invalidateLayout()
         }
@@ -236,16 +231,12 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
                 settings?.save()
                 showMainMenu()
             }
-            itemClickListener = SectionClickListener(settingsMenu)
-            contentPane.scrollListener = SectionScrollListener(settingsMenu)
             invalidateLayout()
         }
 
         // Rules menu
         rulesMenu.apply {
             title = rulesStr
-            itemClickListener = SectionClickListener(rulesMenu)
-            contentPane.scrollListener = SectionScrollListener(rulesMenu)
             invalidateLayout()
         }
 
@@ -289,7 +280,7 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
     /**
      * Create a preference group view for a [menu] with [prefs].
      */
-    private fun createPreferenceView(menu: SubMenu, prefs: GamePrefs): PrefsGroup {
+    private fun createPreferenceView(menu: ScrollSubMenu, prefs: GamePrefs): PrefsGroup {
         // Create preference group view and set listeners
         val view = PrefsGroup(skin, prefs)
         view.helpListener = prefsHelpListener
@@ -308,10 +299,10 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
         return view
     }
 
-    private fun createMarkdownView(menu: SubMenu, markdown: Markdown): Table {
+    private fun createMarkdownView(menu: ScrollSubMenu, markdown: Markdown): Table {
         // Create preference group view and set listeners
         val view = MarkdownView(skin, markdown)
-        menu.content.actor = view
+        menu.scrollContent.actor = view
 
         // Add menu items for each markdown header
         var id = 0
@@ -324,89 +315,6 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
         }
 
         return view
-    }
-
-    /**
-     * A menu item click listener for scrolling to a section when items are clicked.
-     */
-    private class SectionClickListener(private val menu: SubMenu) : (MenuItem) -> Unit {
-
-        override fun invoke(item: MenuItem) {
-            // When a menu item is clicked, scroll the content pane to the section top.
-            var id = 0
-            val scrollPane = menu.contentPane
-            for (child in menu.content.actor.children) {
-                if (child is MenuContentSection) {
-                    if (id == item.id) {
-                        val top = child.y + child.height + 20f - scrollPane.height
-                        val height = scrollPane.height
-                        scrollPane.scrollTo(0f, top, 0f, height)
-                        break
-                    }
-                    id++
-                }
-            }
-        }
-    }
-
-    /**
-     * A scroll listener for checking a submenu section depending on the scroll position.
-     */
-    private class SectionScrollListener(private val menu: SubMenu) :
-            (ScrollView, Float, Float, Float, Float) -> Unit {
-
-        override fun invoke(scrollView: ScrollView, x: Float, y: Float, dx: Float, dy: Float) {
-            // Change the checked menu item if needed
-            var newId = MenuItem.NO_ID
-            val oldId = menu.checkedItem?.id ?: MenuItem.NO_ID
-            when {
-                scrollView.isTopEdge -> {
-                    // Scrolled to top edge, always check first checkable item
-                    for (item in menu.items) {
-                        if (item.checkable) {
-                            newId = item.id
-                            break
-                        }
-                    }
-                }
-                scrollView.isBottomEdge -> {
-                    // Scrolled to bottom edge, always check last checkable item
-                    for (item in menu.items) {
-                        if (item.checkable) {
-                            newId = item.id
-                        }
-                    }
-                }
-                else -> {
-                    // Find the view of the currently checked category
-                    var id = 0
-                    val content = menu.content.actor
-                    for (child in content.children) {
-                        if (child is MenuContentSection) {
-                            if (id == oldId) {
-                                val bottom = child.y
-                                val top = bottom + child.height
-
-                                // If currently checked category is completely hidden, check another
-                                val maxY = content.height - y
-                                val minY = maxY - scrollView.height
-                                val tooHigh = top > maxY && bottom > maxY
-                                val tooLow = top < minY && bottom < minY
-                                if (tooHigh || tooLow) {
-                                    // If too high check next category, otherwise check previous.
-                                    newId = (oldId + if (tooHigh) 1 else -1).coerceIn(0, menu.items.size - 1)
-                                }
-                                break
-                            }
-                            id++
-                        }
-                    }
-                }
-            }
-            if (newId != MenuItem.NO_ID && newId != oldId) {
-                menu.checkItem(newId, false)
-            }
-        }
     }
 
     class DefaultGameMenuStyle {

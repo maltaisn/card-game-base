@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
-package com.maltaisn.cardgame.core
+package com.maltaisn.cardgame.game.ai
 
+import com.maltaisn.cardgame.game.CardGameEvent
+import com.maltaisn.cardgame.game.CardGameState
+import com.maltaisn.cardgame.game.GameResult
 import kotlin.math.ln
 import kotlin.math.sqrt
 

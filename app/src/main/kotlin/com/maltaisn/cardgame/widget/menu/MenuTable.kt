@@ -47,15 +47,26 @@ abstract class MenuTable(skin: Skin) : FboTable(skin) {
         }
 
     /** The listener called when a menu item is clicked, `null` for none. */
-    var itemClickListener: ((item: MenuItem) -> Unit)? = null
+    open var itemClickListener: ((item: MenuItem) -> Unit)? = null
 
     protected val btnClickListener = { btn: MenuButton ->
+        // Check the new item if needed, call listener
+        lateinit var clickedItem: MenuItem
         for (item in items) {
             if (item.button === btn) {
-                item.checked = checkable
+                item.checked = item.checkable && checkable
                 itemClickListener?.invoke(item)
-            } else {
-                item.checked = false
+                clickedItem = item
+                break
+            }
+        }
+
+        // If new item was checked, uncheck the last one
+        if (clickedItem.checked) {
+            for (item in items) {
+                if (item !== clickedItem) {
+                    item.checked = false
+                }
             }
         }
     }

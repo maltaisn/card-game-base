@@ -24,7 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Align
-import com.maltaisn.cardgame.core.Card
+import com.maltaisn.cardgame.game.Card
 import com.maltaisn.cardgame.widget.FboWidgetGroup
 import com.maltaisn.cardgame.widget.GameLayer
 import com.maltaisn.cardgame.widget.TimeAction

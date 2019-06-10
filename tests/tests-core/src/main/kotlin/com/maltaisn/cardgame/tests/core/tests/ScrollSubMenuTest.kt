@@ -22,6 +22,7 @@ import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.markdown.MarkdownView
 import com.maltaisn.cardgame.widget.menu.MenuIcons
 import com.maltaisn.cardgame.widget.menu.MenuItem
+import com.maltaisn.cardgame.widget.menu.ScrollSubMenu
 import com.maltaisn.cardgame.widget.menu.SubMenu
 import ktx.assets.load
 import ktx.log.info
@@ -30,7 +31,7 @@ import ktx.log.info
 /**
  * Test [SubMenu] layout options with dummy content and items
  */
-class SubMenuTest : ActionBarTest() {
+class ScrollSubMenuTest : ActionBarTest() {
 
     override fun load() {
         super.load()
@@ -47,14 +48,16 @@ class SubMenuTest : ActionBarTest() {
                 MenuItem(1, "No icon", null, SubMenu.ITEM_POS_TOP),
                 MenuItem(2, "Bottom aligned", coreSkin.getDrawable(MenuIcons.CHEVRON_RIGHT), SubMenu.ITEM_POS_BOTTOM))
 
+        menuItems[2].checkable = false
+
         val markdown = assetManager.get<Markdown>("lorem-ipsum")
         val mdView = MarkdownView(coreSkin, markdown)
 
-        val menu = SubMenu(coreSkin).apply {
+        val menu = ScrollSubMenu(coreSkin).apply {
             itemClickListener = { info { "Item checked: $it" } }
             title = "Sub menu test"
             items += menuItems
-            content.actor = mdView
+            scrollContent.actor = mdView
             invalidateLayout()
         }
 

@@ -24,11 +24,11 @@ import com.badlogic.gdx.utils.Scaling
 import com.maltaisn.cardgame.markdown.MdElement
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.SdfLabel
-import com.maltaisn.cardgame.widget.menu.MenuContentSection
+import com.maltaisn.cardgame.widget.menu.ScrollSubMenu
 import ktx.style.get
 
 
-class MdHeaderView(skin: Skin, header: MdElement.Header) : Table(), MenuContentSection {
+class MdHeaderView(skin: Skin, header: MdElement.Header) : Table(), ScrollSubMenu.Section {
 
     init {
         val style: MdHeaderViewStyle = skin.get()

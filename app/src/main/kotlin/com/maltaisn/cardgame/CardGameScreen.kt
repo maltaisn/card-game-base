@@ -34,8 +34,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField
 import com.badlogic.gdx.utils.I18NBundle
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.gmail.blueboxware.libgdxplugin.annotations.GDXAssets
-import com.maltaisn.cardgame.core.CardGame
-import com.maltaisn.cardgame.core.PCard
+import com.maltaisn.cardgame.game.CardGame
+import com.maltaisn.cardgame.game.PCard
 import com.maltaisn.cardgame.markdown.MdLoader
 import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.GamePrefsLoader

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.cardgame.core
+package com.maltaisn.cardgame.game
 
 import junit.framework.Assert.assertEquals
 import org.junit.Test

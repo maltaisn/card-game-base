@@ -17,12 +17,11 @@
 package com.maltaisn.cardgame.tests.core.tests
 
 import com.badlogic.gdx.math.Vector2
-import com.maltaisn.cardgame.core.PCard
-import com.maltaisn.cardgame.core.drawTop
+import com.maltaisn.cardgame.game.PCard
+import com.maltaisn.cardgame.game.drawTop
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.tests.core.CenterLayout
 import com.maltaisn.cardgame.widget.CardGameLayout
-import com.maltaisn.cardgame.widget.TimeAction
 import com.maltaisn.cardgame.widget.card.CardActor
 import com.maltaisn.cardgame.widget.card.CardContainer
 import com.maltaisn.cardgame.widget.card.CardStack

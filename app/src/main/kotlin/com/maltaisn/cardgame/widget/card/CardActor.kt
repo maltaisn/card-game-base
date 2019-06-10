@@ -23,7 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
-import com.maltaisn.cardgame.core.Card
+import com.maltaisn.cardgame.game.Card
 import com.maltaisn.cardgame.widget.GameLayer
 import com.maltaisn.cardgame.widget.SelectableWidget
 import com.maltaisn.cardgame.withinBounds

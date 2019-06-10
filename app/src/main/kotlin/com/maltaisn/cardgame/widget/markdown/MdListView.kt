@@ -25,11 +25,10 @@ import com.badlogic.gdx.utils.Scaling
 import com.maltaisn.cardgame.markdown.MdElement
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.SdfLabel
-import com.maltaisn.cardgame.widget.menu.MenuContentSection
 import ktx.style.get
 
 
-class MdListView(skin: Skin, list: MdElement.List) : Table(), MenuContentSection {
+class MdListView(skin: Skin, list: MdElement.List) : Table() {
 
     init {
         val style: MdListViewStyle = skin.get()

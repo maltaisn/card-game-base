@@ -20,8 +20,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.gmail.blueboxware.libgdxplugin.annotations.GDXAssets
 import com.maltaisn.cardgame.CardGameScreen
 import com.maltaisn.cardgame.CoreRes
-import com.maltaisn.cardgame.core.CardGame
-import com.maltaisn.cardgame.core.CardGameEvent
+import com.maltaisn.cardgame.game.CardGame
+import com.maltaisn.cardgame.game.CardGameEvent
 import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.widget.CardGameLayout
 import ktx.assets.getAsset

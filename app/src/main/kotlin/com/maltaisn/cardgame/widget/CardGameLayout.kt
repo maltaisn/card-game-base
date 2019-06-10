@@ -22,8 +22,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup
 import com.badlogic.gdx.scenes.scene2d.utils.Layout
 import com.maltaisn.cardgame.CoreRes
-import com.maltaisn.cardgame.core.CardGame
-import com.maltaisn.cardgame.core.CardGameEvent
+import com.maltaisn.cardgame.game.CardGame
+import com.maltaisn.cardgame.game.CardGameEvent
 import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.PrefEntry
 import com.maltaisn.cardgame.widget.card.CardAnimationLayer

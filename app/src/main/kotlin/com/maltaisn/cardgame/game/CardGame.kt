@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.cardgame.core
+package com.maltaisn.cardgame.game
 
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.utils.Disposable

@@ -39,7 +39,7 @@ object CardGameTests {
             PrefsViewTest::class.java,
             MenuDrawerTest::class.java,
             InGameMenuTest::class.java,
-            SubMenuTest::class.java,
+            ScrollSubMenuTest::class.java,
             TimeActionTest::class.java,
             PlayerLabelTest::class.java,
             PlayerLabelFadeTest::class.java

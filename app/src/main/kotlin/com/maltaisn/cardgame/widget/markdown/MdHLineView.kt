@@ -21,11 +21,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Scaling
-import com.maltaisn.cardgame.widget.menu.MenuContentSection
 import ktx.style.get
 
 
-class MdHLineView(skin: Skin) : Container<Image>(), MenuContentSection {
+class MdHLineView(skin: Skin) : Container<Image>() {
 
     init {
         val style: MdHLineViewStyle = skin.get()

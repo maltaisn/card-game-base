@@ -17,14 +17,17 @@
 package com.maltaisn.cardgame.widget.menu
 
 import com.badlogic.gdx.math.Interpolation
-import com.badlogic.gdx.scenes.scene2d.Group
-import com.badlogic.gdx.scenes.scene2d.ui.*
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.scenes.scene2d.ui.Value
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Align
-import com.maltaisn.cardgame.widget.*
+import com.maltaisn.cardgame.widget.FontStyle
+import com.maltaisn.cardgame.widget.SdfLabel
+import com.maltaisn.cardgame.widget.TimeAction
+import com.maltaisn.cardgame.widget.applyBounded
 import ktx.actors.alpha
 import ktx.actors.onClick
-import ktx.actors.setScrollFocus
 import ktx.style.get
 import kotlin.math.max
 
@@ -33,7 +36,7 @@ import kotlin.math.max
  * A sub menu of the game, has a title, a back arrow, a list of menu items and a content pane.
  * The list of items is optional and can be either on the left or the right side.
  */
-class SubMenu(skin: Skin) : MenuTable(skin) {
+open class SubMenu(skin: Skin) : MenuTable(skin) {
 
     val style: SubMenuStyle = skin.get()
 
@@ -50,12 +53,8 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
      */
     var menuPosition = MenuPosition.LEFT
 
-    /** The container in the submenu scroll pane. Change its actor to change the content. */
-    val content = Container<Group>()
-
     /** The scroll pane containing the [content] container. */
-    val contentPane = ScrollView(content, ScrollPane.ScrollPaneStyle(
-            style.contentBackground, null, null, null, null))
+    val content = Table()
 
     /**
      * Sub menu should be shown after being added to the stage to properly gain scroll focus.
@@ -66,10 +65,7 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
             if (super.shown == value) return
             super.shown = value
 
-            contentPane.setScrollFocus(value)
-
             if (value) {
-                contentPane.scrollToTop()
                 if (items.isNotEmpty() && checkable) {
                     // Always check the first checkable item of the menu when showing.
                     for (item in items) {
@@ -117,16 +113,13 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
         headerTable.add(backBtn)
         headerTable.add(titleLabel).padLeft(15f).grow()
 
-        content.fill().pad(0f, 20f, 0f, 20f)
-        contentPane.setScrollingDisabled(true, false)
-        contentPane.setOverscroll(false, false)
-        contentPane.setCancelTouchFocus(false)
+        content.background = style.contentBackground
     }
 
     override fun layout() {
         super.layout()
 
-        (transitionAction as TransitionAction?)?.contentStartY = contentPane.y
+        (transitionAction as TransitionAction?)?.contentStartY = content.y
     }
 
     override fun invalidateLayout() {
@@ -137,18 +130,18 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
         if (items.isEmpty()) {
             // No menu items, center content with 70% with.
             getCell(headerTable).padBottom(15f)
-            add(contentPane).pad(-style.contentBackground.topHeight, 0f, 0f, 0f)
+            add(content).pad(-style.contentBackground.topHeight, 0f, 0f, 0f)
                     .width(Value.percentWidth(0.7f, this)).grow()
         } else if (menuPosition == MenuPosition.LEFT) {
             // Menu pane on the left
             menuTable.pad(20f, 25f, 25f, 0f)
             add(menuTable).width(Value.percentWidth(0.3f, this)).growY()
-            add(contentPane).pad(-style.contentBackground.topHeight,
+            add(content).pad(-style.contentBackground.topHeight,
                     -style.contentBackground.leftWidth, 0f, 10f).grow()
         } else {
             // Menu pane on the right
             menuTable.pad(35f, 0f, 25f, 25f)
-            add(contentPane).pad(-style.contentBackground.topHeight + 15f, 10f,
+            add(content).pad(-style.contentBackground.topHeight + 15f, 10f,
                     0f, -style.contentBackground.rightWidth).grow()
             add(menuTable).width(Value.percentWidth(0.3f, this)).growY()
         }
@@ -193,7 +186,7 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
     internal inner class TransitionAction :
             TimeAction(TRANSITION_DURATION, Interpolation.smooth, reversed = !shown) {
 
-        var contentStartY = contentPane.y
+        var contentStartY = content.y
 
         init {
             isVisible = true
@@ -204,7 +197,7 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
         override fun update(progress: Float) {
             reversed = !shown
 
-            contentPane.y = contentStartY + (1 - progress) * CONTENT_TRANSITION_TRANSLATE
+            content.y = contentStartY + (1 - progress) * CONTENT_TRANSITION_TRANSLATE
             alpha = progress
 
             val durationGap = max(0f, TRANSITION_DURATION - ITEM_TRANSITION_DURATION) / items.size
@@ -223,7 +216,7 @@ class SubMenu(skin: Skin) : MenuTable(skin) {
             transitionAction = null
 
             // Place all animated widgets to their correct position
-            contentPane.y = contentStartY
+            content.y = contentStartY
             for (item in items) {
                 item.button?.x = menuTable.padLeft
             }

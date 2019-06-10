@@ -17,9 +17,9 @@
 package com.maltaisn.cardgame.tests.core.tests
 
 import com.badlogic.gdx.utils.Align
-import com.maltaisn.cardgame.core.Card
-import com.maltaisn.cardgame.core.PCard
-import com.maltaisn.cardgame.core.drawTop
+import com.maltaisn.cardgame.game.Card
+import com.maltaisn.cardgame.game.PCard
+import com.maltaisn.cardgame.game.drawTop
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.card.CardHand

@@ -25,12 +25,12 @@ import com.maltaisn.cardgame.prefs.GamePref
 import com.maltaisn.cardgame.prefs.ListPref
 import com.maltaisn.cardgame.prefs.PrefCategory
 import com.maltaisn.cardgame.widget.SdfLabel
-import com.maltaisn.cardgame.widget.menu.MenuContentSection
+import com.maltaisn.cardgame.widget.menu.ScrollSubMenu
 import ktx.style.get
 
 
 class PrefCategoryView(skin: Skin, category: PrefCategory) :
-        PrefEntryView<PrefCategory>(skin, category), MenuContentSection {
+        PrefEntryView<PrefCategory>(skin, category), ScrollSubMenu.Section {
 
     override var enabled
         get() = super.enabled
