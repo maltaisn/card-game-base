@@ -45,7 +45,7 @@ class PrefsViewTest : CardGameTest(), PrefEntry.PrefListener {
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
-        val prefs = assetManager.get<GamePrefs>(PREFS_FILE)
+        val prefs: GamePrefs = assetManager.get(PREFS_FILE)
         val prefsView = PrefsGroup(coreSkin, prefs)
         prefsView.helpListener = { pref ->
             info { "Help for ${pref.shortTitle ?: pref.title}: ${pref.help}" }

@@ -111,7 +111,7 @@ class AndroidLauncher : AppCompatActivity() {
 
     private class TestViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        val radioBtn = view.findViewById<RadioButton>(R.id.radio_test)
+        val radioBtn: RadioButton = view.findViewById(R.id.radio_test)
 
         fun bind(item: TestItem) {
             radioBtn.text = item.name

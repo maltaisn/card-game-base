@@ -43,7 +43,7 @@ class MarkdownViewTest : CardGameTest() {
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
-        val markdown = assetManager.get<Markdown>(MARKDOWN_FILE)
+        val markdown: Markdown = assetManager.get(MARKDOWN_FILE)
         val mdView = MarkdownView(coreSkin, markdown)
 
         // Do the layout

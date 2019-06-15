@@ -60,7 +60,7 @@ class InGameMenu(skin: Skin) : MenuTable(skin) {
         rightGroup.space(15f)
     }
 
-    override fun invalidateLayout() {
+    override fun doMenuLayout() {
         leftGroup.clearChildren()
         rightGroup.clearChildren()
 
@@ -72,7 +72,6 @@ class InGameMenu(skin: Skin) : MenuTable(skin) {
                 iconSide = MenuButton.Side.LEFT
                 iconSize = this@InGameMenu.style.itemIconSize
             }
-            item.menu = this
             item.button = btn
             (if (item.position == ITEM_POS_LEFT) leftGroup else rightGroup).addActor(btn)
         }

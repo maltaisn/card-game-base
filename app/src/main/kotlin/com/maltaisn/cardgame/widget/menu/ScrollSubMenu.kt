@@ -25,7 +25,7 @@ import ktx.actors.setScrollFocus
 
 
 /**
- * A sub menu with scrollable content, where items scroll to different sections.
+ * A sub menu with a single page of scrollable content, where items scroll to different sections.
  *
  * Items that should scroll to a content section must have sequential IDs starting at 0.
  * The content group children will be iterated on to determine which section to scroll to.
@@ -39,9 +39,7 @@ class ScrollSubMenu(skin: Skin) : SubMenu(skin) {
     /** The scroll view containing the [scrollContent] container. */
     val scrollView = ScrollView(scrollContent)
 
-    /**
-     * Sub menu should be shown after being added to the stage to properly gain scroll focus.
-     */
+    /** Should be shown after being added to the stage to properly gain scroll focus. */
     override var shown
         get() = super.shown
         set(value) {
@@ -49,28 +47,27 @@ class ScrollSubMenu(skin: Skin) : SubMenu(skin) {
             super.shown = value
 
             scrollView.setScrollFocus(value)
-
-            if (value) {
-                scrollView.scrollToTop()
-            }
         }
 
     override var itemClickListener: ((item: MenuItem) -> Unit)?
         get() = super.itemClickListener
         set(value) {
             super.itemClickListener = {
-                scrollToItem(it)
-                value?.invoke(it)
+                if (listenerEnabled) {
+                    scrollToItem(it)
+                    value?.invoke(it)
+                }
             }
         }
 
+    private var listenerEnabled = true
 
     init {
         itemClickListener = null  // Adds the scroll on click action
 
         content.add(scrollView).grow()
 
-        scrollContent.fill().pad(0f, 20f, 0f, 20f)
+        scrollContent.fill()
         scrollView.setScrollingDisabled(true, false)
         scrollView.setOverscroll(false, false)
         scrollView.setCancelTouchFocus(false)
@@ -125,9 +122,13 @@ class ScrollSubMenu(skin: Skin) : SubMenu(skin) {
                 }
             }
             if (newId != MenuItem.NO_ID && newId != oldId) {
-                checkItem(newId, false)
+                listenerEnabled = false
+                items.find { it.id == newId }?.checked = true
+                listenerEnabled = true
             }
         }
+
+        doMenuLayout()
     }
 
     private fun scrollToItem(item: MenuItem) {
@@ -144,6 +145,28 @@ class ScrollSubMenu(skin: Skin) : SubMenu(skin) {
                 id++
             }
         }
+    }
+
+    /**
+     * Scroll to the top of the content and check the first item.
+     */
+    fun scrollToTop() {
+        // Check the first checkable item
+        if (items.isNotEmpty() && checkable) {
+            for (item in items) {
+                if (item.checkable) {
+                    item.checked = true
+                    break
+                }
+            }
+        }
+
+        scrollView.scrollToTop()
+    }
+
+    override fun doMenuLayout() {
+        super.doMenuLayout()
+        scrollView.setScrollFocus(shown)
     }
 
     /**

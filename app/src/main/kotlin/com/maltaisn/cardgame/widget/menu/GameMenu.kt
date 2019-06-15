@@ -63,6 +63,7 @@ open class GameMenu(skin: Skin) : Stack() {
             if (value != null) addAction(value)
         }
 
+    private val defaultBackListener = { showMainMenu() }
 
     init {
         onKeyDown(true) {
@@ -127,11 +128,22 @@ open class GameMenu(skin: Skin) : Stack() {
         if (shownMenu !== menu && nextShownMenu !== menu) {
             nextShownMenu = menu
 
+            // Set or unset the default back arrow listener if none was set
             if (menu is SubMenu && menu.backArrowClickListener == null) {
-                menu.backArrowClickListener = { showMainMenu() }
+                menu.backArrowClickListener = defaultBackListener
+            }
+            (shownMenu as? SubMenu)?.let {
+                if (it.backArrowClickListener === defaultBackListener) {
+                    it.backArrowClickListener = null
+                }
+            }
+
+            if (menu is ScrollSubMenu) {
+                menu.scrollToTop()
             }
 
             shownMenu.shown = false
+
             transitionAction = shownMenu.transitionAction?.then(object : Action() {
                 override fun act(delta: Float): Boolean {
                     nextShownMenu = null

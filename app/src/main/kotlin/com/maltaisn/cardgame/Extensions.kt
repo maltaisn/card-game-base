@@ -31,22 +31,18 @@ import com.maltaisn.cardgame.widget.TimeAction
 internal fun Actor.withinBounds(x: Float, y: Float) = x >= 0 && y >= 0 && x <= width && y <= height
 
 /**
- * Add an [action] to be done after a [delay] in seconds.
- * The added action is returned if delay is greater than zero.
+ * Add an [action] to be done after a [delay] in seconds and return it.
+ * If the delay is less or equal than 0, the action will happen on next frame.
  */
-inline fun Actor.postDelayed(delay: Float, crossinline action: () -> Unit): TimeAction? =
-        if (delay <= 0f) {
+inline fun Actor.postDelayed(delay: Float, crossinline action: () -> Unit): TimeAction {
+    val delayedAction = object : TimeAction(delay) {
+        override fun end() {
             action()
-            null
-        } else {
-            val delayedAction = object : TimeAction(delay) {
-                override fun end() {
-                    action()
-                }
-            }
-            addAction(delayedAction)
-            delayedAction
         }
+    }
+    addAction(delayedAction)
+    return delayedAction
+}
 
 /**
  * Set the default size parameter on a cell.

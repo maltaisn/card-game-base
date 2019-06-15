@@ -67,7 +67,7 @@ class MainMenu(skin: Skin) : MenuTable(skin) {
         }
     }
 
-    override fun invalidateLayout() {
+    override fun doMenuLayout() {
         topRow.clearChildren()
         bottomRow.clearChildren()
 
@@ -79,14 +79,16 @@ class MainMenu(skin: Skin) : MenuTable(skin) {
                 iconSide = MenuButton.Side.LEFT
                 iconSize = this@MainMenu.style.itemIconSize
             }
-            item.menu = this
             item.button = btn
-            (if (onTopRow) topRow else bottomRow).add(btn).grow().pad(0f, 15f, 0f, 15f)
+
+            if (item.shown) {
+                (if (onTopRow) topRow else bottomRow).add(btn).grow().pad(0f, 15f, 0f, 15f)
+            }
         }
     }
 
 
-    internal inner class TransitionAction :
+    private inner class TransitionAction :
             TimeAction(0.3f, Interpolation.smooth, reversed = !shown) {
 
         var topStartY = topRow.y

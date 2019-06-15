@@ -45,7 +45,7 @@ class GamePrefsLoader(resolver: FileHandleResolver) :
     }
 
     override fun loadAsync(manager: AssetManager, fileName: String, file: FileHandle, parameter: Parameter?) {
-        val bundle = manager.get<I18NBundle>(getBundleName(file, parameter))
+        val bundle: I18NBundle = manager.get(getBundleName(file, parameter))
         prefs = GamePrefs(file, bundle)
     }
 

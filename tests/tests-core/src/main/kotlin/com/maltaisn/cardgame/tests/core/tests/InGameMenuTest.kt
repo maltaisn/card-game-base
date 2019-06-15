@@ -32,18 +32,21 @@ class InGameMenuTest : SingleActionTest() {
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
-        //isDebugAll = true
+        val menu = InGameMenu(coreSkin).apply {
+            addItem(MenuItem(0, null, coreSkin.getDrawable(MenuIcons.CHEVRON_LEFT), InGameMenu.ITEM_POS_LEFT))
+            addItem(MenuItem(1, "Sort hand", coreSkin.getDrawable(MenuIcons.CARDS), InGameMenu.ITEM_POS_LEFT))
+            addItem(MenuItem(3, "Cheats", coreSkin.getDrawable(MenuIcons.BOOK), InGameMenu.ITEM_POS_RIGHT))
+            addItem(MenuItem(2, null, coreSkin.getDrawable(MenuIcons.LIST), InGameMenu.ITEM_POS_RIGHT))
 
-        val menu = InGameMenu(coreSkin)
+            itemClickListener = {
+                info { "Menu item clicked: $it" }
 
-        menu.items += MenuItem(0, null, coreSkin.getDrawable(MenuIcons.CHEVRON_LEFT), InGameMenu.ITEM_POS_LEFT)
-        menu.items += MenuItem(1, "Sort hand", coreSkin.getDrawable(MenuIcons.CARDS), InGameMenu.ITEM_POS_LEFT)
-        menu.items += MenuItem(3, "Cheats", coreSkin.getDrawable(MenuIcons.BOOK), InGameMenu.ITEM_POS_RIGHT)
-        menu.items += MenuItem(2, null, coreSkin.getDrawable(MenuIcons.LIST), InGameMenu.ITEM_POS_RIGHT)
-        menu.invalidateLayout()
+                if (it.id == 0) {
+                    shown = false
+                }
+            }
 
-        menu.itemClickListener = {
-            info { "Menu item clicked: $it" }
+            shown = true
         }
 
         layout.gameLayer.centerTable.add(menu).grow()

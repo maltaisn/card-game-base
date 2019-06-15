@@ -67,42 +67,42 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
     var settings: GamePrefs? = null
         set(value) {
             field = value
-            settingsMenu.items.clear()
+            settingsMenu.clearItems()
             settingsView = if (value != null) {
                 createPreferenceView(settingsMenu, value)
             } else {
                 null
             }
             settingsMenu.scrollContent.actor = settingsView
-            settingsMenu.invalidateLayout()
         }
 
     /** The new game game options, shown in the new game submenu. */
     var newGameOptions: GamePrefs? = null
         set(value) {
             field = value
-            newGameMenu.items.subList(0, newGameMenu.items.size - 1).clear()
+            newGameMenu.clearItems()
+            newGameMenu.addItem(startGameItem)
             newGameView = if (value != null) {
                 createPreferenceView(newGameMenu, value)
             } else {
                 null
             }
             newGameMenu.scrollContent.actor = newGameView
-            newGameMenu.invalidateLayout()
         }
+
+    private val startGameItem: MenuItem
 
     /** The game rules in markdown. */
     var rules: Markdown? = null
         set(value) {
             field = value
-            rulesMenu.items.clear()
+            rulesMenu.clearItems()
             rulesView = if (value != null) {
                 createMarkdownView(rulesMenu, value)
             } else {
                 null
             }
             rulesMenu.scrollContent.actor = rulesView
-            rulesMenu.invalidateLayout()
         }
 
     private val style: DefaultGameMenuStyle = skin.get()
@@ -166,13 +166,12 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
         mainMenu.apply {
             // Add main menu items
             val icons = this@DefaultGameMenu.style
-            items += MenuItem(ITEM_ID_NEW_GAME, newGameStr, icons.newGameIcon, MainMenu.ITEM_POS_BOTTOM)
-            items += MenuItem(ITEM_ID_CONTINUE, continueStr, icons.continueIcon, MainMenu.ITEM_POS_BOTTOM)
-            items += MenuItem(ITEM_ID_SETTINGS, settingsStr, icons.settingsIcon, MainMenu.ITEM_POS_BOTTOM)
-            items += MenuItem(ITEM_ID_RULES, rulesStr, icons.rulesIcon, MainMenu.ITEM_POS_TOP)
-            items += MenuItem(ITEM_ID_STATS, statsStr, icons.statsIcon, MainMenu.ITEM_POS_TOP)
-            items += MenuItem(ITEM_ID_ABOUT, aboutStr, icons.aboutIcon, MainMenu.ITEM_POS_TOP)
-            invalidateLayout()
+            addItem(MenuItem(ITEM_ID_NEW_GAME, newGameStr, icons.newGameIcon, MainMenu.ITEM_POS_BOTTOM))
+            addItem(MenuItem(ITEM_ID_CONTINUE, continueStr, icons.continueIcon, MainMenu.ITEM_POS_BOTTOM))
+            addItem(MenuItem(ITEM_ID_SETTINGS, settingsStr, icons.settingsIcon, MainMenu.ITEM_POS_BOTTOM))
+            addItem(MenuItem(ITEM_ID_RULES, rulesStr, icons.rulesIcon, MainMenu.ITEM_POS_TOP))
+            addItem(MenuItem(ITEM_ID_STATS, statsStr, icons.statsIcon, MainMenu.ITEM_POS_TOP))
+            addItem(MenuItem(ITEM_ID_ABOUT, aboutStr, icons.aboutIcon, MainMenu.ITEM_POS_TOP))
 
             continueItem = items[1]
 
@@ -203,10 +202,10 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
             title = newGameStr
             menuPosition = SubMenu.MenuPosition.RIGHT
 
-            val startGameItem = MenuItem(1000, bundle["menu_start_game"],
+            startGameItem = MenuItem(1000, bundle["menu_start_game"],
                     this@DefaultGameMenu.style.startGameIcon, SubMenu.ITEM_POS_BOTTOM)
             startGameItem.checkable = false
-            items += startGameItem
+            addItem(startGameItem)
 
             backArrowClickListener = {
                 newGameOptions?.save()
@@ -220,8 +219,6 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
                     startGameListener?.invoke()
                 }
             }
-
-            invalidateLayout()
         }
 
         // Settings menu
@@ -231,35 +228,30 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
                 settings?.save()
                 showMainMenu()
             }
-            invalidateLayout()
         }
 
         // Rules menu
         rulesMenu.apply {
             title = rulesStr
-            invalidateLayout()
         }
 
         // Statistics menu
         statsMenu.apply {
             title = statsStr
-            invalidateLayout()
         }
 
         // About menu
         aboutMenu.apply {
             title = aboutStr
-            items += MenuItem(0, "About", skin.getDrawable(MenuIcons.INFO), SubMenu.ITEM_POS_TOP)
-            items += MenuItem(1, "Donate", skin.getDrawable(MenuIcons.ARROW_RIGHT), SubMenu.ITEM_POS_TOP)
-            invalidateLayout()
+            addItem(MenuItem(0, "About", skin.getDrawable(MenuIcons.INFO), SubMenu.ITEM_POS_TOP))
+            addItem(MenuItem(1, "Donate", skin.getDrawable(MenuIcons.ARROW_RIGHT), SubMenu.ITEM_POS_TOP))
         }
 
         // In game menu
         inGameMenu.apply {
             val icons = this@DefaultGameMenu.style
-            items += MenuItem(ITEM_ID_BACK, null, icons.backBtnIcon, InGameMenu.ITEM_POS_LEFT)
-            items += MenuItem(ITEM_ID_SCOREBOARD, null, icons.scoreboardBtnIcon, InGameMenu.ITEM_POS_RIGHT)
-            invalidateLayout()
+            addItem(MenuItem(ITEM_ID_BACK, null, icons.backBtnIcon, InGameMenu.ITEM_POS_LEFT))
+            addItem(MenuItem(ITEM_ID_SCOREBOARD, null, icons.scoreboardBtnIcon, InGameMenu.ITEM_POS_RIGHT))
 
             itemClickListener = {
                 when (it.id) {
@@ -291,7 +283,7 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
         for (entry in prefs.prefs.values) {
             if (entry is PrefCategory) {
                 val icon = if (entry.icon == null) style.defaultIcon else skin.getDrawable(entry.icon)
-                menu.items += MenuItem(id, entry.title, icon, SubMenu.ITEM_POS_TOP)
+                menu.addItem(MenuItem(id, entry.title, icon, SubMenu.ITEM_POS_TOP))
                 id++
             }
         }
@@ -309,7 +301,7 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
         for (entry in markdown.elements) {
             if (entry is MdElement.Header && entry.text != null) {
                 val icon = if (entry.icon == null) style.defaultIcon else skin.getDrawable(entry.icon)
-                menu.items += MenuItem(id, entry.text!!, icon, SubMenu.ITEM_POS_TOP)
+                menu.addItem(MenuItem(id, entry.text!!, icon, SubMenu.ITEM_POS_TOP))
                 id++
             }
         }

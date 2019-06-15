@@ -35,6 +35,9 @@ import kotlin.math.max
 /**
  * A sub menu of the game, has a title, a back arrow, a list of menu items and a content pane.
  * The list of items is optional and can be either on the left or the right side.
+ *
+ * FIXME if item has a title too long, menu layout breaks.
+ *  Add an option in MenuButton to allow ellipsis.
  */
 open class SubMenu(skin: Skin) : MenuTable(skin) {
 
@@ -47,35 +50,21 @@ open class SubMenu(skin: Skin) : MenuTable(skin) {
             titleLabel.setText(value)
         }
 
-    /**
-     * The position of the menu pane.
-     * [invalidateLayout] after if this is changed.
-     */
+    /** The position of the menu pane. */
     var menuPosition = MenuPosition.LEFT
+        set(value) {
+            field = value
+            invalidateMenuLayout()
+        }
 
-    /** The scroll pane containing the [content] container. */
+    /** The sub menu content table. */
     val content = Table()
 
-    /**
-     * Sub menu should be shown after being added to the stage to properly gain scroll focus.
-     */
     override var shown
         get() = super.shown
         set(value) {
             if (super.shown == value) return
             super.shown = value
-
-            if (value) {
-                if (items.isNotEmpty() && checkable) {
-                    // Always check the first checkable item of the menu when showing.
-                    for (item in items) {
-                        if (item.checkable) {
-                            checkItem(item)
-                            break
-                        }
-                    }
-                }
-            }
 
             if (transitionAction == null) {
                 transitionAction = TransitionAction()
@@ -114,6 +103,8 @@ open class SubMenu(skin: Skin) : MenuTable(skin) {
         headerTable.add(titleLabel).padLeft(15f).grow()
 
         content.background = style.contentBackground
+        content.padLeft(content.padLeft + 20f)
+        content.padRight(content.padRight + 20f)
     }
 
     override fun layout() {
@@ -122,7 +113,7 @@ open class SubMenu(skin: Skin) : MenuTable(skin) {
         (transitionAction as TransitionAction?)?.contentStartY = content.y
     }
 
-    override fun invalidateLayout() {
+    override fun doMenuLayout() {
         // Do the submenu layout. If there are no menu items, hide the menu pane.
         clearChildren()
         add(headerTable).growX().colspan(2).row()
@@ -159,6 +150,11 @@ open class SubMenu(skin: Skin) : MenuTable(skin) {
                 addButtonToMenuTable(item)
             }
         }
+
+        // Check any checked item
+        for (item in items) {
+            item.checked = item.checked
+        }
     }
 
     private fun addButtonToMenuTable(item: MenuItem) {
@@ -169,21 +165,21 @@ open class SubMenu(skin: Skin) : MenuTable(skin) {
             iconSize = this@SubMenu.style.itemIconSize
             align(Align.left)
         }
-        item.menu = this
         item.button = btn
 
-        val iconPadding = if (item.icon == null) btn.iconSize + btn.style.iconTitleMargin else 0f
-        menuTable.add(btn).growX().pad(2f, 0f, 2f, 0f).prefHeight(70f)
-        if (menuPosition == MenuPosition.LEFT) {
-            btn.pad(10f, 10f + iconPadding, 10f, 20f)
-        } else {
-            btn.pad(10f, 20f + iconPadding, 10f, 10f)
+        if (item.shown) {
+            val iconPadding = if (item.icon == null) btn.iconSize + btn.style.iconTitleMargin else 0f
+            menuTable.add(btn).growX().pad(2f, 0f, 2f, 0f).prefHeight(70f)
+            if (menuPosition == MenuPosition.LEFT) {
+                btn.pad(10f, 10f + iconPadding, 10f, 20f)
+            } else {
+                btn.pad(10f, 20f + iconPadding, 10f, 10f)
+            }
+            menuTable.row()
         }
-        menuTable.row()
     }
 
-
-    internal inner class TransitionAction :
+    private inner class TransitionAction :
             TimeAction(TRANSITION_DURATION, Interpolation.smooth, reversed = !shown) {
 
         var contentStartY = content.y

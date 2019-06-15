@@ -29,7 +29,7 @@ import ktx.log.info
 
 
 /**
- * Test [SubMenu] layout options with dummy content and items
+ * Test [ScrollSubMenu] layout options and behavior with dummy content and items.
  */
 class ScrollSubMenuTest : ActionBarTest() {
 
@@ -41,24 +41,24 @@ class ScrollSubMenuTest : ActionBarTest() {
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
-        // FIXME if item has a title too long, menu layout breaks.
-        //  Add an option in MenuButton to allow ellipsis.
-
         val menuItems = listOf(MenuItem(0, "First item", coreSkin.getDrawable(MenuIcons.BOOK), SubMenu.ITEM_POS_TOP),
                 MenuItem(1, "No icon", null, SubMenu.ITEM_POS_TOP),
                 MenuItem(2, "Bottom aligned", coreSkin.getDrawable(MenuIcons.CHEVRON_RIGHT), SubMenu.ITEM_POS_BOTTOM))
 
+        menuItems[0].checked = true
         menuItems[2].checkable = false
 
-        val markdown = assetManager.get<Markdown>("lorem-ipsum")
+        val markdown: Markdown = assetManager.get("lorem-ipsum")
         val mdView = MarkdownView(coreSkin, markdown)
 
         val menu = ScrollSubMenu(coreSkin).apply {
             itemClickListener = { info { "Item checked: $it" } }
             title = "Sub menu test"
-            items += menuItems
             scrollContent.actor = mdView
-            invalidateLayout()
+
+            for (item in menuItems) {
+                addItem(item)
+            }
         }
 
         layout.gameLayer.centerTable.apply {
@@ -79,12 +79,18 @@ class ScrollSubMenuTest : ActionBarTest() {
             info { "Back arrow clicked" }
         }
 
+        addActionBtn("Scroll to top") {
+            menu.scrollToTop()
+        }
+
         var option = 0
         addActionBtn("Right side") {
             option = (option + 1) % 3
             when (option) {
                 0 -> {
-                    menu.items += menuItems
+                    for (item in menuItems) {
+                        menu.addItem(item)
+                    }
                     menu.menuPosition = SubMenu.MenuPosition.LEFT
                     it.title = "Right side"
                 }
@@ -93,11 +99,14 @@ class ScrollSubMenuTest : ActionBarTest() {
                     it.title = "No items"
                 }
                 2 -> {
-                    menu.items.clear()
+                    menu.clearItems()
                     it.title = "Left side"
                 }
             }
-            menu.invalidateLayout()
+        }
+
+        addTwoStateActionBtn("Hide last", "Show last") { _, shown ->
+            menuItems.last().shown = shown
         }
 
         addToggleBtn("Debug") { _, debug ->

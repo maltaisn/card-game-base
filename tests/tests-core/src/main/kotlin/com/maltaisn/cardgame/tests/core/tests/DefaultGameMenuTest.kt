@@ -22,6 +22,7 @@ import com.maltaisn.cardgame.prefs.PrefEntry
 import com.maltaisn.cardgame.prefs.SwitchPref
 import com.maltaisn.cardgame.tests.core.CardGameTest
 import com.maltaisn.cardgame.widget.CardGameLayout
+import com.maltaisn.cardgame.widget.TimeAction
 import com.maltaisn.cardgame.widget.menu.DefaultGameMenu
 import ktx.assets.load
 import ktx.log.info
@@ -48,7 +49,7 @@ class DefaultGameMenuTest : CardGameTest() {
         layout.gameMenu = menu
 
         // New game
-        val newGamePrefs = assetManager.get<GamePrefs>(PREFS_NEW_GAME)
+        val newGamePrefs: GamePrefs = assetManager.get(PREFS_NEW_GAME)
         menu.newGameOptions = newGamePrefs
         menu.startGameListener = {
             menu.showInGameMenu()
@@ -57,7 +58,7 @@ class DefaultGameMenuTest : CardGameTest() {
         prefs += newGamePrefs
 
         // Settings
-        val settingsPrefs = assetManager.get<GamePrefs>(PREFS_SETTINGS)
+        val settingsPrefs: GamePrefs = assetManager.get(PREFS_SETTINGS)
         menu.settings = settingsPrefs
         prefs += settingsPrefs
 

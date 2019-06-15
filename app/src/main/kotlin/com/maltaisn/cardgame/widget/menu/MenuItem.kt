@@ -25,10 +25,10 @@ import com.maltaisn.cardgame.widget.menu.MenuItem.Companion.NO_ID
  * Each item should have an unique ID to identify them in click listener, different than [NO_ID].
  * Implementation should have item position constants.
  */
-class MenuItem(val id: Int,
-               val title: CharSequence?,
-               val icon: Drawable?,
-               val position: Int) {
+open class MenuItem(val id: Int,
+                    val title: CharSequence?,
+                    val icon: Drawable?,
+                    val position: Int) {
 
     init {
         require(id != NO_ID) { "A menu item cannot have an ID of $NO_ID." }
@@ -42,11 +42,34 @@ class MenuItem(val id: Int,
     var button: MenuButton? = null
         internal set
 
-    /** Whether this item is checked or not. */
-    var checked: Boolean
-        get() = button?.checked == true
+    /**
+     * Whether this item is shown or hidden.
+     */
+    var shown = true
         set(value) {
-            button?.checked = value && checkable
+            field = value
+            menu?.invalidateMenuLayout()
+        }
+
+    /**
+     * Whether this item is checked or not.
+     */
+    var checked = false
+        set(value) {
+            val menu = menu ?: return
+
+            field = value && checkable && menu.checkable
+            button?.checked = field
+
+            if (field) {
+                menu.itemClickListener?.invoke(this)
+
+                for (item in menu.items) {
+                    if (item !== this) {
+                        item.checked = false
+                    }
+                }
+            }
         }
 
     /** If the [menu] is checkable, whether this item can be checked. */
@@ -54,7 +77,7 @@ class MenuItem(val id: Int,
 
     /** Whether this item is enabled or not. */
     var enabled: Boolean
-        get() = button?.enabled == true
+        get() = button?.enabled != false
         set(value) {
             button?.enabled = value
         }

@@ -17,6 +17,7 @@
 package com.maltaisn.cardgame.widget.menu
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.maltaisn.cardgame.postDelayed
 import com.maltaisn.cardgame.widget.FboTable
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.TimeAction
@@ -24,11 +25,17 @@ import com.maltaisn.cardgame.widget.TimeAction
 
 /**
  * The base class for a menu widget that can be shown and hidden with an animation.
- * Do update the layout after items are changed, call [invalidateLayout].
+ * Do update the layout after items are changed, call [invalidateMenuLayout].
  */
 abstract class MenuTable(skin: Skin) : FboTable(skin) {
 
-    val items = mutableListOf<MenuItem>()
+    /**
+     * The items in the menu.
+     */
+    val items: List<MenuItem>
+        get() = _items
+
+    private val _items = mutableListOf<MenuItem>()
 
     /** Whether the items in the menu can be checked or not. */
     var checkable = false
@@ -54,7 +61,7 @@ abstract class MenuTable(skin: Skin) : FboTable(skin) {
         lateinit var clickedItem: MenuItem
         for (item in items) {
             if (item.button === btn) {
-                item.checked = item.checkable && checkable
+                item.checked = true
                 itemClickListener?.invoke(item)
                 clickedItem = item
                 break
@@ -71,48 +78,53 @@ abstract class MenuTable(skin: Skin) : FboTable(skin) {
         }
     }
 
+    private var invalidLayout = false
+
+
     init {
         isVisible = false
     }
+
 
     override fun clearActions() {
         super.clearActions()
         transitionAction?.end()
     }
 
-    /**
-     * Invalidate the menu layout, must be called if items are changed.
-     */
-    abstract fun invalidateLayout()
+    /** Add an [item] to the menu. */
+    open fun addItem(item: MenuItem) {
+        item.menu = this
+        _items += item
+        invalidateMenuLayout()
+    }
 
+    /** Remove an [item] in the menu. */
+    open fun removeItem(item: MenuItem) {
+        if (_items.remove(item)) {
+            item.menu = null
+            invalidateMenuLayout()
+        }
+    }
 
-    /** Check an item by [id] and call the listener. */
-    fun checkItem(id: Int, callListener: Boolean = true) {
-        for (item in items) {
-            if (item.id == id) {
-                checkItem(item, callListener)
-                break
+    /** Remove all items in the menu. */
+    open fun clearItems() {
+        _items.clear()
+        invalidateMenuLayout()
+    }
+
+    /** Invalidate the menu layout, must be called if items are changed. */
+    internal fun invalidateMenuLayout() {
+        if (!invalidLayout) {
+            invalidLayout = true
+            postDelayed(0f) {
+                doMenuLayout()
+                invalidLayout = false
             }
         }
     }
 
-    /** Check an [item] and call the listener. */
-    fun checkItem(item: MenuItem, callListener: Boolean = true) {
-        if (checkable && item.menu === this) {
-            for (menuItem in items) {
-                if (menuItem === item) {
-                    if (!menuItem.checked && menuItem.checkable) {
-                        menuItem.checked = true
-                        if (callListener) {
-                            itemClickListener?.invoke(menuItem)
-                        }
-                    }
-                } else {
-                    menuItem.checked = false
-                }
-            }
-        }
-    }
+    /** Do the menu layout. */
+    protected abstract fun doMenuLayout()
 
 
     abstract class MenuTableStyle {
