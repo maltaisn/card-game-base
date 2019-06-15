@@ -16,14 +16,17 @@
 
 package com.maltaisn.cardgame.tests.core.tests
 
+import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.PrefEntry
 import com.maltaisn.cardgame.prefs.SwitchPref
 import com.maltaisn.cardgame.tests.core.CardGameTest
 import com.maltaisn.cardgame.widget.CardGameLayout
-import com.maltaisn.cardgame.widget.TimeAction
-import com.maltaisn.cardgame.widget.menu.DefaultGameMenu
+import com.maltaisn.cardgame.widget.FontStyle
+import com.maltaisn.cardgame.widget.SdfLabel
+import com.maltaisn.cardgame.widget.menu.*
 import ktx.assets.load
 import ktx.log.info
 
@@ -45,16 +48,32 @@ class DefaultGameMenuTest : CardGameTest() {
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
-        val menu = DefaultGameMenu(coreSkin)
+        val menu = object : DefaultGameMenu(coreSkin) {
+            override fun onContinueClicked() {
+                super.onContinueClicked()
+                info { "Continue clicked" }
+            }
+
+            override fun onStartGameClicked() {
+                super.onStartGameClicked()
+                info { "Start game clicked" }
+            }
+
+            override fun onInGameMenuItemClicked(item: MenuItem) {
+                super.onInGameMenuItemClicked(item)
+                info { "In-game item clicked: $item" }
+            }
+
+            override fun onExitGameClicked() {
+                super.onExitGameClicked()
+                info { "Exit game clicked" }
+            }
+        }
         layout.gameMenu = menu
 
         // New game
         val newGamePrefs: GamePrefs = assetManager.get(PREFS_NEW_GAME)
         menu.newGameOptions = newGamePrefs
-        menu.startGameListener = {
-            menu.showInGameMenu()
-            info { "Start game clicked." }
-        }
         prefs += newGamePrefs
 
         // Settings
@@ -73,18 +92,16 @@ class DefaultGameMenuTest : CardGameTest() {
             }
         }
         menu.continueItem.enabled = continuePref.value
-        menu.continueListener = {
-            info { "Continue clicked." }
-            menu.showInGameMenu()
-        }
 
-        // In game
-        menu.exitGameListener = {
-            info { "Exit game clicked." }
-        }
-        menu.scoreboardListener = {
-            info { "Show scoreboard clicked." }
-        }
+        // In-game
+        menu.inGameMenu.addItem(MenuItem(0, null, coreSkin.getDrawable(MenuIcons.CARDS), InGameMenu.ITEM_POS_LEFT))
+
+        // Scoreboard
+        val scoresView = Container(SdfLabel(coreSkin, FontStyle(fontColor = Color.BLACK, fontSize = 30f), "TODO!"))
+        val scoresPage = PagedSubMenu.Page(1, "Scores", coreSkin.getDrawable(MenuIcons.LIST), SubMenu.ITEM_POS_TOP)
+        scoresPage.content = scoresView
+        scoresPage.checked = true
+        menu.scoreboardMenu.addItem(scoresPage)
 
         // Debug
         val debugPref = settingsPrefs[PREF_DEBUG] as SwitchPref

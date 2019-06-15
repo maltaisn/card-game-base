@@ -56,7 +56,7 @@ open class MenuItem(val id: Int,
      */
     var checked = false
         set(value) {
-            field = value && checkable
+            field = value && checkable && menu?.checkable != false
             button?.checked = field
 
             if (field) {

@@ -115,8 +115,6 @@ abstract class CardGameLayout(assetManager: AssetManager,
         this.game?.dispose()
         this.game = game
         game.eventListener = { doEvent(it) }
-
-        gameMenu?.showInGameMenu()
     }
 
     /**

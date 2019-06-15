@@ -42,23 +42,7 @@ import ktx.style.get
  * new game, continue, settings, rules, statistics and about.
  * The in game menu has a back button and a scoreboard button.
  */
-class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
-
-    /** Listener called when the continue item is clicked in the main menu. */
-    var continueListener: (() -> Unit)? = null
-
-    /**
-     * Listener called when the start game item is clicked in the new game submenu.
-     * When the item is clicked, the options are automatically saved and the game menu is closed.
-     */
-    var startGameListener: (() -> Unit)? = null
-
-    /** Listener called when the back button is clicked in game. */
-    var exitGameListener: (() -> Unit)? = null
-
-    /** Listener called when the scoreboard button is clicked in game. */
-    var scoreboardListener: (() -> Unit)? = null
-
+open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
 
     /** The continue menu item. Can be disabled. */
     val continueItem: MenuItem
@@ -107,17 +91,30 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
 
     private val style: DefaultGameMenuStyle = skin.get()
 
+
+    /** The main menu. */
+    val mainMenu = MainMenu(skin)
+
+    /** The menu shown in game. */
+    val inGameMenu = InGameMenu(skin)
+
+    /** The menu used as the scoreboard. */
+    val scoreboardMenu = PagedSubMenu(skin)
+
     // The submenus
     private val newGameMenu = ScrollSubMenu(skin)
+    private var newGameView: PrefsGroup? = null
+
     private val settingsMenu = ScrollSubMenu(skin)
+    private var settingsView: PrefsGroup? = null
+
     private val rulesMenu = ScrollSubMenu(skin)
+    private var rulesView: Table? = null
+
     private val statsMenu = ScrollSubMenu(skin)
+
     private val aboutMenu = ScrollSubMenu(skin)
 
-    // Submenu views
-    private var newGameView: PrefsGroup? = null
-    private var settingsView: PrefsGroup? = null
-    private var rulesView: Table? = null
 
     // Preference help drawer
     private val prefsHelpLabel = SdfLabel(skin, style.prefsHelpFontStyle)
@@ -177,12 +174,14 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
 
             itemClickListener = {
                 when (it.id) {
-                    ITEM_ID_CONTINUE -> continueListener?.invoke()
-                    ITEM_ID_NEW_GAME -> showSubMenu(newGameMenu)
-                    ITEM_ID_SETTINGS -> showSubMenu(settingsMenu)
-                    ITEM_ID_RULES -> showSubMenu(rulesMenu)
-                    ITEM_ID_STATS -> showSubMenu(statsMenu)
-                    ITEM_ID_ABOUT -> showSubMenu(aboutMenu)
+                    ITEM_ID_CONTINUE -> {
+                        onContinueClicked()
+                    }
+                    ITEM_ID_NEW_GAME -> showMenu(newGameMenu)
+                    ITEM_ID_SETTINGS -> showMenu(settingsMenu)
+                    ITEM_ID_RULES -> showMenu(rulesMenu)
+                    ITEM_ID_STATS -> showMenu(statsMenu)
+                    ITEM_ID_ABOUT -> showMenu(aboutMenu)
                 }
             }
         }
@@ -209,14 +208,12 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
 
             backArrowClickListener = {
                 newGameOptions?.save()
-                showMainMenu()
+                goBack()
             }
 
             itemClickListener = {
                 if (it === startGameItem) {
-                    showInGameMenu()
-                    newGameOptions?.save()
-                    startGameListener?.invoke()
+                    onStartGameClicked()
                 }
             }
         }
@@ -226,7 +223,7 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
             title = settingsStr
             backArrowClickListener = {
                 settings?.save()
-                showMainMenu()
+                goBack()
             }
         }
 
@@ -255,18 +252,18 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
 
             itemClickListener = {
                 when (it.id) {
-                    ITEM_ID_BACK -> {
-                        // Exit game
-                        showMainMenu()
-                        exitGameListener?.invoke()
-                    }
-                    ITEM_ID_SCOREBOARD -> {
-                        // Show scoreboard maybe?
-                        scoreboardListener?.invoke()
-                    }
+                    ITEM_ID_BACK -> onExitGameClicked()
+                    ITEM_ID_SCOREBOARD -> showMenu(scoreboardMenu)
+                    else -> onInGameMenuItemClicked(it)
                 }
             }
         }
+
+        // Scoreboard
+        scoreboardMenu.title = bundle["scoreboard"]
+
+        // Show main menu at first
+        showMenu(mainMenu)
     }
 
     /**
@@ -309,6 +306,27 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
         return view
     }
 
+
+    /** Called when the continue item in main menu is clicked. */
+    open fun onContinueClicked() {
+        showMenu(inGameMenu)
+    }
+
+    /** Called when the start game item of the new game submenu is clicked. */
+    open fun onStartGameClicked() {
+        showMenu(inGameMenu, false)
+        newGameOptions?.save()
+    }
+
+    /** Called when the back button is clicked in the in-game menu. */
+    open fun onExitGameClicked() {
+        goBack()
+    }
+
+    /** Called when an item is clicked in the in game menu, except back and scoreboard items. */
+    open fun onInGameMenuItemClicked(item: MenuItem) = Unit
+
+
     class DefaultGameMenuStyle {
         lateinit var defaultIcon: Drawable
 
@@ -328,15 +346,15 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
     }
 
     companion object {
-        private const val ITEM_ID_NEW_GAME = 0
-        private const val ITEM_ID_CONTINUE = 1
-        private const val ITEM_ID_SETTINGS = 2
-        private const val ITEM_ID_RULES = 3
-        private const val ITEM_ID_STATS = 4
-        private const val ITEM_ID_ABOUT = 5
+        private const val ITEM_ID_NEW_GAME = 1000
+        private const val ITEM_ID_CONTINUE = 1001
+        private const val ITEM_ID_SETTINGS = 1002
+        private const val ITEM_ID_RULES = 1003
+        private const val ITEM_ID_STATS = 1004
+        private const val ITEM_ID_ABOUT = 1005
 
-        private const val ITEM_ID_BACK = 0
-        private const val ITEM_ID_SCOREBOARD = 1
+        private const val ITEM_ID_BACK = 1000
+        private const val ITEM_ID_SCOREBOARD = 1001
     }
 
 }

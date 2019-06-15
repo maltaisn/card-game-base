@@ -20,41 +20,36 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import ktx.actors.onKeyDown
 import ktx.actors.onKeyboardFocusEvent
 import ktx.actors.setKeyboardFocus
 import ktx.actors.then
+import java.util.*
 
 
 /**
- * The game menu that manages the animation between the main menu, the sub menu and the in-game menu.
+ * A game menu that manages the animation between different menus.
  * It also sets the back arrow action on sub menus and handles the back key press.
  */
 open class GameMenu(skin: Skin) : Stack() {
 
-    /** The main menu. A click listener can be set to open submenus and do other actions. */
-    val mainMenu = MainMenu(skin)
-
-    /** The menu shown in game. */
-    val inGameMenu = InGameMenu(skin)
-
     /** The currently shown menu. */
-    var shownMenu: MenuTable = mainMenu
+    var shownMenu: MenuTable? = null
         private set
+
+    /** The stack of previously shown menus to go back to. */
+    private var backStack = LinkedList<MenuTable>()
 
     /** The menu that will be shown after animation. */
     private var nextShownMenu: MenuTable? = null
 
-    private val subMenuContainer = Container<SubMenu>()
-
     /**
-     * The menu drawer. Content should always be set before showing.
-     * The drawer back button text needs to be set.
+     * The menu drawer. The drawer back button text needs to be set.
      */
     val drawer = MenuDrawer(skin)
+
 
     private var transitionAction: Action? = null
         set(value) {
@@ -63,17 +58,11 @@ open class GameMenu(skin: Skin) : Stack() {
             if (value != null) addAction(value)
         }
 
-    private val defaultBackListener = { showMainMenu() }
 
     init {
         onKeyDown(true) {
             if (it == Input.Keys.BACK || it == Input.Keys.ESCAPE) {
-                if (shownMenu is MainMenu && nextShownMenu == null) {
-                    // Exit if main menu is shown but not in animation
-                    Gdx.app.exit()
-                } else {
-                    showMainMenu()
-                }
+                goBack()
             }
         }
         onKeyboardFocusEvent { event, _ ->
@@ -84,14 +73,7 @@ open class GameMenu(skin: Skin) : Stack() {
             }
         }
 
-        add(inGameMenu)
-        add(mainMenu)
-        add(subMenuContainer)
         add(drawer)
-
-        subMenuContainer.fill()
-
-        mainMenu.shown = true
     }
 
 
@@ -106,34 +88,40 @@ open class GameMenu(skin: Skin) : Stack() {
     }
 
     /**
-     * Show a [subMenu].
+     * Go back to previous menu, or exit app if there was no previous menu.
      */
-    fun showSubMenu(subMenu: SubMenu) = showMenu(subMenu)
-
-    /**
-     * Show the main menu.
-     */
-    fun showMainMenu() = showMenu(mainMenu)
-
-    /**
-     * Show the in-game menu.
-     */
-    fun showInGameMenu() = showMenu(inGameMenu)
+    fun goBack() {
+        if (backStack.isNotEmpty()) {
+            showMenu(backStack.pop(), false)
+        } else {
+            Gdx.app.exit()
+        }
+    }
 
     /**
      * Show any [menu], hiding the previous one then showing the new one in a sequence animation.
-     * If no back arrow listener was set on submenu, a default one that only returns the main menu is set.
+     * If no back arrow listener was set on [SubMenu], a default one that only returns the previous menu is set.
+     * If [saveLast], the last menu will be added to the back stack.
      */
-    private fun showMenu(menu: MenuTable) {
+    protected fun showMenu(menu: MenuTable, saveLast: Boolean = true) {
         if (shownMenu !== menu && nextShownMenu !== menu) {
+            if (menu !in children) {
+                // Add the menu if not added yet.
+                addActorBefore(drawer, menu)
+            }
+
+            if (saveLast && shownMenu != null) {
+                backStack.push(shownMenu)
+            }
+
             nextShownMenu = menu
 
             // Set or unset the default back arrow listener if none was set
             if (menu is SubMenu && menu.backArrowClickListener == null) {
-                menu.backArrowClickListener = defaultBackListener
+                menu.backArrowClickListener = ::goBack
             }
             (shownMenu as? SubMenu)?.let {
-                if (it.backArrowClickListener === defaultBackListener) {
+                if (it.backArrowClickListener === ::goBack) {
                     it.backArrowClickListener = null
                 }
             }
@@ -142,17 +130,18 @@ open class GameMenu(skin: Skin) : Stack() {
                 menu.scrollToTop()
             }
 
-            shownMenu.shown = false
+            shownMenu?.shown = false
 
-            transitionAction = shownMenu.transitionAction?.then(object : Action() {
+            val newMenuAction = object : Action() {
                 override fun act(delta: Float): Boolean {
                     nextShownMenu = null
-                    subMenuContainer.actor = menu as? SubMenu
                     menu.shown = true
                     shownMenu = menu
+                    transitionAction = null
                     return true
                 }
-            })
+            }
+            transitionAction = shownMenu?.transitionAction?.then(newMenuAction) ?: newMenuAction
         }
     }
 
