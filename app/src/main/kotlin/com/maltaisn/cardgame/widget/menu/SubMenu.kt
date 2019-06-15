@@ -193,15 +193,18 @@ open class SubMenu(skin: Skin) : MenuTable(skin) {
         override fun update(progress: Float) {
             reversed = !shown
 
+            // Animate the content Y position and alpha
             content.y = contentStartY + (1 - progress) * CONTENT_TRANSITION_TRANSLATE
             alpha = progress
 
+            // Slide each item after the other. Top items are shown after and hidden before.
+            // There's a delay (durationGap) between each item slide.
             val durationGap = max(0f, TRANSITION_DURATION - ITEM_TRANSITION_DURATION) / items.size
-            for ((i, item) in items.withIndex()) {
-                val btn = item.button!!
-                val itemProgress = interpolation.applyBounded(
-                        elapsed / ITEM_TRANSITION_DURATION - i * durationGap)
-                btn.x = menuTable.padLeft + (1 - itemProgress) * (btn.width + menuTable.padLeft) *
+            for ((i, btn) in menuTable.children.withIndex()) {
+                val itemProgress = 1 - interpolation.applyBounded(
+                        (elapsed * SPEED_MULTIPLIER - (items.size - i - 1)
+                                * durationGap) / ITEM_TRANSITION_DURATION)
+                btn.x = menuTable.padLeft + itemProgress * (btn.width + menuTable.padLeft) *
                         if (menuPosition == MenuPosition.LEFT) -1 else 1
             }
         }
@@ -238,7 +241,7 @@ open class SubMenu(skin: Skin) : MenuTable(skin) {
         private const val TRANSITION_DURATION = 0.5f
 
         /** The duration of each menu item slide. */
-        private const val ITEM_TRANSITION_DURATION = 0.3f
+        private const val ITEM_TRANSITION_DURATION = 0.35f
 
         /** The Y translation performed by the content table. */
         private const val CONTENT_TRANSITION_TRANSLATE = -100f

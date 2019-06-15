@@ -56,12 +56,11 @@ open class MenuItem(val id: Int,
      */
     var checked = false
         set(value) {
-            val menu = menu ?: return
-
-            field = value && checkable && menu.checkable
+            field = value && checkable
             button?.checked = field
 
             if (field) {
+                val menu = menu ?: return
                 menu.itemClickListener?.invoke(this)
 
                 for (item in menu.items) {

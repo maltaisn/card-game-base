@@ -65,13 +65,13 @@ class PagedSubMenuTest : ActionBarTest() {
         val scoresView = Container(SdfLabel(coreSkin, FontStyle(fontColor = Color.BLACK, fontSize = 30f), "TODO!"))
         val scoresPage = TestPage(1, "Scores", coreSkin.getDrawable(MenuIcons.LIST), SubMenu.ITEM_POS_BOTTOM)
         scoresPage.content = scoresView
+        scoresPage.checked = true
 
         val menu = PagedSubMenu(coreSkin).apply {
             title = "Scoreboard"
             addItem(rulesPage)
             addItem(scoresPage)
             addItem(continueItem)
-            scoresPage.checked = true
         }
 
         layout.gameLayer.centerTable.apply {

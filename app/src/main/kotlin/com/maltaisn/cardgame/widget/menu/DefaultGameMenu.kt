@@ -112,7 +112,7 @@ class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
     private val settingsMenu = ScrollSubMenu(skin)
     private val rulesMenu = ScrollSubMenu(skin)
     private val statsMenu = ScrollSubMenu(skin)
-    private val aboutMenu = SubMenu(skin)
+    private val aboutMenu = ScrollSubMenu(skin)
 
     // Submenu views
     private var newGameView: PrefsGroup? = null

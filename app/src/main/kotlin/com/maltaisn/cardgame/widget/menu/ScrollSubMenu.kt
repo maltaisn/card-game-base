@@ -134,15 +134,18 @@ class ScrollSubMenu(skin: Skin) : SubMenu(skin) {
     private fun scrollToItem(item: MenuItem) {
         // Scroll the scroll view to the top of the item's section.
         var id = 0
-        for (child in scrollContent.actor.children) {
-            if (child is Section) {
-                if (id == item.id) {
-                    val top = child.y + child.height + 20f - scrollView.height
-                    val height = scrollView.height
-                    scrollView.scrollTo(0f, top, 0f, height)
-                    break
+
+        if (scrollContent.actor != null) {
+            for (child in scrollContent.actor.children) {
+                if (child is Section) {
+                    if (id == item.id) {
+                        val top = child.y + child.height + 20f - scrollView.height
+                        val height = scrollView.height
+                        scrollView.scrollTo(0f, top, 0f, height)
+                        break
+                    }
+                    id++
                 }
-                id++
             }
         }
     }
