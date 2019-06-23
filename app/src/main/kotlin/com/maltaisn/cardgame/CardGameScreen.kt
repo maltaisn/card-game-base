@@ -40,7 +40,6 @@ import com.maltaisn.cardgame.markdown.MdLoader
 import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.GamePrefsLoader
 import com.maltaisn.cardgame.widget.CardGameLayout
-import com.maltaisn.cardgame.widget.ClipTable
 import com.maltaisn.cardgame.widget.SdfShader
 import ktx.assets.getAsset
 import ktx.assets.load
@@ -119,7 +118,6 @@ abstract class CardGameScreen : Stage(ExtendViewport(960f, 540f)), Screen {
     open fun start() {
         coreSkin.add(CoreRes.CORE_STRINGS_NAME, assetManager.getAsset<I18NBundle>(CoreRes.CORE_STRINGS_FILE))
         SdfShader.getShader(coreSkin)
-        ClipTable.getShader(coreSkin)
     }
 
     /** Load the [PCard] skin, containing standard playing cards sprites. */

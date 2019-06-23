@@ -184,6 +184,7 @@
   com.maltaisn.cardgame.widget.menu.table.TableView$TableViewStyle: {
     default: {
       background: table-view-background
+      foreground: table-view-foreground
       separator: table-view-separator
       evenRowBackground: table-view-row-1
       oddRowBackground: table-view-row-2

@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Scaling
 import com.maltaisn.cardgame.post
+import com.maltaisn.cardgame.widget.ForegroundTable
 import com.maltaisn.cardgame.widget.ScrollView
 import ktx.assets.pool
 import ktx.style.get
@@ -78,12 +79,12 @@ open class TableView(skin: Skin, columnWidths: List<Float>) : Table(skin) {
     val headerTable = Table()
     val headerSeparator = Image(style.separator, Scaling.stretchX)
 
-    val footerTable = Table()
+    val footerTable = ForegroundTable()
 
     val itemGroup = VerticalGroup()
     val itemScrollView = ScrollView(itemGroup)
 
-    private val topTable = Table()
+    private val topTable = ForegroundTable()
 
 
     init {
@@ -92,7 +93,10 @@ open class TableView(skin: Skin, columnWidths: List<Float>) : Table(skin) {
         this.columnWidths = columnWidths.map { it / sum }
 
         topTable.background = style.background
+        topTable.foreground = style.foreground
+
         footerTable.background = style.background
+        topTable.foreground = style.foreground
 
         itemGroup.grow()
 
@@ -284,6 +288,7 @@ open class TableView(skin: Skin, columnWidths: List<Float>) : Table(skin) {
 
     class TableViewStyle {
         lateinit var background: Drawable
+        lateinit var foreground: Drawable
         lateinit var separator: Drawable
         lateinit var evenRowBackground: Drawable
         lateinit var oddRowBackground: Drawable
