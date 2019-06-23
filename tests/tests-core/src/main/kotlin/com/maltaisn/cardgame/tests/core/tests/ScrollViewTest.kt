@@ -1,0 +1,70 @@
+/*
+ * Copyright 2019 Nicolas Maltais
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.maltaisn.cardgame.tests.core.tests
+
+import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.utils.Align
+import com.maltaisn.cardgame.tests.core.ActionBarTest
+import com.maltaisn.cardgame.widget.CardGameLayout
+import com.maltaisn.cardgame.widget.FontStyle
+import com.maltaisn.cardgame.widget.ScrollView
+import com.maltaisn.cardgame.widget.SdfLabel
+import ktx.actors.setScrollFocus
+import ktx.log.info
+import java.util.*
+
+
+class ScrollViewTest : ActionBarTest() {
+
+    override fun layout(layout: CardGameLayout) {
+        super.layout(layout)
+
+        // Do the layout
+        val scrollView = ScrollView(Table().apply {
+            val fontStyle = FontStyle(fontSize = 22f, fontColor = Color.BLACK)
+            repeat(30) {
+                val label = SdfLabel(coreSkin, fontStyle, UUID.randomUUID().toString())
+                label.setAlignment(Align.center)
+                add(label).grow().pad(10f).row()
+            }
+        })
+
+        scrollView.scrollListener = { _, x: Float, y: Float, dx: Float, dy: Float ->
+            info { "Scrolled x: $x, y: $y, dx: $dx, dy: $dy" }
+        }
+        scrollView.clearActions()  // Should do nothing
+
+        val content = Table().apply {
+            background = coreSkin.getDrawable("submenu-content-background")
+            add(scrollView).grow().pad(20f, 100f, 20f, 100f)
+        }
+        layout.gameLayer.centerTable.add(content).grow()
+                .pad(0f, 20f, 0f, 20f)
+
+        scrollView.setScrollFocus()
+
+        // Action buttons
+        addActionBtn("Scroll to top") {
+            scrollView.scrollToTop()
+        }
+        addActionBtn("Scroll to bottom") {
+            scrollView.scrollToBottom()
+        }
+    }
+
+}
