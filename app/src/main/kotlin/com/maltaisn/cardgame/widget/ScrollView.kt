@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 
 /**
  * Custom class that provides extended functionality to the built-in [ScrollPane].
+ * Scroll vertically only by default.
  */
 class ScrollView(actor: Actor? = null, style: ScrollPaneStyle? = null) :
         ScrollPane(actor, style ?: ScrollPaneStyle()) {
@@ -67,6 +68,13 @@ class ScrollView(actor: Actor? = null, style: ScrollPaneStyle? = null) :
             field = value
             if (value != null) addAction(value)
         }
+
+    init {
+        setScrollingDisabled(true, false)
+        setOverscroll(false, false)
+        setCancelTouchFocus(false)
+    }
+
 
     override fun clearActions() {
         super.clearActions()

@@ -68,9 +68,6 @@ class ScrollSubMenu(skin: Skin) : SubMenu(skin) {
         content.add(scrollView).grow()
 
         scrollContent.fill()
-        scrollView.setScrollingDisabled(true, false)
-        scrollView.setOverscroll(false, false)
-        scrollView.setCancelTouchFocus(false)
         scrollView.scrollListener = { scrollView: ScrollView, _: Float, y: Float, _: Float, _: Float ->
             // Change the checked menu item if needed
             var newId = MenuItem.NO_ID

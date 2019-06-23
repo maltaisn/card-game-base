@@ -27,30 +27,48 @@ import ktx.actors.alpha
 /**
  * Wrapper class around [Label] for rendering text with a distance field font.
  */
-open class SdfLabel(skin: Skin, val fontStyle: FontStyle, text: CharSequence? = null) :
-        Label(null, LabelStyle(SdfShader.getFont(skin, fontStyle.bold), fontStyle.fontColor)) {
+open class SdfLabel(private val skin: Skin, fontStyle: FontStyle, text: CharSequence? = null) :
+        Label(null, createStyle(skin, fontStyle)) {
+
+    /**
+     * The font style used by this label.
+     * Font styles are mutable but they must be set again to be updated effectively.
+     */
+    var fontStyle = fontStyle
+        set(value) {
+            style = createStyle(skin, value)
+            setFontScale(value.fontSize / SdfShader.FONT_GLYPH_SIZE)
+
+            val text = text
+            field = value
+            setText(text)
+        }
 
     /** Whether the label is enabled or not. If disabled, it's drawn with 50% alpha. */
     var enabled = true
 
     private val _text = StringBuilder()
 
-    private val shader = SdfShader.load(skin)
+    private val shader = SdfShader.getShader(skin)
     private val tempColor = Color()
 
     init {
-        setFontScale(fontStyle.fontSize / SdfShader.FONT_GLYPH_SIZE)
+        this.fontStyle = fontStyle
         setText(text)
     }
 
     override fun setText(newText: CharSequence?) {
         if (fontStyle.allCaps) {
-            _text.setLength(0)
-            if (newText != null) {
-                _text.append(newText)
+            if (newText === _text) {
                 super.setText(newText.toString().toUpperCase())
             } else {
-                super.setText(null)
+                _text.setLength(0)
+                if (newText != null) {
+                    _text.append(newText)
+                    super.setText(newText.toString().toUpperCase())
+                } else {
+                    super.setText(null)
+                }
             }
         } else {
             super.setText(newText)
@@ -81,6 +99,11 @@ open class SdfLabel(skin: Skin, val fontStyle: FontStyle, text: CharSequence? = 
         batch.shader = null
 
         alpha = alphaBefore
+    }
+
+    companion object {
+        fun createStyle(skin: Skin, fontStyle: FontStyle) =
+                LabelStyle(SdfShader.getFont(skin, fontStyle.bold), fontStyle.fontColor)
     }
 
 

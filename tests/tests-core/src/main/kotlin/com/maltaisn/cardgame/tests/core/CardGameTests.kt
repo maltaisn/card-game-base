@@ -44,7 +44,9 @@ object CardGameTests {
             PlayerLabelTest::class.java,
             PlayerLabelFadeTest::class.java,
             PagedSubMenuTest::class.java,
-            MainMenuTest::class.java
+            MainMenuTest::class.java,
+            ScoresTableTest::class.java,
+            TableViewTest::class.java
     )
 
     val TESTS_MAP = TESTS.associateBy { it.simpleName }.toSortedMap()

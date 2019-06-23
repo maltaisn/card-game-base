@@ -148,9 +148,6 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
         drawerTable.background = style.drawerBackground
 
         content.fill()
-        contentPane.setScrollingDisabled(true, false)
-        contentPane.setOverscroll(false, false)
-        contentPane.setCancelTouchFocus(false)
 
         // Back button
         val backBtn = Table()

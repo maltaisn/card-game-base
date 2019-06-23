@@ -13,6 +13,10 @@
       fontSize: 22
       fontColor: textColorBlack
     }
+    normalInverse: {
+      fontSize: 22
+      fontColor: white
+    }
     menuItem: {
       bold: true
       allCaps: true
@@ -20,6 +24,15 @@
       fontColor: textColorWhite
       drawShadow: true
       shadowColor: black
+    }
+    prefValue: {
+      fontSize: 24
+      fontColor: textColorGray
+    }
+    title: {
+      fontSize: 32
+      fontColor: textColorBlack
+      bold: true
     }
   }
   com.maltaisn.cardgame.widget.GameLayer$CoreStyle: {
@@ -168,6 +181,31 @@
       headerSeparator: separator
     }
   }
+  com.maltaisn.cardgame.widget.menu.table.TableView$TableViewStyle: {
+    default: {
+      background: table-view-background
+      separator: table-view-separator
+      evenRowBackground: table-view-row-1
+      oddRowBackground: table-view-row-2
+    }
+  }
+  com.maltaisn.cardgame.widget.menu.table.ScoresTable$ScoresTableStyle: {
+    default: {
+      headerTitleFontStyle: {
+        bold: true
+        fontSize: 22
+        fontColor: textColorBlack
+      }
+      headerSubtitleFontStyle: {
+        fontSize: 20
+        fontColor: textColorGray
+      }
+      scoreFontStyle: normal
+      scoreFontStyleHighlighted: normalInverse
+      scoreHighlightPositive: scores-table-highlight-positive
+      scoreHighlightNegative: scores-table-highlight-negative
+    }
+  }
   com.maltaisn.cardgame.widget.prefs.GamePrefView$GamePrefViewStyle: {
     default: {
       titleFontStyle: normal
@@ -181,28 +219,18 @@
   }
   com.maltaisn.cardgame.widget.prefs.PrefCategoryView$PrefCategoryViewStyle: {
     default: {
-      titleFontStyle: {
-        fontSize: 32
-        fontColor: textColorBlack
-        bold: true
-      }
+      titleFontStyle: title
       separator: separator
     }
   }
   com.maltaisn.cardgame.widget.prefs.SliderPrefView$SliderPrefViewStyle: {
     default: {
-      valueFontStyle: {
-        fontSize: 24
-        fontColor: textColorGray
-      }
+      valueFontStyle: prefValue
     }
   }
   com.maltaisn.cardgame.widget.prefs.ListPrefView$ListPrefViewStyle: {
     default: {
-      valueFontStyle: {
-        fontSize: 24
-        fontColor: textColorGray
-      }
+      valueFontStyle: prefValue
       arrowIcon: icon-chevron-right
       arrowIconColor: textColorGray
     }
@@ -222,11 +250,7 @@
   com.maltaisn.cardgame.widget.markdown.MdHeaderView$MdHeaderViewStyle: {
     default: {
       fontStyles: [
-        {
-          fontSize: 32
-          fontColor: textColorBlack
-          bold: true
-        },
+        title,
         {
           fontSize: 24
           fontColor: textColorBlack

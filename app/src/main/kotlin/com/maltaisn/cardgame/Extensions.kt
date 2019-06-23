@@ -31,7 +31,12 @@ import com.maltaisn.cardgame.widget.TimeAction
 internal fun Actor.withinBounds(x: Float, y: Float) = x >= 0 && y >= 0 && x <= width && y <= height
 
 /**
- * Add an [action] to be done after a [delay] in seconds and return it.
+ * Add an [action] to this actor to be done on next frame.
+ */
+inline fun Actor.post(crossinline action: () -> Unit) = postDelayed(0f, action)
+
+/**
+ * Add an [action] to this actor to be done after a [delay] in seconds and return it.
  * If the delay is less or equal than 0, the action will happen on next frame.
  */
 inline fun Actor.postDelayed(delay: Float, crossinline action: () -> Unit): TimeAction {

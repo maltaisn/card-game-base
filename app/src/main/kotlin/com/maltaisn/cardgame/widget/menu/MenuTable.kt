@@ -17,7 +17,7 @@
 package com.maltaisn.cardgame.widget.menu
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.maltaisn.cardgame.postDelayed
+import com.maltaisn.cardgame.post
 import com.maltaisn.cardgame.widget.FboTable
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.TimeAction
@@ -116,7 +116,7 @@ abstract class MenuTable(skin: Skin) : FboTable(skin) {
     internal fun invalidateMenuLayout() {
         if (!invalidLayout) {
             invalidLayout = true
-            postDelayed(0f) {
+            post {
                 doMenuLayout()
                 invalidLayout = false
             }

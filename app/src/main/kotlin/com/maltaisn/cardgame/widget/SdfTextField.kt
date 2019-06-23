@@ -40,7 +40,7 @@ class SdfTextField(skin: Skin,
                    text: String? = null) :
         TextField(text, createStyle(skin, fieldStyle, fontStyle)) {
 
-    private val shader = SdfShader.load(skin)
+    private val shader = SdfShader.getShader(skin)
     private val tempColor = Color()
 
 

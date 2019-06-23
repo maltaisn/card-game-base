@@ -1,0 +1,180 @@
+/*
+ * Copyright 2019 Nicolas Maltais
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.maltaisn.cardgame.widget.menu.table
+
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable
+import com.badlogic.gdx.utils.Align
+import com.maltaisn.cardgame.defaultSize
+import com.maltaisn.cardgame.widget.FontStyle
+import com.maltaisn.cardgame.widget.SdfLabel
+import ktx.style.get
+import java.text.NumberFormat
+
+
+class ScoresTable(skin: Skin, playerCount: Int) : TableView(skin, List(playerCount) { 1f }) {
+
+    private val style: ScoresTableStyle = skin.get()
+
+    /**
+     * The headers for each column.
+     */
+    var headers = List(playerCount) { Header("", null) }
+        set(value) {
+            field = value
+            headerAdapter?.notifyChanged()
+        }
+
+    /**
+     * The list of scores for each column.
+     * The cell adapter must be updated when changed.
+     */
+    val scores = mutableListOf<List<Score>>()
+
+    /**
+     * The scores shown in the footer for each column.
+     * The footer adapter must be updated when changed.
+     */
+    var footerScores = List(playerCount) { Score(0f) }
+        set(value) {
+            field = value
+            footerAdapter?.notifyChanged()
+        }
+
+    /**
+     * The number format used to format the scores.
+     */
+    var numberFormat = NumberFormat.getNumberInstance()
+        set(value) {
+            field = value
+            cellAdapter?.notifyChanged()
+            footerAdapter?.notifyChanged()
+        }
+
+
+    init {
+        alternateColors = true
+
+        cellAdapter = object : CellAdapter() {
+
+            override val rowCount: Int
+                get() = scores.size
+
+            override fun createViewHolder(column: Int) = ScoreViewHolder(skin)
+
+            override fun bindViewHolder(viewHolder: ViewHolder, row: Int, column: Int) {
+                (viewHolder as ScoreViewHolder).bind(scores[row][column])
+            }
+
+        }
+
+        headerAdapter = object : HeaderAdapter() {
+            override fun createViewHolder(column: Int) = HeaderViewHolder(skin)
+
+            override fun bindViewHolder(viewHolder: ViewHolder, column: Int) {
+                (viewHolder as HeaderViewHolder).bind(headers[column])
+            }
+        }
+
+        footerAdapter = object : FooterAdapter() {
+            override fun createViewHolder(column: Int) = ScoreViewHolder(skin)
+
+            override fun bindViewHolder(viewHolder: ViewHolder, column: Int) {
+                (viewHolder as ScoreViewHolder).bind(footerScores[column])
+            }
+        }
+    }
+
+    private inner class HeaderViewHolder(skin: Skin) : ViewHolder() {
+
+        private val titleLabel = SdfLabel(skin, style.headerTitleFontStyle)
+        private val subtitleLabel = SdfLabel(skin, style.headerSubtitleFontStyle)
+
+        init {
+            table.add(titleLabel).growX().row()
+            titleLabel.setWrap(true)
+            titleLabel.setAlignment(Align.center)
+
+            table.add(subtitleLabel).growX()
+            subtitleLabel.setWrap(true)
+            subtitleLabel.setAlignment(Align.center)
+
+            table.pad(10f)
+        }
+
+        fun bind(header: Header) {
+            titleLabel.setText(header.title)
+            subtitleLabel.setText(header.subtitle)
+
+            val subtitleCell = table.getCell(subtitleLabel)
+            if (header.subtitle == null) {
+                subtitleCell.size(0f, 0f)
+            } else {
+                subtitleCell.defaultSize()
+            }
+        }
+    }
+
+    private inner class ScoreViewHolder(skin: Skin) : ViewHolder() {
+
+        private val scoreLabel = SdfLabel(skin, style.scoreFontStyle)
+
+        init {
+            table.add(scoreLabel).expand()
+            table.pad(10f)
+        }
+
+        fun bind(score: Score) {
+            cell.pad(10f)
+            table.background = when (score.highlight) {
+                Score.Highlight.NONE -> null
+                Score.Highlight.POSITIVE -> style.scoreHighlightPositive
+                Score.Highlight.NEGATIVE -> style.scoreHighlightNegative
+            }
+
+            scoreLabel.setText(numberFormat.format(score.value))
+            scoreLabel.fontStyle = if (score.highlight == Score.Highlight.NONE) {
+                style.scoreFontStyle
+            } else {
+                style.scoreFontStyleHighlighted
+            }
+        }
+
+    }
+
+
+    class Header(val title: String, val subtitle: String?)
+
+    class Score(val value: Float, val highlight: Highlight = Highlight.NONE) {
+
+        enum class Highlight {
+            NONE,
+            POSITIVE,
+            NEGATIVE
+        }
+    }
+
+    class ScoresTableStyle {
+        lateinit var headerTitleFontStyle: FontStyle
+        lateinit var headerSubtitleFontStyle: FontStyle
+        lateinit var scoreFontStyle: FontStyle
+        lateinit var scoreFontStyleHighlighted: FontStyle
+        lateinit var scoreHighlightPositive: Drawable
+        lateinit var scoreHighlightNegative: Drawable
+    }
+
+}

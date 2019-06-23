@@ -31,22 +31,44 @@ import ktx.actors.alpha
  */
 class SdfLabelTest : ActionBarTest() {
 
-    private var selectedText = 0
-    private var selectedColors = 0
-    private var fontAlpha = 100
-
-    private val fontStyle = FontStyle().apply {
-        bold = false
-        drawShadow = false
-        fontColor = COLORS[selectedColors].first
-        shadowColor = COLORS[selectedColors].second
-    }
-
-    private lateinit var labels: List<SdfLabel>
-
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
+        var selectedText = 0
+        var selectedColors = 0
+        val fontStyle = FontStyle().apply {
+            bold = false
+            drawShadow = false
+            fontColor = COLORS[selectedColors].first
+            shadowColor = COLORS[selectedColors].second
+        }
+        var fontAlpha = 100
+
+        val labels = List(10) {
+            SdfLabel(coreSkin, fontStyle.copy(fontSize = 12f + it * 4), TEXTS[selectedText]).apply {
+                alpha = fontAlpha / 100f
+            }
+        }
+
+        fun updateFontStyle() {
+            for (label in labels) {
+                label.fontStyle = fontStyle.copy(fontSize = label.fontStyle.fontSize)
+            }
+        }
+
+        // Add all labels to the layout
+        layout.gameLayer.centerTable.apply {
+            clearChildren()
+            add(btnTable).growX().colspan(100).pad(25f, 20f, 25f, 20f).row()
+
+            val labelTable = Table()
+            for (label in labels) {
+                labelTable.add(label).expand().center().row()
+            }
+            add(CenterLayout(labelTable)).grow()
+        }
+
+        // Action buttons
         addActionBtn("Change text") {
             selectedText = (selectedText + 1) % TEXTS.size
             val text = TEXTS[selectedText]
@@ -59,20 +81,20 @@ class SdfLabelTest : ActionBarTest() {
             val colors = COLORS[selectedColors]
             fontStyle.fontColor = colors.first
             fontStyle.shadowColor = colors.second
-            setLabels(layout)
+            updateFontStyle()
         }
 
         addToggleBtn("Bold") { _, bold ->
             fontStyle.bold = bold
-            setLabels(layout)
+            updateFontStyle()
         }
         addToggleBtn("Shadow") { _, drawShadow ->
             fontStyle.drawShadow = drawShadow
-            setLabels(layout)
+            updateFontStyle()
         }
         addToggleBtn("All caps") { _, allCaps ->
             fontStyle.allCaps = allCaps
-            setLabels(layout)
+            updateFontStyle()
         }
         addToggleBtn("Enabled", true) { _, enabled ->
             for (label in labels) {
@@ -86,25 +108,6 @@ class SdfLabelTest : ActionBarTest() {
             for (label in labels) {
                 label.alpha = fontAlpha / 100f
             }
-        }
-
-        setLabels(layout)
-    }
-
-    private fun setLabels(layout: CardGameLayout) {
-        // Re-add all labels with correct font style
-        layout.gameLayer.centerTable.apply {
-            clearChildren()
-            add(btnTable).growX().colspan(100).pad(25f, 20f, 25f, 20f).row()
-
-            val labelTable = Table()
-            labels = List(10) {
-                val label = SdfLabel(coreSkin, fontStyle.copy(fontSize = 12f + it * 4), TEXTS[selectedText])
-                label.alpha = fontAlpha / 100f
-                labelTable.add(label).expand().center().row()
-                label
-            }
-            add(CenterLayout(labelTable)).grow()
         }
     }
 

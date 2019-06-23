@@ -71,24 +71,20 @@ internal class SdfShader private constructor() :
 
         const val FONT_GLYPH_SIZE = 32f
 
-        /** Create the shader, load bitmap fonts and put it in the [skin]. */
-        fun load(skin: Skin): SdfShader {
-            if (skin.has("default", SdfShader::class.java)) {
-                // Shader was already loaded.
-                return skin.get()
+        /** Get the shader, creating it first if needed. */
+        fun getShader(skin: Skin): SdfShader {
+            if (!skin.has("default", SdfShader::class.java)) {
+                // Create shader and load fonts, add them to skin.
+                skin.add(FONT_NAME, loadFont(CoreRes.FONT_NAME))
+                skin.add(FONT_BOLD_NAME, loadFont(CoreRes.FONT_BOLD_NAME))
+                skin.add("default", SdfShader())
             }
-
-            skin.add(FONT_NAME, loadFont(CoreRes.FONT_NAME))
-            skin.add(FONT_BOLD_NAME, loadFont(CoreRes.FONT_BOLD_NAME))
-
-            val shader = SdfShader()
-            skin.add("default", shader)
-            return shader
+            return skin.get()
         }
 
-        /** Get the bitmap font from a [skin] and load them if needed. */
+        /** Get the bitmap font from a [skin], loading them first if needed. */
         fun getFont(skin: Skin, bold: Boolean): BitmapFont {
-            load(skin)
+            getShader(skin)
             return skin[if (bold) {
                 FONT_BOLD_NAME
             } else {

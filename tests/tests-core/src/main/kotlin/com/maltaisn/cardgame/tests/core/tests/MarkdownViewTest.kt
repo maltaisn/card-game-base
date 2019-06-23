@@ -53,9 +53,6 @@ class MarkdownViewTest : CardGameTest() {
         ScrollView(content, ScrollPane.ScrollPaneStyle(
                 coreSkin.getDrawable("submenu-content-background"),
                 null, null, null, null)).apply contentPane@{
-            setScrollingDisabled(true, false)
-            setOverscroll(false, false)
-            setCancelTouchFocus(false)
             layout.gameLayer.centerTable.add(this).grow()
                     .pad(20f, 20f, 0f, 20f)
             addListener(object : InputListener() {
