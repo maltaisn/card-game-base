@@ -65,7 +65,7 @@ class CardHandHighlightTest : ActionBarTest() {
             val cards = mutableListOf<Card>()
             for (actor in hand.actors) {
                 if (actor != null && Random.nextBoolean()) {
-                    cards += actor.card
+                    cards += actor.card!!
                 }
             }
             hand.highlightCards(cards, Random.nextBoolean())

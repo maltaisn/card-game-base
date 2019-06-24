@@ -114,12 +114,12 @@ class CardHand : CardContainer {
         if (sorter != null && size > 1) {
             // Check if there are any null cards. If there are, the hand cannot be sorted.
             for (actor in actors) {
-                checkNotNull(actor) { "Card hand cannot be sorted if it contains null cards." }
+                checkNotNull(actor?.card) { "Card hand cannot be sorted if it contains null cards." }
             }
 
             // Apply new sorting order.
             @Suppress("UNCHECKED_CAST")
-            (sorter as Card.Sorter<Card>).sortBy(_actors) { it!!.card }
+            (sorter as Card.Sorter<Card>).sortBy(_actors) { it!!.card!! }
         }
     }
 

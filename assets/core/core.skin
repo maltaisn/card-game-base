@@ -13,6 +13,11 @@
       fontSize: 22
       fontColor: textColorBlack
     }
+    normalBold: {
+      bold: true
+      fontSize: 22
+      fontColor: textColorBlack
+    }
     normalInverse: {
       fontSize: 22
       fontColor: white
@@ -196,11 +201,7 @@
   }
   com.maltaisn.cardgame.widget.menu.table.ScoresTable$ScoresTableStyle: {
     default: {
-      headerTitleFontStyle: {
-        bold: true
-        fontSize: 22
-        fontColor: textColorBlack
-      }
+      headerTitleFontStyle: normalBold
       headerSubtitleFontStyle: {
         fontSize: 20
         fontColor: textColorGray
@@ -209,6 +210,12 @@
       scoreFontStyleHighlighted: normalInverse
       scoreHighlightPositive: scores-table-highlight-positive
       scoreHighlightNegative: scores-table-highlight-negative
+    }
+  }
+  com.maltaisn.cardgame.widget.menu.table.TricksTable$TricksTableStyle: {
+    default: {
+      headerFontStyle: normalBold
+      checkIcon: table-view-checkbox
     }
   }
   com.maltaisn.cardgame.widget.prefs.GamePrefView$GamePrefViewStyle: {

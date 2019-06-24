@@ -38,7 +38,7 @@ import ktx.style.get
  * @property card Card shown by the actor.
  */
 class CardActor(val coreStyle: GameLayer.CoreStyle,
-                val cardStyle: CardStyle, var card: Card) : SelectableWidget() {
+                val cardStyle: CardStyle, var card: Card? = null) : SelectableWidget() {
 
     /**
      * Whether the card value is displayed.
@@ -64,6 +64,7 @@ class CardActor(val coreStyle: GameLayer.CoreStyle,
         set(value) {
             field = value
             setSize(prefWidth, prefHeight)
+            invalidateHierarchy()
         }
 
     /**
@@ -107,7 +108,7 @@ class CardActor(val coreStyle: GameLayer.CoreStyle,
         }
 
 
-    constructor(coreSkin: Skin, cardSkin: Skin, card: Card,
+    constructor(coreSkin: Skin, cardSkin: Skin, card: Card? = null,
                 coreStyleName: String = "default",
                 cardStyleName: String = "default") :
             this(coreSkin.get<GameLayer.CoreStyle>(coreStyleName), cardSkin[cardStyleName], card)
@@ -152,29 +153,33 @@ class CardActor(val coreStyle: GameLayer.CoreStyle,
 
 
     override fun draw(batch: Batch, parentAlpha: Float) {
-        batch.setColor(color.r, color.g, color.b, alpha * parentAlpha)
+        if (card != null) {
+            batch.setColor(color.r, color.g, color.b, alpha * parentAlpha)
 
-        // Draw background
-        drawCenteredDrawable(batch, coreStyle.cardBackground as TransformDrawable)
+            // Draw background
+            drawCenteredDrawable(batch, coreStyle.cardBackground as TransformDrawable)
 
-        // Draw card
-        val scale = size / cardStyle.cardWidth
-        val card = (if (shown) cardStyle.cards[card.value] else cardStyle.back) as TransformDrawable
-        card.draw(batch, x + (width - card.minWidth * scale) / 2,
-                y + (height - card.minHeight * scale) / 2, 0f, 0f,
-                card.minWidth, card.minHeight, scale, scale, 0f)
+            // Draw card
+            val scale = size / cardStyle.cardWidth
+            val card = (if (shown) cardStyle.cards[card!!.value] else cardStyle.back) as TransformDrawable
+            card.draw(batch, x + (width - card.minWidth * scale) / 2,
+                    y + (height - card.minHeight * scale) / 2, 0f, 0f,
+                    card.minWidth, card.minHeight, scale, scale, 0f)
 
-        // Draw hover
-        if (hoverAlpha != 0f) {
-            batch.setColor(color.r, color.g, color.b, alpha * parentAlpha * hoverAlpha)
-            drawCenteredDrawable(batch, coreStyle.cardHover as TransformDrawable)
+            // Draw hover
+            if (hoverAlpha != 0f) {
+                batch.setColor(color.r, color.g, color.b, alpha * parentAlpha * hoverAlpha)
+                drawCenteredDrawable(batch, coreStyle.cardHover as TransformDrawable)
+            }
+
+            // Draw press
+            if (pressAlpha != 0f) {
+                batch.setColor(color.r, color.g, color.b, alpha * parentAlpha * pressAlpha)
+                drawCenteredDrawable(batch, coreStyle.cardSelection as TransformDrawable)
+            }
         }
 
-        // Draw press
-        if (pressAlpha != 0f) {
-            batch.setColor(color.r, color.g, color.b, alpha * parentAlpha * pressAlpha)
-            drawCenteredDrawable(batch, coreStyle.cardSelection as TransformDrawable)
-        }
+        super.draw(batch, parentAlpha)
     }
 
     /** Draw a drawable to fit around the actor when considering padding. */

@@ -26,6 +26,12 @@ import ktx.style.get
 import java.text.NumberFormat
 
 
+/**
+ * A table view displaying a list of scores for each round for all players.
+ * Each header can contain a title and a subtitle, for the player name and difficulty for example.
+ * The footer can display the sum of scores, but it has to be calculated and set separatedly.
+ * Each cell displaying a score can have a positive or negative highlight.
+ */
 class ScoresTable(skin: Skin, playerCount: Int) : TableView(skin, List(playerCount) { 1f }) {
 
     private val style: ScoresTableStyle = skin.get()
@@ -74,7 +80,7 @@ class ScoresTable(skin: Skin, playerCount: Int) : TableView(skin, List(playerCou
             override val rowCount: Int
                 get() = scores.size
 
-            override fun createViewHolder(column: Int) = ScoreViewHolder(skin)
+            override fun createViewHolder(column: Int) = ScoreViewHolder()
 
             override fun bindViewHolder(viewHolder: ViewHolder, row: Int, column: Int) {
                 (viewHolder as ScoreViewHolder).bind(scores[row][column])
@@ -83,7 +89,7 @@ class ScoresTable(skin: Skin, playerCount: Int) : TableView(skin, List(playerCou
         }
 
         headerAdapter = object : HeaderAdapter() {
-            override fun createViewHolder(column: Int) = HeaderViewHolder(skin)
+            override fun createViewHolder(column: Int) = HeaderViewHolder()
 
             override fun bindViewHolder(viewHolder: ViewHolder, column: Int) {
                 (viewHolder as HeaderViewHolder).bind(headers[column])
@@ -91,7 +97,7 @@ class ScoresTable(skin: Skin, playerCount: Int) : TableView(skin, List(playerCou
         }
 
         footerAdapter = object : FooterAdapter() {
-            override fun createViewHolder(column: Int) = ScoreViewHolder(skin)
+            override fun createViewHolder(column: Int) = ScoreViewHolder()
 
             override fun bindViewHolder(viewHolder: ViewHolder, column: Int) {
                 (viewHolder as ScoreViewHolder).bind(footerScores[column])
@@ -99,7 +105,7 @@ class ScoresTable(skin: Skin, playerCount: Int) : TableView(skin, List(playerCou
         }
     }
 
-    private inner class HeaderViewHolder(skin: Skin) : ViewHolder() {
+    private inner class HeaderViewHolder : ViewHolder() {
 
         private val titleLabel = SdfLabel(skin, style.headerTitleFontStyle)
         private val subtitleLabel = SdfLabel(skin, style.headerSubtitleFontStyle)
@@ -129,7 +135,7 @@ class ScoresTable(skin: Skin, playerCount: Int) : TableView(skin, List(playerCou
         }
     }
 
-    private inner class ScoreViewHolder(skin: Skin) : ViewHolder() {
+    private inner class ScoreViewHolder : ViewHolder() {
 
         private val scoreLabel = SdfLabel(skin, style.scoreFontStyle)
 
@@ -153,7 +159,6 @@ class ScoresTable(skin: Skin, playerCount: Int) : TableView(skin, List(playerCou
                 style.scoreFontStyleHighlighted
             }
         }
-
     }
 
 

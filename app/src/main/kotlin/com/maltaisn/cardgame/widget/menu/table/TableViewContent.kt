@@ -31,7 +31,7 @@ class TableViewContent(skin: Skin) : Table(skin) {
     private val style: TableContentGroupStyle = skin.get()
 
     init {
-        this.background = background
+        this.background = style.background
     }
 
     override fun draw(batch: Batch, parentAlpha: Float) {
