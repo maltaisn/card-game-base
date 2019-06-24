@@ -20,9 +20,9 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.Container
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
+import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.maltaisn.cardgame.markdown.Markdown
-import com.maltaisn.cardgame.tests.core.CardGameTest
+import com.maltaisn.cardgame.tests.core.SubmenuContentTest
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.ScrollView
 import com.maltaisn.cardgame.widget.markdown.MarkdownView
@@ -33,28 +33,22 @@ import ktx.assets.load
 /**
  * Test for markdown views, parsing and inflating.
  */
-class MarkdownViewTest : CardGameTest() {
+class MarkdownViewTest : SubmenuContentTest() {
 
     override fun load() {
         super.load()
         assetManager.load<Markdown>(MARKDOWN_FILE)
     }
 
-    override fun layout(layout: CardGameLayout) {
-        super.layout(layout)
-
+    override fun layoutContent(layout: CardGameLayout, content: Table) {
         val markdown: Markdown = assetManager.get(MARKDOWN_FILE)
         val mdView = MarkdownView(coreSkin, markdown)
 
         // Do the layout
-        val content = Container(mdView)
-        content.fill().pad(0f, 20f, 0f, 20f)
+        val mdContainer = Container(mdView)
+        mdContainer.fill().pad(0f, 20f, 0f, 20f)
 
-        ScrollView(content, ScrollPane.ScrollPaneStyle(
-                coreSkin.getDrawable("submenu-content-background"),
-                null, null, null, null)).apply contentPane@{
-            layout.gameLayer.centerTable.add(this).grow()
-                    .pad(20f, 20f, 0f, 20f)
+        content.add(ScrollView(mdContainer).apply contentPane@{
             addListener(object : InputListener() {
                 override fun enter(event: InputEvent, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
                     this@contentPane.setScrollFocus(true)
@@ -64,6 +58,11 @@ class MarkdownViewTest : CardGameTest() {
                     this@contentPane.setScrollFocus(false)
                 }
             })
+        }).grow()
+
+        // Action buttons
+        addToggleBtn("Debug") { _, debug ->
+            mdView.setDebug(debug, true)
         }
     }
 

@@ -20,10 +20,10 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.Container
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
+import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.PrefEntry
-import com.maltaisn.cardgame.tests.core.CardGameTest
+import com.maltaisn.cardgame.tests.core.SubmenuContentTest
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.ScrollView
 import com.maltaisn.cardgame.widget.prefs.PrefsGroup
@@ -35,16 +35,14 @@ import ktx.log.info
 /**
  * Test for preference group and views, preference parsing and inflating.
  */
-class PrefsViewTest : CardGameTest(), PrefEntry.PrefListener {
+class PrefsViewTest : SubmenuContentTest(), PrefEntry.PrefListener {
 
     override fun load() {
         super.load()
         assetManager.load<GamePrefs>(PREFS_FILE)
     }
 
-    override fun layout(layout: CardGameLayout) {
-        super.layout(layout)
-
+    override fun layoutContent(layout: CardGameLayout, content: Table) {
         val prefs: GamePrefs = assetManager.get(PREFS_FILE)
         val prefsView = PrefsGroup(coreSkin, prefs)
         prefsView.helpListener = { pref ->
@@ -59,14 +57,10 @@ class PrefsViewTest : CardGameTest(), PrefEntry.PrefListener {
         this.prefs += prefs
 
         // Do the layout
-        val content = Container(prefsView)
-        content.fill().pad(0f, 20f, 0f, 20f)
+        val prefsContainer = Container(prefsView)
+        prefsContainer.fill().pad(0f, 20f, 0f, 20f)
 
-        ScrollView(content, ScrollPane.ScrollPaneStyle(
-                coreSkin.getDrawable("submenu-content-background"),
-                null, null, null, null)).apply contentPane@{
-            layout.gameLayer.centerTable.add(this).grow()
-                    .pad(20f, 20f, 0f, 20f)
+        content.add(ScrollView(prefsContainer).apply contentPane@{
             addListener(object : InputListener() {
                 override fun enter(event: InputEvent, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
                     this@contentPane.setScrollFocus(true)
@@ -76,6 +70,11 @@ class PrefsViewTest : CardGameTest(), PrefEntry.PrefListener {
                     this@contentPane.setScrollFocus(false)
                 }
             })
+        }).grow()
+
+        // Action buttons
+        addToggleBtn("Debug") { _, debug ->
+            prefsView.setDebug(debug, true)
         }
     }
 

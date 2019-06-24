@@ -19,7 +19,7 @@ package com.maltaisn.cardgame.tests.core.tests
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
-import com.maltaisn.cardgame.tests.core.ActionBarTest
+import com.maltaisn.cardgame.tests.core.SubmenuContentTest
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.ScrollView
@@ -29,11 +29,9 @@ import ktx.log.info
 import java.util.*
 
 
-class ScrollViewTest : ActionBarTest() {
+class ScrollViewTest : SubmenuContentTest() {
 
-    override fun layout(layout: CardGameLayout) {
-        super.layout(layout)
-
+    override fun layoutContent(layout: CardGameLayout, content: Table) {
         // Do the layout
         val scrollView = ScrollView(Table().apply {
             val fontStyle = FontStyle(fontSize = 22f, fontColor = Color.BLACK)
@@ -49,12 +47,7 @@ class ScrollViewTest : ActionBarTest() {
         }
         scrollView.clearActions()  // Should do nothing
 
-        val content = Table().apply {
-            background = coreSkin.getDrawable("submenu-content-background")
-            add(scrollView).grow().pad(20f, 100f, 20f, 100f)
-        }
-        layout.gameLayer.centerTable.add(content).grow()
-                .pad(0f, 20f, 0f, 20f)
+        content.add(scrollView).grow().pad(20f, 100f, 20f, 100f)
 
         scrollView.setScrollFocus()
 
@@ -66,5 +59,4 @@ class ScrollViewTest : ActionBarTest() {
             scrollView.scrollToBottom()
         }
     }
-
 }

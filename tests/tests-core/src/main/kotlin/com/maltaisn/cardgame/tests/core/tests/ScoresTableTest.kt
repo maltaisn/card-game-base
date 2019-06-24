@@ -17,7 +17,7 @@
 package com.maltaisn.cardgame.tests.core.tests
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.maltaisn.cardgame.tests.core.ActionBarTest
+import com.maltaisn.cardgame.tests.core.SubmenuContentTest
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.menu.table.ScoresTable
 import com.maltaisn.cardgame.widget.menu.table.ScoresTable.Header
@@ -27,11 +27,9 @@ import java.text.NumberFormat
 import kotlin.random.Random
 
 
-class ScoresTableTest : ActionBarTest() {
+class ScoresTableTest : SubmenuContentTest() {
 
-    override fun layout(layout: CardGameLayout) {
-        super.layout(layout)
-
+    override fun layoutContent(layout: CardGameLayout, content: Table) {
         val table = ScoresTable(coreSkin, 4)
         repeat(10) { table.scores += createScoresRow() }
         table.cellAdapter?.notifyChanged()
@@ -39,12 +37,7 @@ class ScoresTableTest : ActionBarTest() {
         updateTotalScores(table)
 
         // Do the layout
-        val content = Table().apply {
-            background = coreSkin.getDrawable("submenu-content-background")
-            add(table).grow().pad(20f, 100f, 20f, 100f)
-        }
-        layout.gameLayer.centerTable.add(content).grow()
-                .pad(0f, 20f, 0f, 20f)
+        content.add(table).grow().pad(20f, 100f, 20f, 100f)
         table.itemScrollView.setScrollFocus()
 
         // Action buttons

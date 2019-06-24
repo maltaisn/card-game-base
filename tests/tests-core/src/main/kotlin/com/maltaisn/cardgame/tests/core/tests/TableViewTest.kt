@@ -20,7 +20,7 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
-import com.maltaisn.cardgame.tests.core.ActionBarTest
+import com.maltaisn.cardgame.tests.core.SubmenuContentTest
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.SdfLabel
@@ -33,14 +33,12 @@ import java.util.*
 import kotlin.random.Random
 
 
-class TableViewTest : ActionBarTest() {
+class TableViewTest : SubmenuContentTest() {
 
     private lateinit var tableView: TableView
     private var selectedColumn = -1
 
-    override fun layout(layout: CardGameLayout) {
-        super.layout(layout)
-
+    override fun layoutContent(layout: CardGameLayout, content: Table) {
         val items = MutableList(8) { createPerson() }
         val headers = listOf("ID", "Name", "Date of birth", "Sex")
 
@@ -86,12 +84,7 @@ class TableViewTest : ActionBarTest() {
         tableView.footerAdapter = footerAdapter
 
         // Do the layout
-        val content = Table().apply {
-            background = coreSkin.getDrawable("submenu-content-background")
-            add(tableView).grow().pad(20f, 100f, 20f, 100f)
-        }
-        layout.gameLayer.centerTable.add(content).grow()
-                .pad(0f, 20f, 0f, 20f)
+        content.add(tableView).grow().pad(20f, 100f, 20f, 100f)
         tableView.itemScrollView.setScrollFocus()
 
 

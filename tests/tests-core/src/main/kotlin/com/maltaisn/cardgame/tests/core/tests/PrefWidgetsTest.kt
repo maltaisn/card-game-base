@@ -18,7 +18,7 @@ package com.maltaisn.cardgame.tests.core.tests
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.maltaisn.cardgame.tests.core.ActionBarTest
+import com.maltaisn.cardgame.tests.core.SubmenuContentTest
 import com.maltaisn.cardgame.widget.*
 import ktx.log.info
 
@@ -27,11 +27,9 @@ import ktx.log.info
  * Test widgets used by preferences: [Switch], [Slider] and [SdfTextField].
  * Test checked state, enabled state, animations.
  */
-class PrefWidgetsTest : ActionBarTest() {
+class PrefWidgetsTest : SubmenuContentTest() {
 
-    override fun layout(layout: CardGameLayout) {
-        super.layout(layout)
-
+    override fun layoutContent(layout: CardGameLayout, content: Table) {
         // Text field
         val textField = SdfTextField(coreSkin, FontStyle().apply {
             fontSize = 24f
@@ -53,14 +51,9 @@ class PrefWidgetsTest : ActionBarTest() {
         }
 
         // Do the layout
-        val content = Table().apply {
-            background = coreSkin.getDrawable("submenu-content-background")
-            add(textField).width(300f).expand().row()
-            add(switch).size(300f, 100f).expand().row()
-            add(slider).width(500f).expand().row()
-        }
-        layout.gameLayer.centerTable.add(content).grow()
-                .pad(0f, 20f, 0f, 20f)
+        content.add(textField).width(300f).expand().row()
+        content.add(switch).size(300f, 100f).expand().row()
+        content.add(slider).width(500f).expand().row()
 
         // Action buttons
         addActionBtn("Check") {
