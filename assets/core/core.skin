@@ -181,10 +181,14 @@
       headerSeparator: separator
     }
   }
-  com.maltaisn.cardgame.widget.menu.table.TableView$TableViewStyle: {
+  com.maltaisn.cardgame.widget.menu.table.TableViewContent$TableContentGroupStyle: {
     default: {
       background: table-view-background
       foreground: table-view-foreground
+    }
+  }
+  com.maltaisn.cardgame.widget.menu.table.TableView$TableViewStyle: {
+    default: {
       separator: table-view-separator
       evenRowBackground: table-view-row-1
       oddRowBackground: table-view-row-2

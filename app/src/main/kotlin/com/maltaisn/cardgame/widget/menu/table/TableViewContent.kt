@@ -14,27 +14,37 @@
  * limitations under the License.
  */
 
-package com.maltaisn.cardgame.widget
+package com.maltaisn.cardgame.widget.menu.table
 
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
+import ktx.style.get
 
 
-open class ForegroundTable(skin: Skin? = null) : Table(skin) {
+/**
+ * A table for use in [TableView] with a background and a foreground to "clip" rounded corners.
+ */
+class TableViewContent(skin: Skin) : Table(skin) {
 
-    /**
-     * The foreground drawn on top of the children, or `null` for none.
-     */
-    var foreground: Drawable? = null
+    private val style: TableContentGroupStyle = skin.get()
+
+    init {
+        this.background = background
+    }
 
     override fun draw(batch: Batch, parentAlpha: Float) {
         super.draw(batch, parentAlpha)
 
         // Draw the foreground
         batch.setColor(color.r, color.g, color.b, parentAlpha * color.a)
-        foreground?.draw(batch, x, y, width, height)
+        style.foreground.draw(batch, x, y, width, height)
+    }
+
+    class TableContentGroupStyle {
+        lateinit var background: Drawable
+        lateinit var foreground: Drawable
     }
 
 }
