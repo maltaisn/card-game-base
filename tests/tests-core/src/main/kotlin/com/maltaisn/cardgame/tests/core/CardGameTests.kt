@@ -48,7 +48,8 @@ object CardGameTests {
             SolitaireTest::class.java,
             TableViewTest::class.java,
             TimeActionTest::class.java,
-            TricksTableTest::class.java)
+            TricksTableTest::class.java,
+            CardActorTest::class.java)
 
     val TESTS_MAP = TESTS.associateBy { it.simpleName }.toSortedMap()
 

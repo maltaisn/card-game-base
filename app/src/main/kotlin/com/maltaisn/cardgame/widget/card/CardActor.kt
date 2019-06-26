@@ -145,7 +145,7 @@ class CardActor(val coreStyle: GameLayer.CoreStyle,
         // Trigger long click if held long enough
         val heldDuration = (System.currentTimeMillis() - lastTouchDownTime) / 1000f
         if (longClickListener != null && lastTouchDownTime != 0L
-                && heldDuration > LONG_CLICK_DELAY && enabled && !animated) {
+                && heldDuration > LONG_CLICK_DELAY && enabled && !animated && !longClicked) {
             longClicked = true
             longClickListener!!(this@CardActor)
         }
