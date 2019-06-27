@@ -31,23 +31,47 @@ class ScoresTableTest : SubmenuContentTest() {
 
     override fun layoutContent(layout: CardGameLayout, content: Table) {
         val table = ScoresTable(coreSkin, 4)
+        var footerShown = false
+
+        fun updateHeaders(showDifficulty: Boolean) {
+            table.headers = listOf(
+                    Header("South", null),
+                    Header("East", if (showDifficulty) "Intermediate" else null),
+                    Header("North", if (showDifficulty) "Advanced" else null),
+                    Header("West", if (showDifficulty) "Expert" else null))
+        }
+
+        fun updateTotalScores() {
+            table.footerScores = if (footerShown) List(4) { column ->
+                Score(table.scores.map { it[column].value }.sum())
+            } else null
+        }
+
+        fun createScoresRow() = List(4) {
+            Score(Random.nextInt(-30, 30).toFloat())
+        }
+
         repeat(10) { table.scores += createScoresRow() }
         table.cellAdapter?.notifyChanged()
-        updateHeaders(table, true)
-        updateTotalScores(table)
+        updateHeaders(true)
+        updateTotalScores()
 
         // Do the layout
         content.add(table).grow().pad(20f, 100f, 20f, 100f)
         table.itemScrollView.setScrollFocus()
 
         // Action buttons
+        addToggleBtn("Footer shown") { _, shown ->
+            footerShown = shown
+            updateTotalScores()
+        }
         addActionBtn("Add scores row") {
             table.scores += createScoresRow()
             table.cellAdapter?.notifyChanged()
-            updateTotalScores(table)
+            updateTotalScores()
         }
         addToggleBtn("Show player difficulty", startState = true) { _, shown ->
-            updateHeaders(table, shown)
+            updateHeaders(shown)
         }
         addTwoStateActionBtn("Highlight random", "Highlight none") { _, unhighlight ->
             // Highlight random values or unhighlight all
@@ -75,24 +99,6 @@ class ScoresTableTest : SubmenuContentTest() {
         addToggleBtn("Debug") { _, debug ->
             table.setDebug(debug, true)
         }
-    }
-
-    private fun updateHeaders(table: ScoresTable, showDifficulty: Boolean) {
-        table.headers = listOf(
-                Header("South", null),
-                Header("East", if (showDifficulty) "Intermediate" else null),
-                Header("North", if (showDifficulty) "Advanced" else null),
-                Header("West", if (showDifficulty) "Expert" else null))
-    }
-
-    private fun updateTotalScores(table: ScoresTable) {
-        table.footerScores = table.scores.map { row ->
-            Score(row.sumBy { it.value.toInt() }.toFloat())
-        }
-    }
-
-    private fun createScoresRow() = List(4) {
-        Score(Random.nextInt(-30, 30).toFloat())
     }
 
 }

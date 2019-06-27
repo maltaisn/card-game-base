@@ -16,7 +16,6 @@
 
 package com.maltaisn.cardgame.tests.core.tests
 
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.prefs.GamePrefs
@@ -24,11 +23,11 @@ import com.maltaisn.cardgame.prefs.PrefEntry
 import com.maltaisn.cardgame.prefs.SwitchPref
 import com.maltaisn.cardgame.tests.core.CardGameTest
 import com.maltaisn.cardgame.widget.CardGameLayout
-import com.maltaisn.cardgame.widget.FontStyle
-import com.maltaisn.cardgame.widget.SdfLabel
 import com.maltaisn.cardgame.widget.menu.*
+import com.maltaisn.cardgame.widget.menu.table.ScoresTable
 import ktx.assets.load
 import ktx.log.info
+import kotlin.random.Random
 
 
 /**
@@ -50,23 +49,23 @@ class DefaultGameMenuTest : CardGameTest() {
 
         val menu = object : DefaultGameMenu(coreSkin) {
             override fun onContinueClicked() {
-                super.onContinueClicked()
                 info { "Continue clicked" }
             }
 
             override fun onStartGameClicked() {
-                super.onStartGameClicked()
                 info { "Start game clicked" }
             }
 
             override fun onInGameMenuItemClicked(item: MenuItem) {
-                super.onInGameMenuItemClicked(item)
                 info { "In-game item clicked: $item" }
             }
 
             override fun onExitGameClicked() {
-                super.onExitGameClicked()
                 info { "Exit game clicked" }
+            }
+
+            override fun onScoreboardClicked() {
+                info { "Scoreboard clicked" }
             }
         }
         layout.gameMenu = menu
@@ -97,7 +96,20 @@ class DefaultGameMenuTest : CardGameTest() {
         menu.inGameMenu.addItem(MenuItem(0, null, coreSkin.getDrawable(MenuIcons.CARDS), InGameMenu.ITEM_POS_LEFT))
 
         // Scoreboard
-        val scoresView = Container(SdfLabel(coreSkin, FontStyle(fontColor = Color.BLACK, fontSize = 30f), "TODO!"))
+        val scoresTable = ScoresTable(coreSkin, 4)
+        scoresTable.headers = listOf(
+                ScoresTable.Header("South", null),
+                ScoresTable.Header("East", null),
+                ScoresTable.Header("North", null),
+                ScoresTable.Header("West", null))
+        repeat(10) {
+            scoresTable.scores += List(4) { ScoresTable.Score(Random.nextInt(30).toFloat()) }
+        }
+        scoresTable.footerScores = List(4) { column ->
+            ScoresTable.Score(scoresTable.scores.map { it[column].value }.sum())
+        }
+
+        val scoresView = Container(scoresTable).pad(30f, 15f, 30f, 15f).fill()
         val scoresPage = PagedSubMenu.Page(1, "Scores", coreSkin.getDrawable(MenuIcons.LIST), SubMenu.ITEM_POS_TOP)
         scoresPage.content = scoresView
         scoresPage.checked = true

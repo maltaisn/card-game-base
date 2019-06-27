@@ -175,6 +175,7 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
             itemClickListener = {
                 when (it.id) {
                     ITEM_ID_CONTINUE -> {
+                        showMenu(inGameMenu)
                         onContinueClicked()
                     }
                     ITEM_ID_NEW_GAME -> showMenu(newGameMenu)
@@ -213,6 +214,8 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
 
             itemClickListener = {
                 if (it === startGameItem) {
+                    showMenu(inGameMenu, false)
+                    newGameOptions?.save()
                     onStartGameClicked()
                 }
             }
@@ -252,8 +255,14 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
 
             itemClickListener = {
                 when (it.id) {
-                    ITEM_ID_BACK -> onExitGameClicked()
-                    ITEM_ID_SCOREBOARD -> showMenu(scoreboardMenu)
+                    ITEM_ID_BACK -> {
+                        goBack()
+                        onExitGameClicked()
+                    }
+                    ITEM_ID_SCOREBOARD -> {
+                        showMenu(scoreboardMenu)
+                        onScoreboardOpened()
+                    }
                     else -> onInGameMenuItemClicked(it)
                 }
             }
@@ -261,6 +270,10 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
 
         // Scoreboard
         scoreboardMenu.title = bundle["scoreboard"]
+        scoreboardMenu.backArrowClickListener = {
+            goBack()
+            onScoreboardClosed()
+        }
 
         // Show main menu at first
         showMenu(mainMenu)
@@ -308,20 +321,19 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
 
 
     /** Called when the continue item in main menu is clicked. */
-    open fun onContinueClicked() {
-        showMenu(inGameMenu)
-    }
+    open fun onContinueClicked() = Unit
 
     /** Called when the start game item of the new game submenu is clicked. */
-    open fun onStartGameClicked() {
-        showMenu(inGameMenu, false)
-        newGameOptions?.save()
-    }
+    open fun onStartGameClicked() = Unit
 
     /** Called when the back button is clicked in the in-game menu. */
-    open fun onExitGameClicked() {
-        goBack()
-    }
+    open fun onExitGameClicked() = Unit
+
+    /** Called when the scoreboard is opened. */
+    open fun onScoreboardOpened() = Unit
+
+    /** Called when the scoreboard is closed. */
+    open fun onScoreboardClosed() = Unit
 
     /** Called when an item is clicked in the in game menu, except back and scoreboard items. */
     open fun onInGameMenuItemClicked(item: MenuItem) = Unit

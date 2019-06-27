@@ -41,6 +41,7 @@ class ScoresTable(skin: Skin, playerCount: Int) : TableView(skin, List(playerCou
      */
     var headers = List(playerCount) { Header("", null) }
         set(value) {
+            require(value.size == columnCount) { "Wrong number of headers" }
             field = value
             headerAdapter?.notifyChanged()
         }
@@ -54,10 +55,13 @@ class ScoresTable(skin: Skin, playerCount: Int) : TableView(skin, List(playerCou
     /**
      * The scores shown in the footer for each column.
      * The footer adapter must be updated when changed.
+     * Can be `null` for no footer.
      */
-    var footerScores = List(playerCount) { Score(0f) }
+    var footerScores: List<Score>? = null
         set(value) {
+            require(value == null || value.size == columnCount) { "Wrong number of footers" }
             field = value
+            footerAdapter = if (value == null) null else scoreFooterAdapter
             footerAdapter?.notifyChanged()
         }
 
@@ -71,6 +75,15 @@ class ScoresTable(skin: Skin, playerCount: Int) : TableView(skin, List(playerCou
             footerAdapter?.notifyChanged()
         }
 
+    private val scoreFooterAdapter = object : FooterAdapter() {
+        override fun createViewHolder(column: Int) = ScoreViewHolder()
+
+        override fun bindViewHolder(viewHolder: ViewHolder, column: Int) {
+            if (footerScores != null) {
+                (viewHolder as ScoreViewHolder).bind(footerScores!![column])
+            }
+        }
+    }
 
     init {
         alternateColors = true
@@ -93,14 +106,6 @@ class ScoresTable(skin: Skin, playerCount: Int) : TableView(skin, List(playerCou
 
             override fun bindViewHolder(viewHolder: ViewHolder, column: Int) {
                 (viewHolder as HeaderViewHolder).bind(headers[column])
-            }
-        }
-
-        footerAdapter = object : FooterAdapter() {
-            override fun createViewHolder(column: Int) = ScoreViewHolder()
-
-            override fun bindViewHolder(viewHolder: ViewHolder, column: Int) {
-                (viewHolder as ScoreViewHolder).bind(footerScores[column])
             }
         }
     }

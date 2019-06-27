@@ -32,6 +32,7 @@ open class TableView(skin: Skin, columnWidths: List<Float>) : Table(skin) {
     /** The cell adapter. If `null`, no rows will be displayed. */
     var cellAdapter: CellAdapter? = null
         set(value) {
+            if (field === value) return
             field = value
             value?.let {
                 it.tableView = this
@@ -42,6 +43,7 @@ open class TableView(skin: Skin, columnWidths: List<Float>) : Table(skin) {
     /** The header adapter. If `null`, no header will be displayed. */
     var headerAdapter: HeaderAdapter? = null
         set(value) {
+            if (field === value) return
             field = value
             value?.let {
                 it.tableView = this
@@ -53,6 +55,7 @@ open class TableView(skin: Skin, columnWidths: List<Float>) : Table(skin) {
     /** The footer adapter. If `null`, no footer will be displayed. */
     var footerAdapter: FooterAdapter? = null
         set(value) {
+            if (field === value) return
             field = value
             value?.let {
                 it.tableView = this
