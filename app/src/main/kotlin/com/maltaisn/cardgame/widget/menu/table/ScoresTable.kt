@@ -23,7 +23,6 @@ import com.maltaisn.cardgame.defaultSize
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.SdfLabel
 import ktx.style.get
-import java.text.NumberFormat
 
 
 /**
@@ -62,16 +61,6 @@ class ScoresTable(skin: Skin, playerCount: Int) : TableView(skin, List(playerCou
             require(value == null || value.size == columnCount) { "Wrong number of footers" }
             field = value
             footerAdapter = if (value == null) null else scoreFooterAdapter
-            footerAdapter?.notifyChanged()
-        }
-
-    /**
-     * The number format used to format the scores.
-     */
-    var numberFormat = NumberFormat.getNumberInstance()
-        set(value) {
-            field = value
-            cellAdapter?.notifyChanged()
             footerAdapter?.notifyChanged()
         }
 
@@ -157,7 +146,7 @@ class ScoresTable(skin: Skin, playerCount: Int) : TableView(skin, List(playerCou
                 Score.Highlight.NEGATIVE -> style.scoreHighlightNegative
             }
 
-            scoreLabel.setText(numberFormat.format(score.value))
+            scoreLabel.setText(score.value)
             scoreLabel.fontStyle = if (score.highlight == Score.Highlight.NONE) {
                 style.scoreFontStyle
             } else {
@@ -169,7 +158,7 @@ class ScoresTable(skin: Skin, playerCount: Int) : TableView(skin, List(playerCou
 
     class Header(val title: String, val subtitle: String?)
 
-    class Score(val value: Float, val highlight: Highlight = Highlight.NONE) {
+    class Score(val value: String, val highlight: Highlight = Highlight.NONE) {
 
         enum class Highlight {
             NONE,

@@ -107,10 +107,10 @@ class DefaultGameMenuTest : CardGameTest() {
                 ScoresTable.Header("North", null),
                 ScoresTable.Header("West", null))
         repeat(10) {
-            scoresTable.scores += List(4) { ScoresTable.Score(Random.nextInt(30).toFloat()) }
+            scoresTable.scores += List(4) { ScoresTable.Score(Random.nextInt(30).toString()) }
         }
         scoresTable.footerScores = List(4) { column ->
-            ScoresTable.Score(scoresTable.scores.map { it[column].value }.sum())
+            ScoresTable.Score(scoresTable.scores.map { it[column].value.toInt() }.sum().toString())
         }
 
         val scoresView = Container(scoresTable).pad(30f, 15f, 30f, 15f).fill()

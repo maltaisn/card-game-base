@@ -23,7 +23,6 @@ import com.maltaisn.cardgame.widget.menu.table.ScoresTable
 import com.maltaisn.cardgame.widget.menu.table.ScoresTable.Header
 import com.maltaisn.cardgame.widget.menu.table.ScoresTable.Score
 import ktx.actors.setScrollFocus
-import java.text.NumberFormat
 import kotlin.random.Random
 
 
@@ -43,12 +42,12 @@ class ScoresTableTest : SubmenuContentTest() {
 
         fun updateTotalScores() {
             table.footerScores = if (footerShown) List(4) { column ->
-                Score(table.scores.map { it[column].value }.sum())
+                Score(table.scores.map { it[column].value.toInt() }.sum().toString())
             } else null
         }
 
         fun createScoresRow() = List(4) {
-            Score(Random.nextInt(-30, 30).toFloat())
+            Score(Random.nextInt(-30, 30).toString())
         }
 
         repeat(10) { table.scores += createScoresRow() }
@@ -88,13 +87,6 @@ class ScoresTableTest : SubmenuContentTest() {
             table.scores.clear()
             table.scores += scores
             table.cellAdapter?.notifyChanged()
-        }
-        addTwoStateActionBtn("Currency format", "Normal format") { _, isNormal ->
-            table.numberFormat = if (isNormal) {
-                NumberFormat.getNumberInstance()
-            } else {
-                NumberFormat.getCurrencyInstance()
-            }
         }
         addToggleBtn("Debug") { _, debug ->
             table.setDebug(debug, true)
