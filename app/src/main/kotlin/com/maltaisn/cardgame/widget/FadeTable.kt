@@ -17,6 +17,7 @@
 package com.maltaisn.cardgame.widget
 
 import com.badlogic.gdx.math.Interpolation
+import com.badlogic.gdx.scenes.scene2d.ui.Table
 import ktx.actors.alpha
 
 
@@ -53,7 +54,7 @@ class FadeTable(val duration: Float = DEFAULT_FADE_DURATION) : FboTable() {
         }
 
     init {
-        _isVisible = false
+        isVisible = false
     }
 
     override fun clearActions() {

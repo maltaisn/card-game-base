@@ -34,12 +34,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField
 import com.badlogic.gdx.utils.I18NBundle
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.gmail.blueboxware.libgdxplugin.annotations.GDXAssets
-import com.maltaisn.cardgame.game.CardGame
 import com.maltaisn.cardgame.game.PCard
 import com.maltaisn.cardgame.markdown.MdLoader
 import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.GamePrefsLoader
-import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.SdfShader
 import ktx.assets.getAsset
 import ktx.assets.load
@@ -53,18 +51,6 @@ abstract class CardGameScreen : Stage(ExtendViewport(960f, 540f)), Screen {
     /** Skin containing core UI assets. */
     @GDXAssets(skinFiles = ["assets/core/core.skin"])
     val coreSkin: Skin
-
-    var game: CardGame<*>? = null
-
-    /** The game layout. */
-    var gameLayout: CardGameLayout? = null
-        set(value) {
-            check(field == null) { "Game layout can only be set once." }
-            if (value != null) {
-                field = value
-                addActor(value)
-            }
-        }
 
     /** List of game prefs to save on pause. */
     val prefs = mutableListOf<GamePrefs>()
@@ -164,20 +150,11 @@ abstract class CardGameScreen : Stage(ExtendViewport(960f, 540f)), Screen {
         }
     }
 
-    override fun resume() {
-
-    }
+    override fun resume() = Unit
 
     override fun resize(width: Int, height: Int) {
         viewport.update(width, height, true)
         updateOffscreenFrameBuffer()
-    }
-
-    /** Hide menu, initialize game and start it. */
-    protected fun initGame(game: CardGame<*>) {
-        this.game = game
-
-        gameLayout?.initGame(game)
     }
 
     override fun keyDown(keyCode: Int): Boolean {

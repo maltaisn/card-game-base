@@ -17,17 +17,12 @@
 package com.maltaisn.cardgame.widget
 
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup
 import com.badlogic.gdx.scenes.scene2d.utils.Layout
 import com.maltaisn.cardgame.CoreRes
-import com.maltaisn.cardgame.game.CardGame
-import com.maltaisn.cardgame.game.CardGameEvent
-import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.PrefEntry
 import com.maltaisn.cardgame.widget.card.CardAnimationLayer
-import com.maltaisn.cardgame.widget.menu.GameMenu
 
 
 /**
@@ -37,11 +32,7 @@ import com.maltaisn.cardgame.widget.menu.GameMenu
  * The game layout manages the game actors (card containers, popups, markers, etc)
  * and updates them after a game event.
  */
-abstract class CardGameLayout(assetManager: AssetManager,
-                              val settings: GamePrefs) :
-        WidgetGroup(), PrefEntry.PrefListener {
-
-    protected var game: CardGame<*>? = null
+open class CardGameLayout(assetManager: AssetManager) : WidgetGroup(), PrefEntry.PrefListener {
 
     protected val coreSkin: Skin = assetManager[CoreRes.CORE_SKIN]
 
@@ -53,16 +44,6 @@ abstract class CardGameLayout(assetManager: AssetManager,
 
     /** Group where popups are shown. */
     val popupGroup: PopupGroup
-
-    /** The game menu. */
-    var gameMenu: GameMenu? = null
-        set(value) {
-            check(field == null) { "Game menu can only be set once." }
-            if (value != null) {
-                field = value
-                addActor(value)
-            }
-        }
 
 
     init {
@@ -76,19 +57,6 @@ abstract class CardGameLayout(assetManager: AssetManager,
         addActor(gameLayer)
         addActor(cardAnimationLayer)
         addActor(popupGroup)
-    }
-
-    override fun setStage(stage: Stage?) {
-        super.setStage(stage)
-        if (stage == null) {
-            settings.removeListener(this)
-
-            // Dispose game
-            game?.dispose()
-            game = null
-        } else {
-            settings.addListener(this)
-        }
     }
 
     override fun layout() {
@@ -106,21 +74,5 @@ abstract class CardGameLayout(assetManager: AssetManager,
             }
         }
     }
-
-    /**
-     * Initialize layout for a [game]. The game could be at any state.
-     * When this is called, the layout is always hidden.
-     */
-    open fun initGame(game: CardGame<*>) {
-        this.game?.dispose()
-        this.game = game
-        game.eventListener = { doEvent(it) }
-    }
-
-    /**
-     * Called when a game [event] happens.
-     * Layout should be updated accordingly.
-     */
-    abstract fun doEvent(event: CardGameEvent)
 
 }

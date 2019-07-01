@@ -64,11 +64,15 @@ class DefaultGameMenuTest : CardGameTest() {
                 info { "Exit game clicked" }
             }
 
-            override fun onScoreboardClicked() {
-                info { "Scoreboard clicked" }
+            override fun onScoreboardOpened() {
+                info { "Scoreboard opened" }
+            }
+
+            override fun onScoreboardClosed() {
+                info { "Scoreboard closed" }
             }
         }
-        layout.gameMenu = menu
+        layout.addActor(menu)
 
         // New game
         val newGamePrefs: GamePrefs = assetManager.get(PREFS_NEW_GAME)

@@ -20,9 +20,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.gmail.blueboxware.libgdxplugin.annotations.GDXAssets
 import com.maltaisn.cardgame.CardGameScreen
 import com.maltaisn.cardgame.CoreRes
-import com.maltaisn.cardgame.game.CardGame
-import com.maltaisn.cardgame.game.CardGameEvent
-import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.widget.CardGameLayout
 import ktx.assets.getAsset
 
@@ -42,16 +39,9 @@ abstract class CardGameTest : CardGameScreen() {
         super.start()
         cardSkin = assetManager.getAsset(CoreRes.PCARD_SKIN)
 
-        gameLayout = object : CardGameLayout(assetManager, GamePrefs(null)) {
-            override fun initGame(game: CardGame<*>) {
-                throw UnsupportedOperationException()
-            }
-
-            override fun doEvent(event: CardGameEvent) {
-                throw UnsupportedOperationException()
-            }
-        }
-        layout(gameLayout!!)
+        val gameLayout = CardGameLayout(assetManager)
+        addActor(gameLayout)
+        layout(gameLayout)
     }
 
     open fun layout(layout: CardGameLayout) = Unit

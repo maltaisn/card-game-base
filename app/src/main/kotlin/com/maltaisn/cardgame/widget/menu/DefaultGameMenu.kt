@@ -260,8 +260,7 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
                         onExitGameClicked()
                     }
                     ITEM_ID_SCOREBOARD -> {
-                        showMenu(scoreboardMenu)
-                        onScoreboardOpened()
+                        showScoreboard()
                     }
                     else -> onInGameMenuItemClicked(it)
                 }
@@ -276,7 +275,7 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
         }
 
         // Show main menu at first
-        showMenu(mainMenu)
+        showMainMenu()
     }
 
     /**
@@ -319,6 +318,14 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
         return view
     }
 
+    fun showScoreboard() {
+        showMenu(scoreboardMenu)
+        onScoreboardOpened()
+    }
+
+    fun showMainMenu() {
+        showMenu(mainMenu)
+    }
 
     /** Called when the continue item in main menu is clicked. */
     open fun onContinueClicked() = Unit
