@@ -23,6 +23,8 @@ import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
+import com.maltaisn.cardgame.widget.action.ActionDelegate
+import com.maltaisn.cardgame.widget.action.TimeAction
 import ktx.actors.alpha
 import ktx.math.vec2
 import ktx.style.get
@@ -54,12 +56,7 @@ class Popup(skin: Skin) : FboTable() {
     private var translateX = 0f
     private var translateY = 0f
 
-    private var transitionAction: TransitionAction? = null
-        set(value) {
-            if (field != null) removeAction(field)
-            field = value
-            if (value != null) addAction(value)
-        }
+    private var transitionAction by ActionDelegate<TransitionAction>()
 
     init {
         isVisible = false

@@ -22,7 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.game.Card
 import com.maltaisn.cardgame.widget.GameLayer
-import com.maltaisn.cardgame.widget.TimeAction
+import com.maltaisn.cardgame.widget.action.TimeAction
 import ktx.math.vec2
 import kotlin.math.absoluteValue
 import kotlin.math.max

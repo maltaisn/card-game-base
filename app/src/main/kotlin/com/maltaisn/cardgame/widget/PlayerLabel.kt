@@ -22,6 +22,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Scaling
+import com.maltaisn.cardgame.widget.action.ActionDelegate
+import com.maltaisn.cardgame.widget.action.TimeAction
 import ktx.actors.alpha
 import ktx.style.get
 import kotlin.math.abs
@@ -54,12 +56,7 @@ class PlayerLabel(skin: Skin, name: CharSequence? = null) : Table() {
     private val nameLabel = SdfLabel(skin, style.nameFontStyle, name)
     private val scoreLabel = SdfLabel(skin, style.scoreFontStyle)
 
-    private var scoreTransitionAction: TimeAction? = null
-        set(value) {
-            if (field != null) removeAction(field)
-            field = value
-            if (value != null) addAction(value)
-        }
+    private var scoreTransitionAction by ActionDelegate<TimeAction>()
 
     init {
         val arrowImage = Image(style.arrowDrawable, Scaling.fit)

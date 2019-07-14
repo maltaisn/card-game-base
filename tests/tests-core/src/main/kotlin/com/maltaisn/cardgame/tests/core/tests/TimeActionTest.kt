@@ -20,7 +20,7 @@ import com.badlogic.gdx.math.Interpolation
 import com.maltaisn.cardgame.game.PCard
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.widget.CardGameLayout
-import com.maltaisn.cardgame.widget.TimeAction
+import com.maltaisn.cardgame.widget.action.TimeAction
 import com.maltaisn.cardgame.widget.card.CardActor
 import ktx.actors.alpha
 import ktx.log.info

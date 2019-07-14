@@ -20,7 +20,7 @@ import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
-import com.maltaisn.cardgame.widget.TimeAction
+import com.maltaisn.cardgame.widget.action.TimeAction
 import ktx.actors.alpha
 import ktx.actors.onClick
 import ktx.style.get

@@ -22,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
+import com.maltaisn.cardgame.widget.action.ActionDelegate
 import ktx.actors.onKeyDown
 import ktx.actors.onKeyboardFocusEvent
 import ktx.actors.setKeyboardFocus
@@ -51,12 +52,7 @@ open class GameMenu(skin: Skin) : Stack() {
     val drawer = MenuDrawer(skin)
 
 
-    private var transitionAction: Action? = null
-        set(value) {
-            if (field != null) removeAction(field)
-            field = value
-            if (value != null) addAction(value)
-        }
+    private var transitionAction by ActionDelegate<Action>()
 
 
     init {

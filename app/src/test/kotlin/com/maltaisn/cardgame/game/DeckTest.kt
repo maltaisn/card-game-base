@@ -16,7 +16,7 @@
 
 package com.maltaisn.cardgame.game
 
-import junit.framework.Assert.assertEquals
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 

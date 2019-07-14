@@ -24,6 +24,8 @@ import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.maltaisn.cardgame.widget.action.ActionDelegate
+import com.maltaisn.cardgame.widget.action.TimeAction
 
 
 abstract class SelectableWidget(skin: Skin? = null) : Table(skin) {
@@ -53,21 +55,11 @@ abstract class SelectableWidget(skin: Skin? = null) : Table(skin) {
 
     protected var hovered = false
     protected open var hoverAlpha = 0f
-    protected var hoverAction: HoverAction? = null
-        set(value) {
-            if (field != null) removeAction(field)
-            field = value
-            if (value != null) addAction(value)
-        }
+    protected var hoverAction by ActionDelegate<HoverAction>()
 
     protected var pressed = false
     protected open var pressAlpha = 0f
-    protected var pressAction: PressAction? = null
-        set(value) {
-            if (field != null) removeAction(field)
-            field = value
-            if (value != null) addAction(value)
-        }
+    protected var pressAction by ActionDelegate<PressAction>()
 
     init {
         touchable = Touchable.enabled

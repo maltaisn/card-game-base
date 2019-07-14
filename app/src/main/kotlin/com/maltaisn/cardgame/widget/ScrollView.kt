@@ -19,6 +19,7 @@ package com.maltaisn.cardgame.widget
 import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
+import com.maltaisn.cardgame.widget.action.ActionDelegate
 
 
 /**
@@ -62,12 +63,7 @@ class ScrollView(actor: Actor? = null, style: ScrollPaneStyle? = null) :
             }
         }
 
-    private var scrollListenerAction: Action? = null
-        set(value) {
-            if (field != null) removeAction(field)
-            field = value
-            if (value != null) addAction(value)
-        }
+    private var scrollListenerAction by ActionDelegate<Action>()
 
     init {
         setScrollingDisabled(true, false)

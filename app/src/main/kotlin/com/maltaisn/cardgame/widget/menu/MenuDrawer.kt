@@ -28,10 +28,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Scaling
 import com.maltaisn.cardgame.defaultSize
-import com.maltaisn.cardgame.widget.FontStyle
-import com.maltaisn.cardgame.widget.ScrollView
-import com.maltaisn.cardgame.widget.SdfLabel
-import com.maltaisn.cardgame.widget.TimeAction
+import com.maltaisn.cardgame.widget.*
+import com.maltaisn.cardgame.widget.action.ActionDelegate
+import com.maltaisn.cardgame.widget.action.TimeAction
 import ktx.actors.onClick
 import ktx.style.get
 
@@ -113,12 +112,7 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
 
     private var scrollFocusBefore: Actor? = null
 
-    private var transitionAction: TransitionAction? = null
-        set(value) {
-            if (field != null) removeAction(field)
-            field = value
-            if (value != null) addAction(value)
-        }
+    private var transitionAction by ActionDelegate<TransitionAction>()
 
     private var backgroundAlpha = 1f
 

@@ -22,7 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Cell
 import com.badlogic.gdx.scenes.scene2d.ui.Value
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
-import com.maltaisn.cardgame.widget.TimeAction
+import com.maltaisn.cardgame.widget.action.TimeAction
 
 
 /**

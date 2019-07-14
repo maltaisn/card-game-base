@@ -24,8 +24,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.SdfLabel
-import com.maltaisn.cardgame.widget.TimeAction
-import com.maltaisn.cardgame.widget.applyBounded
+import com.maltaisn.cardgame.widget.action.TimeAction
+import com.maltaisn.cardgame.widget.action.applyBounded
 import ktx.actors.alpha
 import ktx.actors.onClick
 import ktx.style.get

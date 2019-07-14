@@ -25,9 +25,10 @@ import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.game.Card
+import com.maltaisn.cardgame.widget.action.ActionDelegate
 import com.maltaisn.cardgame.widget.FboWidgetGroup
 import com.maltaisn.cardgame.widget.GameLayer
-import com.maltaisn.cardgame.widget.TimeAction
+import com.maltaisn.cardgame.widget.action.TimeAction
 import ktx.actors.alpha
 import ktx.collections.isNotEmpty
 import ktx.math.minus
@@ -154,12 +155,7 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
 
     private val translate = vec2()
 
-    private var transitionAction: TimeAction? = null
-        set(value) {
-            if (field != null) removeAction(field)
-            field = value
-            if (value != null) addAction(value)
-        }
+    private var transitionAction by ActionDelegate<TimeAction>()
 
 
     constructor(coreSkin: Skin, cardSkin: Skin) :
@@ -415,8 +411,6 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
         return vec2(offsetX, offsetY)
     }
 
-    override fun toString() = "[cards: $cards, visibility: ${visibility.toString().toLowerCase()}}]"
-
 
     ////////// TRANSITIONS //////////
     /**
@@ -606,6 +600,9 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
             }
         }
     }
+
+
+    override fun toString() = "[cards: $cards, visibility: ${visibility.toString().toLowerCase()}]"
 
 
     companion object {

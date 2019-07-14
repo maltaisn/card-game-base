@@ -18,9 +18,10 @@ package com.maltaisn.cardgame.widget.menu
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.maltaisn.cardgame.post
+import com.maltaisn.cardgame.widget.action.ActionDelegate
 import com.maltaisn.cardgame.widget.FboTable
 import com.maltaisn.cardgame.widget.FontStyle
-import com.maltaisn.cardgame.widget.TimeAction
+import com.maltaisn.cardgame.widget.action.TimeAction
 
 
 /**
@@ -46,12 +47,7 @@ abstract class MenuTable(skin: Skin) : FboTable(skin) {
      */
     open var shown = false
 
-    internal open var transitionAction: TimeAction? = null
-        set(value) {
-            if (field != null) removeAction(field)
-            field = value
-            if (value != null) addAction(value)
-        }
+    internal open var transitionAction by ActionDelegate<TimeAction>()
 
     /** The listener called when a menu item is clicked, `null` for none. */
     open var itemClickListener: ((item: MenuItem) -> Unit)? = null

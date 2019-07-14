@@ -18,6 +18,8 @@ package com.maltaisn.cardgame.widget
 
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.maltaisn.cardgame.widget.action.ActionDelegate
+import com.maltaisn.cardgame.widget.action.TimeAction
 import ktx.actors.alpha
 
 
@@ -46,12 +48,7 @@ class FadeTable(val duration: Float = DEFAULT_FADE_DURATION) : FboTable() {
             super.setVisible(value)
         }
 
-    private var transitionAction: TimeAction? = null
-        set(value) {
-            if (field != null) removeAction(field)
-            field = value
-            if (value != null) addAction(value)
-        }
+    private var transitionAction by ActionDelegate<TimeAction>()
 
     init {
         isVisible = false

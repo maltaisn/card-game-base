@@ -18,6 +18,8 @@ package com.maltaisn.cardgame.widget
 
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.maltaisn.cardgame.widget.action.ActionDelegate
+import com.maltaisn.cardgame.widget.action.TimeAction
 
 
 abstract class CheckableWidget(skin: Skin? = null) : SelectableWidget(skin) {
@@ -42,12 +44,7 @@ abstract class CheckableWidget(skin: Skin? = null) : SelectableWidget(skin) {
     var checkListener: ((Boolean) -> Unit)? = null
 
     protected open var checkAlpha = 0f
-    protected var checkAction: CheckAction? = null
-        set(value) {
-            if (field != null) removeAction(field)
-            field = value
-            if (value != null) addAction(value)
-        }
+    protected var checkAction by ActionDelegate<CheckAction>()
 
 
     override fun clearActions() {
