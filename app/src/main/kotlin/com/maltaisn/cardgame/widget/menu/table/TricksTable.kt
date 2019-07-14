@@ -48,14 +48,18 @@ class TricksTable(coreSkin: Skin, private val cardSkin: Skin, playerCount: Int) 
         }
 
     /**
-     * The list of tricks for each column.
-     * The cell adapter must be updated when changed.
+     * The lists of trick cards in each row.
      */
-    val cards = mutableListOf<List<TrickCard>>()
+    var cards = emptyList<List<TrickCard>>()
+        set(value) {
+            field = value
+            cellAdapter?.notifyChanged()
+        }
 
 
     init {
         alternateColors = false
+        itemGroup.pad(5f, 0f, 5f, 0f)
 
         cellAdapter = object : CellAdapter() {
 
@@ -80,23 +84,12 @@ class TricksTable(coreSkin: Skin, private val cardSkin: Skin, playerCount: Int) 
     }
 
 
-    /**
-     * Append a new [trick] to the list.
-     * @param checkedPos The checked position, eg: the player who took the trick. Use `-1` for none.
-     */
-    fun addTrick(trick: List<Card>, checkedPos: Int) {
-        require(trick.size == columnCount) { "Trick size must match column count." }
-        cards += List(columnCount) { TrickCard(trick[it], it == checkedPos) }
-        cellAdapter?.notifyChanged()
-    }
-
-
     private inner class HeaderViewHolder(skin: Skin) : ViewHolder() {
 
         private val titleLabel = SdfLabel(skin, style.headerFontStyle)
 
         init {
-            table.add(titleLabel).growX().pad(10f).row()
+            table.add(titleLabel).growX().pad(10f)
             titleLabel.setWrap(true)
             titleLabel.setAlignment(Align.center)
         }

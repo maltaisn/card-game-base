@@ -31,10 +31,15 @@ class TricksTableTest : SubmenuContentTest() {
     override fun layoutContent(layout: CardGameLayout, content: Table) {
         val table = TricksTable(coreSkin, cardSkin, 4)
         table.headers = listOf("South", "East", "North", "West")
-        table.cellAdapter?.notifyChanged()
+
+        val cards = mutableListOf<List<TricksTable.TrickCard>>()
+        table.cards = cards
 
         fun addTrick() {
-            table.addTrick(PCard.fullDecks(shuffled = true).drawBottom(4), Random.nextInt(4))
+            val trick = PCard.fullDecks(shuffled = true).drawBottom(4)
+            val checkedPos = Random.nextInt(trick.size)
+            cards += List(trick.size) { TricksTable.TrickCard(trick[it], it == checkedPos) }
+            table.cellAdapter?.notifyChanged()
         }
 
         repeat(5) { addTrick() }

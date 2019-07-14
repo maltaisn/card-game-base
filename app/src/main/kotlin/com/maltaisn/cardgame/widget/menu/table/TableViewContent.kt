@@ -34,11 +34,11 @@ class TableViewContent(skin: Skin) : Table(skin) {
         this.background = style.background
     }
 
-    override fun draw(batch: Batch, parentAlpha: Float) {
-        super.draw(batch, parentAlpha)
+    override fun drawChildren(batch: Batch, parentAlpha: Float) {
+        super.drawChildren(batch, parentAlpha)
 
         // Draw the foreground
-        batch.setColor(color.r, color.g, color.b, parentAlpha * color.a)
+        batch.setColor(color.r, color.g, color.b, color.a * parentAlpha)
         style.foreground.draw(batch, x, y, width, height)
     }
 
