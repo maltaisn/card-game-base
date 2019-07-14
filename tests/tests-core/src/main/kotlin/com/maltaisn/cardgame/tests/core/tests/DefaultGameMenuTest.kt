@@ -16,6 +16,7 @@
 
 package com.maltaisn.cardgame.tests.core.tests
 
+import com.badlogic.gdx.Input
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.prefs.GamePrefs
@@ -25,6 +26,7 @@ import com.maltaisn.cardgame.tests.core.CardGameTest
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.menu.*
 import com.maltaisn.cardgame.widget.menu.table.ScoresTable
+import ktx.actors.onKeyDown
 import ktx.assets.load
 import ktx.log.info
 import kotlin.random.Random
@@ -133,6 +135,13 @@ class DefaultGameMenuTest : CardGameTest() {
             }
         }
         isDebugAll = debugPref.value
+
+        // Back key listener
+        layout.onKeyDown(true) {
+            if (it == Input.Keys.BACK || it == Input.Keys.ESCAPE) {
+                menu.goBack()
+            }
+        }
     }
 
     override fun pause() {

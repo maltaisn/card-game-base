@@ -17,14 +17,11 @@
 package com.maltaisn.cardgame.widget.menu
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input
 import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.maltaisn.cardgame.widget.action.ActionDelegate
-import ktx.actors.onKeyDown
-import ktx.actors.onKeyboardFocusEvent
 import ktx.actors.setKeyboardFocus
 import ktx.actors.then
 import java.util.*
@@ -46,9 +43,7 @@ open class GameMenu(skin: Skin) : Stack() {
     /** The menu that will be shown after animation. */
     private var nextShownMenu: MenuTable? = null
 
-    /**
-     * The menu drawer. The drawer back button text needs to be set.
-     */
+    /** The menu drawer. The drawer back button text needs to be set. */
     val drawer = MenuDrawer(skin)
 
 
@@ -56,19 +51,6 @@ open class GameMenu(skin: Skin) : Stack() {
 
 
     init {
-        onKeyDown(true) {
-            if (it == Input.Keys.BACK || it == Input.Keys.ESCAPE) {
-                goBack()
-            }
-        }
-        onKeyboardFocusEvent { event, _ ->
-            if (!event.isFocused && event.relatedActor == null) {
-                // When the keyboard focus is set to null and menu is shown, set it to the menu
-                event.cancel()
-                setKeyboardFocus(true)
-            }
-        }
-
         add(drawer)
     }
 

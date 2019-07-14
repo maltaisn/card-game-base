@@ -21,6 +21,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup
 import com.badlogic.gdx.scenes.scene2d.utils.Layout
 import com.maltaisn.cardgame.prefs.PrefEntry
 import com.maltaisn.cardgame.widget.card.CardAnimationLayer
+import ktx.actors.onKeyboardFocusEvent
+import ktx.actors.setKeyboardFocus
 
 
 /**
@@ -53,6 +55,14 @@ open class CardGameLayout(val coreSkin: Skin) : WidgetGroup(), PrefEntry.PrefLis
         addActor(gameLayer)
         addActor(cardAnimationLayer)
         addActor(popupGroup)
+
+        onKeyboardFocusEvent { event, _ ->
+            if (!event.isFocused && event.relatedActor == null) {
+                // When the keyboard focus is set to null, set it to the layout
+                event.cancel()
+                setKeyboardFocus(true)
+            }
+        }
     }
 
     override fun layout() {

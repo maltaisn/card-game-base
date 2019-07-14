@@ -17,7 +17,6 @@
 package com.maltaisn.cardgame
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.SkinLoader
@@ -155,16 +154,6 @@ abstract class CardGameScreen : Stage(ExtendViewport(960f, 540f)), Screen {
     override fun resize(width: Int, height: Int) {
         viewport.update(width, height, true)
         updateOffscreenFrameBuffer()
-    }
-
-    override fun keyDown(keyCode: Int): Boolean {
-        val handled = super.keyDown(keyCode)
-        if (!handled && keyCode == Input.Keys.BACK) {
-            // Close app on back key press if main menu is shown
-            Gdx.app.exit()
-            return true
-        }
-        return false
     }
 
     override fun dispose() {
