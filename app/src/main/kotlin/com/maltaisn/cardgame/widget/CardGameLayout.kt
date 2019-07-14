@@ -16,11 +16,9 @@
 
 package com.maltaisn.cardgame.widget
 
-import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup
 import com.badlogic.gdx.scenes.scene2d.utils.Layout
-import com.maltaisn.cardgame.CoreRes
 import com.maltaisn.cardgame.prefs.PrefEntry
 import com.maltaisn.cardgame.widget.card.CardAnimationLayer
 
@@ -32,9 +30,7 @@ import com.maltaisn.cardgame.widget.card.CardAnimationLayer
  * The game layout manages the game actors (card containers, popups, markers, etc)
  * and updates them after a game event.
  */
-open class CardGameLayout(assetManager: AssetManager) : WidgetGroup(), PrefEntry.PrefListener {
-
-    protected val coreSkin: Skin = assetManager[CoreRes.CORE_SKIN]
+open class CardGameLayout(val coreSkin: Skin) : WidgetGroup(), PrefEntry.PrefListener {
 
     /** Layer where the game takes place, contains the card containers. */
     val gameLayer: GameLayer

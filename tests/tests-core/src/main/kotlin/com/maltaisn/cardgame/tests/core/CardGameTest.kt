@@ -39,7 +39,7 @@ abstract class CardGameTest : CardGameScreen() {
         super.start()
         cardSkin = assetManager.getAsset(CoreRes.PCARD_SKIN)
 
-        val gameLayout = CardGameLayout(assetManager)
+        val gameLayout = CardGameLayout(coreSkin)
         addActor(gameLayout)
         layout(gameLayout)
     }
