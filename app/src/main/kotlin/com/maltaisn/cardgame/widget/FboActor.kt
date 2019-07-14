@@ -45,17 +45,20 @@ interface FboActor {
             val stage = getStage() as CardGameScreen
             val fbo = stage.offscreenFbo
 
-            // Change blending function to avoid blending twice: when drawn to FBO and when FBO is drawn to screen
-            // https://gist.github.com/mattdesl/4393861
-            batch.enableBlending()
-            batch.setBlendFunctionSeparate(GL20.GL_SRC_ALPHA,
-                    GL20.GL_ONE_MINUS_SRC_ALPHA, GL20.GL_ONE, GL20.GL_ONE)
-
+            batch.end()
             fbo.begin()
 
             // Clear the frame buffer
             Gdx.gl.glClearColor(0f, 0f, 0f, 0f)
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+
+            batch.begin()
+
+            // Change blending function to avoid blending twice: when drawn to FBO and when FBO is drawn to screen
+            // https://gist.github.com/mattdesl/4393861
+            batch.setBlendFunction(-1, -1)
+            batch.setBlendFunctionSeparate(GL20.GL_SRC_ALPHA,
+                    GL20.GL_ONE_MINUS_SRC_ALPHA, GL20.GL_ONE, GL20.GL_ONE)
 
             // Draw the widget group content
             // Since the alpha of this actor and its parent is handled with the frame buffer, draw children with no transparency.
@@ -65,10 +68,12 @@ interface FboActor {
             delegateDraw(batch, 1f)
             color.a = oldAlpha
 
+            batch.end()
             fbo.end()
 
             // Draw the frame buffer to the screen batch
             val a = color.a * parentAlpha
+            batch.begin()
             batch.setColor(a, a, a, a)
             batch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA)  // Premultiplied alpha blending mode
             batch.draw(stage.offscreenFboRegion, 0f, 0f, stage.width, stage.height)
