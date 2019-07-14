@@ -75,9 +75,10 @@ open class MenuItem(val id: Int,
     var checkable = true
 
     /** Whether this item is enabled or not. */
-    var enabled: Boolean
-        get() = button?.enabled != false
+    var enabled = true
+        get() = if (button == null) field else button?.enabled != false
         set(value) {
+            field = value
             button?.enabled = value
         }
 

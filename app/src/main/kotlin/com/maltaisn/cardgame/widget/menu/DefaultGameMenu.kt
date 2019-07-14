@@ -44,6 +44,9 @@ import ktx.style.get
  */
 open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
 
+    /** The callback interface called when an event happens in the menu. */
+    var callback: Callback? = null
+
     /** The continue menu item. Can be disabled. */
     val continueItem: MenuItem
 
@@ -149,16 +152,16 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
 
     init {
         @GDXAssets(propertiesFiles = ["assets/core/strings.properties"])
-        val bundle: I18NBundle = skin[CoreRes.CORE_STRINGS_NAME]
+        val strings: I18NBundle = skin[CoreRes.CORE_STRINGS_NAME]
 
-        drawer.backBtnText = bundle["menu_drawer_back"]
+        drawer.backBtnText = strings["menu_drawer_back"]
 
-        val newGameStr = bundle["menu_new_game"]
-        val continueStr = bundle["menu_continue"]
-        val settingsStr = bundle["menu_settings"]
-        val rulesStr = bundle["menu_rules"]
-        val statsStr = bundle["menu_stats"]
-        val aboutStr = bundle["menu_about"]
+        val newGameStr = strings["menu_new_game"]
+        val continueStr = strings["menu_continue"]
+        val settingsStr = strings["menu_settings"]
+        val rulesStr = strings["menu_rules"]
+        val statsStr = strings["menu_stats"]
+        val aboutStr = strings["menu_about"]
 
         mainMenu.apply {
             // Add main menu items
@@ -174,10 +177,7 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
 
             itemClickListener = {
                 when (it.id) {
-                    ITEM_ID_CONTINUE -> {
-                        showMenu(inGameMenu)
-                        onContinueClicked()
-                    }
+                    ITEM_ID_CONTINUE -> callback?.onContinueClicked()
                     ITEM_ID_NEW_GAME -> showMenu(newGameMenu)
                     ITEM_ID_SETTINGS -> showMenu(settingsMenu)
                     ITEM_ID_RULES -> showMenu(rulesMenu)
@@ -202,7 +202,7 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
             title = newGameStr
             menuPosition = SubMenu.MenuPosition.RIGHT
 
-            startGameItem = MenuItem(1000, bundle["menu_start_game"],
+            startGameItem = MenuItem(1000, strings["menu_start_game"],
                     this@DefaultGameMenu.style.startGameIcon, SubMenu.ITEM_POS_BOTTOM)
             startGameItem.checkable = false
             addItem(startGameItem)
@@ -214,9 +214,7 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
 
             itemClickListener = {
                 if (it === startGameItem) {
-                    showMenu(inGameMenu, false)
-                    newGameOptions?.save()
-                    onStartGameClicked()
+                    callback?.onStartGameClicked()
                 }
             }
         }
@@ -255,27 +253,19 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
 
             itemClickListener = {
                 when (it.id) {
-                    ITEM_ID_BACK -> {
-                        goBack()
-                        onExitGameClicked()
-                    }
-                    ITEM_ID_SCOREBOARD -> {
-                        showScoreboard()
-                    }
-                    else -> onInGameMenuItemClicked(it)
+                    ITEM_ID_BACK -> callback?.onExitGameClicked()
+                    ITEM_ID_SCOREBOARD -> callback?.onScoreboardOpenClicked()
+                    else -> callback?.onInGameMenuItemClicked(it)
                 }
             }
         }
 
         // Scoreboard
-        scoreboardMenu.title = bundle["scoreboard"]
-        scoreboardMenu.backArrowClickListener = {
-            goBack()
-            onScoreboardClosed()
-        }
+        scoreboardMenu.title = strings["scoreboard"]
+        scoreboardMenu.backArrowClickListener = { callback?.onScoreboardCloseClicked() }
 
         // Show main menu at first
-        showMainMenu()
+        showMenu(mainMenu)
     }
 
     /**
@@ -318,32 +308,26 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
         return view
     }
 
-    fun showScoreboard() {
-        showMenu(scoreboardMenu)
-        onScoreboardOpened()
+
+    interface Callback {
+        /** Called when the continue item in main menu is clicked. */
+        fun onContinueClicked() = Unit
+
+        /** Called when the start game item of the new game submenu is clicked. */
+        fun onStartGameClicked() = Unit
+
+        /** Called when the back button is clicked in the in-game menu. */
+        fun onExitGameClicked() = Unit
+
+        /** Called when the scoreboard is opened. */
+        fun onScoreboardOpenClicked() = Unit
+
+        /** Called when the scoreboard is closed. */
+        fun onScoreboardCloseClicked() = Unit
+
+        /** Called when an item is clicked in the in game menu, except back and scoreboard items. */
+        fun onInGameMenuItemClicked(item: MenuItem) = Unit
     }
-
-    fun showMainMenu() {
-        showMenu(mainMenu)
-    }
-
-    /** Called when the continue item in main menu is clicked. */
-    open fun onContinueClicked() = Unit
-
-    /** Called when the start game item of the new game submenu is clicked. */
-    open fun onStartGameClicked() = Unit
-
-    /** Called when the back button is clicked in the in-game menu. */
-    open fun onExitGameClicked() = Unit
-
-    /** Called when the scoreboard is opened. */
-    open fun onScoreboardOpened() = Unit
-
-    /** Called when the scoreboard is closed. */
-    open fun onScoreboardClosed() = Unit
-
-    /** Called when an item is clicked in the in game menu, except back and scoreboard items. */
-    open fun onInGameMenuItemClicked(item: MenuItem) = Unit
 
 
     class DefaultGameMenuStyle {

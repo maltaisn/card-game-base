@@ -163,6 +163,7 @@ open class SubMenu(skin: Skin) : MenuTable(skin) {
             anchorSide = if (menuPosition == MenuPosition.LEFT) MenuButton.Side.RIGHT else MenuButton.Side.LEFT
             iconSide = MenuButton.Side.LEFT
             iconSize = this@SubMenu.style.itemIconSize
+            enabled = item.enabled
             align(Align.left)
         }
         item.button = btn

@@ -78,6 +78,7 @@ class MainMenu(skin: Skin) : MenuTable(skin) {
                 anchorSide = if (onTopRow) MenuButton.Side.TOP else MenuButton.Side.BOTTOM
                 iconSide = MenuButton.Side.LEFT
                 iconSize = this@MainMenu.style.itemIconSize
+                enabled = item.enabled
             }
             item.button = btn
 

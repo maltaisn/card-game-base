@@ -47,12 +47,15 @@ class DefaultGameMenuTest : CardGameTest() {
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
-        val menu = object : DefaultGameMenu(coreSkin) {
+        val menu = DefaultGameMenu(coreSkin)
+        menu.callback = object : DefaultGameMenu.Callback {
             override fun onContinueClicked() {
+                menu.showMenu(menu.inGameMenu)
                 info { "Continue clicked" }
             }
 
             override fun onStartGameClicked() {
+                menu.showMenu(menu.inGameMenu)
                 info { "Start game clicked" }
             }
 
@@ -61,14 +64,17 @@ class DefaultGameMenuTest : CardGameTest() {
             }
 
             override fun onExitGameClicked() {
+                menu.goBack()
                 info { "Exit game clicked" }
             }
 
-            override fun onScoreboardOpened() {
+            override fun onScoreboardOpenClicked() {
+                menu.showMenu(menu.scoreboardMenu)
                 info { "Scoreboard opened" }
             }
 
-            override fun onScoreboardClosed() {
+            override fun onScoreboardCloseClicked() {
+                menu.goBack()
                 info { "Scoreboard closed" }
             }
         }
