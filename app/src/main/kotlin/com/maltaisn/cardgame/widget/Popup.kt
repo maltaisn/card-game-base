@@ -45,11 +45,14 @@ class Popup(skin: Skin) : FboTable() {
     var actor: Actor? = null
         private set
 
-    /** On which side on the [actor] the popup is. */
-    var side = Side.CENTER
+    /** On which side on the [actor] the popup is, or `null` if not shown */
+    var side: Side? = null
         private set
 
-    /** Whether the popup is shown or not. Like [isVisible] but with the correct value during a transition. */
+    /**
+     * Whether the popup is shown or not.
+     * Like [isVisible] but with the correct value during a transition.
+     */
     var shown = false
         private set
 
@@ -58,17 +61,19 @@ class Popup(skin: Skin) : FboTable() {
 
     private var transitionAction by ActionDelegate<TransitionAction>()
 
+
     init {
         isVisible = false
     }
+
 
     override fun validate() {
         super.validate()
 
         actor?.let {
             // Place the popup on the correct side and distance of its actor.
-            val dx: Float
-            val dy: Float
+            var dx = 0f
+            var dy = 0f
             when (side) {
                 Side.CENTER -> {
                     dx = (it.width - width) / 2 - style.bodyOffsetX
@@ -92,8 +97,8 @@ class Popup(skin: Skin) : FboTable() {
                 }
             }
             val actorPos = it.localToActorCoordinates(parent, vec2())
-            this.x = actorPos.x + dx + translateX
-            this.y = actorPos.y + dy + translateY
+            x = actorPos.x + dx + translateX
+            y = actorPos.y + dy + translateY
         }
     }
 
@@ -201,6 +206,46 @@ class Popup(skin: Skin) : FboTable() {
         CENTER, ABOVE, BELOW, LEFT, RIGHT
     }
 
+    private inner class TransitionAction :
+            TimeAction(0.3f, Interpolation.smooth, reversed = !shown) {
+
+        private val touchableBefore = touchable
+
+        init {
+            isVisible = true
+            translateX = 0f
+            translateY = 0f
+            alpha = if (shown) 0f else 1f
+            touchable = Touchable.disabled
+            renderToFrameBuffer = true
+        }
+
+        override fun update(progress: Float) {
+            reversed = !shown
+
+            val offset = progress * TRANSITION_DISTANCE
+            when (side) {
+                Side.LEFT -> translateX = -offset
+                Side.RIGHT -> translateX = offset
+                Side.ABOVE -> translateY = offset
+                Side.BELOW -> translateY = -offset
+                else -> Unit
+            }
+            alpha = progress
+        }
+
+        override fun end() {
+            if (!shown) {
+                actor = null
+                side = null
+            }
+            isVisible = shown
+            touchable = touchableBefore
+            renderToFrameBuffer = false
+            transitionAction = null
+        }
+    }
+
     /**
      * The style for a [Popup] widget. A popup is made of a stretchable body with
      * an optional tip pointing at the actor it is attached to, in any four directions.
@@ -223,46 +268,6 @@ class Popup(skin: Skin) : FboTable() {
         var leftTipOffsetY = 0f
         var rightTipOffsetX = 0f
         var rightTipOffsetY = 0f
-    }
-
-    private inner class TransitionAction :
-            TimeAction(0.3f, Interpolation.smooth, reversed = !shown) {
-
-        private val touchableBefore = touchable
-
-        init {
-            isVisible = true
-            translateX = 0f
-            translateY = 0f
-            alpha = if (shown) 0f else 1f
-            touchable = Touchable.disabled
-            renderToFrameBuffer = true
-        }
-
-        override fun update(progress: Float) {
-            reversed = !shown
-
-            val offset = progress * TRANSITION_DISTANCE
-            when (side) {
-                Side.CENTER -> Unit
-                Side.LEFT -> translateX = -offset
-                Side.RIGHT -> translateX = offset
-                Side.ABOVE -> translateY = offset
-                Side.BELOW -> translateY = -offset
-            }
-            alpha = progress
-        }
-
-        override fun end() {
-            if (!shown) {
-                actor = null
-                side = Side.CENTER
-            }
-            isVisible = shown
-            touchable = touchableBefore
-            renderToFrameBuffer = false
-            transitionAction = null
-        }
     }
 
     companion object {

@@ -86,7 +86,7 @@ class PopupTest : ActionBarTest() {
         addActionBtn("Left") { selectedPopup.testShow(left, Popup.Side.RIGHT) }
         addActionBtn("Bottom") { selectedPopup.testShow(bottom, Popup.Side.ABOVE) }
         addActionBtn("Right") { selectedPopup.testShow(right, Popup.Side.LEFT) }
-        addActionBtn("Center") { selectedPopup.testShow(layout.popupGroup, Popup.Side.CENTER) }
+        addActionBtn("Center") { selectedPopup.testShow(popupGroup, Popup.Side.CENTER) }
 
         addToggleBtn("Debug") { _, debug ->
             contentTable.setDebug(debug, true)

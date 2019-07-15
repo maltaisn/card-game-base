@@ -22,6 +22,7 @@ import com.maltaisn.cardgame.tests.core.tests.*
 object CardGameTests {
 
     private val TESTS = listOf(
+            CardActorTest::class.java,
             CardAnimationTest::class.java,
             CardDealTest::class.java,
             CardHandClipTest::class.java,
@@ -29,6 +30,7 @@ object CardGameTests {
             CardStackTest::class.java,
             CardTrickTest::class.java,
             ContainerTransitionTest::class.java,
+            DealerChipTest::class.java,
             DefaultGameMenuTest::class.java,
             InGameMenuTest::class.java,
             MainMenuTest::class.java,
@@ -48,8 +50,7 @@ object CardGameTests {
             SolitaireTest::class.java,
             TableViewTest::class.java,
             TimeActionTest::class.java,
-            TricksTableTest::class.java,
-            CardActorTest::class.java)
+            TricksTableTest::class.java)
 
     val TESTS_MAP = TESTS.associateBy { it.simpleName }.toSortedMap()
 

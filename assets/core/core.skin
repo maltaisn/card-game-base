@@ -84,6 +84,11 @@
       backgroundScale: 0.75
     }
   }
+  com.maltaisn.cardgame.widget.DealerChip$DealerChipStyle: {
+    default: {
+      drawable: dealer-chip
+    }
+  }
   com.maltaisn.cardgame.widget.Switch$SwitchStyle: {
     default: {
       background: switch-background
