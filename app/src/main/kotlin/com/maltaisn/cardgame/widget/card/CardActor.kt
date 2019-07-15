@@ -223,9 +223,9 @@ class CardActor(val coreStyle: GameLayer.CoreStyle,
     companion object {
         // Card sizes presets
         const val SIZE_TINY = 80f
-        const val SIZE_SMALL = 100f
-        const val SIZE_NORMAL = 120f
-        const val SIZE_BIG = 150f
+        const val SIZE_SMALL = 110f
+        const val SIZE_NORMAL = 140f
+        const val SIZE_BIG = 170f
         const val SIZE_HUGE = 200f
 
         /** The delay before long click is triggered. */

@@ -29,7 +29,7 @@ import ktx.actors.alpha
 class FadeTable(val duration: Float = DEFAULT_FADE_DURATION) : FboTable() {
 
     /**
-     * Whether the container is shown or not.
+     * Whether the table is shown or not.
      * Like [isVisible] but with the correct value during a transition.
      */
     var shown: Boolean

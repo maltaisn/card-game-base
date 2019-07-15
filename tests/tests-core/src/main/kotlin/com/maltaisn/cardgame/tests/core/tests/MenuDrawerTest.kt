@@ -19,7 +19,6 @@ package com.maltaisn.cardgame.tests.core.tests
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Value
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.tests.core.ActionBarTest
@@ -100,7 +99,7 @@ class MenuDrawerTest : ActionBarTest() {
 
             val btnContainer = Container(btnTable).align(Align.top)
                     .pad(25f, 20f, 25f, 20f).fillX()
-            add(Stack(btnContainer, drawer)).grow()
+            stack(btnContainer, drawer).grow()
         }
     }
 }

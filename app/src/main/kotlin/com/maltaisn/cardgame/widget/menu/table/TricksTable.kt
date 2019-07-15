@@ -56,6 +56,16 @@ class TricksTable(coreSkin: Skin, private val cardSkin: Skin, playerCount: Int) 
             cellAdapter?.notifyChanged()
         }
 
+    /**
+     * The size of the cards shown in each row.
+     * See [CardActor.size].
+     */
+    var cardSize = CardActor.SIZE_SMALL
+        set(value) {
+            field = value
+            cellAdapter?.notifyChanged()
+        }
+
 
     init {
         alternateColors = false
@@ -106,7 +116,6 @@ class TricksTable(coreSkin: Skin, private val cardSkin: Skin, playerCount: Int) 
 
         init {
             cardActor.apply {
-                size = CardActor.SIZE_NORMAL
                 enabled = false
                 add().expand().row()
                 add(checkIcon).size(60f, 60f).expand()
@@ -116,6 +125,7 @@ class TricksTable(coreSkin: Skin, private val cardSkin: Skin, playerCount: Int) 
 
         fun bind(trickCard: TrickCard) {
             cardActor.card = trickCard.card
+            cardActor.size = cardSize
             checkIcon.isVisible = trickCard.checked
         }
     }

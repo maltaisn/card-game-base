@@ -34,6 +34,7 @@ class TricksTableTest : SubmenuContentTest() {
 
         val cards = mutableListOf<List<TricksTable.TrickCard>>()
         table.cards = cards
+        table.cardSize = 120f
 
         fun addTrick() {
             val trick = PCard.fullDecks(shuffled = true).drawBottom(4)
@@ -51,6 +52,10 @@ class TricksTableTest : SubmenuContentTest() {
         // Action buttons
         addActionBtn("Add trick") {
             addTrick()
+        }
+        addActionBtn("Size: ${table.cardSize.toInt()}") {
+            table.cardSize = (table.cardSize - 90) % 50 + 100
+            it.title = "Size: ${table.cardSize.toInt()}"
         }
         addToggleBtn("Debug") { _, debug ->
             table.setDebug(debug, true)
