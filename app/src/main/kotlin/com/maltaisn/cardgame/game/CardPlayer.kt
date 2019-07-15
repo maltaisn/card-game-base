@@ -27,8 +27,6 @@ abstract class CardPlayer : Cloneable, Json.Serializable {
     /** Player position, set by the game state. */
     var position = NO_POSITION
 
-    /** Player name, can be `null` if not named. */
-    var name: String? = null
 
     /**
      * Called when [state] performs a [move] for any player.
@@ -42,7 +40,6 @@ abstract class CardPlayer : Cloneable, Json.Serializable {
 
 
     protected fun <T : CardPlayer> cloneTo(player: T) = player.also {
-        it.name = name
         it.position = position
     }
 
@@ -53,9 +50,9 @@ abstract class CardPlayer : Cloneable, Json.Serializable {
         return position == other.position
     }
 
-    override fun hashCode() = name.hashCode()
+    override fun hashCode() = position
 
-    override fun toString() = "[name: ${name ?: "<unnamed>"}, position: $position]"
+    override fun toString() = "[pos: $position]"
 
 
     override fun read(json: Json, jsonData: JsonValue) {
