@@ -188,7 +188,6 @@ open class TableView(skin: Skin, columnWidths: List<Float>) : Table(skin) {
             List(tableView.columnCount) { column ->
                 pool(initialCapacity = 0) {
                     val vh = createViewHolder(column)
-                    viewHolders[column] += vh
                     vh
                 }
             }
@@ -234,6 +233,7 @@ open class TableView(skin: Skin, columnWidths: List<Float>) : Table(skin) {
 
                 for (column in 0 until tableView.columnCount) {
                     val vh = viewHolderPools[column].obtain()
+                    viewHolders[column] += vh
                     vh.column = column
                     vh.row = row
                     vh.cell = tableRow.cells[column]

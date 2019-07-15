@@ -49,7 +49,10 @@ class TableViewTest : SubmenuContentTest() {
             override val rowCount: Int
                 get() = items.size
 
-            override fun createViewHolder(column: Int) = TextViewHolder()
+            override fun createViewHolder(column: Int): TextViewHolder {
+                info { "Created view holder for column $column" }
+                return TextViewHolder()
+            }
 
             override fun bindViewHolder(viewHolder: TableView.ViewHolder, row: Int, column: Int) {
                 assert(row == viewHolder.row)
