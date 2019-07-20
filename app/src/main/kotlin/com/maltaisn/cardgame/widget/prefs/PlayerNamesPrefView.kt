@@ -42,8 +42,8 @@ class PlayerNamesPrefView(skin: Skin, pref: PlayerNamesPref) : GamePrefView<Play
     init {
         val style: PlayerNamesPrefViewStyle = skin.get()
 
-        pad(5f, 0f, 5f, 10f)
-        add(titleLabel).colspan(2).growX().pad(5f, 10f, 10f, 10f).row()
+        pad(10f, 0f, 10f, 20f)
+        add(titleLabel).colspan(2).growX().pad(10f, 20f, 20f, 20f).row()
 
         textFields = Array(pref.size) { player ->
             val textField = SdfTextField(skin, style.fieldStyle,
@@ -63,7 +63,7 @@ class PlayerNamesPrefView(skin: Skin, pref: PlayerNamesPref) : GamePrefView<Play
                 setTextFieldFilter { _, c -> pref.filter == null || c in pref.filter!! }
             }
 
-            add(textField).growX().pad(5f, 10f, 5f, 10f)
+            add(textField).growX().pad(10f, 20f, 10f, 20f)
             if (player % 2 == 1) {
                 row()
             }

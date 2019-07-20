@@ -34,17 +34,17 @@ abstract class ActionBarTest : CardGameTest() {
         super.layout(layout)
 
         layout.gameLayer.centerTable.add(btnTable).growX().colspan(100)
-                .pad(25f, 20f, 25f, 20f).row()
+                .pad(50f, 40f, 40f, 40f).row()
     }
 
     /**
      * Add a button with a [title] and a click [action].
      */
     protected inline fun addActionBtn(title: String, crossinline action: (MenuButton) -> Unit): MenuButton {
-        val fontStyle = FontStyle(fontSize = 16f, drawShadow = true)
+        val fontStyle = FontStyle(fontSize = 32f, drawShadow = true)
         val btn = MenuButton(coreSkin, fontStyle, title, null)
         btn.onClick { action(btn) }
-        btnTable.add(btn).grow().pad(0f, 5f, 0f, 5f).expand()
+        btnTable.add(btn).grow().pad(0f, 10f, 0f, 10f).expand()
         return btn
     }
 
@@ -54,12 +54,11 @@ abstract class ActionBarTest : CardGameTest() {
     protected inline fun addTwoStateActionBtn(titleOn: String, titleOff: String,
                                               crossinline action: (MenuButton, Boolean) -> Unit): MenuButton {
         var state = true
-        val btn = addActionBtn(titleOn) {
+        return addActionBtn(titleOn) {
             state = !state
             it.title = if (state) titleOn else titleOff
             action(it, state)
         }
-        return btn
     }
 
     /**

@@ -48,6 +48,7 @@ object CardGameTests {
             ScrollViewTest::class.java,
             SdfLabelTest::class.java,
             SolitaireTest::class.java,
+            SwitchTest::class.java,
             TableViewTest::class.java,
             TimeActionTest::class.java,
             TricksTableTest::class.java)

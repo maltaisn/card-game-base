@@ -22,7 +22,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
-import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
 import com.maltaisn.cardgame.widget.action.ActionDelegate
 import com.maltaisn.cardgame.widget.action.TimeAction
 import ktx.actors.alpha
@@ -39,7 +38,7 @@ class Popup(skin: Skin) : FboTable() {
     val style: PopupStyle = skin.get()
 
     /** Distance of the popup from the actor. */
-    var distance = 5f
+    var distance = 10f
 
     /** The actor on which the popup is attached to, or `null` if not shown. */
     var actor: Actor? = null
@@ -106,15 +105,13 @@ class Popup(skin: Skin) : FboTable() {
         batch.setColor(color.r, color.g, color.b, alpha * parentAlpha)
 
         // Draw the body
-        val scale = style.backgroundScale
-        val body = style.body as TransformDrawable
-        val tipPadLeft = padLeft - body.leftWidth * scale
-        val tipPadRight = padRight - body.rightWidth * scale
-        val tipPadTop = padTop - body.topHeight * scale
-        val tipPadBottom = padBottom - body.bottomHeight * scale
-        body.draw(batch, x + tipPadLeft, y + tipPadBottom, 0f, 0f,
-                (width - tipPadLeft - tipPadRight) / scale,
-                (height - tipPadTop - tipPadBottom) / scale, scale, scale, 0f)
+        val body = style.body
+        val tipPadLeft = padLeft - body.leftWidth
+        val tipPadRight = padRight - body.rightWidth
+        val tipPadTop = padTop - body.topHeight
+        val tipPadBottom = padBottom - body.bottomHeight
+        body.draw(batch, x + tipPadLeft, y + tipPadBottom,
+                (width - tipPadLeft - tipPadRight), (height - tipPadTop - tipPadBottom))
 
         // Draw the tip
         if (side != Side.CENTER) {
@@ -124,27 +121,28 @@ class Popup(skin: Skin) : FboTable() {
             when (side) {
                 Side.LEFT -> {
                     tip = style.rightTip
-                    offsetX = width - tip.minWidth * scale
-                    offsetY = (style.rightTipOffsetY + style.bodyOffsetY) * scale + height / 2
+                    offsetX = width - tip.minWidth
+                    offsetY = (style.rightTipOffsetY + style.bodyOffsetY) + height / 2
                 }
                 Side.RIGHT -> {
                     tip = style.leftTip
-                    offsetY = (style.leftTipOffsetY + style.bodyOffsetY) * scale + height / 2
+                    offsetX = max(0f, style.leftTipOffsetX)
+                    offsetY = (style.leftTipOffsetY + style.bodyOffsetY) + height / 2
                 }
                 Side.ABOVE -> {
                     tip = style.bottomTip
-                    offsetX = (style.bottomTipOffsetX + style.bodyOffsetX) * scale + width / 2
+                    offsetX = (style.bottomTipOffsetX + style.bodyOffsetX) + width / 2
+                    offsetY = max(0f, style.bottomTipOffsetY)
                 }
                 Side.BELOW -> {
                     tip = style.topTip
-                    offsetX = (style.topTipOffsetX + style.bodyOffsetX) * scale + width / 2
-                    offsetY = height - tip.minHeight * scale
+                    offsetX = (style.topTipOffsetX + style.bodyOffsetX) + width / 2
+                    offsetY = height - tip.minHeight
                 }
                 else -> {
                 }
             }
-            (tip as TransformDrawable).draw(batch, x + offsetX, y + offsetY,
-                    0f, 0f, tip.minWidth, tip.minHeight, scale, scale, 0f)
+            tip.draw(batch, x + offsetX, y + offsetY, tip.minWidth, tip.minHeight)
         }
 
         super.delegateDraw(batch, parentAlpha)
@@ -154,6 +152,18 @@ class Popup(skin: Skin) : FboTable() {
         super.clearActions()
         transitionAction?.end()
     }
+
+    override fun getPrefWidth() = max(super.getPrefWidth(), style.body.minWidth + when (side) {
+        Side.ABOVE -> style.bottomTip.minWidth
+        Side.BELOW -> style.topTip.minWidth
+        else -> 0f
+    })
+
+    override fun getPrefHeight() = max(super.getPrefHeight(), style.body.minHeight + when (side) {
+        Side.LEFT -> style.rightTip.minHeight
+        Side.RIGHT -> style.leftTip.minHeight
+        else -> 0f
+    })
 
     /**
      * Show popup on a [side] of an [actor].
@@ -180,8 +190,7 @@ class Popup(skin: Skin) : FboTable() {
             Side.ABOVE -> bottom += max(0f, -style.bottomTipOffsetY)
             Side.BELOW -> top += max(0f, style.topTip.minHeight + style.topTipOffsetY)
         }
-        val scale = style.backgroundScale
-        pad(top * scale, left * scale, bottom * scale, right * scale)
+        pad(top, left, bottom, right)
         invalidateHierarchy()
 
         if (transitionAction == null) {
@@ -252,7 +261,8 @@ class Popup(skin: Skin) : FboTable() {
      */
     class PopupStyle {
         lateinit var body: Drawable
-        var backgroundScale = 0f
+
+        // The offset of the center position of the body drawable
         var bodyOffsetX = 0f
         var bodyOffsetY = 0f
 
@@ -260,6 +270,11 @@ class Popup(skin: Skin) : FboTable() {
         lateinit var bottomTip: Drawable
         lateinit var leftTip: Drawable
         lateinit var rightTip: Drawable
+
+        var tipSize = 0f
+
+        // The offset are relative to the coordinates of the center of the side of the popup
+        // image, taking body offset values into account.
         var bottomTipOffsetX = 0f
         var bottomTipOffsetY = 0f
         var topTipOffsetX = 0f

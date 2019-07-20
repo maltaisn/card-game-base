@@ -33,7 +33,7 @@ abstract class CheckableWidget(skin: Skin? = null) : SelectableWidget(skin) {
             if (field != value) {
                 field = value
                 checkListener?.invoke(value)
-                check(value, true)
+                addCheckAction()
             }
         }
 
@@ -53,13 +53,11 @@ abstract class CheckableWidget(skin: Skin? = null) : SelectableWidget(skin) {
     }
 
     /** Change the checked state with or without animation. */
-    fun check(checked: Boolean, animate: Boolean) {
+    fun check(checked: Boolean, animate: Boolean = true) {
         this.checked = checked
         if (!animate) {
             checkAction = null
             checkAlpha = if (checked) 1f else 0f
-        } else {
-            addCheckAction()
         }
     }
 

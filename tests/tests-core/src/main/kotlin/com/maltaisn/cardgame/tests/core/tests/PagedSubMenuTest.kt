@@ -53,7 +53,7 @@ class PagedSubMenuTest : ActionBarTest() {
         continueItem.checkable = false
 
         val rules: Markdown = assetManager.get("lorem-ipsum")
-        val rulesView = ScrollView(MarkdownView(coreSkin, rules).pad(0f, 20f, 0f, 20f))
+        val rulesView = ScrollView(MarkdownView(coreSkin, rules).pad(0f, 40f, 0f, 40f))
         val rulesPage = object : TestPage(0, "Rules", coreSkin.getDrawable(MenuIcons.BOOK), SubMenu.ITEM_POS_TOP) {
             override fun onPageSelectionChanged(selected: Boolean) {
                 super.onPageSelectionChanged(selected)
@@ -62,7 +62,7 @@ class PagedSubMenuTest : ActionBarTest() {
         }
         rulesPage.content = rulesView
 
-        val scoresView = Container(SdfLabel(coreSkin, FontStyle(fontColor = Color.BLACK, fontSize = 30f), "TODO!"))
+        val scoresView = Container(SdfLabel(coreSkin, FontStyle(fontColor = Color.BLACK, fontSize = 60f), "TODO!"))
         val scoresPage = TestPage(1, "Scores", coreSkin.getDrawable(MenuIcons.LIST), SubMenu.ITEM_POS_BOTTOM)
         scoresPage.content = scoresView
         scoresPage.checked = true

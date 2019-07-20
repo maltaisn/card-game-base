@@ -45,7 +45,7 @@ class SdfLabelTest : ActionBarTest() {
         var fontAlpha = 100
 
         val labels = List(10) {
-            SdfLabel(coreSkin, fontStyle.copy(fontSize = 12f + it * 4), TEXTS[selectedText]).apply {
+            SdfLabel(coreSkin, fontStyle.copy(fontSize = 24f + it * 8f), TEXTS[selectedText]).apply {
                 alpha = fontAlpha / 100f
             }
         }
@@ -59,7 +59,7 @@ class SdfLabelTest : ActionBarTest() {
         // Add all labels to the layout
         layout.gameLayer.centerTable.apply {
             clearChildren()
-            add(btnTable).growX().colspan(100).pad(25f, 20f, 25f, 20f).row()
+            add(btnTable).growX().colspan(100).pad(50f, 40f, 50f, 40f).row()
 
             val labelTable = Table()
             for (label in labels) {

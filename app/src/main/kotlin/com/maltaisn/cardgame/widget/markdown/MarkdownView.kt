@@ -28,7 +28,7 @@ import com.maltaisn.cardgame.markdown.Markdown
 class MarkdownView(skin: Skin, val markdown: Markdown) : Table(skin) {
 
     init {
-        pad(20f, 20f, 20f, 20f).align(Align.top)
+        pad(40f, 40f, 40f, 40f).align(Align.top)
         for (element in markdown.elements) {
             add(element.createView(skin)).growX().row()
         }

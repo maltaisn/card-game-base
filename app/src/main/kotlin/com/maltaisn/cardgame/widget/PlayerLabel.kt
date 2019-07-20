@@ -61,8 +61,8 @@ class PlayerLabel(skin: Skin, name: CharSequence? = null) : Table() {
     init {
         val arrowImage = Image(style.arrowDrawable, Scaling.fit)
 
-        pad(10f)
-        add(arrowImage).size(30f, 30f).row()
+        pad(20f)
+        add(arrowImage).size(60f, 60f).row()
         add(nameLabel).row()
         add(scoreLabel)
     }

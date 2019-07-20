@@ -21,7 +21,6 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.game.Card
-import com.maltaisn.cardgame.widget.GameLayer
 import com.maltaisn.cardgame.widget.action.TimeAction
 import ktx.math.vec2
 import kotlin.math.absoluteValue
@@ -55,7 +54,7 @@ class CardHand : CardContainer {
      * When there's no more space for cards, the minimum spacing will be
      * respected but cards will be drawn out of the group bounds.
      */
-    var minCardSpacing = 30f
+    var minCardSpacing = 60f
 
     /** The maximum spacing between the borders of two cards. */
     var maxCardSpacing = cardSize / 2
@@ -96,7 +95,8 @@ class CardHand : CardContainer {
 
     constructor(coreSkin: Skin, cardSkin: Skin) : super(coreSkin, cardSkin)
 
-    constructor(coreStyle: GameLayer.CoreStyle, cardStyle: CardActor.CardStyle) : super(coreStyle, cardStyle)
+    constructor(cardActorStyle: CardActor.CardActorStyle, cardStyle: CardActor.CardStyle) :
+            super(cardActorStyle, cardStyle)
 
 
     ////////// CARDS //////////

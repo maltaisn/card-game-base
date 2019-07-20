@@ -42,11 +42,11 @@ class PlayerLabelTest : SingleActionTest() {
 
         // Do the layout
         layout.gameLayer.centerTable.apply {
-            pad(30f)
-            add(northLabel).expand().align(Align.topRight).padRight(150f).colspan(2).row()
-            add(westLabel).expand().align(Align.topLeft).padLeft(50f)
-            add(eastLabel).expand().align(Align.bottomRight).padRight(50f).row()
-            add(southLabel).expand().align(Align.bottomLeft).padLeft(150f).colspan(2)
+            pad(60f)
+            add(northLabel).expand().align(Align.topRight).padRight(300f).colspan(2).row()
+            add(westLabel).expand().align(Align.topLeft).padLeft(100f)
+            add(eastLabel).expand().align(Align.bottomRight).padRight(100f).row()
+            add(southLabel).expand().align(Align.bottomLeft).padLeft(300f).colspan(2)
         }
 
         action = {

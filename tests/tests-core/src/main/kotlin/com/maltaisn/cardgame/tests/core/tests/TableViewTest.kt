@@ -87,7 +87,7 @@ class TableViewTest : SubmenuContentTest() {
         tableView.footerAdapter = footerAdapter
 
         // Do the layout
-        content.add(tableView).grow().pad(20f, 100f, 20f, 100f)
+        content.add(tableView).grow().pad(40f, 200f, 40f, 200f)
         tableView.itemScrollView.setScrollFocus()
 
 
@@ -134,7 +134,7 @@ class TableViewTest : SubmenuContentTest() {
             label.setAlignment(Align.center)
             label.setWrap(true)
 
-            table.add(label).pad(10f).grow()
+            table.add(label).pad(20f).grow()
             table.touchable = Touchable.enabled
             table.onClick {
                 info { "Clicked on cell at ($column, $row) with text '${label.text}'" }
@@ -142,7 +142,7 @@ class TableViewTest : SubmenuContentTest() {
         }
 
         fun bind(text: String, bold: Boolean) {
-            cell.pad(10f)
+            cell.pad(20f)
             label.setText(text)
             label.fontStyle = if (bold) FONT_STYLE_BOLD else FONT_STYLE
         }
@@ -157,7 +157,7 @@ class TableViewTest : SubmenuContentTest() {
             label.setAlignment(Align.center)
             label.setWrap(true)
 
-            table.add(label).pad(10f).grow()
+            table.add(label).pad(20f).grow()
             table.touchable = Touchable.enabled
             table.onClick {
                 selectedColumn = if (selectedColumn == column) -1 else column
@@ -166,14 +166,14 @@ class TableViewTest : SubmenuContentTest() {
         }
 
         fun bind(text: String) {
-            cell.pad(10f)
+            cell.pad(20f)
             label.setText(text)
         }
 
     }
 
     companion object {
-        private val FONT_STYLE = FontStyle(fontSize = 22f, fontColor = Color.BLACK)
+        private val FONT_STYLE = FontStyle(fontSize = 44f, fontColor = Color.BLACK)
         private val FONT_STYLE_BOLD = FONT_STYLE.copy(bold = true)
         private val DATE_FORMAT = SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH)
 

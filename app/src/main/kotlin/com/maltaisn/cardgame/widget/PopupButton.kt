@@ -21,7 +21,6 @@ import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
-import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
 import ktx.actors.alpha
 import ktx.style.get
 import kotlin.math.max
@@ -54,18 +53,15 @@ class PopupButton(skin: Skin, text: String? = null) : SelectableWidget() {
         // Add the button label
         label = SdfLabel(skin, style.fontStyle, text)
         label.touchable = Touchable.disabled
-        add(label).expand().pad(0f, 15f, 0f, 15f)
+        add(label).expand().pad(0f, 30f, 0f, 30f)
 
         addListener(SelectionListener())
     }
 
     override fun drawChildren(batch: Batch, parentAlpha: Float) {
-        val scale = style.backgroundScale
-
         // Draw background
         batch.setColor(color.r, color.g, color.b, alpha * parentAlpha)
-        (style.background as TransformDrawable).draw(batch, x, y, 0f, 0f,
-                width / scale, height / scale, scale, scale, 0f)
+        style.background.draw(batch, x, y, width, height)
 
         // Draw button content
         super.drawChildren(batch, parentAlpha)
@@ -73,21 +69,17 @@ class PopupButton(skin: Skin, text: String? = null) : SelectableWidget() {
         // Draw hover and selection overlay
         batch.setColor(color.r, color.g, color.b, alpha * parentAlpha *
                 (hoverAlpha * 0.2f + pressAlpha * 0.2f + if (enabled) 0f else 0.2f))
-        (style.selectionOverlay as TransformDrawable).draw(batch, x, y, 0f, 0f,
-                    width / scale, height / scale, scale, scale, 0f)
+        style.selectionOverlay.draw(batch, x, y, width, height)
     }
 
-    override fun getPrefWidth() = max(style.background.minWidth *
-            style.backgroundScale, super.getPrefWidth())
+    override fun getPrefWidth() = max(style.background.minWidth, super.getPrefWidth())
 
-    override fun getPrefHeight() = max(style.background.minHeight *
-            style.backgroundScale, super.getPrefHeight())
+    override fun getPrefHeight() = max(style.background.minHeight, super.getPrefHeight())
 
     class PopupButtonStyle {
         lateinit var background: Drawable
         lateinit var selectionOverlay: Drawable
         lateinit var fontStyle: FontStyle
-        var backgroundScale = 0f
     }
 
 }

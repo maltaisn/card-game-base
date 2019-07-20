@@ -34,11 +34,11 @@ class ScrollViewTest : SubmenuContentTest() {
     override fun layoutContent(layout: CardGameLayout, content: Table) {
         // Do the layout
         val scrollView = ScrollView(Table().apply {
-            val fontStyle = FontStyle(fontSize = 22f, fontColor = Color.BLACK)
+            val fontStyle = FontStyle(fontSize = 44f, fontColor = Color.BLACK)
             repeat(30) {
                 val label = SdfLabel(coreSkin, fontStyle, UUID.randomUUID().toString())
                 label.setAlignment(Align.center)
-                add(label).grow().pad(10f).row()
+                add(label).grow().pad(20f).row()
             }
         })
 
@@ -47,7 +47,7 @@ class ScrollViewTest : SubmenuContentTest() {
         }
         scrollView.clearActions()  // Should do nothing
 
-        content.add(scrollView).grow().pad(20f, 100f, 20f, 100f)
+        content.add(scrollView).grow().pad(40f, 200f, 40f, 200f)
 
         scrollView.setScrollFocus()
 

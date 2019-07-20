@@ -42,13 +42,13 @@ class PopupTest : ActionBarTest() {
         popupGroup.addActor(popupSimple)
 
         val popupComplex = Popup(coreSkin)
-        popupComplex.add(PopupButton(coreSkin, "Last two")).fillX()
-        popupComplex.add(PopupButton(coreSkin, "Hearts")).fillX().row()
-        popupComplex.add(PopupButton(coreSkin, "Barbu")).fillX()
-        popupComplex.add(PopupButton(coreSkin, "Queens")).fillX().row()
-        popupComplex.add(PopupButton(coreSkin, "Domino")).fillX()
-        popupComplex.add(PopupButton(coreSkin, "Tricks")).fillX().row()
-        popupComplex.add(PopupButton(coreSkin, "Trump")).colspan(2)
+        popupComplex.add(PopupButton(coreSkin, "Last two")).fillX().pad(5f)
+        popupComplex.add(PopupButton(coreSkin, "Hearts")).fillX().pad(5f).row()
+        popupComplex.add(PopupButton(coreSkin, "Barbu")).fillX().pad(5f)
+        popupComplex.add(PopupButton(coreSkin, "Queens")).fillX().pad(5f).row()
+        popupComplex.add(PopupButton(coreSkin, "Domino")).fillX().pad(5f)
+        popupComplex.add(PopupButton(coreSkin, "Tricks")).fillX().pad(5f).row()
+        popupComplex.add(PopupButton(coreSkin, "Trump")).pad(5f).colspan(2).fillX()
         popupGroup.addActor(popupComplex)
 
         val top = Actor()
@@ -59,13 +59,13 @@ class PopupTest : ActionBarTest() {
         // Do the layout
         val contentTable = Table().apply {
             add()
-            add(top).height(50f)
+            add(top).height(100f)
             add().row()
-            add(left).width(50f)
+            add(left).width(100f)
             add().grow()
-            add(right).width(50f).row()
+            add(right).width(100f).row()
             add()
-            add(bottom).height(50f)
+            add(bottom).height(100f)
             add().row()
         }
         layout.gameLayer.centerTable.add(contentTable).grow()

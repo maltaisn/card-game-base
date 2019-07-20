@@ -34,7 +34,7 @@ class ShadowImage : Image() {
     var drawShadow = true
 
     /** The offset in pixels at which the shadow is drawn. */
-    var shadowOffset = vec2(2f, -2f)
+    var shadowOffset = vec2(4f, -4f)
 
     /** The tint of this icon. */
     var shadowColor: Color = Color.BLACK

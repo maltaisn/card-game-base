@@ -18,13 +18,13 @@ package com.maltaisn.cardgame.widget
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
-import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
 import com.maltaisn.cardgame.withinBounds
 import ktx.actors.setKeyboardFocus
 import ktx.style.get
@@ -87,7 +87,7 @@ class Switch(skin: Skin) : CheckableWidget() {
                     if (distance.absoluteValue > MIN_DRAG_DISTANCE) {
                         dragged = true
                     }
-                    val trackWidth = (style.background.minWidth - style.thumb.minWidth) * style.scale
+                    val trackWidth = style.background.minWidth - style.thumb.minWidth
                     checkAlpha = (checkAlphaOnPress + distance / trackWidth * DRAG_SPEED).coerceIn(0f, 1f)
                     Gdx.graphics.requestRendering()
                 }
@@ -112,54 +112,55 @@ class Switch(skin: Skin) : CheckableWidget() {
     override fun draw(batch: Batch, parentAlpha: Float) {
         super.draw(batch, parentAlpha)
 
-        val background = style.background as TransformDrawable
-        val scale = style.scale
+        val background = style.background
         val offsetX = (width - background.minWidth) / 2
         val offsetY = (height - background.minHeight) / 2
 
         // Draw background
-        batch.setColor(color.r, color.g, color.b, parentAlpha)
-        background.draw(batch, x + offsetX, y + offsetY, 0f, 0f, background.minWidth,
-                background.minHeight, scale, scale, 0f)
+        val bgColor = style.backgroundColor
+        batch.setColor(bgColor.r * color.a, bgColor.g * color.g,
+                bgColor.b * color.b, parentAlpha)
+        background.draw(batch, x + offsetX, y + offsetY,
+                background.minWidth, background.minHeight)
 
         // Draw check overlay
-        batch.setColor(color.r, color.g, color.b, parentAlpha * checkAlpha)
-        val checkOverlay = (if (enabled) style.checkOverlay else style.checkDisabledOverlay) as TransformDrawable
-        checkOverlay.draw(batch, x + offsetX, y + offsetY, 0f, 0f,
-                checkOverlay.minWidth, checkOverlay.minHeight, scale, scale, 0f)
+        val checkedColor = if (enabled) style.checkedColor else style.checkedDisabledColor
+        batch.setColor(checkedColor.r * color.a, checkedColor.g * color.g,
+                checkedColor.b * color.b, parentAlpha * checkAlpha)
+        background.draw(batch, x + offsetX, y + offsetY,
+                background.minWidth, background.minHeight)
 
         // Draw thumb
         batch.setColor(color.r, color.g, color.b, parentAlpha)
-        val thumb = style.thumb as TransformDrawable
-        val thumbX = x + offsetX + (background.minWidth - thumb.minWidth) * scale * checkAlpha
-        thumb.draw(batch, thumbX, y + offsetY, 0f, 0f,
-                thumb.minWidth, thumb.minHeight, scale, scale, 0f)
+        val thumb = style.thumb
+        val thumbX = x + offsetX + (background.minWidth - thumb.minWidth) * checkAlpha
+        thumb.draw(batch, thumbX, y + offsetY, thumb.minWidth, thumb.minHeight)
 
         // Draw thumb hover/press overlay
         batch.setColor(color.r, color.g, color.b,
                 parentAlpha * (hoverAlpha + pressAlpha) * 0.1f + if (enabled) 0f else 0.2f)
-        val thumbHover = style.thumbHoverOverlay as TransformDrawable
-        thumbHover.draw(batch, thumbX, y + offsetY, 0f, 0f,
-                thumbHover.minWidth, thumbHover.minHeight, scale, scale, 0f)
+        val thumbOverlay = style.thumbOverlay
+        thumbOverlay.draw(batch, thumbX, y + offsetY,
+                thumbOverlay.minWidth, thumbOverlay.minHeight)
     }
 
-    override fun getPrefWidth() = style.background.minWidth * style.scale
+    override fun getPrefWidth() = style.background.minWidth
 
-    override fun getPrefHeight() = style.background.minHeight * style.scale
+    override fun getPrefHeight() = style.background.minHeight
 
 
     class SwitchStyle {
         lateinit var background: Drawable
-        lateinit var checkOverlay: Drawable
-        lateinit var checkDisabledOverlay: Drawable
         lateinit var thumb: Drawable
-        lateinit var thumbHoverOverlay: Drawable
-        var scale = 0f
+        lateinit var thumbOverlay: Drawable
+        lateinit var backgroundColor: Color
+        lateinit var checkedColor: Color
+        lateinit var checkedDisabledColor: Color
     }
 
     companion object {
         /** The minimum drag distance in pixels to enable drag mode. */
-        private const val MIN_DRAG_DISTANCE = 10f
+        private const val MIN_DRAG_DISTANCE = 20f
 
         /** How fast is the thumb moving compared to the pointer when dragged. */
         private const val DRAG_SPEED = 0.5f

@@ -50,9 +50,9 @@ class MenuDrawerTest : ActionBarTest() {
 
         val image = Image(coreSkin.getDrawable(MenuIcons.INFO))
         image.color = Color.BLACK
-        val imageContent = Container(image).size(150f, 150f)
+        val imageContent = Container(image).size(300f, 300f)
 
-        val text = SdfLabel(coreSkin, FontStyle(fontSize = 22f, fontColor = Color.BLACK), """
+        val text = SdfLabel(coreSkin, FontStyle(fontSize = 44f, fontColor = Color.BLACK), """
             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             Nulla consectetur nunc scelerisque, pretium urna eu, maximus
             augue. In lacinia lobortis enim, quis sodales turpis pulvinar
@@ -62,7 +62,7 @@ class MenuDrawerTest : ActionBarTest() {
             eget velit.
         """.trimIndent().replace('\n', ' '))
         text.setWrap(true)
-        val textContent = Container(text).pad(0f, 30f, 0f, 30f).align(Align.top).fillX()
+        val textContent = Container(text).pad(0f, 60f, 0f, 60f).align(Align.top).fillX()
 
         val listContent = MenuDrawerList(coreSkin).apply {
             items = (1..10).map { "Item $it" }
@@ -72,7 +72,7 @@ class MenuDrawerTest : ActionBarTest() {
         }
 
         drawer.content.actor = textContent
-        drawer.content.padBottom(30f)
+        drawer.content.padBottom(60f)
 
         // Action buttons
         addActionBtn("Show") { drawer.shown = true }
@@ -98,7 +98,7 @@ class MenuDrawerTest : ActionBarTest() {
             clearChildren()
 
             val btnContainer = Container(btnTable).align(Align.top)
-                    .pad(25f, 20f, 25f, 20f).fillX()
+                    .pad(50f, 40f, 50f, 40f).fillX()
             stack(btnContainer, drawer).grow()
         }
     }

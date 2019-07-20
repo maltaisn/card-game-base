@@ -136,7 +136,7 @@ class ScrollSubMenu(skin: Skin) : SubMenu(skin) {
             for (child in scrollContent.actor.children) {
                 if (child is Section) {
                     if (id == item.id) {
-                        val top = child.y + child.height + 20f - scrollView.height
+                        val top = child.y + child.height + 40f - scrollView.height
                         val height = scrollView.height
                         scrollView.scrollTo(0f, top, 0f, height)
                         break

@@ -28,7 +28,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Scaling
 import com.maltaisn.cardgame.defaultSize
-import com.maltaisn.cardgame.widget.*
+import com.maltaisn.cardgame.widget.FontStyle
+import com.maltaisn.cardgame.widget.ScrollView
+import com.maltaisn.cardgame.widget.SdfLabel
 import com.maltaisn.cardgame.widget.action.ActionDelegate
 import com.maltaisn.cardgame.widget.action.TimeAction
 import ktx.actors.onClick
@@ -53,7 +55,7 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
             // since no text in a label still take a certain height.
             val titleCell = drawerTable.getCell(titleLabel)
             if (titleShown) {
-                titleCell.defaultSize().padBottom(20f)
+                titleCell.defaultSize().padBottom(40f)
             } else {
                 titleCell.size(0f, 0f).padBottom(0f)
             }
@@ -152,9 +154,9 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
             shown = false
         }
         backBtn.touchable = Touchable.enabled
-        backBtn.add(backBtnIcon).size(style.backBtnFontStyle.fontSize + 6f)
-        backBtn.add(backBtnLabel).padLeft(10f)
-        backBtn.pad(20f, 30f, 15f, 30f)
+        backBtn.add(backBtnIcon).size(style.backBtnFontStyle.fontSize + 12f)
+        backBtn.add(backBtnLabel).padLeft(20f)
+        backBtn.pad(40f, 60f, 30f, 60f)
 
         val headerSep = Image(style.headerSeparator, Scaling.stretchX)
 
@@ -162,8 +164,8 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
 
         // Do the layout
         drawerTable.add(backBtn).expandX().align(Align.left).row()
-        drawerTable.add(headerSep).growX().pad(5f, 30f, 20f, 0f).row()
-        drawerTable.add(titleLabel).growX().pad(0f, 30f, 20f, 30f).row()
+        drawerTable.add(headerSep).growX().pad(10f, 60f, 40f, 0f).row()
+        drawerTable.add(titleLabel).growX().pad(0f, 60f, 40f, 60f).row()
         drawerTable.add(contentPane).grow()
 
         addActor(drawerTable)

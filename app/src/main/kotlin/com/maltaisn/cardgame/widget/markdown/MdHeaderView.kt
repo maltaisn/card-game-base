@@ -34,15 +34,15 @@ class MdHeaderView(skin: Skin, header: MdElement.Header) : Table(), ScrollSubMen
         val style: MdHeaderViewStyle = skin.get()
         val headerLabel = SdfLabel(skin, style.fontStyles[header.size - 1], header.text)
         headerLabel.setWrap(true)
-        add(headerLabel).growX().pad(20f, 0f, 5f, 0f).row()
+        add(headerLabel).growX().pad(40f, 0f, 10f, 0f).row()
 
         if (header.size == 1) {
             val separator = Image(style.separator, Scaling.stretchX)
-            add(separator).growX().pad(10f, 0f, 10f, 0f).row()
+            add(separator).growX().pad(40f, 0f, 20f, 0f).row()
         }
 
         for (element in header.elements) {
-            add(element.createView(skin)).growX().padBottom(5f).row()
+            add(element.createView(skin)).growX().padBottom(10f).row()
         }
     }
 

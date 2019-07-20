@@ -24,7 +24,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
 import com.maltaisn.cardgame.game.Card
-import com.maltaisn.cardgame.widget.GameLayer
 import com.maltaisn.cardgame.widget.SelectableWidget
 import com.maltaisn.cardgame.withinBounds
 import ktx.actors.alpha
@@ -37,7 +36,7 @@ import ktx.style.get
  * @property cardStyle Card actor style, must match card type.
  * @property card Card shown by the actor.
  */
-class CardActor(val coreStyle: GameLayer.CoreStyle,
+class CardActor(val style: CardActorStyle,
                 val cardStyle: CardStyle, var card: Card? = null) : SelectableWidget() {
 
     /**
@@ -111,7 +110,7 @@ class CardActor(val coreStyle: GameLayer.CoreStyle,
     constructor(coreSkin: Skin, cardSkin: Skin, card: Card? = null,
                 coreStyleName: String = "default",
                 cardStyleName: String = "default") :
-            this(coreSkin.get<GameLayer.CoreStyle>(coreStyleName), cardSkin[cardStyleName], card)
+            this(coreSkin.get<CardActorStyle>(coreStyleName), cardSkin[cardStyleName], card)
 
 
     init {
@@ -157,7 +156,7 @@ class CardActor(val coreStyle: GameLayer.CoreStyle,
             batch.setColor(color.r, color.g, color.b, alpha * parentAlpha)
 
             // Draw background
-            drawCenteredDrawable(batch, coreStyle.cardBackground as TransformDrawable)
+            drawCenteredDrawable(batch, style.background as TransformDrawable)
 
             // Draw card
             val scale = size / cardStyle.cardWidth
@@ -169,13 +168,13 @@ class CardActor(val coreStyle: GameLayer.CoreStyle,
             // Draw hover
             if (hoverAlpha != 0f) {
                 batch.setColor(color.r, color.g, color.b, alpha * parentAlpha * hoverAlpha)
-                drawCenteredDrawable(batch, coreStyle.cardHover as TransformDrawable)
+                drawCenteredDrawable(batch, style.hover as TransformDrawable)
             }
 
             // Draw press
             if (pressAlpha != 0f) {
                 batch.setColor(color.r, color.g, color.b, alpha * parentAlpha * pressAlpha)
-                drawCenteredDrawable(batch, coreStyle.cardSelection as TransformDrawable)
+                drawCenteredDrawable(batch, style.selection as TransformDrawable)
             }
         }
 
@@ -206,6 +205,16 @@ class CardActor(val coreStyle: GameLayer.CoreStyle,
             "${if (highlighted) ", highlighted" else ""}]"
 
     /**
+     * The style common to card actors, doesn't depend on the [card] type.
+     */
+    class CardActorStyle {
+        lateinit var background: Drawable
+        lateinit var hover: Drawable
+        lateinit var selection: Drawable
+        lateinit var slot: Drawable
+    }
+
+    /**
      * The style for cards drawn with a [CardActor], must match the [card] type.
      */
     class CardStyle {
@@ -222,11 +231,11 @@ class CardActor(val coreStyle: GameLayer.CoreStyle,
 
     companion object {
         // Card sizes presets
-        const val SIZE_TINY = 80f
-        const val SIZE_SMALL = 110f
-        const val SIZE_NORMAL = 140f
-        const val SIZE_BIG = 170f
-        const val SIZE_HUGE = 200f
+        const val SIZE_TINY = 160f
+        const val SIZE_SMALL = 220f
+        const val SIZE_NORMAL = 280f
+        const val SIZE_BIG = 340f
+        const val SIZE_HUGE = 400f
 
         /** The delay before long click is triggered. */
         private const val LONG_CLICK_DELAY = 0.5f

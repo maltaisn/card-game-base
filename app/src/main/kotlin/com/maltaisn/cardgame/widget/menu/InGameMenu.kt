@@ -52,12 +52,12 @@ class InGameMenu(skin: Skin) : MenuTable(skin) {
         checkable = false
 
         // Do the layout
-        pad(25f)
+        pad(50f)
         add(leftGroup).expandY().align(Align.top)
-        add().minWidth(100f).grow()
+        add().minWidth(200f).grow()
         add(rightGroup).expandY().align(Align.top)
-        leftGroup.space(15f)
-        rightGroup.space(15f)
+        leftGroup.space(30f)
+        rightGroup.space(30f)
     }
 
     override fun doMenuLayout() {
@@ -66,7 +66,7 @@ class InGameMenu(skin: Skin) : MenuTable(skin) {
 
         for (item in items) {
             val btn = MenuButton(skin, style.itemFontStyle, item.title, item.icon).apply {
-                pad(5f)
+                pad(30f)
                 onClick { btnClickListener(this) }
                 anchorSide = MenuButton.Side.NONE
                 iconSide = MenuButton.Side.LEFT

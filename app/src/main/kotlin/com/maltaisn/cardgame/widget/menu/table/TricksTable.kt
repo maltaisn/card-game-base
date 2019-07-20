@@ -69,7 +69,7 @@ class TricksTable(coreSkin: Skin, private val cardSkin: Skin, playerCount: Int) 
 
     init {
         alternateColors = false
-        itemGroup.pad(5f, 0f, 5f, 0f)
+        itemGroup.pad(10f, 0f, 10f, 0f)
 
         cellAdapter = object : CellAdapter() {
 
@@ -99,7 +99,7 @@ class TricksTable(coreSkin: Skin, private val cardSkin: Skin, playerCount: Int) 
         private val titleLabel = SdfLabel(skin, style.headerFontStyle)
 
         init {
-            table.add(titleLabel).growX().pad(10f)
+            table.add(titleLabel).growX().pad(20f)
             titleLabel.setWrap(true)
             titleLabel.setAlignment(Align.center)
         }
@@ -118,9 +118,9 @@ class TricksTable(coreSkin: Skin, private val cardSkin: Skin, playerCount: Int) 
             cardActor.apply {
                 enabled = false
                 add().expand().row()
-                add(checkIcon).size(60f, 60f).expand()
+                add(checkIcon).size(120f, 120f).expand()
             }
-            table.add(cardActor).expand().pad(10f)
+            table.add(cardActor).expand().pad(20f)
         }
 
         fun bind(trickCard: TrickCard) {

@@ -32,7 +32,7 @@ class PrefWidgetsTest : SubmenuContentTest() {
     override fun layoutContent(layout: CardGameLayout, content: Table) {
         // Text field
         val textField = SdfTextField(coreSkin, FontStyle().apply {
-            fontSize = 24f
+            fontSize = 48f
             fontColor = Color.BLACK
         }, "Text input")
         textField.maxLength = 20
@@ -51,9 +51,9 @@ class PrefWidgetsTest : SubmenuContentTest() {
         }
 
         // Do the layout
-        content.add(textField).width(300f).expand().row()
-        content.add(switch).size(300f, 100f).expand().row()
-        content.add(slider).width(500f).expand().row()
+        content.add(textField).width(600f).expand().row()
+        content.add(switch).size(600f, 200f).expand().row()
+        content.add(slider).width(1000f).expand().row()
 
         // Action buttons
         addActionBtn("Check") {

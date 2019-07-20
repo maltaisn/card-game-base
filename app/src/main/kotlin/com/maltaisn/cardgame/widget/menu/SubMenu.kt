@@ -93,18 +93,18 @@ open class SubMenu(skin: Skin) : MenuTable(skin) {
         checkable = true
 
         val backBtn = MenuButton(skin, style.titleStyle, null, style.backArrowIcon).apply {
-            pad(5f)
+            pad(30f)
             iconSize = this@SubMenu.style.backArrowSize
             onClick { backArrowClickListener?.invoke() }
         }
 
-        headerTable.pad(25f, 25f, 0f, 25f)
+        headerTable.pad(50f, 50f, 0f, 50f)
         headerTable.add(backBtn)
-        headerTable.add(titleLabel).padLeft(15f).grow()
+        headerTable.add(titleLabel).padLeft(30f).grow()
 
         content.background = style.contentBackground
-        content.padLeft(content.padLeft + 20f)
-        content.padRight(content.padRight + 20f)
+        content.padLeft(content.padLeft + 40f)
+        content.padRight(content.padRight + 40f)
     }
 
     override fun layout() {
@@ -118,23 +118,27 @@ open class SubMenu(skin: Skin) : MenuTable(skin) {
         clearChildren()
         add(headerTable).growX().colspan(2).row()
 
-        if (items.isEmpty()) {
-            // No menu items, center content with 70% with.
-            getCell(headerTable).padBottom(15f)
-            add(content).pad(-style.contentBackground.topHeight, 0f, 0f, 0f)
-                    .width(Value.percentWidth(0.7f, this)).grow()
-        } else if (menuPosition == MenuPosition.LEFT) {
-            // Menu pane on the left
-            menuTable.pad(20f, 25f, 25f, 0f)
-            add(menuTable).width(Value.percentWidth(0.3f, this)).growY()
-            add(content).pad(-style.contentBackground.topHeight,
-                    -style.contentBackground.leftWidth, 0f, 10f).grow()
-        } else {
-            // Menu pane on the right
-            menuTable.pad(35f, 0f, 25f, 25f)
-            add(content).pad(-style.contentBackground.topHeight + 15f, 10f,
-                    0f, -style.contentBackground.rightWidth).grow()
-            add(menuTable).width(Value.percentWidth(0.3f, this)).growY()
+        when {
+            items.isEmpty() -> {
+                // No menu items, center content with 70% with.
+                getCell(headerTable).padBottom(20f)
+                add(content).pad(-style.contentBackground.topHeight, 0f, 0f, 0f)
+                        .width(Value.percentWidth(0.7f, this)).grow()
+            }
+            menuPosition == MenuPosition.LEFT -> {
+                // Menu pane on the left
+                menuTable.pad(40f, 50f, 50f, 0f)
+                add(menuTable).width(Value.percentWidth(0.3f, this)).growY()
+                add(content).pad(-style.contentBackground.topHeight,
+                        -style.contentBackground.leftWidth, 0f, 20f).grow()
+            }
+            else -> {
+                // Menu pane on the right
+                menuTable.pad(70f, 0f, 50f, 50f)
+                add(content).pad(-style.contentBackground.topHeight + 30f, 20f,
+                        0f, -style.contentBackground.rightWidth).grow()
+                add(menuTable).width(Value.percentWidth(0.3f, this)).growY()
+            }
         }
 
         // Create the menu buttons and add them the menu table
@@ -169,12 +173,12 @@ open class SubMenu(skin: Skin) : MenuTable(skin) {
         item.button = btn
 
         if (item.shown) {
-            val iconPadding = if (item.icon == null) btn.iconSize + btn.style.iconTitleMargin else 0f
-            menuTable.add(btn).growX().pad(2f, 0f, 2f, 0f).prefHeight(70f)
+            val iconPadding = if (item.icon == null) btn.iconSize + 30f else 0f
+            menuTable.add(btn).growX().pad(2f, 0f, 2f, 0f).prefHeight(140f)
             if (menuPosition == MenuPosition.LEFT) {
-                btn.pad(10f, 10f + iconPadding, 10f, 20f)
+                btn.pad(20f, 20f + iconPadding, 20f, 40f)
             } else {
-                btn.pad(10f, 20f + iconPadding, 10f, 10f)
+                btn.pad(20f, 40f + iconPadding, 20f, 20f)
             }
             menuTable.row()
         }
@@ -245,7 +249,7 @@ open class SubMenu(skin: Skin) : MenuTable(skin) {
         private const val ITEM_TRANSITION_DURATION = 0.35f
 
         /** The Y translation performed by the content table. */
-        private const val CONTENT_TRANSITION_TRANSLATE = -100f
+        private const val CONTENT_TRANSITION_TRANSLATE = -200f
     }
 
 }

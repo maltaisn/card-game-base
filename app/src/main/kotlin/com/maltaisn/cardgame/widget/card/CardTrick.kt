@@ -21,7 +21,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.maltaisn.cardgame.game.Card
-import com.maltaisn.cardgame.widget.GameLayer
 import ktx.math.vec2
 import kotlin.math.PI
 import kotlin.math.atan2
@@ -95,8 +94,8 @@ class CardTrick : CardContainer {
         this.capacity = capacity
     }
 
-    constructor(coreStyle: GameLayer.CoreStyle, cardStyle: CardActor.CardStyle,
-                capacity: Int) : super(coreStyle, cardStyle) {
+    constructor(cardActorStyle: CardActor.CardActorStyle, cardStyle: CardActor.CardStyle,
+                capacity: Int) : super(cardActorStyle, cardStyle) {
         this.capacity = capacity
     }
 
@@ -112,10 +111,10 @@ class CardTrick : CardContainer {
                 radius.x * 2, radius.y * 2)
 
         // Draw a mark on the circle for each card position
-        val r1x = radius.x - 5f
-        val r1y = radius.y - 5f
-        val r2x = radius.x + 5f
-        val r2y = radius.y + 5f
+        val r1x = radius.x - 10f
+        val r1y = radius.y - 10f
+        val r2x = radius.x + 10f
+        val r2y = radius.y + 10f
         for (i in 0 until capacity) {
             var angle = cardAngles[i] - startAngle
             if (clockwisePlacement) angle = -angle

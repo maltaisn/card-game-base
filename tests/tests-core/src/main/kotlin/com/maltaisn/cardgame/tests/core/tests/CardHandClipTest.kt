@@ -59,13 +59,13 @@ class CardHandClipTest : CardGameTest() {
         }
 
         layout.gameLayer.centerTable.apply {
-            add(left).pad(30f, 0f, 30f, 30f).growY()
+            add(left).pad(60f, 0f, 60f, 60f).growY()
             add(Table().apply {
                 add(top).growX().row()
                 add().grow().row()
                 add(bottom).growX()
             }).grow()
-            add(right).pad(30f, 30f, 30f, 0f).growY()
+            add(right).pad(60f, 60f, 60f, 0f).growY()
         }
     }
 }

@@ -131,28 +131,28 @@ class CardTrickTest : ActionBarTest() {
         }
         addActionBtn("Rx-") {
             // Decrease horizontal radius
-            trick.radius.x = max(trick.radius.x - 10f, 20f)
+            trick.radius.x = max(trick.radius.x - 20f, 40f)
             trick.requestUpdate()
             animLayer.update()
             info { "Radius X: ${trick.radius.x}" }
         }
         addActionBtn("Rx+") {
             // Increase horizontal radius
-            trick.radius.x = min(trick.radius.x + 10f, 200f)
+            trick.radius.x = min(trick.radius.x + 20f, 400f)
             trick.requestUpdate()
             animLayer.update()
             info { "Radius X: ${trick.radius.x}" }
         }
         addActionBtn("Ry-") {
             // Decrease vertical radius
-            trick.radius.y = max(trick.radius.y - 10f, 20f)
+            trick.radius.y = max(trick.radius.y - 20f, 40f)
             trick.requestUpdate()
             animLayer.update()
             info { "Radius Y: ${trick.radius.y}" }
         }
         addActionBtn("Ry+") {
             // Increase vertical radius
-            trick.radius.y = min(trick.radius.y + 10f, 200f)
+            trick.radius.y = min(trick.radius.y + 20f, 400f)
             trick.requestUpdate()
             animLayer.update()
             info { "Radius Y: ${trick.radius.y}" }
@@ -176,7 +176,7 @@ class CardTrickTest : ActionBarTest() {
 
         // Do the layout
         layout.gameLayer.centerTable.apply {
-            add(stack).width(200f).growY()
+            add(stack).width(400f).growY()
             add(CenterLayout(trick)).grow().row()
         }
     }

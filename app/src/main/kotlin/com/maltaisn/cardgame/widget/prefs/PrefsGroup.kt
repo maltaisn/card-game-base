@@ -55,7 +55,7 @@ class PrefsGroup(skin: Skin, val prefs: GamePrefs) : Table() {
 
     init {
         val style: PrefsGroupStyle = skin.get()
-        pad(10f, 0f, 20f, 0f)
+        pad(20f, 0f, 40f, 0f)
         align(Align.top)
 
         val prefsList = prefs.prefs.values.toList()
@@ -77,7 +77,7 @@ class PrefsGroup(skin: Skin, val prefs: GamePrefs) : Table() {
             // Separator between preferences
             if (pref is GamePref && prefsList.getOrNull(i + 1) is GamePref) {
                 val separator = Image(style.separator, Scaling.stretchX)
-                add(separator).growX().pad(10f, 15f, 10f, 0f).row()
+                add(separator).growX().pad(20f, 30f, 20f, 0f).row()
             }
         }
     }

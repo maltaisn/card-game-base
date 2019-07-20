@@ -37,7 +37,7 @@ class MenuButtonTest : CardGameTest() {
 
         val fontStyle = FontStyle(
                 bold = true,
-                fontSize = 24f,
+                fontSize = 48f,
                 allCaps = true,
                 fontColor = Color.WHITE,
                 drawShadow = true,
@@ -48,13 +48,13 @@ class MenuButtonTest : CardGameTest() {
                 coreSkin.getDrawable(MenuIcons.BOOK)).apply {
             anchorSide = MenuButton.Side.TOP
             iconSide = MenuButton.Side.LEFT
-            iconSize = 24f
+            iconSize = 48f
         }
         val bottomBtn = MenuButton(coreSkin, fontStyle, "Bottom button",
                 coreSkin.getDrawable(MenuIcons.CARDS)).apply {
             anchorSide = MenuButton.Side.BOTTOM
             iconSide = MenuButton.Side.BOTTOM
-            iconSize = 32f
+            iconSize = 64f
         }
         val leftBtn = MenuButton(coreSkin, fontStyle, "Left button", null).apply {
             anchorSide = MenuButton.Side.LEFT
@@ -63,7 +63,7 @@ class MenuButtonTest : CardGameTest() {
                 coreSkin.getDrawable(MenuIcons.LIST)).apply {
             anchorSide = MenuButton.Side.RIGHT
             iconSide = MenuButton.Side.RIGHT
-            iconSize = 64f
+            iconSize = 128f
         }
         val sideBtns = listOf(topBtn, bottomBtn, leftBtn, rightBtn)
 
@@ -71,7 +71,7 @@ class MenuButtonTest : CardGameTest() {
         val centerBtn = MenuButton(coreSkin, fontStyle, "Enable all", null).apply {
             anchorSide = MenuButton.Side.NONE
             iconSide = MenuButton.Side.RIGHT
-            iconSize = 32f
+            iconSize = 64f
         }
         centerBtn.onClick {
             // Enable or disable all
@@ -85,11 +85,11 @@ class MenuButtonTest : CardGameTest() {
 
         // Add buttons to table
         table.add()
-        table.add(topBtn).height(100f).expandX()
+        table.add(topBtn).height(200f).expandX()
         table.add().row()
-        table.add(leftBtn).height(100f)
-        table.add(centerBtn).height(80f).expand()
-        table.add(rightBtn).height(100f).row()
+        table.add(leftBtn).height(200f)
+        table.add(centerBtn).height(160f).expand()
+        table.add(rightBtn).height(200f).row()
         table.add()
         table.add(bottomBtn).expandX()
         table.add().row()

@@ -53,9 +53,9 @@ class MainMenu(skin: Skin) : MenuTable(skin) {
 
         // Do the layout
         add(topRow).growX().expandY().height(MENU_ROW_HEIGHT)
-                .align(Align.top).pad(0f, 10f, 0f, 10f).row()
+                .align(Align.top).pad(0f, 20f, 0f, 20f).row()
         add(bottomRow).growX().expandY().height(MENU_ROW_HEIGHT)
-                .align(Align.bottom).pad(0f, 10f, 0f, 10f).growX()
+                .align(Align.bottom).pad(0f, 20f, 0f, 10f).growX()
     }
 
     override fun layout() {
@@ -83,7 +83,7 @@ class MainMenu(skin: Skin) : MenuTable(skin) {
             item.button = btn
 
             if (item.shown) {
-                (if (onTopRow) topRow else bottomRow).add(btn).grow().pad(0f, 15f, 0f, 15f)
+                (if (onTopRow) topRow else bottomRow).add(btn).grow().pad(0f, 30f, 0f, 30f)
             }
         }
     }
@@ -126,7 +126,7 @@ class MainMenu(skin: Skin) : MenuTable(skin) {
         const val ITEM_POS_TOP = 0
         const val ITEM_POS_BOTTOM = 1
 
-        private const val MENU_ROW_HEIGHT = 100f
+        private const val MENU_ROW_HEIGHT = 200f
     }
 
 }

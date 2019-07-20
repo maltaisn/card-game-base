@@ -29,7 +29,7 @@ class MdHLineView(skin: Skin) : Container<Image>() {
     init {
         val style: MdHLineViewStyle = skin.get()
         actor = Image(style.separator, Scaling.stretchX)
-        fillX().pad(15f, 0f, 15f, 0f)
+        fillX().pad(30f, 0f, 30f, 0f)
     }
 
     class MdHLineViewStyle {

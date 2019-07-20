@@ -125,7 +125,7 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
         // When a help icon is clicked, show drawer with help text
         drawer.apply {
             content.actor = prefsHelpLabel
-            content.pad(0f, 30f, 0f, 30f)
+            content.pad(0f, 60f, 0f, 60f)
             drawerWidth = Value.percentWidth(0.5f, drawer)
             title = pref.shortTitle ?: pref.title
             shown = true

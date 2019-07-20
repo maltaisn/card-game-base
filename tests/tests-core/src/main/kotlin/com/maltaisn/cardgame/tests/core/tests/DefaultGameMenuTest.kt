@@ -121,8 +121,8 @@ class DefaultGameMenuTest : CardGameTest() {
             ScoresTable.Score(scoresTable.scores.map { it[column].value.toInt() }.sum().toString())
         }
 
-        val scoresView = Container(scoresTable).pad(30f, 15f, 30f, 15f).fill()
-        val scoresPage = PagedSubMenu.Page(1, "Scores", coreSkin.getDrawable(MenuIcons.LIST), SubMenu.ITEM_POS_TOP)
+        val scoresView = Container(scoresTable).pad(60f, 30f, 60f, 30f).fill()
+        val scoresPage = PagedSubMenu.Page(1, "Scores", coreSkin.getDrawable(MenuIcons.CHART), SubMenu.ITEM_POS_TOP)
         scoresPage.content = scoresView
         scoresPage.checked = true
         menu.scoreboardMenu.addItem(scoresPage)

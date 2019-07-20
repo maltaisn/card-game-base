@@ -61,17 +61,17 @@ class ListPrefView(skin: Skin, pref: ListPref) : GamePrefView<ListPref>(skin, pr
 
         val valueBtn = Table()
         valueBtn.touchable = Touchable.enabled
-        valueBtn.add(valueLabel).padRight(10f)
-        valueBtn.add(arrowIcon).size(style.valueFontStyle.fontSize + 8f)
+        valueBtn.add(valueLabel).padRight(20f)
+        valueBtn.add(arrowIcon).size(style.valueFontStyle.fontSize + 16f)
         valueBtn.onClick {
             if (enabled) {
                 valueClickListener?.invoke()
             }
         }
 
-        pad(5f, 0f, 5f, 0f)
-        add(titleLabel).growX().pad(10f, 10f, 10f, 15f)
-        add(valueBtn).growY().pad(0f, 5f, 0f, 5f)
+        pad(10f, 0f, 10f, 0f)
+        add(titleLabel).growX().pad(20f, 20f, 20f, 30f)
+        add(valueBtn).growY().pad(0f, 10f, 0f, 10f)
     }
 
 

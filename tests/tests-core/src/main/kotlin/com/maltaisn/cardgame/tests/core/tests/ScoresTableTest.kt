@@ -56,7 +56,7 @@ class ScoresTableTest : SubmenuContentTest() {
         updateTotalScores()
 
         // Do the layout
-        content.add(table).grow().pad(20f, 100f, 20f, 100f)
+        content.add(table).grow().pad(40f, 200f, 40f, 200f)
         table.itemScrollView.setScrollFocus()
 
         // Action buttons

@@ -21,7 +21,6 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
-import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
 import com.badlogic.gdx.utils.Scaling
 import com.maltaisn.cardgame.defaultSize
 import com.maltaisn.cardgame.widget.CheckableWidget
@@ -70,7 +69,7 @@ class MenuButton(skin: Skin,
         }
 
     /** The icon size (width actually), in pixels. */
-    var iconSize = 32f
+    var iconSize = 64f
         set(value) {
             field = value
             updateIconSize()
@@ -149,7 +148,7 @@ class MenuButton(skin: Skin,
             shadowColor = fontStyle.shadowColor
         }
 
-        pad(10f, 10f, 10f, 10f)
+        pad(20f, 20f, 20f, 20f)
         updateButtonLayout()
 
         this.title = title
@@ -193,12 +192,11 @@ class MenuButton(skin: Skin,
     private fun updateIconViewPadding() {
         val iconCell = getCell(iconImage)
         if (icon != null && title?.isEmpty() != true) {
-            val padding = style.iconTitleMargin
             when (if (iconSide == Side.NONE) anchorSide else iconSide) {
-                Side.NONE, Side.TOP -> iconCell.padBottom(padding)
-                Side.BOTTOM -> iconCell.padTop(padding)
-                Side.LEFT -> iconCell.padRight(padding)
-                Side.RIGHT -> iconCell.padLeft(padding)
+                Side.NONE, Side.TOP -> iconCell.padBottom(30f)
+                Side.BOTTOM -> iconCell.padTop(30f)
+                Side.LEFT -> iconCell.padRight(30f)
+                Side.RIGHT -> iconCell.padLeft(30f)
             }
         } else {
             iconCell.pad(0f)
@@ -214,16 +212,12 @@ class MenuButton(skin: Skin,
     }
 
     override fun drawChildren(batch: Batch, parentAlpha: Float) {
-        val scale = style.backgroundScale
-
         // Draw background
         // Alpha depends on hovered, checked and enabled states
         val alpha = (0.2f + 0.2f * checkAlpha + 0.1f * hoverAlpha) *
                 alpha * parentAlpha * if (enabled) 1f else 0.6f
-        val background = backgroundDrawable as TransformDrawable
         batch.setColor(color.r, color.g, color.b, alpha)
-        background.draw(batch, x, y, 0f, 0f,
-                width / scale, height / scale, scale, scale, 0f)
+        backgroundDrawable.draw(batch, x, y, width, height)
 
         // Draw button content
         batch.setColor(color.r, color.g, color.b, alpha * parentAlpha)
@@ -242,23 +236,14 @@ class MenuButton(skin: Skin,
     }
 
     class MenuButtonStyle {
-        // Background drawables for each side
         lateinit var backgroundCenter: Drawable
         lateinit var backgroundTop: Drawable
         lateinit var backgroundBottom: Drawable
         lateinit var backgroundLeft: Drawable
         lateinit var backgroundRight: Drawable
 
-        /** At what scale the background drawable is drawn. */
-        var backgroundScale = 0f
-
-        /** Color of the title and icon on pressed state. */
         lateinit var selectedColor: Color
-        /** Color of the title and icon on disabled state. */
         lateinit var disabledColor: Color
-
-        /** The margin between the icon and the title. */
-        var iconTitleMargin = 0f
     }
 
     enum class Side {

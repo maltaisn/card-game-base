@@ -46,7 +46,7 @@ class MarkdownViewTest : SubmenuContentTest() {
 
         // Do the layout
         val mdContainer = Container(mdView)
-        mdContainer.fill().pad(0f, 20f, 0f, 20f)
+        mdContainer.fill().pad(0f, 40f, 0f, 40f)
 
         content.add(ScrollView(mdContainer).apply contentPane@{
             addListener(object : InputListener() {

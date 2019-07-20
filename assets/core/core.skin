@@ -1,5 +1,8 @@
 {
   Color: {
+    colorPrimary: { hex: #a3a3a3 }
+    colorPrimaryDisabled: { hex: #747474 }
+    colorAccent: { hex: #38a047 }
     black: { hex: #000000ff }
     white: { hex: #ffffffff }
     textColorBlack: { hex: #1b1b1bff }
@@ -10,32 +13,32 @@
   }
   com.maltaisn.cardgame.widget.FontStyle: {
     normal: {
-      fontSize: 22
+      fontSize: 44
       fontColor: textColorBlack
     }
     normalBold: {
       bold: true
-      fontSize: 22
+      fontSize: 44
       fontColor: textColorBlack
     }
     normalInverse: {
-      fontSize: 22
+      fontSize: 44
       fontColor: white
     }
     menuItem: {
       bold: true
       allCaps: true
-      fontSize: 22
+      fontSize: 44
       fontColor: textColorWhite
       drawShadow: true
       shadowColor: black
     }
     prefValue: {
-      fontSize: 24
+      fontSize: 48
       fontColor: textColorGray
     }
     title: {
-      fontSize: 32
+      fontSize: 64
       fontColor: textColorBlack
       bold: true
     }
@@ -44,44 +47,45 @@
     default: {
       background: background
       border: background-border
-      borderMargin: 13
-      cardBackground: card-background
-      cardSelection: card-selection
-      cardHover: card-hover
-      cardSlot: card-slot
+    }
+  }
+  com.maltaisn.cardgame.widget.card.CardActor$CardActorStyle: {
+    default: {
+      background: card-background
+      selection: card-selection
+      hover: card-hover
+      slot: card-slot
     }
   }
   com.maltaisn.cardgame.widget.Popup$PopupStyle: {
     default: {
       body: popup
       bodyOffsetX: 0
-      bodyOffsetY: 8
+      bodyOffsetY: 14
       topTip: popup-tip-top
       bottomTip: popup-tip-bottom
       leftTip: popup-tip-left
       rightTip: popup-tip-right
-      bottomTipOffsetX: -20
-      bottomTipOffsetY: -4
-      topTipOffsetX: -20
-      topTipOffsetY: -3
-      leftTipOffsetX: -21
-      leftTipOffsetY: -20
+      bottomTipOffsetX: -24
+      bottomTipOffsetY: 5
+      topTipOffsetX: -24
+      topTipOffsetY: -7
+      leftTipOffsetX: -23
+      leftTipOffsetY: -26
       rightTipOffsetX: -2
-      rightTipOffsetY: -20
-      backgroundScale: 0.75
+      rightTipOffsetY: -26
     }
   }
   com.maltaisn.cardgame.widget.PopupButton$PopupButtonStyle: {
     default: {
-      background: btn-popup-background
-      selectionOverlay: btn-popup-hover
+      background: btn-popup
+      selectionOverlay: btn-popup-overlay
       fontStyle: {
-        fontSize: 22
+        fontSize: 44
         fontColor: textColorBlack
         drawShadow: true
         shadowColor: white
       }
-      backgroundScale: 0.75
     }
   }
   com.maltaisn.cardgame.widget.DealerChip$DealerChipStyle: {
@@ -92,21 +96,21 @@
   com.maltaisn.cardgame.widget.Switch$SwitchStyle: {
     default: {
       background: switch-background
-      checkOverlay: switch-checked
-      checkDisabledOverlay: switch-checked-disabled
       thumb: switch-thumb
-      thumbHoverOverlay: switch-thumb-hover
-      scale: 0.75
+      thumbOverlay: switch-thumb-overlay
+      backgroundColor: colorPrimary
+      checkedColor: colorAccent
+      checkedDisabledColor: colorPrimaryDisabled
     }
   }
   com.maltaisn.cardgame.widget.Slider$SliderStyle: {
     default: {
-      trackEmpty: slider-track-empty
-      trackFilled: slider-track-filled
-      trackFilledDisabled: slider-track-filled-disabled
+      track: slider-track
       thumb: slider-thumb
-      thumbHoverOverlay: slider-thumb-hover
-      scale: 0.75
+      thumbOverlay: slider-thumb-overlay
+      trackEmptyColor: colorPrimary
+      trackFilledColor: colorAccent
+      trackFilledDisabledColor: colorPrimaryDisabled
     }
   }
   TextFieldStyle: {
@@ -122,11 +126,11 @@
       arrowDrawable: player-arrow
       nameFontStyle: {
         bold: true
-        fontSize: 22
+        fontSize: 44
         fontColor: { hex: #0000007f }
       }
       scoreFontStyle: {
-        fontSize: 18
+        fontSize: 36
         fontColor: textColorWhite
         drawShadow: true
         shadowColor: black
@@ -140,37 +144,35 @@
       backgroundBottom: btn-menu-bottom
       backgroundLeft: btn-menu-left
       backgroundRight: btn-menu-right
-      backgroundScale: 0.75
       selectedColor: textColorLightGray
       disabledColor: textColorLightGray
-      iconTitleMargin: 15
     }
   }
   com.maltaisn.cardgame.widget.menu.MainMenu$MainMenuStyle: {
     default: {
       itemFontStyle: menuItem
-      itemIconSize: 48
+      itemIconSize: 80
     }
   }
   com.maltaisn.cardgame.widget.menu.SubMenu$SubMenuStyle: {
     default: {
       titleStyle: {
-        fontSize: 48
+        fontSize: 96
         fontColor: textColorWhite
         drawShadow: true
         shadowColor: black
       }
       backArrowIcon: icon-chevron-left
-      backArrowSize: 64
+      backArrowSize: 96
       itemFontStyle: menuItem
-      itemIconSize: 32
+      itemIconSize: 64
       contentBackground: submenu-content-background
     }
   }
   com.maltaisn.cardgame.widget.menu.InGameMenu$InGameMenuStyle: {
     default: {
       itemFontStyle: menuItem
-      itemIconSize: 64
+      itemIconSize: 96
     }
   }
   com.maltaisn.cardgame.widget.menu.MenuDrawer$MenuDrawerStyle: {
@@ -178,13 +180,13 @@
       background: menu-drawer-background
       drawerBackground: menu-drawer
       backBtnFontStyle: {
-        fontSize: 20
+        fontSize: 40
         fontColor: textColorBlack
       }
       backBtnIcon: icon-chevron-left
       backBtnIconColor: textColorDarkGray
       titleFontStyle: {
-        fontSize: 32
+        fontSize: 64
         fontColor: textColorBlack
         bold: true
       }
@@ -208,7 +210,7 @@
     default: {
       headerTitleFontStyle: normalBold
       headerSubtitleFontStyle: {
-        fontSize: 20
+        fontSize: 40
         fontColor: textColorGray
       }
       scoreFontStyle: normal
@@ -269,7 +271,7 @@
       fontStyles: [
         title,
         {
-          fontSize: 24
+          fontSize: 48
           fontColor: textColorBlack
           bold: true
         }
@@ -311,7 +313,7 @@
       aboutIcon: icon-info
       startGameIcon: icon-arrow-right
       backBtnIcon: icon-chevron-left
-      scoreboardBtnIcon: icon-list
+      scoreboardBtnIcon: icon-chart
     }
   }
 }

@@ -34,9 +34,6 @@ object CoreRes {
     const val FONT_SHADER_VERT = "core/font/font.vert"
     const val FONT_SHADER_FRAG = "core/font/font.frag"
 
-    const val CLIP_TABLE_SHADER_VERT = "core/clip-table.vert"
-    const val CLIP_TABLE_SHADER_FRAG = "core/clip-table.frag"
-
     const val CORE_STRINGS_FILE = "core/strings"
     const val CORE_STRINGS_NAME = "core-strings"
 

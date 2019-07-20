@@ -134,7 +134,7 @@ open class TableView(skin: Skin, columnWidths: List<Float>) : Table(skin) {
         add(topTable).grow().row()
 
         if (footerAdapter != null) {
-            add(footerTable).growX().padTop(20f)
+            add(footerTable).growX().padTop(40f)
         }
     }
 

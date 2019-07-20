@@ -45,13 +45,13 @@ class DealerChipTest : ActionBarTest() {
         // Do the layout
         val contentTable = Table().apply {
             add()
-            add(top).height(50f)
+            add(top).height(100f)
             add().row()
-            add(left).width(50f)
+            add(left).width(100f)
             add().grow()
-            add(right).width(50f).row()
+            add(right).width(100f).row()
             add()
-            add(bottom).height(50f)
+            add(bottom).height(100f)
             add().row()
         }
         layout.gameLayer.centerTable.add(contentTable).grow()

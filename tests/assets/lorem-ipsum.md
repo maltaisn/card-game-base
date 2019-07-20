@@ -28,6 +28,11 @@ volutpat nec dictum ut, auctor et felis.
   Suspendisse maximus lacus libero, ullamcorper sodales libero 
 semper et.
 
+Bullet list test
+- Level 1
+    - Level 2
+        - Level 3
+
 ## Ut accumsan ##
 Ut accumsan dui ex, consectetur gravida diam bibendum ut. 
 Donec tempus dui est, vel mollis leo hendrerit quis. Class 

@@ -51,9 +51,9 @@ class TextPrefView(skin: Skin, pref: TextPref) : GamePrefView<TextPref>(skin, pr
             setTextFieldFilter { _, c -> pref.filter == null || c in pref.filter!! }
         }
 
-        pad(5f, 10f, 5f, 20f)
-        add(titleLabel).growX().pad(5f, 0f, 10f, 0f).row()
-        add(textField).growX().pad(5f, 0f, 5f, 0f)
+        pad(10f, 20f, 10f, 40f)
+        add(titleLabel).growX().pad(10f, 0f, 20f, 0f).row()
+        add(textField).growX().pad(10f, 0f, 10f, 0f)
 
         this.enabled = enabled
     }

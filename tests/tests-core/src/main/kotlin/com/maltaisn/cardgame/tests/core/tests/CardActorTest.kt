@@ -42,7 +42,7 @@ class CardActorTest : ActionBarTest() {
             val actor = CardActor(coreSkin, cardSkin, deck.drawTop())
             actor.clickListener = { info { "Card ${actor.card} clicked." } }
             actor.longClickListener = { info { "Card ${actor.card} long clicked." } }
-            actor.size = it * 20f + 80f
+            actor.size = it * 40f + 160f
             cardTable.add(actor).expand()
             actor
         }

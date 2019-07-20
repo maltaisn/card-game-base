@@ -113,7 +113,7 @@ class ScoresTable(skin: Skin, playerCount: Int) : TableView(skin, List(playerCou
             subtitleLabel.setWrap(true)
             subtitleLabel.setAlignment(Align.center)
 
-            table.pad(10f)
+            table.pad(20f)
         }
 
         fun bind(header: Header) {
@@ -135,11 +135,11 @@ class ScoresTable(skin: Skin, playerCount: Int) : TableView(skin, List(playerCou
 
         init {
             table.add(scoreLabel).expand()
-            table.pad(4f)
+            table.pad(10f)
         }
 
         fun bind(score: Score) {
-            cell.pad(8f)
+            cell.pad(15f)
             table.background = when (score.highlight) {
                 Score.Highlight.NONE -> null
                 Score.Highlight.POSITIVE -> style.scoreHighlightPositive

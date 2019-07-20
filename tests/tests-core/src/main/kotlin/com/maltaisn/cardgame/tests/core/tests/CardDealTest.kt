@@ -20,6 +20,7 @@ import com.maltaisn.cardgame.game.PCard
 import com.maltaisn.cardgame.game.drawTop
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.widget.CardGameLayout
+import com.maltaisn.cardgame.widget.card.CardActor
 import com.maltaisn.cardgame.widget.card.CardAnimationLayer
 import com.maltaisn.cardgame.widget.card.CardContainer
 import com.maltaisn.cardgame.widget.card.CardHand
@@ -35,9 +36,12 @@ class CardDealTest : ActionBarTest() {
 
         val topHand = CardHand(coreSkin, cardSkin).apply {
             cards = PCard.fullDecks().drawTop(16)
+            cardSize = CardActor.SIZE_SMALL
         }
 
-        val bottomHand = CardHand(coreSkin, cardSkin)
+        val bottomHand = CardHand(coreSkin, cardSkin).apply {
+            cardSize = CardActor.SIZE_SMALL
+        }
 
         val animLayer = layout.cardAnimationLayer
         animLayer.register(topHand, bottomHand)
@@ -80,8 +84,8 @@ class CardDealTest : ActionBarTest() {
 
         // Do the layout
         layout.gameLayer.centerTable.apply {
-            add(topHand).pad(30f).grow().row()
-            add(bottomHand).pad(30f).grow()
+            add(topHand).pad(60f).grow().row()
+            add(bottomHand).pad(60f).grow()
         }
     }
 

@@ -30,7 +30,7 @@ class MdTextView(skin: Skin, element: MdElement.Text) : Container<SdfLabel>() {
         val style: MdTextViewStyle = skin.get()
         actor = SdfLabel(skin, style.fontStyle, element.text)
         actor.setWrap(true)
-        fill().pad(5f, 0f, 10f, 0f)
+        fill().pad(10f, 0f, 20f, 0f)
     }
 
     class MdTextViewStyle {

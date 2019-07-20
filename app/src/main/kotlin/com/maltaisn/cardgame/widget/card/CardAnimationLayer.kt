@@ -385,7 +385,7 @@ class CardAnimationLayer : Group() {
                     assert(actions.size == 1)
                     assert(parent === this@CardAnimationLayer)
 
-                    val action = actor.moveAction!!
+                    val action = actor.moveAction!!  // FIXME NPE here when called just before animation ends?
                     container.addActor(this)
                     src = null
                     dst = null
@@ -665,7 +665,7 @@ class CardAnimationLayer : Group() {
         const val UPDATE_DURATION = 0.4f
 
         /** The duration between each card dealt. Values less than the update duration look worse. */
-        const val DEAL_DELAY: Float = 0.4f
+        const val DEAL_DELAY: Float = 0.45f
     }
 
 }

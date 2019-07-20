@@ -20,7 +20,6 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
-import com.maltaisn.cardgame.widget.GameLayer
 import ktx.collections.lastIndex
 import ktx.math.vec2
 
@@ -41,14 +40,15 @@ class CardStack : CardContainer {
 
     constructor(coreSkin: Skin, cardSkin: Skin) : super(coreSkin, cardSkin)
 
-    constructor(coreStyle: GameLayer.CoreStyle, cardStyle: CardActor.CardStyle) : super(coreStyle, cardStyle)
+    constructor(cardActorStyle: CardActor.CardActorStyle, cardStyle: CardActor.CardStyle) :
+            super(cardActorStyle, cardStyle)
 
 
     override fun drawChildren(batch: Batch, parentAlpha: Float) {
         if (drawSlot && children.isEmpty) {
             // Draw the slot if there's no cards in the stack.
             val offset = computeAlignOffset(cardWidth, cardHeight)
-            val slot = coreStyle.cardSlot as TransformDrawable
+            val slot = cardActorStyle.slot as TransformDrawable
             batch.setColor(1f, 1f, 1f, parentAlpha)
             slot.draw(batch, offset.x - slot.leftWidth * cardScale,
                     offset.y - slot.bottomHeight * cardScale, 0f, 0f,

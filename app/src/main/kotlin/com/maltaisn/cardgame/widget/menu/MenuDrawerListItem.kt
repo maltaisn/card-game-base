@@ -51,7 +51,7 @@ class MenuDrawerListItem(skin: Skin) : CheckableWidget(), Pool.Poolable {
         label.touchable = Touchable.disabled
 
         touchable = Touchable.enabled
-        add(label).grow().pad(15f, 30f, 15f, 30f)
+        add(label).grow().pad(30f, 60f, 30f, 60f)
 
         setSize(prefWidth, prefHeight)
 

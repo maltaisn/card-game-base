@@ -31,7 +31,7 @@ class GameLayer(skin: Skin) : Table(skin) {
      * The size of the tables hidden on each side in pixels.
      * These can be used to put other player hands or other hidden card containers.
      */
-    var sideTableSize = 200f
+    var sideTableSize = 400f
         set(value) {
             field = value
             topTable.height = value
@@ -68,30 +68,16 @@ class GameLayer(skin: Skin) : Table(skin) {
                 centerTable.width, centerTable.height)
 
         // Draw the background border
-        val margin = style.borderMargin
-        style.border.draw(batch, margin, margin,
-                centerTable.width - 2 * margin,
-                centerTable.height - 2 * margin)
+        batch.setColor(1f, 1f, 1f, parentAlpha * 0.3f)
+        style.border.draw(batch, 25f, 25f,
+                centerTable.width - 50f, centerTable.height - 50f)
 
         super.drawChildren(batch, parentAlpha)
     }
 
     class CoreStyle {
-        /** Drawable for the game background */
         lateinit var background: Drawable
-        /** Drawable for the background border. (9-patch) */
         lateinit var border: Drawable
-        /** Margin size for the background border. */
-        var borderMargin = 0f
-
-        /** Drawable for the background of a card, including its shadow. Must have the largest padding. (9-patch) */
-        lateinit var cardBackground: Drawable
-        /** Drawable for the hover. (9-patch) */
-        lateinit var cardHover: Drawable
-        /** Drawable for the press. Must have no padding. (9-patch) */
-        lateinit var cardSelection: Drawable
-        /** Drawable for the slot. Must have no padding. (9-patch) */
-        lateinit var cardSlot: Drawable
     }
 
 }

@@ -65,7 +65,7 @@ class MenuDrawerList(skin: Skin) : VerticalGroup() {
     private val itemActorPool = pool { MenuDrawerListItem(skin) }
 
     init {
-        grow().space(5f)
+        grow().space(10f)
     }
 
 }

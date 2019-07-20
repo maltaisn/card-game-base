@@ -39,7 +39,7 @@ class CardStackTest : CardGameTest() {
         val animLayer = layout.cardAnimationLayer
 
         val leftStack = CardStack(coreSkin, cardSkin).apply {
-            cards = deck.drawTop(20)
+            cards = deck.drawTop(3)
             dragListener = { animLayer.dragCards(it) }
             drawSlot = true
             playListener = object : CardContainer.PlayListener {
@@ -52,7 +52,7 @@ class CardStackTest : CardGameTest() {
         }
 
         val rightStack = CardStack(coreSkin, cardSkin).apply {
-            cards = deck.drawTop(20)
+            cards = deck.drawTop(3)
             dragListener = { animLayer.dragCards(it) }
             playListener = object : CardContainer.PlayListener {
                 override fun canCardsBePlayed(actors: List<CardActor>, src: CardContainer, pos: Vector2) = true

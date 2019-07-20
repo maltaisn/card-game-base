@@ -37,9 +37,9 @@ class SwitchPrefView(skin: Skin, pref: SwitchPref) : GamePrefView<SwitchPref>(sk
         switch.check(pref.value, false)
         switch.checkListener = { pref.value = it }
 
-        pad(10f, 0f, 10f, 0f)
-        add(titleLabel).growX().pad(0f, 10f, 0f, 10f)
-        add(switch).growY().pad(0f, 10f, 0f, 10f)
+        pad(20f, 0f, 20f, 0f)
+        add(titleLabel).growX().pad(0f, 20f, 0f, 20f)
+        add(switch).growY().pad(0f, 20f, 0f, 20f)
 
         this.enabled = enabled
     }

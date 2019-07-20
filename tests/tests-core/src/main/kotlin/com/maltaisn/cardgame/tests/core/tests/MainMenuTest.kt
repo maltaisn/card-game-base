@@ -52,7 +52,7 @@ class MainMenuTest : ActionBarTest() {
         }
 
         layout.gameLayer.centerTable.apply {
-            getCell(btnTable).padBottom(20f)
+            getCell(btnTable).padBottom(40f)
             add(menu).grow()
         }
 

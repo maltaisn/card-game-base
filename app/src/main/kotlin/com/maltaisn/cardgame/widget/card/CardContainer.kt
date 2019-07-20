@@ -25,9 +25,8 @@ import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.game.Card
-import com.maltaisn.cardgame.widget.action.ActionDelegate
 import com.maltaisn.cardgame.widget.FboWidgetGroup
-import com.maltaisn.cardgame.widget.GameLayer
+import com.maltaisn.cardgame.widget.action.ActionDelegate
 import com.maltaisn.cardgame.widget.action.TimeAction
 import ktx.actors.alpha
 import ktx.collections.isNotEmpty
@@ -41,7 +40,7 @@ import kotlin.math.min
  * The base class for a widget group that contains card actors.
  * All card containers can support animations when registered to the [CardAnimationLayer].
  */
-abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
+abstract class CardContainer(val cardActorStyle: CardActor.CardActorStyle,
                              val cardStyle: CardActor.CardStyle) : FboWidgetGroup() {
 
     /** The actors for the cards. When an actor is moved, this list is immediately updated. */
@@ -159,8 +158,7 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
 
 
     constructor(coreSkin: Skin, cardSkin: Skin) :
-            this(coreSkin.get<GameLayer.CoreStyle>(),
-                    cardSkin.get<CardActor.CardStyle>())
+            this(coreSkin.get<CardActor.CardActorStyle>(), cardSkin.get<CardActor.CardStyle>())
 
     override fun draw(batch: Batch, parentAlpha: Float) {
         x += translate.x
@@ -311,7 +309,7 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
         while (actors.size < newCards.size) {
             val card = newCards[actors.size]
             if (card != null) {
-                val actor = CardActor(coreStyle, cardStyle, card)
+                val actor = CardActor(cardActorStyle, cardStyle, card)
                 actor.enabled = enabled
                 actor.clickListener = cardClickListener
                 actor.longClickListener = cardLongClickListener
@@ -610,7 +608,7 @@ abstract class CardContainer(val coreStyle: GameLayer.CoreStyle,
         const val TRANSITION_DURATION = 0.5f
 
         /** The minimum dragging distance in pixels for a card to be effectively dragged. */
-        private const val MIN_DRAG_DISTANCE = 10f
+        private const val MIN_DRAG_DISTANCE = 20f
 
         private val TRANSITION_INTERPOLATION: Interpolation = Interpolation.smooth
     }

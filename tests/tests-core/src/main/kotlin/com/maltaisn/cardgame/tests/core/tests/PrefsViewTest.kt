@@ -58,7 +58,7 @@ class PrefsViewTest : SubmenuContentTest(), PrefEntry.PrefListener {
 
         // Do the layout
         val prefsContainer = Container(prefsView)
-        prefsContainer.fill().pad(0f, 20f, 0f, 20f)
+        prefsContainer.fill().pad(0f, 40f, 0f, 40f)
 
         content.add(ScrollView(prefsContainer).apply contentPane@{
             addListener(object : InputListener() {

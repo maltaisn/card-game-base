@@ -81,15 +81,15 @@ object DesktopLauncher {
     }
 
     private fun runTest(testName: String) {
-        val config = Lwjgl3ApplicationConfiguration()
-        config.setTitle("Cards")
-        config.setWindowSizeLimits(960, 540, -1, -1)
-
         Lwjgl3Application(object : CardGameApp() {
             override fun create() {
                 setScreen(CardGameTests.newTest(testName))
             }
-        }, config)
+        }, Lwjgl3ApplicationConfiguration().apply {
+            setTitle("Cards")
+            setWindowedMode(1440, 810)
+            setWindowSizeLimits(960, 540, -1, -1)
+        })
     }
 
 }

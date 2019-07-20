@@ -54,7 +54,7 @@ class PrefCategoryView(skin: Skin, category: PrefCategory) :
             setWrap(true)
             setAlignment(Align.left)
         }
-        add(titleLabel).growX().pad(30f, 10f, 30f, 10f).row()
+        add(titleLabel).growX().pad(60f, 20f, 60f, 20f).row()
 
         val prefs = category.prefs.values
         for (pref in prefs) {
@@ -73,7 +73,7 @@ class PrefCategoryView(skin: Skin, category: PrefCategory) :
             // Separator between preferences
             if (pref !== prefs.last()) {
                 val separator = Image(style.separator, Scaling.stretchX)
-                add(separator).growX().pad(10f, 15f, 10f, 0f).row()
+                add(separator).growX().pad(10f, 30f, 20f, 0f).row()
             }
         }
 

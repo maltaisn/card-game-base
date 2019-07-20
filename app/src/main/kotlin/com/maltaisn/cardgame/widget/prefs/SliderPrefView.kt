@@ -66,10 +66,10 @@ class SliderPrefView(skin: Skin, pref: SliderPref) : GamePrefView<SliderPref>(sk
             }
         }
 
-        pad(5f, 0f, 5f, 0f)
-        add(titleLabel).growX().pad(5f, 10f, 5f, 10f)
-        add(valueLabel).pad(5f, 5f, 5f, 20f).row()
-        add(slider).growX().colspan(2).pad(5f, 0f, 5f, 0f)
+        pad(10f, 0f, 10f, 0f)
+        add(titleLabel).growX().pad(10f, 20f, 10f, 20f)
+        add(valueLabel).pad(10f, 10f, 10f, 40f).row()
+        add(slider).growX().colspan(2).pad(10f, 0f, 10f, 0f)
 
         this.enabled = enabled
     }

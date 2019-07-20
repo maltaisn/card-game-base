@@ -49,11 +49,11 @@ class CardAnimationTest : SingleActionTest() {
 
         // Do the layout
         val table = Table()
-        table.add(stack1).pad(20f).grow()
-        table.add(stack2).pad(20f).grow()
+        table.add(stack1).pad(40f).grow()
+        table.add(stack2).pad(40f).grow()
         table.row()
-        table.add(group2).colspan(2).pad(20f).padBottom(0f).grow()
-        centerTable.add(group1).pad(20f).fill()
+        table.add(group2).colspan(2).pad(40f).padBottom(0f).grow()
+        centerTable.add(group1).pad(40f).fill()
         centerTable.add(table).grow()
 
         group1.apply {

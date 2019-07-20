@@ -22,12 +22,7 @@ import com.badlogic.gdx.graphics.Color
 data class FontStyle(
         var bold: Boolean = false,
         var allCaps: Boolean = false,
-        var fontSize: Float = 24f,
+        var fontSize: Float = 48f,
         var fontColor: Color = Color.WHITE,
         var drawShadow: Boolean = false,
-        var shadowColor: Color = Color.BLACK) {
-
-    /** Constructor for reflection */
-    constructor() : this(bold = false)
-
-}
+        var shadowColor: Color = Color.BLACK)

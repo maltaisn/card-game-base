@@ -34,7 +34,7 @@ import ktx.style.get
 class DealerChip(skin: Skin) : Image(skin.get<DealerChipStyle>().drawable, Scaling.fit) {
 
     /** Distance of the chip from the actor. */
-    var distance = 10f
+    var distance = 20f
 
     /** The actor on which the chip is attached to, or `null` if not shown. */
     var actor: Actor? = null
@@ -55,6 +55,7 @@ class DealerChip(skin: Skin) : Image(skin.get<DealerChipStyle>().drawable, Scali
 
     init {
         isVisible = false
+        setSize(prefWidth, prefHeight)
     }
 
 
@@ -73,9 +74,9 @@ class DealerChip(skin: Skin) : Image(skin.get<DealerChipStyle>().drawable, Scali
         transitionAction?.end()
     }
 
-    override fun getPrefWidth() = 48f
+    override fun getPrefWidth() = 96f
 
-    override fun getPrefHeight() = 48f
+    override fun getPrefHeight() = 96f
 
     /**
      * Show chip on a [side] of an [actor].
@@ -140,7 +141,7 @@ class DealerChip(skin: Skin) : Image(skin.get<DealerChipStyle>().drawable, Scali
 
 
     private inner class FadeAction :
-            TimeAction(0.5f, Interpolation.smooth, reversed = !shown) {
+            TimeAction(FADE_DURATION, Interpolation.smooth, reversed = !shown) {
 
         init {
             isVisible = true
@@ -163,7 +164,7 @@ class DealerChip(skin: Skin) : Image(skin.get<DealerChipStyle>().drawable, Scali
     }
 
     private inner class MoveAction(val startX: Float, val startY: Float) :
-            TimeAction(0.3f, Interpolation.smooth) {
+            TimeAction(MOVE_DURATION, Interpolation.smooth) {
 
         val endPos = getChipEndPosition()
 
@@ -181,6 +182,11 @@ class DealerChip(skin: Skin) : Image(skin.get<DealerChipStyle>().drawable, Scali
 
     class DealerChipStyle {
         lateinit var drawable: Drawable
+    }
+
+    companion object {
+        const val FADE_DURATION = 0.3f
+        const val MOVE_DURATION = 0.4f
     }
 
 }

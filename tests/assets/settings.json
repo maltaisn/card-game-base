@@ -4,7 +4,7 @@
     interface_category: {
       type: "category"
       title: "@string/pref_interface"
-      icon: "icon-book"
+      icon: "icon-pencil"
       prefs: {
         debug: {
           type: "switch"

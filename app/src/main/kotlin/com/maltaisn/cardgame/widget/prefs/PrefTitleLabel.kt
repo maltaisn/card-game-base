@@ -37,7 +37,7 @@ class PrefTitleLabel(skin: Skin, sdfStyle: FontStyle, text: CharSequence? = null
     /** The listener called when the icon is clicked. */
     var iconClickListener: (() -> Unit)? = null
 
-    private val iconSize = sdfStyle.fontSize + 4f
+    private val iconSize = sdfStyle.fontSize + 8f
     private val iconRect = Rectangle(0f, 1f - ICON_PADDING,
             iconSize + 2 * ICON_PADDING, iconSize + 2 * ICON_PADDING)
 
@@ -58,7 +58,7 @@ class PrefTitleLabel(skin: Skin, sdfStyle: FontStyle, text: CharSequence? = null
             val lastLine = glyphLayout.runs.last()
             val icon = helpIcon as TransformDrawable
             val scale = iconSize / icon.minWidth
-            iconRect.x = lastLine.x + lastLine.width + 10f - ICON_PADDING
+            iconRect.x = lastLine.x + lastLine.width + 20f - ICON_PADDING
             batch.setColor(color.r, color.g, color.b,
                     color.a * parentAlpha * if (enabled) 1f else 0.5f)
             icon.draw(batch, x + iconRect.x + ICON_PADDING, y + iconRect.y + ICON_PADDING,
@@ -67,7 +67,7 @@ class PrefTitleLabel(skin: Skin, sdfStyle: FontStyle, text: CharSequence? = null
     }
 
     companion object {
-        private const val ICON_PADDING = 5f
+        private const val ICON_PADDING = 10f
     }
 
 }

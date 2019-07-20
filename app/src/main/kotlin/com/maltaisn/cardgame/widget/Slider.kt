@@ -18,6 +18,7 @@ package com.maltaisn.cardgame.widget
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Vector2
@@ -27,7 +28,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
-import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
 import com.maltaisn.cardgame.widget.action.ActionDelegate
 import com.maltaisn.cardgame.widget.action.TimeAction
 import com.maltaisn.cardgame.withinBounds
@@ -147,7 +147,7 @@ class Slider(skin: Skin) : SelectableWidget() {
                             Vector2.len(event.stageX - pressStagePos.x,
                                     event.stageY - pressStagePos.y) < MAX_SLIDE_DRAG_DISTANCE) {
                         // To slide, touch must start and end within bounds and touch must not have been dragged too much.
-                        pressOffset = style.thumb.minWidth * style.scale / 2
+                        pressOffset = style.thumb.minWidth / 2
                         slideTo(computeProgressForX(x))
                     }
                     sliderPressed = false
@@ -185,7 +185,7 @@ class Slider(skin: Skin) : SelectableWidget() {
 
             /** Returns true if point at ([x]; [y]) is on the slider thumb. (in actor coordinates) */
             private fun isPointInThumb(x: Float, y: Float): Boolean {
-                val radius = style.thumb.minWidth * style.scale / 2
+                val radius = style.thumb.minWidth / 2
                 return Vector2.len(thumbX + radius - x, radius - y) <= radius
             }
 
@@ -204,37 +204,37 @@ class Slider(skin: Skin) : SelectableWidget() {
     override fun draw(batch: Batch, parentAlpha: Float) {
         super.draw(batch, parentAlpha)
 
-        val scale = style.scale
-
-        val trackEmpty = style.trackEmpty as TransformDrawable
-        val trackFilled = (if (enabled) style.trackFilled else style.trackFilledDisabled) as TransformDrawable
-        val thumb = style.thumb as TransformDrawable
-        val thumbHover = style.thumbHoverOverlay as TransformDrawable
+        val track = style.track
+        val thumb = style.thumb
+        val thumbOverlay = style.thumbOverlay
 
         val percentProgress = (realProgress - minProgress) / (maxProgress - minProgress)
-        val trackX = (thumb.minWidth - trackEmpty.minHeight) * scale / 2
-        val trackY = (thumb.minHeight - trackEmpty.minHeight) * scale / 2
-        trackWidth = width + (trackEmpty.minHeight - thumb.minWidth) * scale
+        val trackX = (thumb.minWidth - track.minHeight) / 2
+        val trackY = (thumb.minHeight - track.minHeight) / 2
+        trackWidth = width + (track.minHeight - thumb.minWidth)
         trackFilledWidth = trackWidth * percentProgress
-        thumbX = (width - thumb.minWidth * scale) * percentProgress
+        thumbX = (width - thumb.minWidth) * percentProgress
 
         // Draw track, filled on the left side of the thumb and empty on the right side
-        batch.setColor(color.r, color.g, color.b, parentAlpha)
-        trackEmpty.draw(batch, x + trackX + trackFilledWidth, y + trackY, 0f, 0f,
-                (trackWidth - trackFilledWidth) / scale, trackEmpty.minHeight, scale, scale, 0f)
-        trackFilled.draw(batch, x + trackX, y + trackY, 0f, 0f, trackFilledWidth / scale,
-                trackFilled.minHeight, scale, scale, 0f)
+        val emptyColor = style.trackEmptyColor
+        batch.setColor(color.r * emptyColor.r, color.g * emptyColor.g,
+                color.b * emptyColor.b, parentAlpha)
+        track.draw(batch, x + trackX + trackFilledWidth, y + trackY,
+                (trackWidth - trackFilledWidth), track.minHeight)
+
+        val filledColor = if (enabled) style.trackFilledColor else style.trackFilledDisabledColor
+        batch.setColor(color.r * filledColor.r, color.g * filledColor.g,
+                color.b * filledColor.b, parentAlpha)
+        track.draw(batch, x + trackX, y + trackY, trackFilledWidth, track.minHeight)
 
         // Draw thumb
         batch.setColor(color.r, color.g, color.b, parentAlpha)
-        thumb.draw(batch, x + thumbX, y, 0f, 0f, thumb.minWidth,
-                thumb.minHeight, scale, scale, 0f)
+        thumb.draw(batch, x + thumbX, y, thumb.minWidth, thumb.minHeight)
 
         // Draw thumb hover/press/disabled overlay
         batch.setColor(color.r, color.g, color.b, parentAlpha *
                 (hoverAlpha + pressAlpha) * 0.1f + if (enabled) 0f else 0.2f)
-        thumbHover.draw(batch, x + thumbX, y, 0f, 0f, thumbHover.minWidth,
-                thumbHover.minHeight, scale, scale, 0f)
+        thumbOverlay.draw(batch, x + thumbX, y, thumbOverlay.minWidth, thumbOverlay.minHeight)
     }
 
     override fun validate() {
@@ -254,11 +254,11 @@ class Slider(skin: Skin) : SelectableWidget() {
         }
     }
 
-    override fun getMinWidth() = style.thumb.minWidth * style.scale + 20f
+    override fun getMinWidth() = style.thumb.minWidth + 40f
 
     override fun getPrefWidth() = 0f
 
-    override fun getPrefHeight() = style.thumb.minHeight * style.scale
+    override fun getPrefHeight() = style.thumb.minHeight
 
     override fun clearActions() {
         super.clearActions()
@@ -286,17 +286,17 @@ class Slider(skin: Skin) : SelectableWidget() {
 
 
     class SliderStyle {
-        lateinit var trackEmpty: Drawable
-        lateinit var trackFilled: Drawable
-        lateinit var trackFilledDisabled: Drawable
+        lateinit var track: Drawable
+        lateinit var trackEmptyColor: Color
+        lateinit var trackFilledColor: Color
+        lateinit var trackFilledDisabledColor: Color
         lateinit var thumb: Drawable
-        lateinit var thumbHoverOverlay: Drawable
-        var scale = 0f
+        lateinit var thumbOverlay: Drawable
     }
 
     companion object {
         /** Maximum distance that touch can be dragged to allow slide when clicking on track. */
-        private const val MAX_SLIDE_DRAG_DISTANCE = 10f
+        private const val MAX_SLIDE_DRAG_DISTANCE = 20f
     }
 
 }

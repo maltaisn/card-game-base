@@ -32,7 +32,7 @@ class MdListView(skin: Skin, list: MdElement.List) : Table() {
 
     init {
         val style: MdListViewStyle = skin.get()
-        pad(0f, 5f, 10f, 0f)
+        pad(0f, 10f, 20f, 0f)
 
         var n = 1
         for (element in list.elements) {
@@ -41,17 +41,17 @@ class MdListView(skin: Skin, list: MdElement.List) : Table() {
                 if (list.type == MdElement.List.Type.NUMBER) {
                     val label = SdfLabel(skin, style.numberFontStyle, list.getItemMarker(n) + '.')
                     label.setAlignment(Align.right)
-                    add(label).minWidth(30f).pad(5f, 5f, 10f, 5f)
+                    add(label).minWidth(60f).pad(10f, 10f, 20f, 10f)
                 } else {
                     val bullet = Image(style.bulletDrawables[list.level], Scaling.fit)
-                    add(bullet).size(10f, 30f).pad(5f, 5f, 10f, 5f)
+                    add(bullet).size(20f, 60f).pad(10f, 10f, 20f, 10f)
                 }.align(Align.top)
                 n++
             } else {
                 add()
             }
 
-            add(element.createView(skin)).growX().padLeft(10f).row()
+            add(element.createView(skin)).growX().padLeft(20f).row()
         }
     }
 

@@ -32,7 +32,7 @@ abstract class SubmenuContentTest : ActionBarTest() {
         val content = Table()
         content.background = coreSkin.getDrawable("submenu-content-background")
         layout.gameLayer.centerTable.add(content).grow()
-                .pad(0f, 20f, 0f, 20f)
+                .pad(0f, 80f, 0f, 80f)
         layoutContent(layout, content)
     }
 
