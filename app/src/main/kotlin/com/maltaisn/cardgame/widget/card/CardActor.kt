@@ -151,44 +151,44 @@ class CardActor(val style: CardActorStyle,
     }
 
 
-    override fun draw(batch: Batch, parentAlpha: Float) {
+    override fun drawChildren(batch: Batch, parentAlpha: Float) {
         if (card != null) {
             batch.setColor(color.r, color.g, color.b, alpha * parentAlpha)
 
             // Draw background
-            drawCenteredDrawable(batch, style.background as TransformDrawable)
+            (style.background as TransformDrawable).drawCentered(batch)
 
             // Draw card
             val scale = size / cardStyle.cardWidth
-            val card = (if (shown) cardStyle.cards[card!!.value] else cardStyle.back) as TransformDrawable
+            val card = (if (shown) cardStyle.cards[card!!.value] else cardStyle.back)
             card.draw(batch, x + (width - card.minWidth * scale) / 2,
-                    y + (height - card.minHeight * scale) / 2, 0f, 0f,
-                    card.minWidth, card.minHeight, scale, scale, 0f)
+                    y + (height - card.minHeight * scale) / 2,
+                    card.minWidth * scale, card.minHeight * scale)
 
             // Draw hover
             if (hoverAlpha != 0f) {
                 batch.setColor(color.r, color.g, color.b, alpha * parentAlpha * hoverAlpha)
-                drawCenteredDrawable(batch, style.hover as TransformDrawable)
+                (style.hover as TransformDrawable).drawCentered(batch)
             }
 
             // Draw press
             if (pressAlpha != 0f) {
                 batch.setColor(color.r, color.g, color.b, alpha * parentAlpha * pressAlpha)
-                drawCenteredDrawable(batch, style.selection as TransformDrawable)
+                (style.selection as TransformDrawable).drawCentered(batch)
             }
         }
 
-        super.draw(batch, parentAlpha)
+        super.drawChildren(batch, parentAlpha)
     }
 
     /** Draw a drawable to fit around the actor when considering padding. */
-    private fun drawCenteredDrawable(batch: Batch, drawable: TransformDrawable) {
+    private fun TransformDrawable.drawCentered(batch: Batch) {
         val scale = size / cardStyle.cardWidth
-        drawable.draw(batch, x - drawable.leftWidth * scale,
-                y - drawable.bottomHeight * scale, 0f, 0f,
-                width / scale + drawable.leftWidth + drawable.rightWidth,
-                height / scale + drawable.bottomHeight + drawable.topHeight,
-                scale, scale, 0f)
+        val imageWidth = cardStyle.cardWidth + leftWidth + rightWidth
+        val imageHeight = cardStyle.cardHeight + bottomHeight + topHeight
+        draw(batch, x + (width - imageWidth * scale) / 2,
+                y + (height - imageHeight * scale) / 2, 0f, 0f,
+                imageWidth, imageHeight, scale, scale, 0f)
     }
 
     override fun clearActions() {

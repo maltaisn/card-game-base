@@ -58,5 +58,8 @@ class CardActorTest : ActionBarTest() {
                 actor.shown = shown
             }
         }
+        addToggleBtn("Debug") { _, debug ->
+            layout.gameLayer.centerTable.setDebug(debug, true)
+        }
     }
 }

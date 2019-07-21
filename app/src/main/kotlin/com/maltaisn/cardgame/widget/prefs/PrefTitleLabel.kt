@@ -20,7 +20,6 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
-import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.SdfLabel
 import ktx.actors.onClickEvent
@@ -56,13 +55,11 @@ class PrefTitleLabel(skin: Skin, sdfStyle: FontStyle, text: CharSequence? = null
         // Draw the help icon
         if (helpIcon != null) {
             val lastLine = glyphLayout.runs.last()
-            val icon = helpIcon as TransformDrawable
-            val scale = iconSize / icon.minWidth
             iconRect.x = lastLine.x + lastLine.width + 20f - ICON_PADDING
             batch.setColor(color.r, color.g, color.b,
                     color.a * parentAlpha * if (enabled) 1f else 0.5f)
-            icon.draw(batch, x + iconRect.x + ICON_PADDING, y + iconRect.y + ICON_PADDING,
-                    0f, 0f, icon.minWidth, icon.minHeight, scale, scale, 0f)
+            helpIcon.draw(batch, x + iconRect.x + ICON_PADDING,
+                    y + iconRect.y + ICON_PADDING, iconSize, iconSize)
         }
     }
 

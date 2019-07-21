@@ -19,7 +19,6 @@ package com.maltaisn.cardgame.widget.card
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
 import ktx.collections.lastIndex
 import ktx.math.vec2
 
@@ -48,13 +47,12 @@ class CardStack : CardContainer {
         if (drawSlot && children.isEmpty) {
             // Draw the slot if there's no cards in the stack.
             val offset = computeAlignOffset(cardWidth, cardHeight)
-            val slot = cardActorStyle.slot as TransformDrawable
+            val slot = cardActorStyle.slot
             batch.setColor(1f, 1f, 1f, parentAlpha)
             slot.draw(batch, offset.x - slot.leftWidth * cardScale,
-                    offset.y - slot.bottomHeight * cardScale, 0f, 0f,
-                    cardWidth / cardScale + slot.leftWidth + slot.rightWidth,
-                    cardHeight / cardScale + slot.bottomHeight + slot.topHeight,
-                    cardScale, cardScale, 0f)
+                    offset.y - slot.bottomHeight * cardScale,
+                    cardWidth + slot.leftWidth + slot.rightWidth,
+                    cardHeight + slot.bottomHeight + slot.topHeight)
         }
 
         super.drawChildren(batch, parentAlpha)
