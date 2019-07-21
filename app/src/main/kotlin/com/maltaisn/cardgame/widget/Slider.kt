@@ -16,6 +16,7 @@
 
 package com.maltaisn.cardgame.widget
 
+import com.badlogic.gdx.Application
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
@@ -23,7 +24,6 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Action
-import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
@@ -155,25 +155,8 @@ class Slider(skin: Skin) : SelectableWidget() {
             }
 
             override fun touchDragged(event: InputEvent, x: Float, y: Float, pointer: Int) {
-                if (enabled) {
-                    if (pointer == -1) {
-                        updateHoveredState(x, y)
-                    }
-
-                    if (pressed) {
-                        progress = computeProgressForX(x)
-                    }
-                }
-            }
-
-            override fun mouseMoved(event: InputEvent, x: Float, y: Float): Boolean {
-                updateHoveredState(x, y)
-                return false
-            }
-
-            override fun exit(event: InputEvent, x: Float, y: Float, pointer: Int, toActor: Actor?) {
-                if (pointer == -1) {
-                    updateHoveredState(x, y)
+                if (enabled && pressed) {
+                    progress = computeProgressForX(x)
                 }
             }
 
@@ -182,23 +165,28 @@ class Slider(skin: Skin) : SelectableWidget() {
                 val newProgress = (x - pressOffset) / trackWidth * (maxProgress - minProgress) + minProgress
                 return (step * round(newProgress / step)).coerceIn(minProgress, maxProgress)
             }
-
-            /** Returns true if point at ([x]; [y]) is on the slider thumb. (in actor coordinates) */
-            private fun isPointInThumb(x: Float, y: Float): Boolean {
-                val radius = style.thumbSize / 2
-                return Vector2.len(thumbX + radius - x, radius - y) <= radius
-            }
-
-            private fun updateHoveredState(x: Float, y: Float) {
-                if (enabled) {
-                    val newHovered = isPointInThumb(x, y)
-                    if (hovered != newHovered) {
-                        hovered = newHovered
-                        addHoverAction()
-                    }
-                }
-            }
         })
+    }
+
+    /** Returns true if point at ([x]; [y]) is on the slider thumb. (in actor coordinates) */
+    private fun isPointInThumb(x: Float, y: Float): Boolean {
+        val radius = style.thumbSize / 2
+        return Vector2.len(thumbX + radius - x, radius - y) <= radius
+    }
+
+    override fun act(delta: Float) {
+        super.act(delta)
+
+        if (Gdx.app.type == Application.ApplicationType.Desktop && enabled) {
+            val mousePos = vec2(Gdx.input.x.toFloat(), Gdx.input.y.toFloat())
+            stageToLocalCoordinates(stage.screenToStageCoordinates(mousePos))
+
+            val newHovered = isPointInThumb(mousePos.x, mousePos.y)
+            if (hovered != newHovered) {
+                hovered = newHovered
+                addHoverAction()
+            }
+        }
     }
 
     override fun draw(batch: Batch, parentAlpha: Float) {

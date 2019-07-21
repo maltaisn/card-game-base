@@ -16,17 +16,18 @@
 
 package com.maltaisn.cardgame.widget
 
+import com.badlogic.gdx.Application
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
-import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
-import com.maltaisn.cardgame.withinBounds
 import ktx.actors.setKeyboardFocus
+import ktx.math.vec2
 import ktx.style.get
 import kotlin.math.absoluteValue
 
@@ -38,7 +39,7 @@ class Switch(skin: Skin) : CheckableWidget() {
 
     val style: SwitchStyle = skin.get()
 
-    private var thumbX = 0f
+    private var thumbPos = vec2()
 
     init {
         // A capture listener is used to intercept the touch down event,
@@ -50,8 +51,10 @@ class Switch(skin: Skin) : CheckableWidget() {
 
             override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                 if (enabled && button == Input.Buttons.LEFT) {
-                    pressed = true
-                    addPressAction()
+                    if (isPointInThumb(x, y)) {
+                        pressed = true
+                        addPressAction()
+                    }
 
                     setKeyboardFocus()
 
@@ -67,8 +70,10 @@ class Switch(skin: Skin) : CheckableWidget() {
 
             override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
                 if (enabled && button == Input.Buttons.LEFT) {
-                    pressed = false
-                    addPressAction()
+                    if (pressed) {
+                        pressed = false
+                        addPressAction()
+                    }
 
                     if (dragged) {
                         // Thumb was dragged by user, change check state from position
@@ -76,7 +81,7 @@ class Switch(skin: Skin) : CheckableWidget() {
                         checked = checkAlpha >= 0.5f
                         addCheckAction()
                         checkAction?.elapsed = checkAlpha * checkAction!!.duration
-                    } else if (withinBounds(x, y)) {
+                    } else {
                         checked = !checked
                         addCheckAction()
                     }
@@ -94,21 +99,28 @@ class Switch(skin: Skin) : CheckableWidget() {
                     Gdx.graphics.requestRendering()
                 }
             }
-
-            override fun enter(event: InputEvent, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
-                if (enabled && pointer == -1) {
-                    hovered = true
-                    addHoverAction()
-                }
-            }
-
-            override fun exit(event: InputEvent, x: Float, y: Float, pointer: Int, toActor: Actor?) {
-                if (enabled && pointer == -1) {
-                    hovered = false
-                    addHoverAction()
-                }
-            }
         })
+    }
+
+    /** Returns true if point at ([x]; [y]) is on the switch thumb. (in actor coordinates) */
+    private fun isPointInThumb(x: Float, y: Float): Boolean {
+        val radius = style.thumbSize / 2
+        return Vector2.len(thumbPos.x + radius - x, thumbPos.y + radius - y) <= radius
+    }
+
+    override fun act(delta: Float) {
+        super.act(delta)
+
+        if (Gdx.app.type == Application.ApplicationType.Desktop && enabled) {
+            val mousePos = vec2(Gdx.input.x.toFloat(), Gdx.input.y.toFloat())
+            stageToLocalCoordinates(stage.screenToStageCoordinates(mousePos))
+
+            val newHovered = isPointInThumb(mousePos.x, mousePos.y)
+            if (hovered != newHovered) {
+                hovered = newHovered
+                addHoverAction()
+            }
+        }
     }
 
     override fun draw(batch: Batch, parentAlpha: Float) {
@@ -134,14 +146,16 @@ class Switch(skin: Skin) : CheckableWidget() {
 
         // Draw thumb
         val thumbSize = style.thumbSize
+        val thumbOffset = (background.minHeight - thumbSize) / 2
         batch.setColor(color.r, color.g, color.b, parentAlpha)
-        thumbX = x + offsetX + (background.minWidth - background.minHeight) * checkAlpha
-        style.thumb.draw(batch, thumbX, y + offsetY, thumbSize, thumbSize)
+        thumbPos.x = offsetX + thumbOffset + (background.minWidth - background.minHeight) * checkAlpha
+        thumbPos.y = offsetY + thumbOffset
+        style.thumb.draw(batch, x + thumbPos.x, y + thumbPos.y, thumbSize, thumbSize)
 
         // Draw thumb hover/press overlay
         batch.setColor(color.r, color.g, color.b,
                 parentAlpha * (hoverAlpha + pressAlpha) * 0.1f + if (enabled) 0f else 0.2f)
-        style.thumbOverlay.draw(batch, thumbX, y + offsetY, thumbSize, thumbSize)
+        style.thumbOverlay.draw(batch, x + thumbPos.x, y + thumbPos.y, thumbSize, thumbSize)
     }
 
     override fun getPrefWidth() = style.background.minWidth
