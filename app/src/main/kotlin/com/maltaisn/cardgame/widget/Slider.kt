@@ -147,7 +147,7 @@ class Slider(skin: Skin) : SelectableWidget() {
                             Vector2.len(event.stageX - pressStagePos.x,
                                     event.stageY - pressStagePos.y) < MAX_SLIDE_DRAG_DISTANCE) {
                         // To slide, touch must start and end within bounds and touch must not have been dragged too much.
-                        pressOffset = style.thumb.minWidth / 2
+                        pressOffset = style.thumbSize / 2
                         slideTo(computeProgressForX(x))
                     }
                     sliderPressed = false
@@ -185,7 +185,7 @@ class Slider(skin: Skin) : SelectableWidget() {
 
             /** Returns true if point at ([x]; [y]) is on the slider thumb. (in actor coordinates) */
             private fun isPointInThumb(x: Float, y: Float): Boolean {
-                val radius = style.thumb.minWidth / 2
+                val radius = style.thumbSize / 2
                 return Vector2.len(thumbX + radius - x, radius - y) <= radius
             }
 
@@ -205,36 +205,36 @@ class Slider(skin: Skin) : SelectableWidget() {
         super.draw(batch, parentAlpha)
 
         val track = style.track
-        val thumb = style.thumb
-        val thumbOverlay = style.thumbOverlay
+        val thumbSize = style.thumbSize
 
         val percentProgress = (realProgress - minProgress) / (maxProgress - minProgress)
-        val trackX = (thumb.minWidth - track.minHeight) / 2
-        val trackY = (thumb.minHeight - track.minHeight) / 2
-        trackWidth = width + (track.minHeight - thumb.minWidth)
+        val trackX = (thumbSize - track.minWidth) / 2
+        val trackY = (thumbSize - track.minHeight) / 2
+        trackWidth = width - thumbSize
         trackFilledWidth = trackWidth * percentProgress
-        thumbX = (width - thumb.minWidth) * percentProgress
+        thumbX = (width - thumbSize) * percentProgress
 
         // Draw track, filled on the left side of the thumb and empty on the right side
         val emptyColor = style.trackEmptyColor
         batch.setColor(color.r * emptyColor.r, color.g * emptyColor.g,
                 color.b * emptyColor.b, parentAlpha)
         track.draw(batch, x + trackX + trackFilledWidth, y + trackY,
-                (trackWidth - trackFilledWidth), track.minHeight)
+                trackWidth - trackFilledWidth + track.minWidth, track.minHeight)
 
         val filledColor = if (enabled) style.trackFilledColor else style.trackFilledDisabledColor
         batch.setColor(color.r * filledColor.r, color.g * filledColor.g,
                 color.b * filledColor.b, parentAlpha)
-        track.draw(batch, x + trackX, y + trackY, trackFilledWidth, track.minHeight)
+        track.draw(batch, x + trackX, y + trackY,
+                trackFilledWidth + track.minWidth, track.minHeight)
 
         // Draw thumb
         batch.setColor(color.r, color.g, color.b, parentAlpha)
-        thumb.draw(batch, x + thumbX, y, thumb.minWidth, thumb.minHeight)
+        style.thumb.draw(batch, x + thumbX, y, thumbSize, thumbSize)
 
         // Draw thumb hover/press/disabled overlay
         batch.setColor(color.r, color.g, color.b, parentAlpha *
                 (hoverAlpha + pressAlpha) * 0.1f + if (enabled) 0f else 0.2f)
-        thumbOverlay.draw(batch, x + thumbX, y, thumbOverlay.minWidth, thumbOverlay.minHeight)
+        style.thumbOverlay.draw(batch, x + thumbX, y, thumbSize, thumbSize)
     }
 
     override fun validate() {
@@ -254,11 +254,11 @@ class Slider(skin: Skin) : SelectableWidget() {
         }
     }
 
-    override fun getMinWidth() = style.thumb.minWidth + 40f
+    override fun getMinWidth() = style.thumbSize + 40f
 
     override fun getPrefWidth() = 0f
 
-    override fun getPrefHeight() = style.thumb.minHeight
+    override fun getPrefHeight() = style.thumbSize
 
     override fun clearActions() {
         super.clearActions()
@@ -292,6 +292,7 @@ class Slider(skin: Skin) : SelectableWidget() {
         lateinit var trackFilledDisabledColor: Color
         lateinit var thumb: Drawable
         lateinit var thumbOverlay: Drawable
+        var thumbSize = 0f
     }
 
     companion object {

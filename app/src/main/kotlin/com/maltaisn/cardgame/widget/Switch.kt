@@ -38,6 +38,8 @@ class Switch(skin: Skin) : CheckableWidget() {
 
     val style: SwitchStyle = skin.get()
 
+    private var thumbX = 0f
+
     init {
         // A capture listener is used to intercept the touch down event,
         // so that if the switch is in a scroll pane, it won't be able to scroll.
@@ -131,17 +133,15 @@ class Switch(skin: Skin) : CheckableWidget() {
                 background.minWidth, background.minHeight)
 
         // Draw thumb
+        val thumbSize = style.thumbSize
         batch.setColor(color.r, color.g, color.b, parentAlpha)
-        val thumb = style.thumb
-        val thumbX = x + offsetX + (background.minWidth - thumb.minWidth) * checkAlpha
-        thumb.draw(batch, thumbX, y + offsetY, thumb.minWidth, thumb.minHeight)
+        thumbX = x + offsetX + (background.minWidth - background.minHeight) * checkAlpha
+        style.thumb.draw(batch, thumbX, y + offsetY, thumbSize, thumbSize)
 
         // Draw thumb hover/press overlay
         batch.setColor(color.r, color.g, color.b,
                 parentAlpha * (hoverAlpha + pressAlpha) * 0.1f + if (enabled) 0f else 0.2f)
-        val thumbOverlay = style.thumbOverlay
-        thumbOverlay.draw(batch, thumbX, y + offsetY,
-                thumbOverlay.minWidth, thumbOverlay.minHeight)
+        style.thumbOverlay.draw(batch, thumbX, y + offsetY, thumbSize, thumbSize)
     }
 
     override fun getPrefWidth() = style.background.minWidth
@@ -151,11 +151,12 @@ class Switch(skin: Skin) : CheckableWidget() {
 
     class SwitchStyle {
         lateinit var background: Drawable
-        lateinit var thumb: Drawable
-        lateinit var thumbOverlay: Drawable
         lateinit var backgroundColor: Color
         lateinit var checkedColor: Color
         lateinit var checkedDisabledColor: Color
+        lateinit var thumb: Drawable
+        lateinit var thumbOverlay: Drawable
+        var thumbSize = 0f
     }
 
     companion object {

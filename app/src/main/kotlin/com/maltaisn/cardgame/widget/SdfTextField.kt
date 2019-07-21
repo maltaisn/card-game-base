@@ -33,6 +33,8 @@ import ktx.style.get
 /**
  * Wrapper class around [Label] for rendering text with a distance field font.
  * Doesn't support [FontStyle.allCaps] and [messageText].
+ * TODO add message text support with 1.9.10 update
+ * FIXME Different font size not supported, see https://github.com/libgdx/libgdx/issues/5719
  */
 class SdfTextField(skin: Skin,
                    fieldStyle: TextFieldStyle,
@@ -58,7 +60,6 @@ class SdfTextField(skin: Skin,
             }
         }
     }
-
 
     override fun drawText(batch: Batch, font: BitmapFont, x: Float, y: Float) {
         batch.shader = shader

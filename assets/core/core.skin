@@ -96,21 +96,23 @@
   com.maltaisn.cardgame.widget.Switch$SwitchStyle: {
     default: {
       background: switch-background
-      thumb: switch-thumb
-      thumbOverlay: switch-thumb-overlay
       backgroundColor: colorPrimary
       checkedColor: colorAccent
       checkedDisabledColor: colorPrimaryDisabled
+      thumb: thumb
+      thumbOverlay: thumb-overlay
+      thumbSize: 84
     }
   }
   com.maltaisn.cardgame.widget.Slider$SliderStyle: {
     default: {
       track: slider-track
-      thumb: slider-thumb
-      thumbOverlay: slider-thumb-overlay
       trackEmptyColor: colorPrimary
       trackFilledColor: colorAccent
       trackFilledDisabledColor: colorPrimaryDisabled
+      thumb: thumb
+      thumbOverlay: thumb-overlay
+      thumbSize: 96
     }
   }
   TextFieldStyle: {
