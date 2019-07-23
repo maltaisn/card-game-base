@@ -30,14 +30,18 @@ class SdfTextFieldTest : SubmenuContentTest() {
         val topField = SdfTextField(coreSkin, FontStyle().apply {
             fontSize = 48f
             fontColor = Color.BLACK
-        }, "Text input")
+        }, text = "Text input")
         topField.maxLength = 20
 
         val bottomField = SdfTextField(coreSkin, FontStyle().apply {
             fontSize = 48f
             fontColor = Color.BLACK
-        }, "Text input")
+        }, FontStyle().apply {
+            fontSize = 48f
+            fontColor = Color.GRAY
+        }, "Text input 2")
         bottomField.maxLength = 128
+        bottomField.messageText = "Enter text here"
 
         // Do the layout
         content.add(topField).width(600f).expand().row()

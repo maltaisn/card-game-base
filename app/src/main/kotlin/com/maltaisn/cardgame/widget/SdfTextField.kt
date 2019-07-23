@@ -33,21 +33,22 @@ import ktx.style.get
 /**
  * Wrapper class around [Label] for rendering text with a distance field font.
  * Doesn't support [FontStyle.allCaps] and [messageText].
- * TODO add message text support with 1.9.10 update
- * FIXME Different font size not supported, see https://github.com/libgdx/libgdx/issues/5719
+ * FIXME Different font sizes not supported, see https://github.com/libgdx/libgdx/issues/5719
  */
 class SdfTextField(skin: Skin,
                    fieldStyle: TextFieldStyle,
                    val fontStyle: FontStyle,
+                   val messageFontStyle: FontStyle? = null,
                    text: String? = null) :
-        TextField(text, createStyle(skin, fieldStyle, fontStyle)) {
+        TextField(text, createStyle(skin, fieldStyle, fontStyle, messageFontStyle)) {
 
     private val shader = SdfShader.getShader(skin)
     private val tempColor = Color()
 
 
-    constructor(skin: Skin, fontStyle: FontStyle, text: String? = null) :
-            this(skin, skin.get(), fontStyle, text)
+    constructor(skin: Skin, fontStyle: FontStyle,
+                messageFontStyle: FontStyle? = null, text: String? = null) :
+            this(skin, skin.get(), fontStyle, messageFontStyle, text)
 
 
     init {
@@ -61,9 +62,21 @@ class SdfTextField(skin: Skin,
         }
     }
 
-    override fun drawText(batch: Batch, font: BitmapFont, x: Float, y: Float) {
-        batch.shader = shader
+    override fun drawText(batch: Batch, font: BitmapFont, x: Float, y: Float) =
+            drawTextWithShader(batch, font) { super.drawText(batch, font, x, y) }
 
+    override fun drawMessageText(batch: Batch, font: BitmapFont, x: Float, y: Float, maxWidth: Float) =
+            drawTextWithShader(batch, font) { super.drawMessageText(batch, font, x, y, maxWidth) }
+
+    private inline fun drawTextWithShader(batch: Batch, font: BitmapFont, draw: () -> Unit) {
+        font.color.a *= if (isDisabled) 0.5f else 1f
+        batch.shader = shader
+        updateFontShader()
+        draw()
+        batch.shader = null
+    }
+
+    private fun updateFontShader() {
         // Update shader parameters
         shader.drawShadow = fontStyle.drawShadow
         if (fontStyle.drawShadow) {
@@ -73,24 +86,24 @@ class SdfTextField(skin: Skin,
             shader.shadowColor = tempColor
         }
         shader.updateUniforms()
-
-        // Draw the text
-        super.drawText(batch, font, x, y)
-
-        batch.shader = null
     }
 
-
     companion object {
-        private fun createStyle(skin: Skin, fieldStyle: TextFieldStyle, fontStyle: FontStyle): TextFieldStyle {
+        private fun createStyle(skin: Skin, fieldStyle: TextFieldStyle,
+                                fontStyle: FontStyle, messageFontStyle: FontStyle?): TextFieldStyle {
             val style = TextFieldStyle(fieldStyle)
 
             style.font = SdfShader.getFont(skin, fontStyle.bold)
             style.font.data.setScale(fontStyle.fontSize / SdfShader.FONT_GLYPH_SIZE)
 
+            if (messageFontStyle != null) {
+                style.messageFont = SdfShader.getFont(skin, messageFontStyle.bold)
+                style.messageFont.data.setScale(fontStyle.fontSize / SdfShader.FONT_GLYPH_SIZE)
+            }
+
             val color = fontStyle.fontColor
             style.fontColor = color
-            style.disabledFontColor = Color(color.r, color.g, color.b, color.a * 0.5f)
+            style.messageFontColor = messageFontStyle?.fontColor
 
             return style
         }

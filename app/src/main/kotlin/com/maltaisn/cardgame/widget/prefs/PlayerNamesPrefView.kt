@@ -47,7 +47,7 @@ class PlayerNamesPrefView(skin: Skin, pref: PlayerNamesPref) : GamePrefView<Play
 
         textFields = Array(pref.size) { player ->
             val textField = SdfTextField(skin, style.fieldStyle,
-                    style.fieldFontStyle, pref.names[player]).apply {
+                    style.fieldFontStyle, text = pref.names[player]).apply {
                 maxLength = pref.maxLength
                 onKeyboardFocus {
                     if (!it) {
@@ -63,7 +63,7 @@ class PlayerNamesPrefView(skin: Skin, pref: PlayerNamesPref) : GamePrefView<Play
                 setTextFieldFilter { _, c -> pref.filter == null || c in pref.filter!! }
             }
 
-            add(textField).growX().pad(10f, 20f, 10f, 20f)
+            add(textField).growX().pad(20f, 20f, 20f, 20f)
             if (player % 2 == 1) {
                 row()
             }

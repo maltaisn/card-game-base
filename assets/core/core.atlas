@@ -30,7 +30,7 @@ btn-menu-bottom
   index: -1
 btn-menu-center
   rotate: false
-  xy: 968, 788
+  xy: 968, 754
   size: 30, 30
   split: 14, 14, 14, 14
   pad: 2, 2, 2, 2
@@ -39,7 +39,7 @@ btn-menu-center
   index: -1
 btn-menu-left
   rotate: false
-  xy: 968, 720
+  xy: 968, 788
   size: 30, 30
   split: 14, 14, 14, 14
   pad: 2, 2, 2, 2
@@ -48,7 +48,7 @@ btn-menu-left
   index: -1
 btn-menu-right
   rotate: false
-  xy: 968, 754
+  xy: 968, 720
   size: 30, 30
   split: 14, 14, 14, 14
   pad: 2, 2, 2, 2
@@ -126,7 +126,7 @@ dealer-chip
   index: -1
 icon-arrow-right
   rotate: false
-  xy: 924, 404
+  xy: 708, 316
   size: 72, 72
   orig: 72, 72
   offset: 0, 0
@@ -140,14 +140,14 @@ icon-book
   index: -1
 icon-cards
   rotate: false
-  xy: 852, 326
+  xy: 858, 326
   size: 72, 66
   orig: 72, 72
   offset: 0, 3
   index: -1
 icon-chart
   rotate: false
-  xy: 632, 310
+  xy: 924, 404
   size: 66, 72
   orig: 72, 72
   offset: 3, 0
@@ -175,21 +175,21 @@ icon-info
   index: -1
 icon-list
   rotate: false
-  xy: 928, 340
+  xy: 104, 224
   size: 72, 60
   orig: 72, 72
   offset: 0, 6
   index: -1
 icon-pencil
   rotate: false
-  xy: 702, 316
+  xy: 632, 310
   size: 72, 72
   orig: 72, 72
   offset: 0, 0
   index: -1
 icon-settings
   rotate: false
-  xy: 778, 316
+  xy: 784, 316
   size: 70, 72
   orig: 72, 72
   offset: 1, 0
@@ -203,7 +203,7 @@ md-bullet-1
   index: -1
 md-bullet-2
   rotate: false
-  xy: 172, 264
+  xy: 910, 302
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
@@ -225,7 +225,7 @@ menu-drawer
   index: -1
 menu-drawer-background
   rotate: false
-  xy: 92, 34
+  xy: 694, 386
   size: 2, 2
   split: 0, 0, 0, 0
   orig: 2, 2
@@ -233,7 +233,7 @@ menu-drawer-background
   index: -1
 player-arrow
   rotate: false
-  xy: 101, 164
+  xy: 98, 44
   size: 60, 52
   orig: 60, 52
   offset: 0, 0
@@ -249,7 +249,7 @@ popup
   index: -1
 popup-tip-bottom
   rotate: false
-  xy: 98, 32
+  xy: 858, 298
   size: 48, 24
   orig: 48, 24
   offset: 0, 0
@@ -277,7 +277,7 @@ popup-tip-top
   index: -1
 pref-help
   rotate: false
-  xy: 104, 220
+  xy: 934, 336
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -372,7 +372,7 @@ table-view-row-2
   index: -1
 table-view-separator
   rotate: false
-  xy: 694, 386
+  xy: 1018, 1018
   size: 2, 2
   split: 0, 0, 0, 2
   orig: 2, 2
@@ -380,23 +380,23 @@ table-view-separator
   index: -1
 text-field-background
   rotate: false
-  xy: 101, 112
-  size: 58, 48
-  split: 29, 27, 25, 21
-  orig: 58, 48
+  xy: 101, 162
+  size: 58, 58
+  split: 29, 27, 30, 26
+  orig: 58, 58
   offset: 0, 0
   index: -1
 text-field-background-focused
   rotate: false
-  xy: 98, 60
-  size: 58, 48
-  split: 29, 27, 25, 21
-  orig: 58, 48
+  xy: 101, 100
+  size: 58, 58
+  split: 29, 27, 30, 26
+  orig: 58, 58
   offset: 0, 0
   index: -1
 text-field-cursor
   rotate: false
-  xy: 1018, 1018
+  xy: 700, 386
   size: 2, 2
   split: 0, 2, 0, 0
   orig: 2, 2
@@ -404,7 +404,7 @@ text-field-cursor
   index: -1
 menu-drawer-item-selection
   rotate: false
-  xy: 1018, 1018
+  xy: 700, 386
   size: 2, 2
   split: 0, 0, 0, 0
   orig: 2, 2
