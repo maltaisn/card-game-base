@@ -16,6 +16,8 @@
 
 package com.maltaisn.cardgame.tests.core
 
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.gmail.blueboxware.libgdxplugin.annotations.GDXAssets
 import com.maltaisn.cardgame.CardGameScreen
@@ -42,6 +44,15 @@ abstract class CardGameTest : CardGameScreen() {
         val gameLayout = CardGameLayout(coreSkin)
         addActor(gameLayout)
         layout(gameLayout)
+    }
+
+    override fun keyDown(keyCode: Int): Boolean {
+        var handled = super.keyDown(keyCode)
+        if (!handled && (keyCode == Input.Keys.BACK || keyCode == Input.Keys.ESCAPE)) {
+            Gdx.app.exit()
+            handled = true
+        }
+        return handled
     }
 
     open fun layout(layout: CardGameLayout) = Unit

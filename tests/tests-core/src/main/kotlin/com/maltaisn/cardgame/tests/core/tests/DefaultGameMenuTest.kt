@@ -38,6 +38,9 @@ import kotlin.random.Random
  */
 class DefaultGameMenuTest : CardGameTest() {
 
+    private lateinit var menu: DefaultGameMenu
+
+
     override fun load() {
         super.load()
 
@@ -49,7 +52,7 @@ class DefaultGameMenuTest : CardGameTest() {
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
-        val menu = DefaultGameMenu(coreSkin)
+        menu = DefaultGameMenu(coreSkin)
         menu.callback = object : DefaultGameMenu.Callback {
             override fun onContinueClicked() {
                 menu.showMenu(menu.inGameMenu)
