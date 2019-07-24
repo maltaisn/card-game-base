@@ -22,7 +22,6 @@ import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.menu.table.ScoresTable
 import com.maltaisn.cardgame.widget.menu.table.ScoresTable.Header
 import com.maltaisn.cardgame.widget.menu.table.ScoresTable.Score
-import ktx.actors.setScrollFocus
 import kotlin.random.Random
 
 
@@ -57,7 +56,6 @@ class ScoresTableTest : SubmenuContentTest() {
 
         // Do the layout
         content.add(table).grow().pad(40f, 200f, 40f, 200f)
-        table.itemScrollView.setScrollFocus()
 
         // Action buttons
         addToggleBtn("Footer shown") { _, shown ->

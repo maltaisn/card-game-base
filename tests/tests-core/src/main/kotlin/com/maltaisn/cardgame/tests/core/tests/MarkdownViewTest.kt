@@ -16,9 +16,6 @@
 
 package com.maltaisn.cardgame.tests.core.tests
 
-import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.InputEvent
-import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.maltaisn.cardgame.markdown.Markdown
@@ -26,7 +23,6 @@ import com.maltaisn.cardgame.tests.core.SubmenuContentTest
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.ScrollView
 import com.maltaisn.cardgame.widget.markdown.MarkdownView
-import ktx.actors.setScrollFocus
 import ktx.assets.load
 
 
@@ -48,17 +44,7 @@ class MarkdownViewTest : SubmenuContentTest() {
         val mdContainer = Container(mdView)
         mdContainer.fill().pad(0f, 40f, 0f, 40f)
 
-        content.add(ScrollView(mdContainer).apply contentPane@{
-            addListener(object : InputListener() {
-                override fun enter(event: InputEvent, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
-                    this@contentPane.setScrollFocus(true)
-                }
-
-                override fun exit(event: InputEvent?, x: Float, y: Float, pointer: Int, toActor: Actor?) {
-                    this@contentPane.setScrollFocus(false)
-                }
-            })
-        }).grow()
+        content.add(ScrollView(mdContainer)).grow()
 
         // Action buttons
         addToggleBtn("Debug") { _, debug ->

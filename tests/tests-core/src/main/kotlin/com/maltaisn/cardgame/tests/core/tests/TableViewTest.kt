@@ -26,7 +26,6 @@ import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.SdfLabel
 import com.maltaisn.cardgame.widget.menu.table.TableView
 import ktx.actors.onClick
-import ktx.actors.setScrollFocus
 import ktx.log.info
 import java.text.SimpleDateFormat
 import java.util.*
@@ -88,7 +87,6 @@ class TableViewTest : SubmenuContentTest() {
 
         // Do the layout
         content.add(tableView).grow().pad(40f, 200f, 40f, 200f)
-        tableView.itemScrollView.setScrollFocus()
 
 
         // Action buttons
@@ -105,11 +103,9 @@ class TableViewTest : SubmenuContentTest() {
         }
         addToggleBtn("Show header", startState = true) { _, show ->
             tableView.headerAdapter = if (show) headerAdapter else null
-            tableView.itemScrollView.setScrollFocus()
         }
         addToggleBtn("Show footer", startState = true) { _, show ->
             tableView.footerAdapter = if (show) footerAdapter else null
-            tableView.itemScrollView.setScrollFocus()
         }
         addToggleBtn("Alternate row colors") { _, alternate ->
             tableView.alternateColors = alternate

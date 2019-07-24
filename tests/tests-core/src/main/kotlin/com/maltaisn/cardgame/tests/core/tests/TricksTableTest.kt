@@ -22,7 +22,6 @@ import com.maltaisn.cardgame.game.drawBottom
 import com.maltaisn.cardgame.tests.core.SubmenuContentTest
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.menu.table.TricksTable
-import ktx.actors.setScrollFocus
 import kotlin.random.Random
 
 
@@ -47,7 +46,6 @@ class TricksTableTest : SubmenuContentTest() {
 
         // Do the layout
         content.add(table).grow().pad(40f, 300f, 40f, 300f)
-        table.itemScrollView.setScrollFocus()
 
         // Action buttons
         addActionBtn("Add trick") {

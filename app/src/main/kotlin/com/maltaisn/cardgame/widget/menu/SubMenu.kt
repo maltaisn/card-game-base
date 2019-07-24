@@ -22,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.Value
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Align
+import com.maltaisn.cardgame.findScrollFocus
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.SdfLabel
 import com.maltaisn.cardgame.widget.action.TimeAction
@@ -60,11 +61,14 @@ open class SubMenu(skin: Skin) : MenuTable(skin) {
     /** The sub menu content table. */
     val content = Table()
 
+    /** Should be shown after being added to the stage to properly gain scroll focus. */
     override var shown
         get() = super.shown
         set(value) {
             if (super.shown == value) return
             super.shown = value
+
+            content.findScrollFocus()
 
             if (transitionAction == null) {
                 transitionAction = TransitionAction()
@@ -159,6 +163,8 @@ open class SubMenu(skin: Skin) : MenuTable(skin) {
         for (item in items) {
             item.checked = item.checked
         }
+
+        content.findScrollFocus()
     }
 
     private fun addButtonToMenuTable(item: MenuItem) {

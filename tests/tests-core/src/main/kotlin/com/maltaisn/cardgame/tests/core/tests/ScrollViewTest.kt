@@ -24,7 +24,6 @@ import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.ScrollView
 import com.maltaisn.cardgame.widget.SdfLabel
-import ktx.actors.setScrollFocus
 import ktx.log.info
 import java.util.*
 
@@ -48,8 +47,6 @@ class ScrollViewTest : SubmenuContentTest() {
         scrollView.clearActions()  // Should do nothing
 
         content.add(scrollView).grow().pad(40f, 200f, 40f, 200f)
-
-        scrollView.setScrollFocus()
 
         // Action buttons
         addActionBtn("Scroll to top") {

@@ -17,6 +17,7 @@
 package com.maltaisn.cardgame.tests.core
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.maltaisn.cardgame.findScrollFocus
 import com.maltaisn.cardgame.widget.CardGameLayout
 
 
@@ -34,6 +35,7 @@ abstract class SubmenuContentTest : ActionBarTest() {
         layout.gameLayer.centerTable.add(content).grow()
                 .pad(0f, 80f, 0f, 80f)
         layoutContent(layout, content)
+        content.findScrollFocus()
     }
 
     protected abstract fun layoutContent(layout: CardGameLayout, content: Table)

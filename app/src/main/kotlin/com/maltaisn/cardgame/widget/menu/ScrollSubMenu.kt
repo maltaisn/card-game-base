@@ -21,7 +21,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.maltaisn.cardgame.widget.ScrollView
 import com.maltaisn.cardgame.widget.menu.ScrollSubMenu.Section
-import ktx.actors.setScrollFocus
 
 
 /**
@@ -38,16 +37,6 @@ class ScrollSubMenu(skin: Skin) : SubMenu(skin) {
 
     /** The scroll view containing the [scrollContent] container. */
     val scrollView = ScrollView(scrollContent)
-
-    /** Should be shown after being added to the stage to properly gain scroll focus. */
-    override var shown
-        get() = super.shown
-        set(value) {
-            if (super.shown == value) return
-            super.shown = value
-
-            scrollView.setScrollFocus(value)
-        }
 
     override var itemClickListener: ((item: MenuItem) -> Unit)?
         get() = super.itemClickListener
@@ -162,11 +151,6 @@ class ScrollSubMenu(skin: Skin) : SubMenu(skin) {
         }
 
         scrollView.scrollToTop()
-    }
-
-    override fun doMenuLayout() {
-        super.doMenuLayout()
-        scrollView.setScrollFocus(shown)
     }
 
     /**

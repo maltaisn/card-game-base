@@ -122,6 +122,8 @@ open class TableView(skin: Skin, columnWidths: List<Float>) : Table(skin) {
     }
 
     private fun updateLayout() {
+        val scrollFocusBefore = stage?.scrollFocus
+
         clearChildren()
         topTable.clearChildren()
 
@@ -136,6 +138,8 @@ open class TableView(skin: Skin, columnWidths: List<Float>) : Table(skin) {
         if (footerAdapter != null) {
             add(footerTable).growX().padTop(40f)
         }
+
+        stage?.scrollFocus = scrollFocusBefore
     }
 
     abstract class ViewHolder {

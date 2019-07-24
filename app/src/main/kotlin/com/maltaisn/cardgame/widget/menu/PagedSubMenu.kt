@@ -19,6 +19,7 @@ package com.maltaisn.cardgame.widget.menu
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
+import com.maltaisn.cardgame.findScrollFocus
 
 
 /**
@@ -34,9 +35,12 @@ class PagedSubMenu(skin: Skin) : SubMenu(skin) {
                 if (it is Page && selectedPage !== it) {
                     selectedPage?.onPageSelectionChanged(false)
                     selectedPage = it
+                    it.onPageSelectionChanged(true)
+
+                    // Change content
                     content.clearChildren()
                     content.add(it.content).grow()
-                    it.onPageSelectionChanged(true)
+                    content.findScrollFocus()
                 }
 
                 value?.invoke(it)

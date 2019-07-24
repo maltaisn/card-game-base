@@ -18,11 +18,14 @@ package com.maltaisn.cardgame
 
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.Cell
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.ui.Value
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
 import com.maltaisn.cardgame.widget.action.TimeAction
+import ktx.actors.setScrollFocus
 
 
 /**
@@ -57,6 +60,20 @@ fun <T : Actor> Cell<T>.defaultSize(): Cell<T> {
             .minSize(Value.minWidth, Value.minHeight)
             .maxSize(Value.maxWidth, Value.maxHeight)
     return this
+}
+
+/**
+ * Recursively search for a [ScrollPane] in a group and set the scroll focus if one is found.
+ */
+fun Group.findScrollFocus() {
+    for (child in children) {
+        if (child is ScrollPane) {
+            child.setScrollFocus()
+            return
+        } else if (child is Group) {
+            child.findScrollFocus()
+        }
+    }
 }
 
 inline fun <reified T> Json.fromJson(file: FileHandle) =

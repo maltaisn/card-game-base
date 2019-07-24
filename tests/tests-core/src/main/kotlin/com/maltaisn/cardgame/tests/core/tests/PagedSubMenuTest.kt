@@ -30,7 +30,6 @@ import com.maltaisn.cardgame.widget.menu.MenuIcons
 import com.maltaisn.cardgame.widget.menu.MenuItem
 import com.maltaisn.cardgame.widget.menu.PagedSubMenu
 import com.maltaisn.cardgame.widget.menu.SubMenu
-import ktx.actors.setScrollFocus
 import ktx.assets.load
 import ktx.log.info
 
@@ -57,7 +56,7 @@ class PagedSubMenuTest : ActionBarTest() {
         val rulesPage = object : TestPage(0, "Rules", coreSkin.getDrawable(MenuIcons.BOOK), SubMenu.ITEM_POS_TOP) {
             override fun onPageSelectionChanged(selected: Boolean) {
                 super.onPageSelectionChanged(selected)
-                rulesView.setScrollFocus(selected)
+                info { "Rules page selected" }
             }
         }
         rulesPage.content = rulesView
