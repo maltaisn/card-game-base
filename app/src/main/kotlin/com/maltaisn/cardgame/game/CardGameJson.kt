@@ -14,23 +14,26 @@
  * limitations under the License.
  */
 
-package com.maltaisn.cardgame
+package com.maltaisn.cardgame.game
 
-import com.badlogic.gdx.Game
-import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.utils.Json
+import com.badlogic.gdx.utils.JsonWriter
 
 
-abstract class CardGameApp : Game() {
+open class CardGameJson : Json() {
 
-    override fun create() {
-        // Disable continuous rendering
-        Gdx.graphics.isContinuousRendering = false
-        Gdx.graphics.requestRendering()
-    }
+    /**
+     * The version of the card game library that the [CardGame] being currently
+     * deserialized was written by.
+     */
+    var version = -1
+        internal set
 
-    override fun dispose() {
-        super.dispose()
-        screen.dispose()
+    init {
+        setOutputType(JsonWriter.OutputType.javascript)
+        setUsePrototypes(false)
+        setEnumNames(true)
+        setTypeName("type")
     }
 
 }
