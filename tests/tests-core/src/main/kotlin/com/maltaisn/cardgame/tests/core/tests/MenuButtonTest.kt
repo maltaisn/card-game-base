@@ -17,82 +17,79 @@
 package com.maltaisn.cardgame.tests.core.tests
 
 import com.badlogic.gdx.graphics.Color
-import com.maltaisn.cardgame.tests.core.CardGameTest
+import com.badlogic.gdx.utils.Align
+import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.menu.MenuButton
+import com.maltaisn.cardgame.widget.menu.MenuButton.Side
 import com.maltaisn.cardgame.widget.menu.MenuIcons
 import ktx.actors.onClick
+import ktx.log.info
 
 
 /**
  * Test [MenuButton] options and layout.
  */
-class MenuButtonTest : CardGameTest() {
+class MenuButtonTest : ActionBarTest() {
 
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
-        val table = layout.gameLayer.centerTable
-
         val fontStyle = FontStyle(
                 bold = true,
                 fontSize = 48f,
-                allCaps = true,
                 fontColor = Color.WHITE,
                 drawShadow = true,
                 shadowColor = Color.BLACK)
 
-        // Side buttons
-        val topBtn = MenuButton(skin, fontStyle, "Top button",
-                skin.getDrawable(MenuIcons.BOOK)).apply {
-            anchorSide = MenuButton.Side.TOP
-            iconSide = MenuButton.Side.LEFT
-            iconSize = 48f
+        val btn = MenuButton(skin, fontStyle)
+        btn.onClick {
+            info { "Menu button clicked" }
         }
-        val bottomBtn = MenuButton(skin, fontStyle, "Bottom button",
-                skin.getDrawable(MenuIcons.CARDS)).apply {
-            anchorSide = MenuButton.Side.BOTTOM
-            iconSide = MenuButton.Side.BOTTOM
-            iconSize = 64f
-        }
-        val leftBtn = MenuButton(skin, fontStyle, "Left button", null).apply {
-            anchorSide = MenuButton.Side.LEFT
-        }
-        val rightBtn = MenuButton(skin, fontStyle, "Right\nbutton",
-                skin.getDrawable(MenuIcons.LIST)).apply {
-            anchorSide = MenuButton.Side.RIGHT
-            iconSide = MenuButton.Side.RIGHT
-            iconSize = 128f
-        }
-        val sideBtns = listOf(topBtn, bottomBtn, leftBtn, rightBtn)
+        val btnCell = layout.gameLayer.centerTable.add(btn).expand()
 
-        // Center button
-        val centerBtn = MenuButton(skin, fontStyle, "Enable all", null).apply {
-            anchorSide = MenuButton.Side.NONE
-            iconSide = MenuButton.Side.RIGHT
-            iconSize = 64f
+        // Action buttons
+        addTwoStateActionBtn("Disable", "Enable") { _, enabled ->
+            btn.enabled = enabled
         }
-        centerBtn.onClick {
-            // Enable or disable all
-            val enabled = !topBtn.enabled
-            for (btn in sideBtns) {
-                btn.enabled = enabled
-            }
-
-            centerBtn.title = if (enabled) "Enable all" else "Disable all"
+        addToggleBtn("Title shown") { _, shown ->
+            btn.title = if (shown) "Menu button" else null
+        }
+        addToggleBtn("Icon shown") { _, shown ->
+            btn.icon = if (shown) skin.getDrawable(MenuIcons.CARDS) else null
         }
 
-        // Add buttons to table
-        table.add()
-        table.add(topBtn).height(200f).expandX()
-        table.add().row()
-        table.add(leftBtn).height(200f)
-        table.add(centerBtn).height(160f).expand()
-        table.add(rightBtn).height(200f).row()
-        table.add()
-        table.add(bottomBtn).expandX()
-        table.add().row()
+        var anchorSideIndex = 0
+        addActionBtn("Anchor side: ${btn.anchorSide}") {
+            anchorSideIndex = (anchorSideIndex + 1) % BTN_SIDES.size
+            btn.anchorSide = BTN_SIDES[anchorSideIndex]
+            it.title = "Anchor side: ${btn.anchorSide}"
+
+            btnCell.align(when (btn.anchorSide) {
+                Side.NONE -> Align.center
+                Side.TOP -> Align.top
+                Side.LEFT -> Align.left
+                Side.BOTTOM -> Align.bottom
+                Side.RIGHT -> Align.right
+            })
+        }
+
+        var iconSideIndex = 0
+        addActionBtn("Icon side: ${btn.iconSide}") {
+            iconSideIndex = (iconSideIndex + 1) % BTN_SIDES.size
+            btn.iconSide = BTN_SIDES[iconSideIndex]
+            it.title = "Icon side: ${btn.iconSide}"
+        }
+
+        addActionBtn("Icon size: ${btn.iconSize.toInt()}") {
+            btn.iconSize = (btn.iconSize - 24f) % 104f + 32f
+            it.title = "Icon size: ${btn.iconSize.toInt()}"
+        }
+    }
+
+    companion object {
+        private val BTN_SIDES = listOf(Side.NONE, Side.TOP, Side.LEFT, Side.BOTTOM, Side.RIGHT)
     }
 
 }

@@ -1,6 +1,6 @@
 {
   com.maltaisn.cardgame.pcard.PCardStyle: {
-    pcard: {
+    default: {
       cardWidth: 240
       cardHeight: 336
       cards: [

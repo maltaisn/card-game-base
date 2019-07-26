@@ -68,7 +68,7 @@ class GameLayer(skin: Skin) : Table(skin) {
                 centerTable.width, centerTable.height)
 
         // Draw the background border
-        batch.setColor(1f, 1f, 1f, parentAlpha * 0.3f)
+        batch.setColor(1f, 1f, 1f, parentAlpha * 0.2f)
         style.border.draw(batch, 25f, 25f,
                 centerTable.width - 50f, centerTable.height - 50f)
 

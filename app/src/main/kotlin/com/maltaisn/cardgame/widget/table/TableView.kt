@@ -129,7 +129,7 @@ open class TableView(skin: Skin, columnWidths: List<Float>) : Table(skin) {
 
         if (headerAdapter != null) {
             topTable.add(headerTable).growX().row()
-            topTable.add(headerSeparator).growX().row()
+            topTable.add(headerSeparator).growX().padBottom(0.1f).row()
         }
 
         topTable.add(itemScrollView).grow().row()

@@ -38,7 +38,7 @@ abstract class CardGameTest : CardGameScreen() {
 
     override fun start() {
         addSkin(CoreRes.PCARD_SKIN, CoreRes.PCARD_SKIN_ATLAS)
-        pcardStyle = skin["pcard"]
+        pcardStyle = skin.get()
 
         val gameLayout = CardGameLayout(skin)
         addActor(gameLayout)

@@ -22,7 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Scaling
-import com.maltaisn.cardgame.defaultSize
+import com.maltaisn.cardgame.post
 import com.maltaisn.cardgame.widget.CheckableWidget
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.SdfLabel
@@ -35,37 +35,29 @@ import ktx.style.get
  * A button for a menu, with an optional title and icon.
  */
 open class MenuButton(skin: Skin,
-                 val fontStyle: FontStyle,
-                 title: CharSequence? = null, icon: Drawable? = null,
-                 val style: MenuButtonStyle = skin.get()) : CheckableWidget() {
+                      private val fontStyle: FontStyle,
+                      title: CharSequence? = null, icon: Drawable? = null,
+                      private val style: MenuButtonStyle = skin.get()) : CheckableWidget() {
 
     /** The button title, or `null` for none. */
     var title: CharSequence?
         get() = titleLabel.text
         set(value) {
-            val titleShown = (value != null && value.isNotEmpty())
-            titleLabel.isVisible = titleShown
-            titleLabel.setText(value)
-            updateIconViewPadding()
-
-            // Change the size of the cell according to its visibility
-            // since no text in a label still take a certain height.
-            val titleCell = getCell(titleLabel)
-            if (titleShown) {
-                titleCell.defaultSize()
-            } else {
-                titleCell.size(0f, 0f)
+            if (!value.isNullOrBlank() != !titleLabel.text.isBlank()) {
+                invalidateLayout()
             }
+            titleLabel.setText(value)
+
         }
 
     /** The button icon, or `null` for none. */
     var icon: Drawable?
         get() = iconImage.drawable
         set(value) {
-            iconImage.isVisible = (value != null)
+            if ((value == null) != (iconImage.drawable == null)) {
+                invalidateLayout()
+            }
             iconImage.drawable = value
-            updateIconViewPadding()
-            updateIconSize()
         }
 
     /** The icon size (width actually), in pixels. */
@@ -80,9 +72,7 @@ open class MenuButton(skin: Skin,
         set(value) {
             if (field == value) return
             field = value
-            if (iconSide == Side.NONE) {
-                updateButtonLayout()
-            }
+            invalidateLayout()
         }
 
     /**
@@ -94,7 +84,7 @@ open class MenuButton(skin: Skin,
         set(value) {
             if (field == value) return
             field = value
-            updateButtonLayout()
+            invalidateLayout()
         }
 
     override var enabled
@@ -111,6 +101,7 @@ open class MenuButton(skin: Skin,
     private val titleLabel: SdfLabel
     private val iconImage: ShadowImage
 
+    private var invalidLayout = false
 
     override var pressAlpha
         get() = super.pressAlpha
@@ -136,23 +127,19 @@ open class MenuButton(skin: Skin,
     init {
         addListener(SelectionListener())
 
-        titleLabel = SdfLabel(skin, fontStyle).apply {
-            isVisible = false
-            touchable = Touchable.disabled
-        }
+        titleLabel = SdfLabel(skin, fontStyle)
         iconImage = ShadowImage().apply {
-            isVisible = false
-            touchable = Touchable.disabled
             setScaling(Scaling.fit)
             drawShadow = fontStyle.drawShadow
             shadowColor = fontStyle.shadowColor
         }
 
-        pad(20f, 20f, 20f, 20f)
-        updateButtonLayout()
+        pad(20f)
+        updateLayout()
 
         this.title = title
         this.icon = icon
+        touchable = Touchable.enabled
     }
 
     /**
@@ -163,50 +150,58 @@ open class MenuButton(skin: Skin,
             this(skin, FontStyle(fontColor = iconColor), null, icon, style)
 
 
-    /** Clear the children and redo the correct label and icon layout. */
-    private fun updateButtonLayout() {
+    /**
+     * Clear the children and redo the correct label and icon layout.
+     * If title or icon are not set, their widget won't  be added to the layout.
+     */
+    private fun updateLayout() {
         clearChildren()
-        when (if (iconSide == Side.NONE) anchorSide else iconSide) {
-            Side.NONE, Side.TOP -> {
-                add(iconImage).expandX().row()
-                add(titleLabel).expandX()
+        when {
+            !title.isNullOrBlank() && icon == null -> {
+                add(titleLabel).expand()
             }
-            Side.BOTTOM -> {
-                add(titleLabel).expandX().row()
-                add(iconImage).expandX()
+            icon != null && title.isNullOrBlank() -> {
+                add(iconImage).expand()
             }
-            Side.LEFT -> {
-                add(iconImage).expandY()
-                add(titleLabel).expandY()
-            }
-            Side.RIGHT -> {
-                add(titleLabel).expandY()
-                add(iconImage).expandY()
+            else -> {
+                when (if (iconSide == Side.NONE) anchorSide else iconSide) {
+                    Side.NONE, Side.TOP -> {
+                        add(iconImage).expandX().padBottom(30f).row()
+                        add(titleLabel).expandX()
+                    }
+                    Side.BOTTOM -> {
+                        add(titleLabel).expandX().row()
+                        add(iconImage).padTop(30f).expandX()
+                    }
+                    Side.LEFT -> {
+                        add(iconImage).padRight(30f).expandY()
+                        add(titleLabel).expandY()
+                    }
+                    Side.RIGHT -> {
+                        add(titleLabel).expandY()
+                        add(iconImage).padLeft(30f).expandY()
+                    }
+                }
             }
         }
-        updateIconViewPadding()
         updateIconSize()
+
+        invalidLayout = false
     }
 
-    /** If both icon and label are visible, update the margin between them. */
-    private fun updateIconViewPadding() {
-        val iconCell = getCell(iconImage)
-        if (icon != null && title?.isEmpty() != true) {
-            when (if (iconSide == Side.NONE) anchorSide else iconSide) {
-                Side.NONE, Side.TOP -> iconCell.padBottom(30f)
-                Side.BOTTOM -> iconCell.padTop(30f)
-                Side.LEFT -> iconCell.padRight(30f)
-                Side.RIGHT -> iconCell.padLeft(30f)
+    /** Request layout update. */
+    private fun invalidateLayout() {
+        if (!invalidLayout) {
+            invalidLayout = true
+            post {
+                updateLayout()
             }
-        } else {
-            iconCell.pad(0f)
         }
     }
 
     private fun updateIconSize() {
-        val icon = icon
-        if (icon != null) {
-            getCell(iconImage).size(iconSize, icon.minHeight / icon.minWidth * iconSize)
+        icon?.let {
+            getCell(iconImage).size(iconSize, it.minHeight / it.minWidth * iconSize)
             invalidateHierarchy()
         }
     }
