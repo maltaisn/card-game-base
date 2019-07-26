@@ -21,7 +21,7 @@ import com.maltaisn.cardgame.game.drawBottom
 import com.maltaisn.cardgame.pcard.PCard
 import com.maltaisn.cardgame.tests.core.SubmenuContentTest
 import com.maltaisn.cardgame.widget.CardGameLayout
-import com.maltaisn.cardgame.widget.menu.table.TricksTable
+import com.maltaisn.cardgame.widget.table.TricksTable
 import kotlin.random.Random
 
 

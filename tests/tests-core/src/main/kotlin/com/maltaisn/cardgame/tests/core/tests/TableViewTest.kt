@@ -24,7 +24,7 @@ import com.maltaisn.cardgame.tests.core.SubmenuContentTest
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.SdfLabel
-import com.maltaisn.cardgame.widget.menu.table.TableView
+import com.maltaisn.cardgame.widget.table.TableView
 import ktx.actors.onClick
 import ktx.log.info
 import java.text.SimpleDateFormat

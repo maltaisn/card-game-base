@@ -34,7 +34,7 @@ import ktx.style.get
 /**
  * A button for a menu, with an optional title and icon.
  */
-class MenuButton(skin: Skin,
+open class MenuButton(skin: Skin,
                  val fontStyle: FontStyle,
                  title: CharSequence? = null, icon: Drawable? = null,
                  val style: MenuButtonStyle = skin.get()) : CheckableWidget() {

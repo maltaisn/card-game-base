@@ -187,20 +187,20 @@
       headerSeparator: separator
     }
   }
-  com.maltaisn.cardgame.widget.menu.table.TableViewContent$TableContentGroupStyle: {
+  com.maltaisn.cardgame.widget.table.TableViewContent$TableContentGroupStyle: {
     default: {
       background: table-view-background
       foreground: table-view-foreground
     }
   }
-  com.maltaisn.cardgame.widget.menu.table.TableView$TableViewStyle: {
+  com.maltaisn.cardgame.widget.table.TableView$TableViewStyle: {
     default: {
       separator: table-view-separator
       evenRowBackground: table-view-row-1
       oddRowBackground: table-view-row-2
     }
   }
-  com.maltaisn.cardgame.widget.menu.table.ScoresTable$ScoresTableStyle: {
+  com.maltaisn.cardgame.widget.table.ScoresTable$ScoresTableStyle: {
     default: {
       headerTitleFontStyle: normalBold
       headerSubtitleFontStyle: {
@@ -213,7 +213,7 @@
       scoreHighlightNegative: scores-table-highlight-negative
     }
   }
-  com.maltaisn.cardgame.widget.menu.table.TricksTable$TricksTableStyle: {
+  com.maltaisn.cardgame.widget.table.TricksTable$TricksTableStyle: {
     default: {
       headerFontStyle: normalBold
       checkIcon: table-view-checkbox

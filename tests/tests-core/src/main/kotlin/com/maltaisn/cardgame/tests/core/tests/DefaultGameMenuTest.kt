@@ -25,7 +25,7 @@ import com.maltaisn.cardgame.prefs.SwitchPref
 import com.maltaisn.cardgame.tests.core.CardGameTest
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.menu.*
-import com.maltaisn.cardgame.widget.menu.table.ScoresTable
+import com.maltaisn.cardgame.widget.table.ScoresTable
 import ktx.actors.onKeyDown
 import ktx.assets.load
 import ktx.log.info
