@@ -1,0 +1,140 @@
+
+ncard.png
+size: 2048,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+ncard
+  rotate: false
+  xy: 228, 712
+  size: 240, 304
+  orig: 240, 304
+  offset: 0, 0
+  index: 0
+ncard
+  rotate: false
+  xy: 2, 390
+  size: 208, 304
+  orig: 208, 304
+  offset: 0, 0
+  index: 10
+ncard
+  rotate: false
+  xy: 470, 712
+  size: 208, 304
+  orig: 208, 304
+  offset: 0, 0
+  index: 11
+ncard
+  rotate: false
+  xy: 2, 84
+  size: 208, 304
+  orig: 208, 304
+  offset: 0, 0
+  index: 12
+ncard
+  rotate: false
+  xy: 680, 712
+  size: 208, 304
+  orig: 208, 304
+  offset: 0, 0
+  index: 1
+ncard
+  rotate: false
+  xy: 890, 712
+  size: 208, 304
+  orig: 208, 304
+  offset: 0, 0
+  index: 2
+ncard
+  rotate: false
+  xy: 1100, 712
+  size: 208, 304
+  orig: 208, 304
+  offset: 0, 0
+  index: 3
+ncard
+  rotate: false
+  xy: 1310, 712
+  size: 208, 304
+  orig: 208, 304
+  offset: 0, 0
+  index: 4
+ncard
+  rotate: false
+  xy: 1520, 712
+  size: 208, 304
+  orig: 208, 304
+  offset: 0, 0
+  index: 5
+ncard
+  rotate: false
+  xy: 1730, 712
+  size: 208, 304
+  orig: 208, 304
+  offset: 0, 0
+  index: 6
+ncard
+  rotate: false
+  xy: 212, 390
+  size: 208, 304
+  orig: 208, 304
+  offset: 0, 0
+  index: 7
+ncard
+  rotate: false
+  xy: 212, 84
+  size: 208, 304
+  orig: 208, 304
+  offset: 0, 0
+  index: 8
+ncard
+  rotate: false
+  xy: 422, 406
+  size: 208, 304
+  orig: 208, 304
+  offset: 0, 0
+  index: 9
+ncard-back
+  rotate: false
+  xy: 2, 696
+  size: 224, 320
+  orig: 224, 320
+  offset: 0, 0
+  index: -1
+ncard-background
+  rotate: false
+  xy: 2, 2
+  size: 80, 80
+  split: 39, 39, 39, 39
+  pad: 31, 31, 31, 31
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+ncard-hover
+  rotate: false
+  xy: 1940, 936
+  size: 80, 80
+  split: 39, 39, 39, 39
+  pad: 31, 31, 31, 31
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+ncard-selection
+  rotate: false
+  xy: 632, 692
+  size: 18, 18
+  split: 8, 8, 8, 8
+  pad: 0, 0, 0, 0
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+ncard-slot
+  rotate: false
+  xy: 422, 372
+  size: 32, 32
+  split: 15, 15, 15, 15
+  pad: 0, 0, 0, 0
+  orig: 32, 32
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,18 @@
+{
+  com.maltaisn.cardgame.widget.card.CardActor$CardStyle: {
+    ncard: {
+      cardWidth: 240
+      cardHeight: 336
+      cards: [
+        ncard_0, ncard_1, ncard_2, ncard_3, ncard_4,
+        ncard_5, ncard_6, ncard_7, ncard_8, ncard_9,
+        ncard_10, ncard_11, ncard_12
+      ]
+      back: ncard-back
+      background: ncard-background
+      selection: ncard-selection
+      hover: ncard-hover
+      slot: ncard-slot
+    }
+  }
+}
