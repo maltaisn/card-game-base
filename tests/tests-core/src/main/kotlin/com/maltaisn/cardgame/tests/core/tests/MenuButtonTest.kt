@@ -59,14 +59,9 @@ class MenuButtonTest : ActionBarTest() {
         addToggleBtn("Icon shown") { _, shown ->
             btn.icon = if (shown) skin.getDrawable(MenuIcons.CARDS) else null
         }
-
-        var anchorSideIndex = 0
-        addActionBtn("Anchor side: ${btn.anchorSide}") {
-            anchorSideIndex = (anchorSideIndex + 1) % BTN_SIDES.size
-            btn.anchorSide = BTN_SIDES[anchorSideIndex]
-            it.title = "Anchor side: ${btn.anchorSide}"
-
-            btnCell.align(when (btn.anchorSide) {
+        addEnumBtn("Anchor side", Side.values().toList()) { _, value ->
+            btn.anchorSide = value
+            btnCell.align(when (value) {
                 Side.NONE -> Align.center
                 Side.TOP -> Align.top
                 Side.LEFT -> Align.left
@@ -74,17 +69,11 @@ class MenuButtonTest : ActionBarTest() {
                 Side.RIGHT -> Align.right
             })
         }
-
-        var iconSideIndex = 0
-        addActionBtn("Icon side: ${btn.iconSide}") {
-            iconSideIndex = (iconSideIndex + 1) % BTN_SIDES.size
-            btn.iconSide = BTN_SIDES[iconSideIndex]
-            it.title = "Icon side: ${btn.iconSide}"
+        addEnumBtn("Icon side", Side.values().toList()) { _, value ->
+            btn.iconSide = value
         }
-
-        addActionBtn("Icon size: ${btn.iconSize.toInt()}") {
-            btn.iconSize = (btn.iconSize - 24f) % 104f + 32f
-            it.title = "Icon size: ${btn.iconSize.toInt()}"
+        addValueBtn("Icon size", 32f, 128f, btn.iconSize, 8f) { _, size, _ ->
+            btn.iconSize = size
         }
     }
 

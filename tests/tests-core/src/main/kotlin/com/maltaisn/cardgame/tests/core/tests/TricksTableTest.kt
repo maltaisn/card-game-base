@@ -51,9 +51,8 @@ class TricksTableTest : SubmenuContentTest() {
         addActionBtn("Add trick") {
             addTrick()
         }
-        addActionBtn("Size: ${table.cardSize.toInt()}") {
-            table.cardSize = (table.cardSize - 180f) % 100f + 200f
-            it.title = "Size: ${table.cardSize.toInt()}"
+        addValueBtn("Size", 200f, 280f, 240f, 20f) { _, size, _ ->
+            table.cardSize = size
         }
         addToggleBtn("Debug") { _, debug ->
             table.setDebug(debug, true)

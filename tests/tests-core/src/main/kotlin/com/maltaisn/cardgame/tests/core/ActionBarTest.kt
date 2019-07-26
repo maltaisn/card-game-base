@@ -16,11 +16,17 @@
 
 package com.maltaisn.cardgame.tests.core
 
+import com.badlogic.gdx.Input
+import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.menu.MenuButton
 import ktx.actors.onClick
+import java.text.NumberFormat
+import kotlin.math.round
 
 
 /**
@@ -40,9 +46,9 @@ abstract class ActionBarTest : CardGameTest() {
     /**
      * Add a button with a [title] and a click [action].
      */
-    protected inline fun addActionBtn(title: String, crossinline action: (MenuButton) -> Unit): MenuButton {
-        val fontStyle = FontStyle(fontSize = 32f, drawShadow = true)
-        val btn = MenuButton(skin, fontStyle, title, null)
+    protected inline fun addActionBtn(title: String,
+                                      crossinline action: (MenuButton) -> Unit): MenuButton {
+        val btn = MenuButton(skin, BTN_FONT_STYLE, title, null)
         btn.onClick { action(btn) }
         btnTable.add(btn).grow().pad(0f, 10f, 0f, 10f).expand()
         return btn
@@ -74,6 +80,80 @@ abstract class ActionBarTest : CardGameTest() {
         }
         btn.checked = state
         return btn
+    }
+
+    /**
+     * Add a button that goes through a list of [values].
+     */
+    protected fun <T> addEnumBtn(title: String, values: List<T>,
+                                 valueTitles: List<Any?>? = values,
+                                 initialIndex: Int = 0,
+                                 action: (MenuButton, value: T) -> Unit): MenuButton {
+        var selectedIndex = initialIndex
+        fun getTitle() = title + if (valueTitles != null) ": ${valueTitles[selectedIndex]}" else ""
+        return addActionBtn(getTitle()) {
+            selectedIndex = (selectedIndex + 1) % values.size
+            it.title = getTitle()
+            action(it, values[selectedIndex])
+        }
+    }
+
+    /**
+     * Add a button that shows a value between [minValue] and [maxValue], starting at [startValue]
+     * and incremented by a [step] value. Left-click to increment and right-click to decrement.
+     * [step] value can be negative to change the value in the inverse order.
+     * A custom number format can be set for percentages for example.
+     */
+    protected fun addValueBtn(title: String,
+                              minValue: Float, maxValue: Float, startValue: Float, step: Float,
+                              numberFmt: NumberFormat? = NumberFormat.getInstance(),
+                              action: (MenuButton, Float, Float) -> Unit): ValueMenuButton {
+        val btn = ValueMenuButton(skin, title, minValue, maxValue, startValue, step, numberFmt, action)
+        btnTable.add(btn).grow().pad(0f, 10f, 0f, 10f).expand()
+        return btn
+    }
+
+    class ValueMenuButton(skin: Skin, private val valueTitle: String,
+                          minValue: Float, maxValue: Float, startValue: Float, step: Float,
+                          private val numberFmt: NumberFormat? = NumberFormat.getInstance(),
+                          private val action: (MenuButton, value: Float, oldValue: Float) -> Unit) :
+            MenuButton(skin, BTN_FONT_STYLE) {
+
+        private val min = step * round(minValue / step)
+        private val max = step * round(maxValue / step)
+
+        var value = step * round(startValue / step)
+            set(value) {
+                val oldValue = field
+                field = value
+                if (field < min) field = max
+                if (field > max) field = min
+                updateTitle()
+                action(this, field, oldValue)
+            }
+
+        init {
+            addListener(object : ClickListener(Input.Buttons.LEFT) {
+                override fun clicked(event: InputEvent, x: Float, y: Float) {
+                    value = step * round((value + step) / step)
+                }
+            })
+            addListener(object : ClickListener(Input.Buttons.RIGHT) {
+                override fun clicked(event: InputEvent, x: Float, y: Float) {
+                    value = step * round((value - step) / step)
+                }
+            })
+            updateTitle()
+        }
+
+        private fun updateTitle() {
+            title = if (numberFmt != null) "$valueTitle: ${numberFmt.format(value)}" else valueTitle
+        }
+
+    }
+
+    companion object {
+        val BTN_FONT_STYLE = FontStyle(fontSize = 32f, drawShadow = true)
     }
 
 }

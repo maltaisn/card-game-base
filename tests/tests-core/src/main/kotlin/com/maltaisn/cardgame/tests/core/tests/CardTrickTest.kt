@@ -27,9 +27,8 @@ import com.maltaisn.cardgame.widget.card.CardContainer
 import com.maltaisn.cardgame.widget.card.CardStack
 import com.maltaisn.cardgame.widget.card.CardTrick
 import ktx.log.info
+import java.text.DecimalFormat
 import kotlin.math.PI
-import kotlin.math.max
-import kotlin.math.min
 import kotlin.random.Random
 
 
@@ -84,35 +83,20 @@ class CardTrickTest : ActionBarTest() {
             }
             animLayer.update()
         }
-        addActionBtn("-") {
-            // Decrease capacity
-            val newCapacity = max(1, trick.capacity - 1)
-            if (newCapacity != trick.capacity) {
+        addValueBtn("Capacity", 1f, 10f,
+                4f, 1f) { _, newCapacity, oldCapacity ->
+            if (newCapacity < oldCapacity) {
+                // Decrease capacity, moving extra cards from trick to stack.
                 val cards = trick.cards
-
-                // Move extra cards to stack
-                for (i in newCapacity until cards.size) {
+                for (i in newCapacity.toInt() until cards.size) {
                     if (cards[i] != null) {
                         animLayer.moveCard(trick, stack, i, 0, true)
                     }
                 }
-                animLayer.update()
-
-                trick.capacity = newCapacity
-                trick.requestUpdate()
-                animLayer.update()
             }
-            info { "Capacity: ${trick.capacity}" }
-        }
-        addActionBtn("+") {
-            // Increase capacity
-            val newCapacity = min(10, trick.capacity + 1)
-            if (newCapacity != trick.capacity) {
-                trick.capacity = newCapacity
-                trick.requestUpdate()
-                animLayer.update()
-            }
-            info { "Capacity: ${trick.capacity}" }
+            trick.capacity = newCapacity.toInt()
+            trick.requestUpdate()
+            animLayer.update()
         }
         addTwoStateActionBtn("Cc", "Cw") { _, state ->
             // Toggle clockwise placement
@@ -129,46 +113,29 @@ class CardTrickTest : ActionBarTest() {
             animLayer.update()
             info { "Random angles: ${trick.cardAngles}" }
         }
-        addActionBtn("Rx-") {
-            // Decrease horizontal radius
-            trick.radius.x = max(trick.radius.x - 20f, 40f)
+        val rxBtn = addValueBtn("Radius X", 40f, 300f,
+                trick.radius.x, 20f, null) { _, value, _ ->
+            trick.radius.x = value
             trick.requestUpdate()
             animLayer.update()
-            info { "Radius X: ${trick.radius.x}" }
         }
-        addActionBtn("Rx+") {
-            // Increase horizontal radius
-            trick.radius.x = min(trick.radius.x + 20f, 400f)
+        val ryBtn = addValueBtn("Radius Y", 40f, 300f,
+                trick.radius.y, 20f, null) { _, value, _ ->
+            trick.radius.y = value
             trick.requestUpdate()
             animLayer.update()
-            info { "Radius X: ${trick.radius.x}" }
-        }
-        addActionBtn("Ry-") {
-            // Decrease vertical radius
-            trick.radius.y = max(trick.radius.y - 20f, 40f)
-            trick.requestUpdate()
-            animLayer.update()
-            info { "Radius Y: ${trick.radius.y}" }
-        }
-        addActionBtn("Ry+") {
-            // Increase vertical radius
-            trick.radius.y = min(trick.radius.y + 20f, 400f)
-            trick.requestUpdate()
-            animLayer.update()
-            info { "Radius Y: ${trick.radius.y}" }
         }
         addActionBtn("Auto R") {
             // Set auto radius
             trick.setAutoRadius()
-            trick.requestUpdate()
-            animLayer.update()
+            rxBtn.value = trick.radius.x
+            ryBtn.value = trick.radius.y
         }
-        addActionBtn("Angle+") {
-            // Increase start angle
-            trick.startAngle = ((trick.startAngle + PI / 8) % (PI * 2)).toFloat()
+        addValueBtn("Start angle", 0f, 340f, 0f, 20f,
+                DecimalFormat().apply { positiveSuffix = "°" }) { _, value, _ ->
+            trick.startAngle = value / 180f * PI.toFloat()
             trick.requestUpdate()
             animLayer.update()
-            info { "Start angle: ${trick.startAngle}" }
         }
         addToggleBtn("Debug") { _, debug ->
             trick.debug = debug

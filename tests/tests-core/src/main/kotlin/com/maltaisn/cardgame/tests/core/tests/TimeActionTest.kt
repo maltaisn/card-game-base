@@ -43,15 +43,13 @@ class TimeActionTest : ActionBarTest() {
         layout.gameLayer.centerTable.add(card).expand()
 
         var cardShown = true
-        var intpIn = 0
-        var intpOut = 0
+        var intpIn = INTERPOLATIONS.first()
+        var intpOut = INTERPOLATIONS.first()
 
         addActionBtn("Fade") {
             cardShown = !cardShown
             if (fadeAction == null) {
-                fadeAction = object : TimeAction(1f,
-                        INTERPOLATIONS[intpIn].second,
-                        INTERPOLATIONS[intpOut].second,
+                fadeAction = object : TimeAction(1f, intpIn, intpOut,
                         reversed = !cardShown) {
 
                     override fun begin() {
@@ -76,16 +74,12 @@ class TimeActionTest : ActionBarTest() {
         }
 
         // Interpolation
-        addActionBtn("In: ${INTERPOLATIONS[intpIn].first}") {
-            intpIn = (intpIn + 1) % INTERPOLATIONS.size
-            val intp = INTERPOLATIONS[intpIn]
-            it.title = "In: ${intp.first}"
+        addEnumBtn("In", INTERPOLATIONS, INTERPOLATION_NAMES) { _, intp ->
+            intpIn = intp
             fadeAction?.end()
         }
-        addActionBtn("Out: ${INTERPOLATIONS[intpOut].first}") {
-            intpOut = (intpOut + 1) % INTERPOLATIONS.size
-            val intp = INTERPOLATIONS[intpOut]
-            it.title = "Out: ${intp.first}"
+        addEnumBtn("Out", INTERPOLATIONS, INTERPOLATION_NAMES) { _, intp ->
+            intpOut = intp
             fadeAction?.end()
         }
 
@@ -103,12 +97,9 @@ class TimeActionTest : ActionBarTest() {
     }
 
     companion object {
-        private val INTERPOLATIONS = listOf(
-                "Linear" to Interpolation.linear,
-                "Smooth" to Interpolation.smooth,
-                "Pow" to Interpolation.pow4,
-                "Bounce" to Interpolation.bounce
-        )
+        private val INTERPOLATION_NAMES = listOf("Linear", "Smooth", "Pow", "Bounce")
+        private val INTERPOLATIONS = listOf(Interpolation.linear,
+                Interpolation.smooth, Interpolation.pow4, Interpolation.bounce)
     }
 
 }

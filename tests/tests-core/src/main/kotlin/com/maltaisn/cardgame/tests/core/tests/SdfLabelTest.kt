@@ -24,6 +24,7 @@ import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.SdfLabel
 import ktx.actors.alpha
+import java.text.NumberFormat
 
 
 /**
@@ -69,16 +70,12 @@ class SdfLabelTest : ActionBarTest() {
         }
 
         // Action buttons
-        addActionBtn("Change text") {
-            selectedText = (selectedText + 1) % TEXTS.size
-            val text = TEXTS[selectedText]
+        addEnumBtn("Change text", TEXTS, null) { _, text ->
             for (label in labels) {
                 label.setText(text)
             }
         }
-        addActionBtn("Change colors") {
-            selectedColors = (selectedColors + 1) % COLORS.size
-            val colors = COLORS[selectedColors]
+        addEnumBtn("Change colors", COLORS, null) { _, colors ->
             fontStyle.fontColor = colors.first
             fontStyle.shadowColor = colors.second
             updateFontStyle()
@@ -101,12 +98,10 @@ class SdfLabelTest : ActionBarTest() {
                 label.enabled = enabled
             }
         }
-
-        addActionBtn("Alpha: 100%") {
-            fontAlpha = (fontAlpha + 100) % 110
-            it.title = "Alpha: $fontAlpha%"
+        addValueBtn("Alpha", 0f, 1f, 1f, -0.1f,
+                NumberFormat.getPercentInstance()) { _, value, _ ->
             for (label in labels) {
-                label.alpha = fontAlpha / 100f
+                label.alpha = value
             }
         }
     }
