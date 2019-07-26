@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package com.maltaisn.cardgame.game
+package com.maltaisn.cardgame.pcard
 
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
+import com.maltaisn.cardgame.game.Card
 
 
 /**

@@ -37,6 +37,7 @@ object CardGameTests {
             MarkdownViewTest::class.java,
             MenuButtonTest::class.java,
             MenuDrawerTest::class.java,
+            NCardTest::class.java,
             PagedSubMenuTest::class.java,
             PlayerLabelFadeTest::class.java,
             PlayerLabelTest::class.java,

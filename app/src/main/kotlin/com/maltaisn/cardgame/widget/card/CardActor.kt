@@ -197,7 +197,7 @@ class CardActor(private val style: CardStyle,
     /**
      * The style for cards drawn with a [CardActor], must match the [card] type.
      */
-    class CardStyle {
+    open class CardStyle {
         /** Array of card drawables indexed by card value. */
         lateinit var cards: Array<Drawable>
         /** Drawable for the back face of a card. */

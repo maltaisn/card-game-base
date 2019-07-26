@@ -21,15 +21,15 @@ import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.maltaisn.cardgame.CardGameScreen
 import com.maltaisn.cardgame.CoreRes
+import com.maltaisn.cardgame.pcard.PCardStyle
 import com.maltaisn.cardgame.widget.CardGameLayout
-import com.maltaisn.cardgame.widget.card.CardActor
 import ktx.assets.load
 import ktx.style.get
 
 
 abstract class CardGameTest : CardGameScreen() {
 
-    protected lateinit var pcardStyle: CardActor.CardStyle
+    protected lateinit var pcardStyle: PCardStyle
 
 
     override fun load() {

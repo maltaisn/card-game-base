@@ -16,6 +16,7 @@
 
 package com.maltaisn.cardgame.game
 
+import com.maltaisn.cardgame.pcard.PCard
 import org.junit.Assert.*
 import org.junit.Test
 

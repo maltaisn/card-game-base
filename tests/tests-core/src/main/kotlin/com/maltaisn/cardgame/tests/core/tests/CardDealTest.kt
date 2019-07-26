@@ -16,8 +16,8 @@
 
 package com.maltaisn.cardgame.tests.core.tests
 
-import com.maltaisn.cardgame.game.PCard
 import com.maltaisn.cardgame.game.drawTop
+import com.maltaisn.cardgame.pcard.PCard
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.card.CardActor
