@@ -44,23 +44,23 @@ class MenuButtonTest : CardGameTest() {
                 shadowColor = Color.BLACK)
 
         // Side buttons
-        val topBtn = MenuButton(coreSkin, fontStyle, "Top button",
-                coreSkin.getDrawable(MenuIcons.BOOK)).apply {
+        val topBtn = MenuButton(skin, fontStyle, "Top button",
+                skin.getDrawable(MenuIcons.BOOK)).apply {
             anchorSide = MenuButton.Side.TOP
             iconSide = MenuButton.Side.LEFT
             iconSize = 48f
         }
-        val bottomBtn = MenuButton(coreSkin, fontStyle, "Bottom button",
-                coreSkin.getDrawable(MenuIcons.CARDS)).apply {
+        val bottomBtn = MenuButton(skin, fontStyle, "Bottom button",
+                skin.getDrawable(MenuIcons.CARDS)).apply {
             anchorSide = MenuButton.Side.BOTTOM
             iconSide = MenuButton.Side.BOTTOM
             iconSize = 64f
         }
-        val leftBtn = MenuButton(coreSkin, fontStyle, "Left button", null).apply {
+        val leftBtn = MenuButton(skin, fontStyle, "Left button", null).apply {
             anchorSide = MenuButton.Side.LEFT
         }
-        val rightBtn = MenuButton(coreSkin, fontStyle, "Right\nbutton",
-                coreSkin.getDrawable(MenuIcons.LIST)).apply {
+        val rightBtn = MenuButton(skin, fontStyle, "Right\nbutton",
+                skin.getDrawable(MenuIcons.LIST)).apply {
             anchorSide = MenuButton.Side.RIGHT
             iconSide = MenuButton.Side.RIGHT
             iconSize = 128f
@@ -68,7 +68,7 @@ class MenuButtonTest : CardGameTest() {
         val sideBtns = listOf(topBtn, bottomBtn, leftBtn, rightBtn)
 
         // Center button
-        val centerBtn = MenuButton(coreSkin, fontStyle, "Enable all", null).apply {
+        val centerBtn = MenuButton(skin, fontStyle, "Enable all", null).apply {
             anchorSide = MenuButton.Side.NONE
             iconSide = MenuButton.Side.RIGHT
             iconSize = 64f

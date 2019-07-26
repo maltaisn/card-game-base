@@ -41,17 +41,17 @@ class ScrollSubMenuTest : ActionBarTest() {
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
-        val menuItems = listOf(MenuItem(0, "First item", coreSkin.getDrawable(MenuIcons.BOOK), SubMenu.ITEM_POS_TOP),
+        val menuItems = listOf(MenuItem(0, "First item", skin.getDrawable(MenuIcons.BOOK), SubMenu.ITEM_POS_TOP),
                 MenuItem(1, "No icon", null, SubMenu.ITEM_POS_TOP),
-                MenuItem(2, "Bottom aligned", coreSkin.getDrawable(MenuIcons.CHEVRON_RIGHT), SubMenu.ITEM_POS_BOTTOM))
+                MenuItem(2, "Bottom aligned", skin.getDrawable(MenuIcons.CHEVRON_RIGHT), SubMenu.ITEM_POS_BOTTOM))
 
         menuItems[0].checked = true
         menuItems[2].checkable = false
 
         val markdown: Markdown = assetManager.get("lorem-ipsum")
-        val mdView = MarkdownView(coreSkin, markdown)
+        val mdView = MarkdownView(skin, markdown)
 
-        val menu = ScrollSubMenu(coreSkin).apply {
+        val menu = ScrollSubMenu(skin).apply {
             itemClickListener = { info { "Item checked: $it" } }
             title = "Sub menu test"
             scrollContent.actor = mdView

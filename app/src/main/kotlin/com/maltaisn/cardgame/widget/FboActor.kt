@@ -30,7 +30,10 @@ import com.maltaisn.cardgame.CardGameScreen
  */
 interface FboActor {
 
-    /** Whether to render the actor to frame buffer first, then to screen, or just render directly to the screen. */
+    /**
+     * Whether to render the actor to frame buffer first, then to screen,
+     * or just render directly to the screen.
+     */
     var renderToFrameBuffer: Boolean
 
 
@@ -82,6 +85,4 @@ interface FboActor {
             delegateDraw(batch, parentAlpha)
         }
     }
-
-
 }

@@ -36,7 +36,7 @@ class CardHandHighlightTest : ActionBarTest() {
 
         val deck = PCard.fullDecks(shuffled = true)
 
-        val hand = CardHand(coreSkin, cardSkin).apply {
+        val hand = CardHand(pcardStyle).apply {
             cards = deck.drawTop(13)
             align = Align.bottom
             clipPercent = 0.3f

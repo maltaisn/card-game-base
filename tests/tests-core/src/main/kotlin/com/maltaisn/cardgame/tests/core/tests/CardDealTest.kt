@@ -34,12 +34,12 @@ class CardDealTest : ActionBarTest() {
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
-        val topHand = CardHand(coreSkin, cardSkin).apply {
+        val topHand = CardHand(pcardStyle).apply {
             cards = PCard.fullDecks().drawTop(16)
             cardSize = CardActor.SIZE_SMALL
         }
 
-        val bottomHand = CardHand(coreSkin, cardSkin).apply {
+        val bottomHand = CardHand(pcardStyle).apply {
             cardSize = CardActor.SIZE_SMALL
         }
 

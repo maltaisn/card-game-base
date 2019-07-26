@@ -26,10 +26,10 @@ import ktx.log.info
 class SwitchTest : SubmenuContentTest() {
 
     override fun layoutContent(layout: CardGameLayout, content: Table) {
-        val topSwitch = Switch(coreSkin)
+        val topSwitch = Switch(skin)
         topSwitch.checkListener = { info { "Top switch check changed to $it" } }
 
-        val bottomSwitch = Switch(coreSkin)
+        val bottomSwitch = Switch(skin)
         bottomSwitch.checkListener = { info { "Bottom switch check changed to $it" } }
 
         // Do the layout

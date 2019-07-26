@@ -3,6 +3,7 @@
 
 ## Copied assets
 /tests/assets/core
+/tests/assets/pcard
 /tests/tests-android/src/main/assets
 
 ## IntelliJ and Android

@@ -49,14 +49,6 @@
       border: background-border
     }
   }
-  com.maltaisn.cardgame.widget.card.CardActor$CardActorStyle: {
-    default: {
-      background: card-background
-      selection: card-selection
-      hover: card-hover
-      slot: card-slot
-    }
-  }
   com.maltaisn.cardgame.widget.Popup$PopupStyle: {
     default: {
       body: popup

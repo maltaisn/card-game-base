@@ -41,6 +41,7 @@ tasks.register("copyAssets") {
 
 tasks.register<Delete>("cleanAssets") {
     delete("../assets/core")
+    delete("../assets/pcard")
 }
 
 tasks.named("clean") {

@@ -17,12 +17,14 @@
 package com.maltaisn.cardgame
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.SkinLoader
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Pixmap
+import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.glutils.FrameBuffer
 import com.badlogic.gdx.scenes.scene2d.InputEvent
@@ -32,24 +34,25 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.TextField
 import com.badlogic.gdx.utils.I18NBundle
 import com.badlogic.gdx.utils.viewport.ExtendViewport
-import com.gmail.blueboxware.libgdxplugin.annotations.GDXAssets
-import com.maltaisn.cardgame.game.PCard
 import com.maltaisn.cardgame.markdown.MdLoader
 import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.GamePrefsLoader
 import com.maltaisn.cardgame.widget.SdfShader
+import ktx.assets.file
 import ktx.assets.getAsset
 import ktx.assets.load
 import ktx.assets.setLoader
 
 
-abstract class CardGameScreen : Stage(ExtendViewport(1920f, 1080f)), Screen {
+open class CardGameScreen : Stage(ExtendViewport(1920f, 1080f)), Screen {
 
     val assetManager = AssetManager()
 
-    /** Skin containing core UI assets. */
-    @GDXAssets(skinFiles = ["assets/core/core.skin"])
-    val coreSkin: Skin
+    /**
+     * The skin containing all core styles.
+     * Additional skins can be added with [addSkin].
+     */
+    val skin: Skin
 
     /** List of game prefs to save on pause. */
     val prefs = mutableListOf<GamePrefs>()
@@ -76,8 +79,9 @@ abstract class CardGameScreen : Stage(ExtendViewport(1920f, 1080f)), Screen {
         assetManager.setLoader(MdLoader(fileResolver))
 
         // Load core skin
-        loadCoreSkin()
-        coreSkin = assetManager.get(CoreRes.CORE_SKIN)
+        assetManager.load<Skin>(CoreRes.CORE_SKIN, SkinLoader.SkinParameter(CoreRes.CORE_SKIN_ATLAS))
+        assetManager.finishLoading()
+        skin = assetManager.get(CoreRes.CORE_SKIN)
 
         // Listener to unfocus text field when clicked outside
         root.addCaptureListener(object : InputListener() {
@@ -90,34 +94,38 @@ abstract class CardGameScreen : Stage(ExtendViewport(1920f, 1080f)), Screen {
             }
         })
 
+        assetManager.load<I18NBundle>(CoreRes.CORE_STRINGS_FILE)
         load()
     }
 
 
-    /** Called when the game is created to load resources asynchronously. */
-    open fun load() {
-        assetManager.load<I18NBundle>(CoreRes.CORE_STRINGS_FILE)
-    }
+    /**
+     * Called when the game is created.
+     * Good place to load the resources asynchronously with the asset manager.
+     */
+    open fun load() = Unit
 
-    /** Called when the asset manager is done loading. */
-    open fun start() {
-        coreSkin.add(CoreRes.CORE_STRINGS_NAME, assetManager.getAsset<I18NBundle>(CoreRes.CORE_STRINGS_FILE))
-        SdfShader.getShader(coreSkin)
-    }
+    /**
+     * Called when the asset manager is done loading.
+     */
+    open fun start() = Unit
 
-    /** Load the [PCard] skin, containing standard playing cards sprites. */
-    protected fun loadPCardSkin() {
-        assetManager.load<Skin>(CoreRes.PCARD_SKIN, SkinLoader.SkinParameter(CoreRes.PCARD_SKIN_ATLAS))
-    }
-
-    private fun loadCoreSkin() {
-        assetManager.load<Skin>(CoreRes.CORE_SKIN, SkinLoader.SkinParameter(CoreRes.CORE_SKIN_ATLAS))
-        assetManager.finishLoading()
+    /**
+     * Add the styles and regions of a skin to the core skin.
+     * This must be called during [start] and `assetManager.load<TextureAtlas>(atlasFile)`
+     * must have been called before hand if the skin has an atlas.
+     */
+    protected fun addSkin(skinFile: String, atlasFile: String? = null) {
+        if (atlasFile != null) {
+            val atlas: TextureAtlas = assetManager.get(atlasFile)
+            skin.addRegions(atlas)
+        }
+        skin.load(file(skinFile))
     }
 
     override fun show() {
         Gdx.input.inputProcessor = this
-        Gdx.input.isCatchBackKey = true
+        Gdx.input.setCatchKey(Input.Keys.BACK, true)
     }
 
     override fun hide() {
@@ -136,6 +144,10 @@ abstract class CardGameScreen : Stage(ExtendViewport(1920f, 1080f)), Screen {
         if (!started) {
             if (assetManager.update()) {
                 started = true
+
+                skin.add(CoreRes.CORE_STRINGS_NAME,
+                        assetManager.getAsset<I18NBundle>(CoreRes.CORE_STRINGS_FILE))
+                SdfShader.getShader(skin)
                 start()
             }
             Gdx.graphics.requestRendering()

@@ -38,7 +38,7 @@ class MarkdownViewTest : SubmenuContentTest() {
 
     override fun layoutContent(layout: CardGameLayout, content: Table) {
         val markdown: Markdown = assetManager.get(MARKDOWN_FILE)
-        val mdView = MarkdownView(coreSkin, markdown)
+        val mdView = MarkdownView(skin, markdown)
 
         // Do the layout
         val mdContainer = Container(mdView)

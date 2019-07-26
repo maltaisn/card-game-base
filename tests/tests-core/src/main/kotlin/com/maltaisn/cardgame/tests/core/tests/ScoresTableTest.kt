@@ -28,7 +28,7 @@ import kotlin.random.Random
 class ScoresTableTest : SubmenuContentTest() {
 
     override fun layoutContent(layout: CardGameLayout, content: Table) {
-        val table = ScoresTable(coreSkin, 4)
+        val table = ScoresTable(skin, 4)
         var footerShown = false
 
         fun updateHeaders(showDifficulty: Boolean) {

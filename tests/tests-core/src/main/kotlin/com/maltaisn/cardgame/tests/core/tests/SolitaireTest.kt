@@ -43,7 +43,7 @@ class SolitaireTest : CardGameTest() {
         val animLayer = layout.cardAnimationLayer
 
         repeat(4) {
-            val column = CardHand(coreSkin, cardSkin)
+            val column = CardHand(pcardStyle)
             layout.gameLayer.centerTable.add(CenterLayout(column))
                     .pad(60f, 40f, 60f, 40f).grow()
             animLayer.register(column)

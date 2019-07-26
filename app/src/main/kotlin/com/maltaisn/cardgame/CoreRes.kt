@@ -23,8 +23,8 @@ package com.maltaisn.cardgame
  */
 object CoreRes {
 
-    const val PCARD_SKIN = "core/pcard/pcard.skin"
-    const val PCARD_SKIN_ATLAS = "core/pcard/pcard.atlas"
+    const val PCARD_SKIN = "pcard/pcard.skin"
+    const val PCARD_SKIN_ATLAS = "pcard/pcard.atlas"
 
     const val CORE_SKIN = "core/core.skin"
     const val CORE_SKIN_ATLAS = "core/core.atlas"

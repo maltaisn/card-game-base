@@ -18,7 +18,6 @@ package com.maltaisn.cardgame.widget.card
 
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.game.Card
 import com.maltaisn.cardgame.widget.action.TimeAction
@@ -31,7 +30,7 @@ import kotlin.math.min
 /**
  * A card container that displays a list of card actors to form a hand, that can be sorted.
  */
-class CardHand : CardContainer {
+class CardHand(cardStyle: CardActor.CardStyle) : CardContainer(cardStyle) {
 
     /**
      * Sorter to use for sorting the group before displaying. Use `null` for no sorting.
@@ -91,12 +90,6 @@ class CardHand : CardContainer {
                 highlightable = true
             }
         }
-
-
-    constructor(coreSkin: Skin, cardSkin: Skin) : super(coreSkin, cardSkin)
-
-    constructor(cardActorStyle: CardActor.CardActorStyle, cardStyle: CardActor.CardStyle) :
-            super(cardActorStyle, cardStyle)
 
 
     ////////// CARDS //////////

@@ -42,17 +42,17 @@ class MenuDrawerTest : ActionBarTest() {
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
-        val drawer = MenuDrawer(coreSkin)
+        val drawer = MenuDrawer(skin)
         drawer.backBtnText = "Back"
 
         var drawerWidth = 0.5f
         drawer.drawerWidth = Value.percentWidth(drawerWidth, drawer)
 
-        val image = Image(coreSkin.getDrawable(MenuIcons.INFO))
+        val image = Image(skin.getDrawable(MenuIcons.INFO))
         image.color = Color.BLACK
         val imageContent = Container(image).size(300f, 300f)
 
-        val text = SdfLabel(coreSkin, FontStyle(fontSize = 44f, fontColor = Color.BLACK), """
+        val text = SdfLabel(skin, FontStyle(fontSize = 44f, fontColor = Color.BLACK), """
             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             Nulla consectetur nunc scelerisque, pretium urna eu, maximus
             augue. In lacinia lobortis enim, quis sodales turpis pulvinar
@@ -64,7 +64,7 @@ class MenuDrawerTest : ActionBarTest() {
         text.setWrap(true)
         val textContent = Container(text).pad(0f, 60f, 0f, 60f).align(Align.top).fillX()
 
-        val listContent = MenuDrawerList(coreSkin).apply {
+        val listContent = MenuDrawerList(skin).apply {
             items = (1..10).map { "Item $it" }
             selectionChangeListener = {
                 info { "List content item clicked: ${items[it]}" }

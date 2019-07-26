@@ -32,7 +32,7 @@ class PlayerLabelFadeTest : ActionBarTest() {
         super.layout(layout)
 
         var score = 0
-        val label = PlayerLabel(coreSkin, "Player")
+        val label = PlayerLabel(skin, "Player")
         label.score = "10 ($score)"
 
         val table = FadeTable().apply {

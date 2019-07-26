@@ -33,8 +33,8 @@ class SliderTest : SubmenuContentTest() {
         val sliders = mutableListOf<Slider>()
 
         repeat(5) { n ->
-            val label = SdfLabel(coreSkin, FontStyle(fontSize = 44f, fontColor = Color.BLACK))
-            val slider = Slider(coreSkin).apply {
+            val label = SdfLabel(skin, FontStyle(fontSize = 44f, fontColor = Color.BLACK))
+            val slider = Slider(skin).apply {
                 minProgress = n * 10f
                 maxProgress = 100 - minProgress
                 progress = randomValue()

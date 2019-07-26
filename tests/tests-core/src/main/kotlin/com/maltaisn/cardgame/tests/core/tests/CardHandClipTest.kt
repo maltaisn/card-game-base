@@ -33,24 +33,24 @@ class CardHandClipTest : CardGameTest() {
 
         val deck = PCard.fullDecks(shuffled = true)
 
-        val bottom = CardHand(coreSkin, cardSkin).apply {
+        val bottom = CardHand(pcardStyle).apply {
             cards = deck.drawTop(7)
             clipPercent = 0.3f
             align = Align.bottom
         }
-        val top = CardHand(coreSkin, cardSkin).apply {
+        val top = CardHand(pcardStyle).apply {
             cards = deck.drawTop(7)
             clipPercent = 0.3f
             align = Align.bottom
             rotation = 180f
         }
-        val left = CardHand(coreSkin, cardSkin).apply {
+        val left = CardHand(pcardStyle).apply {
             horizontal = false
             cards = deck.drawTop(7)
             clipPercent = 0.3f
             align = Align.left
         }
-        val right = CardHand(coreSkin, cardSkin).apply {
+        val right = CardHand(pcardStyle).apply {
             horizontal = false
             cards = deck.drawTop(7)
             clipPercent = -0.3f

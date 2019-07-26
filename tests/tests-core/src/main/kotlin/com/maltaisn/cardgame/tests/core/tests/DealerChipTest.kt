@@ -34,7 +34,7 @@ class DealerChipTest : ActionBarTest() {
 
         val popupGroup = layout.popupGroup
 
-        val chip = DealerChip(coreSkin)
+        val chip = DealerChip(skin)
         popupGroup.addActor(chip)
 
         val top = Actor()

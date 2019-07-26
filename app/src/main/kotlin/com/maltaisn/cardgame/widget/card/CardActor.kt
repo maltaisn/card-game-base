@@ -20,24 +20,20 @@ import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
 import com.maltaisn.cardgame.game.Card
 import com.maltaisn.cardgame.widget.SelectableWidget
 import com.maltaisn.cardgame.withinBounds
 import ktx.actors.alpha
-import ktx.style.get
 
 
 /**
- * An actor that draws a card.
- * @property coreStyle Core game style.
- * @property cardStyle Card actor style, must match card type.
+ * An actor that draws a card.* @property style Card actor style, must match card type.
  * @property card Card shown by the actor.
  */
-class CardActor(val style: CardActorStyle,
-                val cardStyle: CardStyle, var card: Card? = null) : SelectableWidget() {
+class CardActor(private val style: CardStyle,
+                var card: Card? = null) : SelectableWidget() {
 
     /**
      * Whether the card value is displayed.
@@ -107,12 +103,6 @@ class CardActor(val style: CardActorStyle,
         }
 
 
-    constructor(coreSkin: Skin, cardSkin: Skin, card: Card? = null,
-                coreStyleName: String = "default",
-                cardStyleName: String = "default") :
-            this(coreSkin.get<CardActorStyle>(coreStyleName), cardSkin[cardStyleName], card)
-
-
     init {
         addListener(SelectionListener())
 
@@ -158,9 +148,9 @@ class CardActor(val style: CardActorStyle,
             // Draw background
             (style.background as TransformDrawable).drawCentered(batch)
 
-            // Draw card
-            val scale = size / cardStyle.cardWidth
-            val card = (if (shown) cardStyle.cards[card!!.value] else cardStyle.back)
+            // Draw cardstyle
+            val scale = size / style.cardWidth
+            val card = (if (shown) style.cards[card!!.value] else style.back)
             card.draw(batch, x + (width - card.minWidth * scale) / 2,
                     y + (height - card.minHeight * scale) / 2,
                     card.minWidth * scale, card.minHeight * scale)
@@ -183,9 +173,9 @@ class CardActor(val style: CardActorStyle,
 
     /** Draw a drawable to fit around the actor when considering padding. */
     private fun TransformDrawable.drawCentered(batch: Batch) {
-        val scale = size / cardStyle.cardWidth
-        val imageWidth = cardStyle.cardWidth + leftWidth + rightWidth
-        val imageHeight = cardStyle.cardHeight + bottomHeight + topHeight
+        val scale = size / style.cardWidth
+        val imageWidth = style.cardWidth + leftWidth + rightWidth
+        val imageHeight = style.cardHeight + bottomHeight + topHeight
         draw(batch, x + (width - imageWidth * scale) / 2,
                 y + (height - imageHeight * scale) / 2, 0f, 0f,
                 imageWidth, imageHeight, scale, scale, 0f)
@@ -199,20 +189,10 @@ class CardActor(val style: CardActorStyle,
 
     override fun getPrefWidth() = size
 
-    override fun getPrefHeight() = size / cardStyle.cardWidth * cardStyle.cardHeight
+    override fun getPrefHeight() = size / style.cardWidth * style.cardHeight
 
     override fun toString() = "[card: $card, ${if (shown) "shown" else "hidden"}" +
             "${if (highlighted) ", highlighted" else ""}]"
-
-    /**
-     * The style common to card actors, doesn't depend on the [card] type.
-     */
-    class CardActorStyle {
-        lateinit var background: Drawable
-        lateinit var hover: Drawable
-        lateinit var selection: Drawable
-        lateinit var slot: Drawable
-    }
 
     /**
      * The style for cards drawn with a [CardActor], must match the [card] type.
@@ -222,6 +202,11 @@ class CardActor(val style: CardActorStyle,
         lateinit var cards: Array<Drawable>
         /** Drawable for the back face of a card. */
         lateinit var back: Drawable
+
+        lateinit var background: Drawable
+        lateinit var hover: Drawable
+        lateinit var selection: Drawable
+        lateinit var slot: Drawable
 
         /** Width of a card, excluding shadow. */
         var cardWidth = 0f

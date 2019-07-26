@@ -46,7 +46,7 @@ class CardTrickTest : ActionBarTest() {
         val animLayer = layout.cardAnimationLayer
 
         // Create card containers
-        val trick = CardTrick(coreSkin, cardSkin, 4)
+        val trick = CardTrick(pcardStyle, 4)
         trick.apply {
             cards = deck.drawTop(4)
             dragListener = { actor ->
@@ -67,7 +67,7 @@ class CardTrickTest : ActionBarTest() {
             }
         }
 
-        val stack = CardStack(coreSkin, cardSkin).apply {
+        val stack = CardStack(pcardStyle).apply {
             cards = deck
             dragListener = { animLayer.dragCards(it) }
         }

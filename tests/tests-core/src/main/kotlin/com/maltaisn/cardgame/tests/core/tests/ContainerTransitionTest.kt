@@ -34,7 +34,7 @@ class ContainerTransitionTest : ActionBarTest() {
 
         val deck = PCard.fullDecks(shuffled = true)
 
-        val hand = CardHand(coreSkin, cardSkin)
+        val hand = CardHand(pcardStyle)
         hand.cards = deck.drawTop(13)
         layout.gameLayer.centerTable.add(hand).grow()
 

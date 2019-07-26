@@ -42,7 +42,7 @@ class TableViewTest : SubmenuContentTest() {
         val headers = listOf("ID", "Name", "Date of birth", "Sex")
 
         // Set up the table view
-        tableView = TableView(coreSkin, listOf(1f, 3f, 2f, 1f))
+        tableView = TableView(skin, listOf(1f, 3f, 2f, 1f))
 
         tableView.cellAdapter = object : TableView.CellAdapter() {
             override val rowCount: Int
@@ -124,7 +124,7 @@ class TableViewTest : SubmenuContentTest() {
 
     private inner class TextViewHolder : TableView.ViewHolder() {
 
-        private val label = SdfLabel(coreSkin, FONT_STYLE)
+        private val label = SdfLabel(skin, FONT_STYLE)
 
         init {
             label.setAlignment(Align.center)
@@ -147,7 +147,7 @@ class TableViewTest : SubmenuContentTest() {
 
     private inner class HeaderViewHolder : TableView.ViewHolder() {
 
-        private val label = SdfLabel(coreSkin, FONT_STYLE_BOLD)
+        private val label = SdfLabel(skin, FONT_STYLE_BOLD)
 
         init {
             label.setAlignment(Align.center)

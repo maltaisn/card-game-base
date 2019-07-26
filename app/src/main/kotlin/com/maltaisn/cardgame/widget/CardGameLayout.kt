@@ -32,7 +32,7 @@ import ktx.actors.setKeyboardFocus
  * The game layout manages the game actors (card containers, popups, markers, etc)
  * and updates them after a game event.
  */
-open class CardGameLayout(val coreSkin: Skin) : WidgetGroup(), PrefEntry.PrefListener {
+open class CardGameLayout(val skin: Skin) : WidgetGroup(), PrefEntry.PrefListener {
 
     /** Layer where the game takes place, contains the card containers. */
     val gameLayer: GameLayer
@@ -48,7 +48,7 @@ open class CardGameLayout(val coreSkin: Skin) : WidgetGroup(), PrefEntry.PrefLis
         setFillParent(true)
 
         // Create the layout
-        gameLayer = GameLayer(coreSkin)
+        gameLayer = GameLayer(skin)
         cardAnimationLayer = CardAnimationLayer()
         popupGroup = PopupGroup()
 

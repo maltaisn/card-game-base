@@ -42,7 +42,7 @@ abstract class ActionBarTest : CardGameTest() {
      */
     protected inline fun addActionBtn(title: String, crossinline action: (MenuButton) -> Unit): MenuButton {
         val fontStyle = FontStyle(fontSize = 32f, drawShadow = true)
-        val btn = MenuButton(coreSkin, fontStyle, title, null)
+        val btn = MenuButton(skin, fontStyle, title, null)
         btn.onClick { action(btn) }
         btnTable.add(btn).grow().pad(0f, 10f, 0f, 10f).expand()
         return btn

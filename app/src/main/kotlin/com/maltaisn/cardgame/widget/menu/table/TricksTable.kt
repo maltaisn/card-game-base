@@ -31,10 +31,9 @@ import ktx.style.get
  * A table view displaying a list of the card played by each player in the tricks of a round.
  * Each card can show a checkbox to indicate which player took the trick for example.
  * The headers have only a title to show player names.
- * @property cardSkin The skin used to create the card actors.
  */
-class TricksTable(coreSkin: Skin, private val cardSkin: Skin, playerCount: Int) :
-        TableView(coreSkin, List(playerCount) { 1f }) {
+class TricksTable(skin: Skin, private val cardStyle: CardActor.CardStyle, playerCount: Int) :
+        TableView(skin, List(playerCount) { 1f }) {
 
     private val style: TricksTableStyle = skin.get()
 
@@ -111,7 +110,7 @@ class TricksTable(coreSkin: Skin, private val cardSkin: Skin, playerCount: Int) 
 
     private inner class TrickCardViewHolder : ViewHolder() {
 
-        private val cardActor = CardActor(skin, cardSkin)
+        private val cardActor = CardActor(cardStyle)
         private val checkIcon = Image(style.checkIcon)
 
         init {

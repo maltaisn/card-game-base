@@ -39,7 +39,7 @@ class CardActorTest : ActionBarTest() {
         layout.gameLayer.centerTable.add(cardTable).grow()
 
         val cardActors = List(4) {
-            val actor = CardActor(coreSkin, cardSkin, deck.drawTop())
+            val actor = CardActor(pcardStyle, deck.drawTop())
             actor.clickListener = { info { "Card ${actor.card} clicked." } }
             actor.longClickListener = { info { "Card ${actor.card} long clicked." } }
             actor.size = it * 40f + 160f

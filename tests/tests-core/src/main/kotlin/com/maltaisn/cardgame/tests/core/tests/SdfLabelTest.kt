@@ -45,7 +45,7 @@ class SdfLabelTest : ActionBarTest() {
         var fontAlpha = 100
 
         val labels = List(10) {
-            SdfLabel(coreSkin, fontStyle.copy(fontSize = 24f + it * 8f), TEXTS[selectedText]).apply {
+            SdfLabel(skin, fontStyle.copy(fontSize = 24f + it * 8f), TEXTS[selectedText]).apply {
                 alpha = fontAlpha / 100f
             }
         }

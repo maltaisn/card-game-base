@@ -35,20 +35,20 @@ class PopupTest : ActionBarTest() {
 
         val popupGroup = layout.popupGroup
 
-        val popupSimple = Popup(coreSkin)
-        val popupBtn = PopupButton(coreSkin, "Click me!")
+        val popupSimple = Popup(skin)
+        val popupBtn = PopupButton(skin, "Click me!")
         popupBtn.onClick { popupSimple.hide() }
         popupSimple.add(popupBtn)
         popupGroup.addActor(popupSimple)
 
-        val popupComplex = Popup(coreSkin)
-        popupComplex.add(PopupButton(coreSkin, "Last two")).fillX().pad(5f)
-        popupComplex.add(PopupButton(coreSkin, "Hearts")).fillX().pad(5f).row()
-        popupComplex.add(PopupButton(coreSkin, "Barbu")).fillX().pad(5f)
-        popupComplex.add(PopupButton(coreSkin, "Queens")).fillX().pad(5f).row()
-        popupComplex.add(PopupButton(coreSkin, "Domino")).fillX().pad(5f)
-        popupComplex.add(PopupButton(coreSkin, "Tricks")).fillX().pad(5f).row()
-        popupComplex.add(PopupButton(coreSkin, "Trump")).pad(5f).colspan(2).fillX()
+        val popupComplex = Popup(skin)
+        popupComplex.add(PopupButton(skin, "Last two")).fillX().pad(5f)
+        popupComplex.add(PopupButton(skin, "Hearts")).fillX().pad(5f).row()
+        popupComplex.add(PopupButton(skin, "Barbu")).fillX().pad(5f)
+        popupComplex.add(PopupButton(skin, "Queens")).fillX().pad(5f).row()
+        popupComplex.add(PopupButton(skin, "Domino")).fillX().pad(5f)
+        popupComplex.add(PopupButton(skin, "Tricks")).fillX().pad(5f).row()
+        popupComplex.add(PopupButton(skin, "Trump")).pad(5f).colspan(2).fillX()
         popupGroup.addActor(popupComplex)
 
         val top = Actor()

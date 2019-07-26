@@ -31,10 +31,10 @@ class PlayerLabelTest : SingleActionTest() {
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
-        val northLabel = PlayerLabel(coreSkin, "North")
-        val eastLabel = PlayerLabel(coreSkin, "East")
-        val southLabel = PlayerLabel(coreSkin, "South")
-        val westLabel = PlayerLabel(coreSkin, "West")
+        val northLabel = PlayerLabel(skin, "North")
+        val eastLabel = PlayerLabel(skin, "East")
+        val southLabel = PlayerLabel(skin, "South")
+        val westLabel = PlayerLabel(skin, "West")
 
         northLabel.score = "+10"
         eastLabel.score = "(13)"

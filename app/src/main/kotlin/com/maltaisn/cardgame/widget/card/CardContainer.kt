@@ -22,7 +22,6 @@ import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.game.Card
 import com.maltaisn.cardgame.widget.FboWidgetGroup
@@ -32,7 +31,6 @@ import ktx.actors.alpha
 import ktx.collections.isNotEmpty
 import ktx.math.minus
 import ktx.math.vec2
-import ktx.style.get
 import kotlin.math.min
 
 
@@ -40,8 +38,7 @@ import kotlin.math.min
  * The base class for a widget group that contains card actors.
  * All card containers can support animations when registered to the [CardAnimationLayer].
  */
-abstract class CardContainer(val cardActorStyle: CardActor.CardActorStyle,
-                             val cardStyle: CardActor.CardStyle) : FboWidgetGroup() {
+abstract class CardContainer(val cardStyle: CardActor.CardStyle) : FboWidgetGroup() {
 
     /** The actors for the cards. When an actor is moved, this list is immediately updated. */
     val actors: List<CardActor?>
@@ -156,9 +153,6 @@ abstract class CardContainer(val cardActorStyle: CardActor.CardActorStyle,
 
     private var transitionAction by ActionDelegate<TimeAction>()
 
-
-    constructor(coreSkin: Skin, cardSkin: Skin) :
-            this(coreSkin.get<CardActor.CardActorStyle>(), cardSkin.get<CardActor.CardStyle>())
 
     override fun draw(batch: Batch, parentAlpha: Float) {
         x += translate.x
@@ -309,7 +303,7 @@ abstract class CardContainer(val cardActorStyle: CardActor.CardActorStyle,
         while (actors.size < newCards.size) {
             val card = newCards[actors.size]
             if (card != null) {
-                val actor = CardActor(cardActorStyle, cardStyle, card)
+                val actor = CardActor(cardStyle, card)
                 actor.enabled = enabled
                 actor.clickListener = cardClickListener
                 actor.longClickListener = cardLongClickListener

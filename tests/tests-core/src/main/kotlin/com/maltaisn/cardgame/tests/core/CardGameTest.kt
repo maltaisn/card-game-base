@@ -18,30 +18,29 @@ package com.maltaisn.cardgame.tests.core
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.gmail.blueboxware.libgdxplugin.annotations.GDXAssets
+import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.maltaisn.cardgame.CardGameScreen
 import com.maltaisn.cardgame.CoreRes
 import com.maltaisn.cardgame.widget.CardGameLayout
-import ktx.assets.getAsset
+import com.maltaisn.cardgame.widget.card.CardActor
+import ktx.assets.load
+import ktx.style.get
 
 
 abstract class CardGameTest : CardGameScreen() {
 
-    @GDXAssets(skinFiles = ["tests/assets/core/pcard/pcard.skin"])
-    protected lateinit var cardSkin: Skin
+    protected lateinit var pcardStyle: CardActor.CardStyle
 
 
     override fun load() {
-        super.load()
-        loadPCardSkin()
+        assetManager.load<TextureAtlas>(CoreRes.PCARD_SKIN_ATLAS)
     }
 
     override fun start() {
-        super.start()
-        cardSkin = assetManager.getAsset(CoreRes.PCARD_SKIN)
+        addSkin(CoreRes.PCARD_SKIN, CoreRes.PCARD_SKIN_ATLAS)
+        pcardStyle = skin["pcard"]
 
-        val gameLayout = CardGameLayout(coreSkin)
+        val gameLayout = CardGameLayout(skin)
         addActor(gameLayout)
         layout(gameLayout)
     }

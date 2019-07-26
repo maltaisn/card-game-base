@@ -48,12 +48,12 @@ class PagedSubMenuTest : ActionBarTest() {
         super.layout(layout)
 
         val continueItem = MenuItem(1000, "Continue",
-                coreSkin.getDrawable(MenuIcons.ARROW_RIGHT), SubMenu.ITEM_POS_BOTTOM)
+                skin.getDrawable(MenuIcons.ARROW_RIGHT), SubMenu.ITEM_POS_BOTTOM)
         continueItem.checkable = false
 
         val rules: Markdown = assetManager.get("lorem-ipsum")
-        val rulesView = ScrollView(MarkdownView(coreSkin, rules).pad(0f, 40f, 0f, 40f))
-        val rulesPage = object : TestPage(0, "Rules", coreSkin.getDrawable(MenuIcons.BOOK), SubMenu.ITEM_POS_TOP) {
+        val rulesView = ScrollView(MarkdownView(skin, rules).pad(0f, 40f, 0f, 40f))
+        val rulesPage = object : TestPage(0, "Rules", skin.getDrawable(MenuIcons.BOOK), SubMenu.ITEM_POS_TOP) {
             override fun onPageSelectionChanged(selected: Boolean) {
                 super.onPageSelectionChanged(selected)
                 info { "Rules page selected" }
@@ -61,12 +61,12 @@ class PagedSubMenuTest : ActionBarTest() {
         }
         rulesPage.content = rulesView
 
-        val scoresView = Container(SdfLabel(coreSkin, FontStyle(fontColor = Color.BLACK, fontSize = 60f), "TODO!"))
-        val scoresPage = TestPage(1, "Scores", coreSkin.getDrawable(MenuIcons.LIST), SubMenu.ITEM_POS_BOTTOM)
+        val scoresView = Container(SdfLabel(skin, FontStyle(fontColor = Color.BLACK, fontSize = 60f), "TODO!"))
+        val scoresPage = TestPage(1, "Scores", skin.getDrawable(MenuIcons.LIST), SubMenu.ITEM_POS_BOTTOM)
         scoresPage.content = scoresView
         scoresPage.checked = true
 
-        val menu = PagedSubMenu(coreSkin).apply {
+        val menu = PagedSubMenu(skin).apply {
             title = "Scoreboard"
             addItem(rulesPage)
             addItem(scoresPage)

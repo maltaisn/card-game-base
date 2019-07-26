@@ -40,10 +40,10 @@ class CardAnimationTest : SingleActionTest() {
         val animLayer = layout.cardAnimationLayer
         val centerTable = layout.gameLayer.centerTable
 
-        val group1 = CardHand(coreSkin, cardSkin)
-        val group2 = CardHand(coreSkin, cardSkin)
-        val stack1 = CardStack(coreSkin, cardSkin)
-        val stack2 = CardStack(coreSkin, cardSkin)
+        val group1 = CardHand(pcardStyle)
+        val group2 = CardHand(pcardStyle)
+        val stack1 = CardStack(pcardStyle)
+        val stack2 = CardStack(pcardStyle)
 
         animLayer.register(group1, group2, stack1, stack2)
 

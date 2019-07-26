@@ -27,13 +27,13 @@ import com.maltaisn.cardgame.widget.SdfTextField
 class SdfTextFieldTest : SubmenuContentTest() {
 
     override fun layoutContent(layout: CardGameLayout, content: Table) {
-        val topField = SdfTextField(coreSkin, FontStyle().apply {
+        val topField = SdfTextField(skin, FontStyle().apply {
             fontSize = 48f
             fontColor = Color.BLACK
         }, text = "Text input")
         topField.maxLength = 20
 
-        val bottomField = SdfTextField(coreSkin, FontStyle().apply {
+        val bottomField = SdfTextField(skin, FontStyle().apply {
             fontSize = 48f
             fontColor = Color.BLACK
         }, FontStyle().apply {

@@ -38,7 +38,7 @@ class TimeActionTest : ActionBarTest() {
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
-        val card = CardActor(coreSkin, cardSkin, PCard(8, PCard.CLUB))
+        val card = CardActor(pcardStyle, PCard(8, PCard.CLUB))
         card.setOrigin(card.prefWidth / 2, card.prefHeight / 2)
         layout.gameLayer.centerTable.add(card).expand()
 

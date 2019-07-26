@@ -52,7 +52,7 @@ class DefaultGameMenuTest : CardGameTest() {
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
-        menu = DefaultGameMenu(coreSkin)
+        menu = DefaultGameMenu(skin)
         menu.callback = object : DefaultGameMenu.Callback {
             override fun onContinueClicked() {
                 menu.showMenu(menu.inGameMenu)
@@ -108,10 +108,10 @@ class DefaultGameMenuTest : CardGameTest() {
         menu.continueItem.enabled = continuePref.value
 
         // In-game
-        menu.inGameMenu.addItem(MenuItem(0, null, coreSkin.getDrawable(MenuIcons.CARDS), InGameMenu.ITEM_POS_LEFT))
+        menu.inGameMenu.addItem(MenuItem(0, null, skin.getDrawable(MenuIcons.CARDS), InGameMenu.ITEM_POS_LEFT))
 
         // Scoreboard
-        val scoresTable = ScoresTable(coreSkin, 4)
+        val scoresTable = ScoresTable(skin, 4)
         scoresTable.headers = listOf(
                 ScoresTable.Header("South", null),
                 ScoresTable.Header("East", null),
@@ -125,7 +125,7 @@ class DefaultGameMenuTest : CardGameTest() {
         }
 
         val scoresView = Container(scoresTable).pad(60f, 30f, 60f, 30f).fill()
-        val scoresPage = PagedSubMenu.Page(1, "Scores", coreSkin.getDrawable(MenuIcons.CHART), SubMenu.ITEM_POS_TOP)
+        val scoresPage = PagedSubMenu.Page(1, "Scores", skin.getDrawable(MenuIcons.CHART), SubMenu.ITEM_POS_TOP)
         scoresPage.content = scoresView
         scoresPage.checked = true
         menu.scoreboardMenu.addItem(scoresPage)

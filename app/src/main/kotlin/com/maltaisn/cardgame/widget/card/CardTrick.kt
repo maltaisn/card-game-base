@@ -19,7 +19,6 @@ package com.maltaisn.cardgame.widget.card
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.maltaisn.cardgame.game.Card
 import ktx.math.vec2
 import kotlin.math.PI
@@ -31,7 +30,7 @@ import kotlin.math.sin
 /**
  * A card container that displays cards along a circle path.
  */
-class CardTrick : CardContainer {
+class CardTrick(cardStyle: CardActor.CardStyle, capacity: Int) : CardContainer(cardStyle) {
 
     /**
      * The number of cards this trick can have.
@@ -90,14 +89,10 @@ class CardTrick : CardContainer {
     private val center = vec2()
 
 
-    constructor(coreSkin: Skin, cardSkin: Skin, capacity: Int) : super(coreSkin, cardSkin) {
+    init {
         this.capacity = capacity
     }
 
-    constructor(cardActorStyle: CardActor.CardActorStyle, cardStyle: CardActor.CardStyle,
-                capacity: Int) : super(cardActorStyle, cardStyle) {
-        this.capacity = capacity
-    }
 
     override fun drawDebugChildren(shapes: ShapeRenderer) {
         super.drawDebugChildren(shapes)

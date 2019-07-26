@@ -28,7 +28,7 @@ import kotlin.random.Random
 class TricksTableTest : SubmenuContentTest() {
 
     override fun layoutContent(layout: CardGameLayout, content: Table) {
-        val table = TricksTable(coreSkin, cardSkin, 4)
+        val table = TricksTable(skin, pcardStyle, 4)
         table.headers = listOf("South", "East", "North", "West")
 
         val cards = mutableListOf<List<TricksTable.TrickCard>>()

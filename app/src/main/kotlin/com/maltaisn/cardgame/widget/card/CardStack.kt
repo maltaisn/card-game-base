@@ -18,7 +18,6 @@ package com.maltaisn.cardgame.widget.card
 
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import ktx.collections.lastIndex
 import ktx.math.vec2
 
@@ -26,7 +25,7 @@ import ktx.math.vec2
 /**
  * A card container that stacks a list of cards.
  */
-class CardStack : CardContainer {
+class CardStack(cardStyle: CardActor.CardStyle) : CardContainer(cardStyle) {
 
     /**
      * Whether a slot should be drawn under all cards.
@@ -37,17 +36,11 @@ class CardStack : CardContainer {
     private var cardsPosition = vec2()
 
 
-    constructor(coreSkin: Skin, cardSkin: Skin) : super(coreSkin, cardSkin)
-
-    constructor(cardActorStyle: CardActor.CardActorStyle, cardStyle: CardActor.CardStyle) :
-            super(cardActorStyle, cardStyle)
-
-
     override fun drawChildren(batch: Batch, parentAlpha: Float) {
         if (drawSlot && children.isEmpty) {
             // Draw the slot if there's no cards in the stack.
             val offset = computeAlignOffset(cardWidth, cardHeight)
-            val slot = cardActorStyle.slot
+            val slot = cardStyle.slot
             batch.setColor(1f, 1f, 1f, parentAlpha)
             slot.draw(batch, offset.x - slot.leftWidth * cardScale,
                     offset.y - slot.bottomHeight * cardScale,

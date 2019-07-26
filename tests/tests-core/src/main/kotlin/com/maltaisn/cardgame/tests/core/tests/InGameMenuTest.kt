@@ -32,11 +32,11 @@ class InGameMenuTest : SingleActionTest() {
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
-        val menu = InGameMenu(coreSkin).apply {
-            addItem(MenuItem(0, null, coreSkin.getDrawable(MenuIcons.CHEVRON_LEFT), InGameMenu.ITEM_POS_LEFT))
-            addItem(MenuItem(1, "Sort hand", coreSkin.getDrawable(MenuIcons.CARDS), InGameMenu.ITEM_POS_LEFT))
-            addItem(MenuItem(3, "Cheats", coreSkin.getDrawable(MenuIcons.BOOK), InGameMenu.ITEM_POS_RIGHT))
-            addItem(MenuItem(2, null, coreSkin.getDrawable(MenuIcons.CHART), InGameMenu.ITEM_POS_RIGHT))
+        val menu = InGameMenu(skin).apply {
+            addItem(MenuItem(0, null, this@InGameMenuTest.skin.getDrawable(MenuIcons.CHEVRON_LEFT), InGameMenu.ITEM_POS_LEFT))
+            addItem(MenuItem(1, "Sort hand", this@InGameMenuTest.skin.getDrawable(MenuIcons.CARDS), InGameMenu.ITEM_POS_LEFT))
+            addItem(MenuItem(3, "Cheats", this@InGameMenuTest.skin.getDrawable(MenuIcons.BOOK), InGameMenu.ITEM_POS_RIGHT))
+            addItem(MenuItem(2, null, this@InGameMenuTest.skin.getDrawable(MenuIcons.CHART), InGameMenu.ITEM_POS_RIGHT))
 
             itemClickListener = {
                 info { "Menu item clicked: $it" }

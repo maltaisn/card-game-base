@@ -38,7 +38,7 @@ class CardStackTest : CardGameTest() {
 
         val animLayer = layout.cardAnimationLayer
 
-        val leftStack = CardStack(coreSkin, cardSkin).apply {
+        val leftStack = CardStack(pcardStyle).apply {
             cards = deck.drawTop(3)
             dragListener = { animLayer.dragCards(it) }
             drawSlot = true
@@ -51,7 +51,7 @@ class CardStackTest : CardGameTest() {
             }
         }
 
-        val rightStack = CardStack(coreSkin, cardSkin).apply {
+        val rightStack = CardStack(pcardStyle).apply {
             cards = deck.drawTop(3)
             dragListener = { animLayer.dragCards(it) }
             playListener = object : CardContainer.PlayListener {
