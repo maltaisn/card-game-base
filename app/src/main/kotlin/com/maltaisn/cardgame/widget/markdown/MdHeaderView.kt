@@ -16,12 +16,10 @@
 
 package com.maltaisn.cardgame.widget.markdown
 
-import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable
-import com.badlogic.gdx.utils.Scaling
 import com.maltaisn.cardgame.markdown.MdElement
+import com.maltaisn.cardgame.widget.Separator
 import com.maltaisn.cardgame.widget.menu.ScrollSubMenu
 import com.maltaisn.cardgame.widget.text.FontStyle
 import com.maltaisn.cardgame.widget.text.SdfLabel
@@ -37,8 +35,7 @@ class MdHeaderView(skin: Skin, header: MdElement.Header) : Table(), ScrollSubMen
         add(headerLabel).growX().pad(40f, 0f, 10f, 0f).row()
 
         if (header.size == 1) {
-            val separator = Image(style.separator, Scaling.stretchX)
-            add(separator).growX().pad(40f, 0f, 20f, 0f).row()
+            add(Separator(skin)).growX().pad(40f, 0f, 20f, 0f).row()
         }
 
         for (element in header.elements) {
@@ -49,8 +46,6 @@ class MdHeaderView(skin: Skin, header: MdElement.Header) : Table(), ScrollSubMen
     class MdHeaderViewStyle {
         /** Array of header font styles, from big to small. */
         lateinit var fontStyles: Array<FontStyle>
-
-        lateinit var separator: Drawable
     }
 
 }

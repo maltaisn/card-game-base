@@ -16,14 +16,12 @@
 
 package com.maltaisn.cardgame.widget.prefs
 
-import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Align
-import com.badlogic.gdx.utils.Scaling
 import com.maltaisn.cardgame.prefs.GamePref
 import com.maltaisn.cardgame.prefs.ListPref
 import com.maltaisn.cardgame.prefs.PrefCategory
+import com.maltaisn.cardgame.widget.Separator
 import com.maltaisn.cardgame.widget.menu.ScrollSubMenu
 import com.maltaisn.cardgame.widget.text.SdfLabel
 import ktx.style.get
@@ -72,8 +70,7 @@ class PrefCategoryView(skin: Skin, category: PrefCategory) :
 
             // Separator between preferences
             if (pref !== prefs.last()) {
-                val separator = Image(style.separator, Scaling.stretchX)
-                add(separator).growX().pad(10f, 30f, 20f, 0f).row()
+                add(Separator(skin)).growX().pad(10f, 30f, 20f, 0f).row()
             }
         }
 
@@ -81,8 +78,6 @@ class PrefCategoryView(skin: Skin, category: PrefCategory) :
     }
 
 
-    class PrefCategoryViewStyle : PrefEntryView.PrefEntryViewStyle() {
-        lateinit var separator: Drawable
-    }
+    class PrefCategoryViewStyle : PrefEntryView.PrefEntryViewStyle()
 
 }

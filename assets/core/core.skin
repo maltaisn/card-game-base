@@ -49,7 +49,7 @@
       border: background-border
     }
   }
-  com.maltaisn.cardgame.widget.dialog.Dialog$DialogStyle: {
+  com.maltaisn.cardgame.widget.Dialog$DialogStyle: {
     default: {
       shadow: shadow-background
       background: dialog
@@ -84,6 +84,11 @@
         drawShadow: true
         shadowColor: white
       }
+    }
+  }
+  com.maltaisn.cardgame.widget.Separator$SeparatorStyle: {
+    default: {
+      drawable: separator
     }
   }
   com.maltaisn.cardgame.widget.DealerChip$DealerChipStyle: {
@@ -190,7 +195,6 @@
         fontColor: textColorBlack
         bold: true
       }
-      headerSeparator: separator
     }
   }
   com.maltaisn.cardgame.widget.table.TableViewContent$TableContentGroupStyle: {
@@ -231,15 +235,9 @@
       helpIcon: pref-help
     }
   }
-  com.maltaisn.cardgame.widget.prefs.PrefsGroup$PrefsGroupStyle: {
-    default: {
-      separator: separator
-    }
-  }
   com.maltaisn.cardgame.widget.prefs.PrefCategoryView$PrefCategoryViewStyle: {
     default: {
       titleFontStyle: title
-      separator: separator
     }
   }
   com.maltaisn.cardgame.widget.prefs.SliderPrefView$SliderPrefViewStyle: {
@@ -276,7 +274,6 @@
           bold: true
         }
       ]
-      separator: separator
     }
   }
   com.maltaisn.cardgame.widget.markdown.MdListView$MdListViewStyle: {
@@ -288,11 +285,6 @@
   com.maltaisn.cardgame.widget.markdown.MdTextView$MdTextViewStyle: {
     default: {
       fontStyle: normal
-    }
-  }
-  com.maltaisn.cardgame.widget.markdown.MdHLineView$MdHLineViewStyle: {
-    default: {
-      separator: separator
     }
   }
   com.maltaisn.cardgame.widget.menu.MenuDrawerListItem$DrawerListItemStyle: {

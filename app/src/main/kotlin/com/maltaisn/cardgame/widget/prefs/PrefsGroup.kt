@@ -16,16 +16,13 @@
 
 package com.maltaisn.cardgame.widget.prefs
 
-import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Align
-import com.badlogic.gdx.utils.Scaling
 import com.maltaisn.cardgame.prefs.GamePref
 import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.ListPref
-import ktx.style.get
+import com.maltaisn.cardgame.widget.Separator
 
 
 class PrefsGroup(skin: Skin, val prefs: GamePrefs) : Table() {
@@ -54,7 +51,6 @@ class PrefsGroup(skin: Skin, val prefs: GamePrefs) : Table() {
 
 
     init {
-        val style: PrefsGroupStyle = skin.get()
         pad(20f, 0f, 40f, 0f)
         align(Align.top)
 
@@ -76,15 +72,9 @@ class PrefsGroup(skin: Skin, val prefs: GamePrefs) : Table() {
 
             // Separator between preferences
             if (pref is GamePref && prefsList.getOrNull(i + 1) is GamePref) {
-                val separator = Image(style.separator, Scaling.stretchX)
-                add(separator).growX().pad(20f, 30f, 20f, 0f).row()
+                add(Separator(skin)).growX().pad(20f, 30f, 20f, 0f).row()
             }
         }
-    }
-
-
-    class PrefsGroupStyle {
-        lateinit var separator: Drawable
     }
 
 }

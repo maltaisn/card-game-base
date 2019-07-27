@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package com.maltaisn.cardgame.widget.markdown
+package com.maltaisn.cardgame.widget
 
-import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.maltaisn.cardgame.widget.Separator
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable
+import com.badlogic.gdx.utils.Scaling
+import ktx.style.get
 
 
-class MdHLineView(skin: Skin) : Container<Image>() {
+class Separator(skin: Skin) : Image(skin.get<SeparatorStyle>().drawable, Scaling.stretchX) {
 
-    init {
-        actor = Separator(skin)
-        fillX().pad(30f, 0f, 30f, 0f)
+    class SeparatorStyle {
+        lateinit var drawable: Drawable
     }
 
 }

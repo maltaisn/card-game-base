@@ -29,6 +29,7 @@ import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Scaling
 import com.maltaisn.cardgame.defaultSize
 import com.maltaisn.cardgame.widget.ScrollView
+import com.maltaisn.cardgame.widget.Separator
 import com.maltaisn.cardgame.widget.action.ActionDelegate
 import com.maltaisn.cardgame.widget.action.TimeAction
 import com.maltaisn.cardgame.widget.text.FontStyle
@@ -159,13 +160,11 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
         backBtn.add(backBtnLabel).padLeft(20f)
         backBtn.pad(40f, 60f, 30f, 60f)
 
-        val headerSep = Image(style.headerSeparator, Scaling.stretchX)
-
         titleLabel.setWrap(true)
 
         // Do the layout
         drawerTable.add(backBtn).expandX().align(Align.left).row()
-        drawerTable.add(headerSep).growX().pad(10f, 60f, 40f, 0f).row()
+        drawerTable.add(Separator(skin)).growX().pad(10f, 60f, 40f, 0f).row()
         drawerTable.add(titleLabel).growX().pad(0f, 60f, 40f, 60f).row()
         drawerTable.add(contentPane).grow()
 
@@ -229,7 +228,6 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
         lateinit var backBtnIcon: Drawable
         lateinit var backBtnIconColor: Color
         lateinit var titleFontStyle: FontStyle
-        lateinit var headerSeparator: Drawable
     }
 
 }
