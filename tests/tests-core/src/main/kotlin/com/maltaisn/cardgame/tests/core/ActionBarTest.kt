@@ -22,8 +22,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.maltaisn.cardgame.widget.CardGameLayout
-import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.menu.MenuButton
+import com.maltaisn.cardgame.widget.text.FontStyle
 import ktx.actors.onClick
 import java.text.NumberFormat
 import kotlin.math.round
@@ -39,7 +39,7 @@ abstract class ActionBarTest : CardGameTest() {
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
-        layout.gameLayer.centerTable.add(btnTable).growX().colspan(100)
+        layout.centerTable.add(btnTable).growX().colspan(100)
                 .pad(50f, 40f, 40f, 40f).row()
     }
 

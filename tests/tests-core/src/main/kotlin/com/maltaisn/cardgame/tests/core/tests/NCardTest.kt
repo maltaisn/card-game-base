@@ -51,7 +51,7 @@ class NCardTest : CardGameTest() {
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
-        val animLayer = layout.cardAnimationLayer
+        val animGroup = layout.cardAnimationGroup
 
         val deck = NCard.spiteAndMaliceDeck(shuffled = true)
 
@@ -61,13 +61,13 @@ class NCardTest : CardGameTest() {
             highlightable = true
             maxCardSpacing = 200f
             dragListener = { actor ->
-                val dragger = animLayer.dragCards(actor)
+                val dragger = animGroup.dragCards(actor)
                 dragger?.rearrangeable = true
                 dragger
             }
             cardSize = CardActor.SIZE_NORMAL
         }
-        layout.gameLayer.centerTable.add(hand).grow().pad(80f)
+        layout.centerTable.add(hand).grow().pad(80f)
     }
 
     class NCard private constructor(value: Int) : Card(value) {

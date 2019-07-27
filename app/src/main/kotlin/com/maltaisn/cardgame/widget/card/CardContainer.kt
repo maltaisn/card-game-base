@@ -36,7 +36,7 @@ import kotlin.math.min
 
 /**
  * The base class for a widget group that contains card actors.
- * All card containers can support animations when registered to the [CardAnimationLayer].
+ * All card containers can support animations when registered to the [CardAnimationGroup].
  */
 abstract class CardContainer(val cardStyle: CardActor.CardStyle) : FboWidgetGroup() {
 
@@ -120,11 +120,11 @@ abstract class CardContainer(val cardStyle: CardActor.CardStyle) : FboWidgetGrou
 
     /**
      * Listener called when a card is dragged, or `null` for if not draggable.
-     * Can return an input listener provided by [CardAnimationLayer.dragCards] to
+     * Can return an input listener provided by [CardAnimationGroup.dragCards] to
      * drag the card, or can return `null` to not drag the card.
      * Not called if container is disabled.
      */
-    var dragListener: ((CardActor) -> CardAnimationLayer.CardDragger?)? = null
+    var dragListener: ((CardActor) -> CardAnimationGroup.CardDragger?)? = null
         set(value) {
             if (field != null && value == null) {
                 for (actor in actors) {
@@ -218,7 +218,7 @@ abstract class CardContainer(val cardStyle: CardActor.CardStyle) : FboWidgetGrou
 
     /** The input listener set on all actors. */
     private val cardInputListener = object : InputListener() {
-        private var cardDragger: CardAnimationLayer.CardDragger? = null
+        private var cardDragger: CardAnimationGroup.CardDragger? = null
         private var startPos = vec2()
 
         override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
@@ -256,7 +256,7 @@ abstract class CardContainer(val cardStyle: CardActor.CardStyle) : FboWidgetGrou
         /**
          * Called when cards from another container are dragged to this container at
          * a position in the container coordinates, and [canCardsBePlayed] returned true.
-         * The animation layer is updated automatically afterwards.
+         * The animation group is updated automatically afterwards.
          * Not called if container is disabled.
          */
         fun onCardsPlayed(actors: List<CardActor>, src: CardContainer, pos: Vector2)
@@ -505,7 +505,7 @@ abstract class CardContainer(val cardStyle: CardActor.CardStyle) : FboWidgetGrou
     ////////// ANIMATION //////////
     /**
      * Make this container changed, so that it will be
-     * animated when [CardAnimationLayer.update] is called.
+     * animated when [CardAnimationGroup.update] is called.
      */
     fun requestUpdate() {
         if (oldActors == null) {

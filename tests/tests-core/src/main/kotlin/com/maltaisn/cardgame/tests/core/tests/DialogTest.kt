@@ -19,9 +19,9 @@ package com.maltaisn.cardgame.tests.core.tests
 import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.tests.core.TestRes
+import com.maltaisn.cardgame.widget.Button
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.Popup
-import com.maltaisn.cardgame.widget.PopupButton
 import com.maltaisn.cardgame.widget.ScrollView
 import com.maltaisn.cardgame.widget.dialog.Dialog
 import com.maltaisn.cardgame.widget.markdown.MarkdownView
@@ -43,7 +43,7 @@ class DialogTest : ActionBarTest() {
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
-        layout.gameLayer.centerTable.add().grow()  // Prevent action bar from being centered
+        layout.centerTable.add().grow()  // Prevent action bar from being centered
 
         val dialog = object : Dialog(skin) {
             override fun onDismiss() {
@@ -54,7 +54,7 @@ class DialogTest : ActionBarTest() {
         val markdown: Markdown = assetManager.get(TestRes.LOREM_IPSUM_MARKDOWN)
         val mdView = MarkdownView(skin, markdown)
 
-        val closeBtn = PopupButton(skin, "Close dialog")
+        val closeBtn = Button(skin, "Close dialog")
         closeBtn.onClick {
             dialog.hide()
         }

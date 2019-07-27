@@ -60,7 +60,7 @@ class DefaultGameMenuTest : CardGameTest() {
             }
 
             override fun onStartGameClicked() {
-                menu.showMenu(menu.inGameMenu)
+                menu.showMenu(menu.inGameMenu, false)
                 info { "Start game clicked" }
             }
 

@@ -22,14 +22,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.widget.CardGameLayout
-import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.ScrollView
-import com.maltaisn.cardgame.widget.SdfLabel
 import com.maltaisn.cardgame.widget.markdown.MarkdownView
 import com.maltaisn.cardgame.widget.menu.MenuIcons
 import com.maltaisn.cardgame.widget.menu.MenuItem
 import com.maltaisn.cardgame.widget.menu.PagedSubMenu
 import com.maltaisn.cardgame.widget.menu.SubMenu
+import com.maltaisn.cardgame.widget.text.FontStyle
+import com.maltaisn.cardgame.widget.text.SdfLabel
 import ktx.assets.load
 import ktx.log.info
 
@@ -73,7 +73,7 @@ class PagedSubMenuTest : ActionBarTest() {
             addItem(continueItem)
         }
 
-        layout.gameLayer.centerTable.apply {
+        layout.centerTable.apply {
             getCell(btnTable).padBottom(0f)
             add(menu).grow()
         }

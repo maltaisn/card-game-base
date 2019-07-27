@@ -40,7 +40,7 @@ class TimeActionTest : ActionBarTest() {
 
         val card = CardActor(pcardStyle, PCard(8, PCard.CLUB))
         card.setOrigin(card.prefWidth / 2, card.prefHeight / 2)
-        layout.gameLayer.centerTable.add(card).expand()
+        layout.centerTable.add(card).expand()
 
         var cardShown = true
         var intpIn = INTERPOLATIONS.first()

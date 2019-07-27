@@ -36,7 +36,7 @@ class ContainerTransitionTest : ActionBarTest() {
 
         val hand = CardHand(pcardStyle)
         hand.cards = deck.drawTop(13)
-        layout.gameLayer.centerTable.add(hand).grow()
+        layout.centerTable.add(hand).grow()
 
         addActionBtn("Instant") { hand.isVisible = !hand.shown }
         addActionBtn("Fade") { hand.fade(!hand.shown) }

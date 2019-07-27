@@ -37,7 +37,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.maltaisn.cardgame.markdown.MdLoader
 import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.GamePrefsLoader
-import com.maltaisn.cardgame.widget.SdfShader
+import com.maltaisn.cardgame.widget.text.SdfShader
 import ktx.assets.file
 import ktx.assets.getAsset
 import ktx.assets.load

@@ -21,13 +21,13 @@ import com.maltaisn.cardgame.pcard.PCard
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.card.CardActor
-import com.maltaisn.cardgame.widget.card.CardAnimationLayer
+import com.maltaisn.cardgame.widget.card.CardAnimationGroup
 import com.maltaisn.cardgame.widget.card.CardContainer
 import com.maltaisn.cardgame.widget.card.CardHand
 
 
 /**
- * Test all possible combinations of options for [CardAnimationLayer.deal].
+ * Test all possible combinations of options for [CardAnimationGroup.deal].
  */
 class CardDealTest : ActionBarTest() {
 
@@ -43,8 +43,8 @@ class CardDealTest : ActionBarTest() {
             cardSize = CardActor.SIZE_SMALL
         }
 
-        val animLayer = layout.cardAnimationLayer
-        animLayer.register(topHand, bottomHand)
+        val animGroup = layout.cardAnimationGroup
+        animGroup.register(topHand, bottomHand)
 
         // Action buttons
         var dealToTop = false
@@ -54,9 +54,9 @@ class CardDealTest : ActionBarTest() {
         var toLast = true
 
         addActionBtn("Deal") {
-            if (animLayer.animationRunning) {
-                animLayer.dispatchDelayedMoves()
-                animLayer.completeAnimation()
+            if (animGroup.animationRunning) {
+                animGroup.dispatchDelayedMoves()
+                animGroup.completeAnimation()
             }
 
             val src: CardContainer
@@ -74,7 +74,7 @@ class CardDealTest : ActionBarTest() {
             } else {
                 emptyList()
             }
-            animLayer.deal(src, dst, src.size, replaceSrc, replaceDst, fromLast, toLast)
+            animGroup.deal(src, dst, src.size, replaceSrc, replaceDst, fromLast, toLast)
             dealToTop = !dealToTop
         }
         addToggleBtn("Replace src", startState = replaceSrc) { _, state -> replaceSrc = state }
@@ -83,7 +83,7 @@ class CardDealTest : ActionBarTest() {
         addToggleBtn("Dst to last", startState = toLast) { _, state -> toLast = state }
 
         // Do the layout
-        layout.gameLayer.centerTable.apply {
+        layout.centerTable.apply {
             add(topHand).pad(60f).grow().row()
             add(bottomHand).pad(60f).grow()
         }

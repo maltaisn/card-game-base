@@ -40,13 +40,13 @@ class SolitaireTest : CardGameTest() {
 
         val deck = PCard.fullDecks(shuffled = true)
 
-        val animLayer = layout.cardAnimationLayer
+        val animGroup = layout.cardAnimationGroup
 
         repeat(4) {
             val column = CardHand(pcardStyle)
-            layout.gameLayer.centerTable.add(CenterLayout(column))
+            layout.centerTable.add(CenterLayout(column))
                     .pad(60f, 40f, 60f, 40f).grow()
-            animLayer.register(column)
+            animGroup.register(column)
 
             column.apply {
                 horizontal = false
@@ -59,7 +59,7 @@ class SolitaireTest : CardGameTest() {
                     for (i in start until column.size) {
                         column.actors[i]?.let { actors += it }
                     }
-                    val dragger = animLayer.dragCards(*actors.toTypedArray())
+                    val dragger = animGroup.dragCards(*actors.toTypedArray())
                     dragger?.rearrangeable = true
                     dragger
                 }
@@ -69,7 +69,7 @@ class SolitaireTest : CardGameTest() {
                     override fun onCardsPlayed(actors: List<CardActor>, src: CardContainer, pos: Vector2) {
                         var insertPos = column.findInsertPositionForCoordinates(pos.x, pos.y)
                         for (actor in actors) {
-                            animLayer.moveCard(src, column,
+                            animGroup.moveCard(src, column,
                                     src.actors.indexOf(actor), insertPos)
                             insertPos++
                         }

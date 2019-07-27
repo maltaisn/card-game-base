@@ -18,10 +18,10 @@ package com.maltaisn.cardgame.widget.menu
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.maltaisn.cardgame.post
-import com.maltaisn.cardgame.widget.action.ActionDelegate
 import com.maltaisn.cardgame.widget.FboTable
-import com.maltaisn.cardgame.widget.FontStyle
+import com.maltaisn.cardgame.widget.action.ActionDelegate
 import com.maltaisn.cardgame.widget.action.TimeAction
+import com.maltaisn.cardgame.widget.text.FontStyle
 
 
 /**

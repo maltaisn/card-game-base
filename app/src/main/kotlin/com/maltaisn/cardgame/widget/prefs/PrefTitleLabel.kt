@@ -20,8 +20,8 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
-import com.maltaisn.cardgame.widget.FontStyle
-import com.maltaisn.cardgame.widget.SdfLabel
+import com.maltaisn.cardgame.widget.text.FontStyle
+import com.maltaisn.cardgame.widget.text.SdfLabel
 import ktx.actors.onClickEvent
 
 

@@ -39,7 +39,7 @@ class PlayerLabelFadeTest : ActionBarTest() {
             shown = true
             add(label).grow()
         }
-        layout.gameLayer.centerTable.add(table).grow()
+        layout.centerTable.add(table).grow()
 
         var fadeMode = true
         addTwoStateActionBtn("Hide", "Show") { _, state ->

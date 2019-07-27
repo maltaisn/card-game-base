@@ -21,6 +21,8 @@ import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
+import com.maltaisn.cardgame.widget.text.FontStyle
+import com.maltaisn.cardgame.widget.text.SdfLabel
 import ktx.actors.alpha
 import ktx.style.get
 import kotlin.math.max
@@ -31,9 +33,9 @@ import kotlin.math.max
  * but there are no checked or focused states. Button can be disabled to act like a label.
  * A popup button has a label by default but it can be replaced or more actors can be added.
  */
-class PopupButton(skin: Skin, text: String? = null) : SelectableWidget() {
+class Button(skin: Skin, text: String? = null) : SelectableWidget() {
 
-    val style: PopupButtonStyle = skin.get()
+    val style: ButtonStyle = skin.get()
 
     /** The button label showing its text. */
     val label: SdfLabel
@@ -80,7 +82,7 @@ class PopupButton(skin: Skin, text: String? = null) : SelectableWidget() {
 
     override fun getMinHeight() = style.background.minHeight
 
-    class PopupButtonStyle {
+    class ButtonStyle {
         lateinit var background: Drawable
         lateinit var selectionOverlay: Drawable
         lateinit var fontStyle: FontStyle

@@ -33,7 +33,7 @@ import ktx.math.times
 import ktx.math.vec2
 
 
-class CardAnimationLayer : Group() {
+class CardAnimationGroup : Group() {
 
     /**
      * The list of all card containers on the stage.
@@ -203,7 +203,7 @@ class CardAnimationLayer : Group() {
 
         draggedCards = cards.toList()
 
-        // Add all actors of this container to the animation layer
+        // Add all actors of this container to the animation group
         val actors = container.actors
         for (actor in actors) {
             if (actor != null) {
@@ -252,7 +252,7 @@ class CardAnimationLayer : Group() {
 
     /**
      * Animates the motion of the card actors on the stage. All actors of changed containers
-     * are added to the animation layer and animated to their end position.
+     * are added to the animation group and animated to their end position.
      */
     private fun startAnimation() {
         setKeyboardFocus(true)  // For ESC instant complete
@@ -284,11 +284,11 @@ class CardAnimationLayer : Group() {
                 val actor = oldActors[i] ?: continue
                 val pos = positions[i]
                 if (actor.parent != null) {
-                    // Find coordinates on the animation layer of actor in container.
+                    // Find coordinates on the animation group of actor in container.
                     actor.localToActorCoordinates(this, pos)
                 } else {
                     // If parent is null, previous animation hasn't been completed so actor was
-                    // still on the animation layer before children were cleared just above.
+                    // still on the animation group before children were cleared just above.
                     pos.set(actor.x, actor.y)
                 }
             }
@@ -297,7 +297,7 @@ class CardAnimationLayer : Group() {
             // Add a marker actor to indicate where each container children start and end.
             addActor(MarkerActor(container))
 
-            // Add all actors to the animation layer
+            // Add all actors to the animation group
             for (i in oldActors.indices) {
                 val actor = oldActors[i] ?: continue
                 val pos = positions[i]
@@ -383,7 +383,7 @@ class CardAnimationLayer : Group() {
             for (actor in container.actors) {
                 actor?.apply {
                     assert(actions.size == 1)
-                    assert(parent === this@CardAnimationLayer)
+                    assert(parent === this@CardAnimationGroup)
 
                     val action = actor.moveAction!!  // FIXME NPE here when called just before animation ends?
                     container.addActor(this)
@@ -446,8 +446,8 @@ class CardAnimationLayer : Group() {
         init {
             // Compute the dst container rectangle bounds.
             if (src !== dst) {
-                val start = dst.localToActorCoordinates(this@CardAnimationLayer, vec2())
-                val end = dst.localToActorCoordinates(this@CardAnimationLayer, vec2(dst.width, dst.height))
+                val start = dst.localToActorCoordinates(this@CardAnimationGroup, vec2())
+                val end = dst.localToActorCoordinates(this@CardAnimationGroup, vec2(dst.width, dst.height))
                 containerRect = Rectangle(start.x, start.y, end.x - start.x, end.y - start.y)
                 changeLayer()
             } // else, card container wasn't changed so initial Z-index stays correct.
@@ -476,7 +476,7 @@ class CardAnimationLayer : Group() {
             if (containerRect == null) return
 
             // Check if the card actor's center is within the destination container rectangle bounds.
-            val cardCenter = cardActor.localToActorCoordinates(this@CardAnimationLayer,
+            val cardCenter = cardActor.localToActorCoordinates(this@CardAnimationGroup,
                     vec2(cardActor.width / 2, cardActor.height / 2))
             if (cardCenter !in containerRect!!) {
                 return
@@ -508,7 +508,7 @@ class CardAnimationLayer : Group() {
     }
 
     /**
-     * Used to mark where the actors of a container start and end in the animation layer children.
+     * Used to mark where the actors of a container start and end in the animation group children.
      */
     private class MarkerActor(val container: CardContainer) : Actor() {
         init {
@@ -527,13 +527,13 @@ class CardAnimationLayer : Group() {
             var timeLeft: Float,
             private val callback: (() -> Unit)?) {
 
-        fun doMove(cardAnimationLayer: CardAnimationLayer) {
-            cardAnimationLayer.moveCard(src, dst, srcIndex, dstIndex, replaceSrc, replaceDst)
+        fun doMove(cardAnimationGroup: CardAnimationGroup) {
+            cardAnimationGroup.moveCard(src, dst, srcIndex, dstIndex, replaceSrc, replaceDst)
             callback?.invoke()
         }
     }
 
-    /** A class that manages the dragging of one or multiple cards in the animation layer. */
+    /** A class that manages the dragging of one or multiple cards in the animation group. */
     inner class CardDragger(
             private val container: CardContainer,
             private val cardActors: List<CardActor>,
@@ -613,7 +613,7 @@ class CardAnimationLayer : Group() {
                     // Find the new coordinates of each card on the stage
                     val cardPositions = container.computeActorsPosition()
                     for (pos in cardPositions) {
-                        container.localToActorCoordinates(this@CardAnimationLayer, pos)
+                        container.localToActorCoordinates(this@CardAnimationGroup, pos)
                     }
 
                     // Animate undragged actors to their new position
@@ -655,7 +655,7 @@ class CardAnimationLayer : Group() {
                 dst.playListener?.onCardsPlayed(cardActors, container, dstPos)
             }
 
-            // Update the animation layer to put the card in its container.
+            // Update the animation group to put the card in its container.
             update()
         }
     }

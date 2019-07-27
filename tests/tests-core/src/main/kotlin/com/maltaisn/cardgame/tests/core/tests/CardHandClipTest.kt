@@ -58,7 +58,7 @@ class CardHandClipTest : CardGameTest() {
             visibility = CardContainer.Visibility.NONE
         }
 
-        layout.gameLayer.centerTable.apply {
+        layout.centerTable.apply {
             add(left).pad(60f, 0f, 60f, 60f).growY()
             add(Table().apply {
                 add(top).growX().row()

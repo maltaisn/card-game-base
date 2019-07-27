@@ -61,7 +61,7 @@ class ScrollSubMenuTest : ActionBarTest() {
             }
         }
 
-        layout.gameLayer.centerTable.apply {
+        layout.centerTable.apply {
             getCell(btnTable).padBottom(0f)
             add(menu).grow()
         }

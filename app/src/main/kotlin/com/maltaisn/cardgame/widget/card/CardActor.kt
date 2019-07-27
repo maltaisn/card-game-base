@@ -77,7 +77,7 @@ class CardActor(private val style: CardStyle,
     private var longClicked = false
 
     /**
-     * Internal flag used by the animation layer to indicate when a card is being animated.
+     * Internal flag used by the animation group to indicate when a card is being animated.
      * An animated card doesn't fire click and long click events.
      */
     internal var animated = false
@@ -87,7 +87,7 @@ class CardActor(private val style: CardStyle,
     internal var dst: CardContainer? = null
 
     // Used internally by CardAnimationLayer
-    internal var moveAction: CardAnimationLayer.MoveCardAction? = null
+    internal var moveAction: CardAnimationGroup.MoveCardAction? = null
         set(value) {
             if (field != null) removeAction(field)
             field = value

@@ -54,7 +54,7 @@ class DealerChipTest : ActionBarTest() {
             add(bottom).height(100f)
             add().row()
         }
-        layout.gameLayer.centerTable.add(contentTable).grow()
+        layout.centerTable.add(contentTable).grow()
 
         // Action buttons
         var fadeModeEnabled = true

@@ -51,7 +51,7 @@ class MainMenuTest : ActionBarTest() {
             info { "Menu item clicked: $it" }
         }
 
-        layout.gameLayer.centerTable.apply {
+        layout.centerTable.apply {
             getCell(btnTable).padBottom(40f)
             add(menu).grow()
         }

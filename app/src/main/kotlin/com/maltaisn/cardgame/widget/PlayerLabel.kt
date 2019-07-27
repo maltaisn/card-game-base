@@ -24,6 +24,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Scaling
 import com.maltaisn.cardgame.widget.action.ActionDelegate
 import com.maltaisn.cardgame.widget.action.TimeAction
+import com.maltaisn.cardgame.widget.text.FontStyle
+import com.maltaisn.cardgame.widget.text.SdfLabel
 import ktx.actors.alpha
 import ktx.style.get
 import kotlin.math.abs

@@ -19,8 +19,8 @@ package com.maltaisn.cardgame.widget.markdown
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.maltaisn.cardgame.markdown.MdElement
-import com.maltaisn.cardgame.widget.FontStyle
-import com.maltaisn.cardgame.widget.SdfLabel
+import com.maltaisn.cardgame.widget.text.FontStyle
+import com.maltaisn.cardgame.widget.text.SdfLabel
 import ktx.style.get
 
 

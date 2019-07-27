@@ -30,10 +30,10 @@ import com.maltaisn.cardgame.prefs.GamePref
 import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.ListPref
 import com.maltaisn.cardgame.prefs.PrefCategory
-import com.maltaisn.cardgame.widget.FontStyle
-import com.maltaisn.cardgame.widget.SdfLabel
 import com.maltaisn.cardgame.widget.markdown.MarkdownView
 import com.maltaisn.cardgame.widget.prefs.PrefsGroup
+import com.maltaisn.cardgame.widget.text.FontStyle
+import com.maltaisn.cardgame.widget.text.SdfLabel
 import ktx.style.get
 
 

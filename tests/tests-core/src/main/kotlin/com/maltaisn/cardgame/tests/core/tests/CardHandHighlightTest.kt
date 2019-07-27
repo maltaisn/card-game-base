@@ -46,7 +46,7 @@ class CardHandHighlightTest : ActionBarTest() {
                 !highlighted || (actor.card as PCard).color == PCard.RED
             }
         }
-        layout.gameLayer.centerTable.add(hand).grow().pad(60f)
+        layout.centerTable.add(hand).grow().pad(60f)
 
         addActionBtn("Highlight all") {
             // Test highlightAllCards method.

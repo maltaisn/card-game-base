@@ -20,8 +20,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.TextField
 import com.maltaisn.cardgame.prefs.PlayerNamesPref
 import com.maltaisn.cardgame.prefs.PrefEntry
-import com.maltaisn.cardgame.widget.FontStyle
-import com.maltaisn.cardgame.widget.SdfTextField
+import com.maltaisn.cardgame.widget.text.FontStyle
+import com.maltaisn.cardgame.widget.text.SdfTextField
 import ktx.actors.onKeyboardFocus
 import ktx.style.get
 

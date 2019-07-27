@@ -23,11 +23,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Value
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.widget.CardGameLayout
-import com.maltaisn.cardgame.widget.FontStyle
-import com.maltaisn.cardgame.widget.SdfLabel
 import com.maltaisn.cardgame.widget.menu.MenuDrawer
 import com.maltaisn.cardgame.widget.menu.MenuDrawerList
 import com.maltaisn.cardgame.widget.menu.MenuIcons
+import com.maltaisn.cardgame.widget.text.FontStyle
+import com.maltaisn.cardgame.widget.text.SdfLabel
 import ktx.log.info
 import kotlin.math.max
 import kotlin.math.min
@@ -94,7 +94,7 @@ class MenuDrawerTest : ActionBarTest() {
         }
 
         // Do the layout
-        layout.gameLayer.centerTable.apply {
+        layout.centerTable.apply {
             clearChildren()
 
             val btnContainer = Container(btnTable).align(Align.top)

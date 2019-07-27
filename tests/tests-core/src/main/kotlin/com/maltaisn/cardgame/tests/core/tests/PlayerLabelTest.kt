@@ -41,7 +41,7 @@ class PlayerLabelTest : SingleActionTest() {
         southLabel.score = "7 (1)"
 
         // Do the layout
-        layout.gameLayer.centerTable.apply {
+        layout.centerTable.apply {
             pad(60f)
             add(northLabel).expand().align(Align.topRight).padRight(300f).colspan(2).row()
             add(westLabel).expand().align(Align.topLeft).padLeft(100f)

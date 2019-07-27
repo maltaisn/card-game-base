@@ -42,14 +42,14 @@ class CardTrickTest : ActionBarTest() {
 
         val deck = PCard.fullDecks(shuffled = true)
 
-        val animLayer = layout.cardAnimationLayer
+        val animGroup = layout.cardAnimationGroup
 
         // Create card containers
         val trick = CardTrick(pcardStyle, 4)
         trick.apply {
             cards = deck.drawTop(4)
             dragListener = { actor ->
-                val dragger = animLayer.dragCards(actor)
+                val dragger = animGroup.dragCards(actor)
                 dragger?.rearrangeable = true
                 dragger
             }
@@ -61,27 +61,27 @@ class CardTrickTest : ActionBarTest() {
 
                 override fun onCardsPlayed(actors: List<CardActor>, src: CardContainer, pos: Vector2) {
                     val index = trick.findInsertPositionForCoordinates(pos.x, pos.y)
-                    animLayer.moveCard(src, trick, src.actors.indexOf(actors.first()), index, replaceDst = true)
+                    animGroup.moveCard(src, trick, src.actors.indexOf(actors.first()), index, replaceDst = true)
                 }
             }
         }
 
         val stack = CardStack(pcardStyle).apply {
             cards = deck
-            dragListener = { animLayer.dragCards(it) }
+            dragListener = { animGroup.dragCards(it) }
         }
 
-        animLayer.register(trick, stack)
+        animGroup.register(trick, stack)
 
         // Action buttons
         addActionBtn("Clear") {
             // Move cards from trick to stack
             for ((i, card) in trick.cards.withIndex()) {
                 if (card != null) {
-                    animLayer.moveCard(trick, stack, i, 0, true)
+                    animGroup.moveCard(trick, stack, i, 0, true)
                 }
             }
-            animLayer.update()
+            animGroup.update()
         }
         addValueBtn("Capacity", 1f, 10f,
                 4f, 1f) { _, newCapacity, oldCapacity ->
@@ -90,19 +90,19 @@ class CardTrickTest : ActionBarTest() {
                 val cards = trick.cards
                 for (i in newCapacity.toInt() until cards.size) {
                     if (cards[i] != null) {
-                        animLayer.moveCard(trick, stack, i, 0, true)
+                        animGroup.moveCard(trick, stack, i, 0, true)
                     }
                 }
             }
             trick.capacity = newCapacity.toInt()
             trick.requestUpdate()
-            animLayer.update()
+            animGroup.update()
         }
         addTwoStateActionBtn("Cc", "Cw") { _, state ->
             // Toggle clockwise placement
             trick.clockwisePlacement = state
             trick.requestUpdate()
-            animLayer.update()
+            animGroup.update()
         }
         addActionBtn("Rnd") {
             // Randomize card angles
@@ -110,20 +110,20 @@ class CardTrickTest : ActionBarTest() {
             angles.sort()
             trick.cardAngles = angles
             trick.requestUpdate()
-            animLayer.update()
+            animGroup.update()
             info { "Random angles: ${trick.cardAngles}" }
         }
         val rxBtn = addValueBtn("Radius X", 40f, 300f,
                 trick.radius.x, 20f, null) { _, value, _ ->
             trick.radius.x = value
             trick.requestUpdate()
-            animLayer.update()
+            animGroup.update()
         }
         val ryBtn = addValueBtn("Radius Y", 40f, 300f,
                 trick.radius.y, 20f, null) { _, value, _ ->
             trick.radius.y = value
             trick.requestUpdate()
-            animLayer.update()
+            animGroup.update()
         }
         addActionBtn("Auto R") {
             // Set auto radius
@@ -135,14 +135,14 @@ class CardTrickTest : ActionBarTest() {
                 DecimalFormat().apply { positiveSuffix = "°" }) { _, value, _ ->
             trick.startAngle = value / 180f * PI.toFloat()
             trick.requestUpdate()
-            animLayer.update()
+            animGroup.update()
         }
         addToggleBtn("Debug") { _, debug ->
             trick.debug = debug
         }
 
         // Do the layout
-        layout.gameLayer.centerTable.apply {
+        layout.centerTable.apply {
             add(stack).width(400f).growY()
             add(CenterLayout(trick)).grow().row()
         }

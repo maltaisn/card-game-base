@@ -32,7 +32,7 @@ abstract class SubmenuContentTest : ActionBarTest() {
 
         val content = Table()
         content.background = skin.getDrawable("submenu-content-background")
-        layout.gameLayer.centerTable.add(content).grow()
+        layout.centerTable.add(content).grow()
                 .pad(0f, 80f, 0f, 80f)
         layoutContent(layout, content)
         content.findScrollFocus()

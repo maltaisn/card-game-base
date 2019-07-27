@@ -49,7 +49,7 @@ class InGameMenuTest : SingleActionTest() {
             shown = true
         }
 
-        layout.gameLayer.centerTable.add(menu).grow()
+        layout.centerTable.add(menu).grow()
 
         action = {
             menu.shown = !menu.shown

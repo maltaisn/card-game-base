@@ -21,8 +21,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.tests.core.CenterLayout
 import com.maltaisn.cardgame.widget.CardGameLayout
-import com.maltaisn.cardgame.widget.FontStyle
-import com.maltaisn.cardgame.widget.SdfLabel
+import com.maltaisn.cardgame.widget.text.FontStyle
+import com.maltaisn.cardgame.widget.text.SdfLabel
 import ktx.actors.alpha
 import java.text.NumberFormat
 
@@ -58,7 +58,7 @@ class SdfLabelTest : ActionBarTest() {
         }
 
         // Add all labels to the layout
-        layout.gameLayer.centerTable.apply {
+        layout.centerTable.apply {
             clearChildren()
             add(btnTable).growX().colspan(100).pad(50f, 40f, 50f, 40f).row()
 

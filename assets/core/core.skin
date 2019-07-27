@@ -11,7 +11,7 @@
     textColorDarkGray: { hex: #3b3b3bff }
     textColorWhite: { hex: #e3e3e3ff }
   }
-  com.maltaisn.cardgame.widget.FontStyle: {
+  com.maltaisn.cardgame.widget.text.FontStyle: {
     normal: {
       fontSize: 44
       fontColor: textColorBlack
@@ -43,7 +43,7 @@
       bold: true
     }
   }
-  com.maltaisn.cardgame.widget.GameLayer$CoreStyle: {
+  com.maltaisn.cardgame.widget.CardGameLayout$CardGameLayoutStyle: {
     default: {
       background: background
       border: background-border
@@ -74,7 +74,7 @@
       rightTipOffsetY: -26
     }
   }
-  com.maltaisn.cardgame.widget.PopupButton$PopupButtonStyle: {
+  com.maltaisn.cardgame.widget.Button$ButtonStyle: {
     default: {
       background: btn-popup
       selectionOverlay: btn-popup-overlay

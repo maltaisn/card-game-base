@@ -19,9 +19,9 @@ package com.maltaisn.cardgame.tests.core.tests
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.maltaisn.cardgame.tests.core.ActionBarTest
+import com.maltaisn.cardgame.widget.Button
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.Popup
-import com.maltaisn.cardgame.widget.PopupButton
 import ktx.actors.onClick
 
 
@@ -36,19 +36,19 @@ class PopupTest : ActionBarTest() {
         val popupGroup = layout.popupGroup
 
         val popupSimple = Popup(skin)
-        val popupBtn = PopupButton(skin, "Click me!")
+        val popupBtn = Button(skin, "Click me!")
         popupBtn.onClick { popupSimple.hide() }
         popupSimple.add(popupBtn)
         popupGroup.addActor(popupSimple)
 
         val popupComplex = Popup(skin)
-        popupComplex.add(PopupButton(skin, "Last two")).fillX().pad(5f)
-        popupComplex.add(PopupButton(skin, "Hearts")).fillX().pad(5f).row()
-        popupComplex.add(PopupButton(skin, "Barbu")).fillX().pad(5f)
-        popupComplex.add(PopupButton(skin, "Queens")).fillX().pad(5f).row()
-        popupComplex.add(PopupButton(skin, "Domino")).fillX().pad(5f)
-        popupComplex.add(PopupButton(skin, "Tricks")).fillX().pad(5f).row()
-        popupComplex.add(PopupButton(skin, "Trump")).pad(5f).colspan(2).fillX()
+        popupComplex.add(Button(skin, "Last two")).fillX().pad(5f)
+        popupComplex.add(Button(skin, "Hearts")).fillX().pad(5f).row()
+        popupComplex.add(Button(skin, "Barbu")).fillX().pad(5f)
+        popupComplex.add(Button(skin, "Queens")).fillX().pad(5f).row()
+        popupComplex.add(Button(skin, "Domino")).fillX().pad(5f)
+        popupComplex.add(Button(skin, "Tricks")).fillX().pad(5f).row()
+        popupComplex.add(Button(skin, "Trump")).pad(5f).colspan(2).fillX()
         popupGroup.addActor(popupComplex)
 
         val top = Actor()
@@ -68,7 +68,7 @@ class PopupTest : ActionBarTest() {
             add(bottom).height(100f)
             add().row()
         }
-        layout.gameLayer.centerTable.add(contentTable).grow()
+        layout.centerTable.add(contentTable).grow()
 
         // Action buttons
         var selectedPopup = popupSimple

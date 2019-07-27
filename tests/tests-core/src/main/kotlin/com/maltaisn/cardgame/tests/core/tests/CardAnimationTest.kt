@@ -27,7 +27,7 @@ import com.maltaisn.cardgame.widget.card.*
 
 
 /**
- * Test [CardAnimationLayer] animations between card containers,
+ * Test [CardAnimationGroup] animations between card containers,
  * test play listeners and dragging, etc.
  */
 class CardAnimationTest : SingleActionTest() {
@@ -37,15 +37,14 @@ class CardAnimationTest : SingleActionTest() {
 
         val deck = PCard.fullDecks(shuffled = true)
 
-        val animLayer = layout.cardAnimationLayer
-        val centerTable = layout.gameLayer.centerTable
+        val animGroup = layout.cardAnimationGroup
 
         val group1 = CardHand(pcardStyle)
         val group2 = CardHand(pcardStyle)
         val stack1 = CardStack(pcardStyle)
         val stack2 = CardStack(pcardStyle)
 
-        animLayer.register(group1, group2, stack1, stack2)
+        animGroup.register(group1, group2, stack1, stack2)
 
         // Do the layout
         val table = Table()
@@ -53,8 +52,8 @@ class CardAnimationTest : SingleActionTest() {
         table.add(stack2).pad(40f).grow()
         table.row()
         table.add(group2).colspan(2).pad(40f).padBottom(0f).grow()
-        centerTable.add(group1).pad(40f).fill()
-        centerTable.add(table).grow()
+        layout.centerTable.add(group1).pad(40f).fill()
+        layout.centerTable.add(table).grow()
 
         group1.apply {
             sorter = PCard.DEFAULT_SORTER
@@ -63,19 +62,19 @@ class CardAnimationTest : SingleActionTest() {
             cards = deck.drawTop(3)
             sort()
             clickListener = { _, index ->
-                animLayer.moveCard(group1, stack2, index, stack2.size)
+                animGroup.moveCard(group1, stack2, index, stack2.size)
                 group1.sort()
-                animLayer.update()
+                animGroup.update()
             }
             longClickListener = { _, index ->
-                animLayer.moveCard(group1, group2, index, 0)
+                animGroup.moveCard(group1, group2, index, 0)
                 group1.sort()
                 group2.sort()
-                animLayer.update()
+                animGroup.update()
             }
             dragListener = { actor ->
                 if ((actor.card as PCard).color == PCard.RED) {
-                    animLayer.dragCards(actor)
+                    animGroup.dragCards(actor)
                 } else {
                     null
                 }
@@ -86,7 +85,7 @@ class CardAnimationTest : SingleActionTest() {
                 }
 
                 override fun onCardsPlayed(actors: List<CardActor>, src: CardContainer, pos: Vector2) {
-                    animLayer.moveCard(src, group1,
+                    animGroup.moveCard(src, group1,
                             src.actors.indexOf(actors.first()), 0)
                     group1.sort()
                     (src as? CardHand)?.sort()
@@ -102,13 +101,13 @@ class CardAnimationTest : SingleActionTest() {
             cards = deck.drawTop(6)
             sort()
             clickListener = { _, index ->
-                animLayer.moveCard(group2, group1, index, 0)
+                animGroup.moveCard(group2, group1, index, 0)
                 group1.sort()
                 group2.sort()
-                animLayer.update()
+                animGroup.update()
             }
             dragListener = { actor ->
-                animLayer.dragCards(actor)
+                animGroup.dragCards(actor)
             }
         }
 
@@ -116,18 +115,18 @@ class CardAnimationTest : SingleActionTest() {
             visibility = CardContainer.Visibility.NONE
             cards = PCard.fullDecks(shuffled = true)
             clickListener = { _, index ->
-                animLayer.moveCard(stack1, group2, index, 0)
+                animGroup.moveCard(stack1, group2, index, 0)
                 group2.sort()
-                animLayer.update()
+                animGroup.update()
             }
-            dragListener = { actor -> animLayer.dragCards(actor) }
+            dragListener = { actor -> animGroup.dragCards(actor) }
             playListener = object : CardContainer.PlayListener {
                 override fun canCardsBePlayed(actors: List<CardActor>, src: CardContainer, pos: Vector2): Boolean {
                     return src === group1
                 }
 
                 override fun onCardsPlayed(actors: List<CardActor>, src: CardContainer, pos: Vector2) {
-                    animLayer.moveCard(src, stack1,
+                    animGroup.moveCard(src, stack1,
                             src.actors.indexOf(actors.first()), stack1.size)
                     (src as? CardHand)?.sort()
                 }
@@ -140,8 +139,8 @@ class CardAnimationTest : SingleActionTest() {
             cardSize = CardActor.SIZE_NORMAL
             cards = deck.drawTop(1)
             clickListener = { _, index ->
-                animLayer.moveCard(stack2, stack1, index, stack1.size)
-                animLayer.update()
+                animGroup.moveCard(stack2, stack1, index, stack1.size)
+                animGroup.update()
             }
             playListener = object : CardContainer.PlayListener {
                 override fun canCardsBePlayed(actors: List<CardActor>, src: CardContainer, pos: Vector2): Boolean {
@@ -149,7 +148,7 @@ class CardAnimationTest : SingleActionTest() {
                 }
 
                 override fun onCardsPlayed(actors: List<CardActor>, src: CardContainer, pos: Vector2) {
-                    animLayer.moveCard(src, stack2,
+                    animGroup.moveCard(src, stack2,
                             src.actors.indexOf(actors.first()), stack2.size)
                     (src as? CardHand)?.sort()
                 }
@@ -157,7 +156,7 @@ class CardAnimationTest : SingleActionTest() {
         }
 
         action = {
-            animLayer.deal(stack1, group2, 10) {
+            animGroup.deal(stack1, group2, 10) {
                 group2.sort()
             }
         }

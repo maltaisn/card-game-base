@@ -36,36 +36,36 @@ class CardStackTest : CardGameTest() {
 
         val deck = PCard.fullDecks(shuffled = true)
 
-        val animLayer = layout.cardAnimationLayer
+        val animGroup = layout.cardAnimationGroup
 
         val leftStack = CardStack(pcardStyle).apply {
             cards = deck.drawTop(3)
-            dragListener = { animLayer.dragCards(it) }
+            dragListener = { animGroup.dragCards(it) }
             drawSlot = true
             playListener = object : CardContainer.PlayListener {
                 override fun canCardsBePlayed(actors: List<CardActor>, src: CardContainer, pos: Vector2) = true
 
                 override fun onCardsPlayed(actors: List<CardActor>, src: CardContainer, pos: Vector2) {
-                    animLayer.moveCard(src, this@apply, src.size - 1, this@apply.size)
+                    animGroup.moveCard(src, this@apply, src.size - 1, this@apply.size)
                 }
             }
         }
 
         val rightStack = CardStack(pcardStyle).apply {
             cards = deck.drawTop(3)
-            dragListener = { animLayer.dragCards(it) }
+            dragListener = { animGroup.dragCards(it) }
             playListener = object : CardContainer.PlayListener {
                 override fun canCardsBePlayed(actors: List<CardActor>, src: CardContainer, pos: Vector2) = true
 
                 override fun onCardsPlayed(actors: List<CardActor>, src: CardContainer, pos: Vector2) {
-                    animLayer.moveCard(src, this@apply, src.size - 1, this@apply.size)
+                    animGroup.moveCard(src, this@apply, src.size - 1, this@apply.size)
                 }
             }
         }
 
-        animLayer.register(leftStack, rightStack)
+        animGroup.register(leftStack, rightStack)
 
-        layout.gameLayer.centerTable.apply {
+        layout.centerTable.apply {
             add(leftStack).grow()
             add(rightStack).grow()
         }

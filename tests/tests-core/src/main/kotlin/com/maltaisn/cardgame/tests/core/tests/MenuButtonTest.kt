@@ -20,10 +20,10 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.widget.CardGameLayout
-import com.maltaisn.cardgame.widget.FontStyle
 import com.maltaisn.cardgame.widget.menu.MenuButton
 import com.maltaisn.cardgame.widget.menu.MenuButton.Side
 import com.maltaisn.cardgame.widget.menu.MenuIcons
+import com.maltaisn.cardgame.widget.text.FontStyle
 import ktx.actors.onClick
 import ktx.log.info
 
@@ -47,7 +47,7 @@ class MenuButtonTest : ActionBarTest() {
         btn.onClick {
             info { "Menu button clicked" }
         }
-        val btnCell = layout.gameLayer.centerTable.add(btn).expand()
+        val btnCell = layout.centerTable.add(btn).expand()
 
         // Action buttons
         addTwoStateActionBtn("Disable", "Enable") { _, enabled ->

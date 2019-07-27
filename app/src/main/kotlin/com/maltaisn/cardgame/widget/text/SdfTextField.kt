@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.cardgame.widget
+package com.maltaisn.cardgame.widget.text
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input

@@ -22,10 +22,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.Layout
 
 
 /**
- * Group that contains the popups.
- * Acts like an absolute layout by having no restrictions on the size and position of children.
+ * A layout that has no restrictions on the size and position of children.
+ * Each children layout takes its preferred size, or the layout size if it has no preferred size.
  */
-class PopupGroup : WidgetGroup() {
+class AbsoluteLayout : WidgetGroup() {
 
     init {
         touchable = Touchable.childrenOnly
@@ -34,7 +34,8 @@ class PopupGroup : WidgetGroup() {
     override fun layout() {
         for (child in children) {
             if (child is Layout) {
-                child.setSize(child.prefWidth, child.prefHeight)
+                child.width = if (child.prefWidth == 0f) width else child.prefWidth
+                child.height = if (child.prefHeight == 0f) height else child.prefHeight
                 child.validate()
             }
         }

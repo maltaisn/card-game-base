@@ -36,7 +36,7 @@ class CardActorTest : ActionBarTest() {
         val deck = PCard.fullDecks(shuffled = true)
 
         val cardTable = Table()
-        layout.gameLayer.centerTable.add(cardTable).grow()
+        layout.centerTable.add(cardTable).grow()
 
         val cardActors = List(4) {
             val actor = CardActor(pcardStyle, deck.drawTop())
@@ -59,7 +59,7 @@ class CardActorTest : ActionBarTest() {
             }
         }
         addToggleBtn("Debug") { _, debug ->
-            layout.gameLayer.centerTable.setDebug(debug, true)
+            layout.centerTable.setDebug(debug, true)
         }
     }
 }

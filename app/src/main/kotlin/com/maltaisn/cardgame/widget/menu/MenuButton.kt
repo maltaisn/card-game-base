@@ -24,9 +24,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Scaling
 import com.maltaisn.cardgame.post
 import com.maltaisn.cardgame.widget.CheckableWidget
-import com.maltaisn.cardgame.widget.FontStyle
-import com.maltaisn.cardgame.widget.SdfLabel
 import com.maltaisn.cardgame.widget.ShadowImage
+import com.maltaisn.cardgame.widget.text.FontStyle
+import com.maltaisn.cardgame.widget.text.SdfLabel
 import ktx.actors.alpha
 import ktx.style.get
 

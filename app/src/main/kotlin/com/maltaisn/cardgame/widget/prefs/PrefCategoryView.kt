@@ -24,8 +24,8 @@ import com.badlogic.gdx.utils.Scaling
 import com.maltaisn.cardgame.prefs.GamePref
 import com.maltaisn.cardgame.prefs.ListPref
 import com.maltaisn.cardgame.prefs.PrefCategory
-import com.maltaisn.cardgame.widget.SdfLabel
 import com.maltaisn.cardgame.widget.menu.ScrollSubMenu
+import com.maltaisn.cardgame.widget.text.SdfLabel
 import ktx.style.get
 
 
