@@ -17,6 +17,7 @@
 package com.maltaisn.cardgame.widget
 
 import com.badlogic.gdx.math.Interpolation
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.maltaisn.cardgame.widget.action.ActionDelegate
 import com.maltaisn.cardgame.widget.action.TimeAction
@@ -26,7 +27,7 @@ import ktx.actors.alpha
 /**
  * A [Table] widget group that can be faded in and out.
  */
-class FadeTable(val duration: Float = DEFAULT_FADE_DURATION) : FboTable() {
+open class FadeTable(skin: Skin? = null, val duration: Float = DEFAULT_FADE_DURATION) : FboTable(skin) {
 
     /**
      * Whether the table is shown or not.

@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.tests.core.SubmenuContentTest
+import com.maltaisn.cardgame.tests.core.TestRes
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.ScrollView
 import com.maltaisn.cardgame.widget.markdown.MarkdownView
@@ -33,11 +34,11 @@ class MarkdownViewTest : SubmenuContentTest() {
 
     override fun load() {
         super.load()
-        assetManager.load<Markdown>(MARKDOWN_FILE)
+        assetManager.load<Markdown>(TestRes.LOREM_IPSUM_MARKDOWN)
     }
 
     override fun layoutContent(layout: CardGameLayout, content: Table) {
-        val markdown: Markdown = assetManager.get(MARKDOWN_FILE)
+        val markdown: Markdown = assetManager.get(TestRes.LOREM_IPSUM_MARKDOWN)
         val mdView = MarkdownView(skin, markdown)
 
         // Do the layout
@@ -50,10 +51,6 @@ class MarkdownViewTest : SubmenuContentTest() {
         addToggleBtn("Debug") { _, debug ->
             mdView.setDebug(debug, true)
         }
-    }
-
-    companion object {
-        private const val MARKDOWN_FILE = "lorem-ipsum"
     }
 
 }

@@ -76,6 +76,10 @@ class PopupButton(skin: Skin, text: String? = null) : SelectableWidget() {
 
     override fun getPrefHeight() = max(style.background.minHeight, super.getPrefHeight())
 
+    override fun getMinWidth() = style.background.minWidth
+
+    override fun getMinHeight() = style.background.minHeight
+
     class PopupButtonStyle {
         lateinit var background: Drawable
         lateinit var selectionOverlay: Drawable

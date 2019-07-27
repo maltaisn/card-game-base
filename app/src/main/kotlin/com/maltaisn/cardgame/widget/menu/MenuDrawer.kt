@@ -136,6 +136,7 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
 
             override fun touchUp(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int) {
                 if (backgroundPressed && shown && x < drawerTable.x) {
+                    backgroundPressed = false
                     shown = false
                 }
             }

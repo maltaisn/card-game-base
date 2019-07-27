@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.maltaisn.cardgame.game.Card
 import com.maltaisn.cardgame.game.drawTop
 import com.maltaisn.cardgame.tests.core.CardGameTest
+import com.maltaisn.cardgame.tests.core.TestRes
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.card.CardActor
 import com.maltaisn.cardgame.widget.card.CardHand
@@ -37,11 +38,11 @@ class NCardTest : CardGameTest() {
 
     override fun load() {
         super.load()
-        assetManager.load<TextureAtlas>(NCARD_ATLAS)
+        assetManager.load<TextureAtlas>(TestRes.NCARD_ATLAS)
     }
 
     override fun start() {
-        addSkin(NCARD_SKIN, NCARD_ATLAS)
+        addSkin(TestRes.NCARD_SKIN, TestRes.NCARD_ATLAS)
         ncardStyle = skin["ncard"]
 
         super.start()
@@ -100,12 +101,6 @@ class NCardTest : CardGameTest() {
                 return cards
             }
         }
-    }
-
-
-    companion object {
-        private val NCARD_SKIN = "ncard/ncard.skin"
-        private val NCARD_ATLAS = "ncard/ncard.atlas"
     }
 
 }

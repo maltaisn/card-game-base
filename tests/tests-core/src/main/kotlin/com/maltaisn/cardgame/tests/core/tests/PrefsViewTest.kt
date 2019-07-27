@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.PrefEntry
 import com.maltaisn.cardgame.tests.core.SubmenuContentTest
+import com.maltaisn.cardgame.tests.core.TestRes
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.ScrollView
 import com.maltaisn.cardgame.widget.prefs.PrefsGroup
@@ -35,11 +36,11 @@ class PrefsViewTest : SubmenuContentTest(), PrefEntry.PrefListener {
 
     override fun load() {
         super.load()
-        assetManager.load<GamePrefs>(PREFS_FILE)
+        assetManager.load<GamePrefs>(TestRes.PREFS)
     }
 
     override fun layoutContent(layout: CardGameLayout, content: Table) {
-        val prefs: GamePrefs = assetManager.get(PREFS_FILE)
+        val prefs: GamePrefs = assetManager.get(TestRes.PREFS)
         val prefsView = PrefsGroup(skin, prefs)
         prefsView.helpListener = { pref ->
             info { "Help for ${pref.shortTitle ?: pref.title}: ${pref.help}" }
@@ -70,10 +71,6 @@ class PrefsViewTest : SubmenuContentTest(), PrefEntry.PrefListener {
 
     override fun onPreferenceEnabledStateChanged(pref: PrefEntry, enabled: Boolean) {
         info { "Preference '${pref.key}' enabled state changed." }
-    }
-
-    companion object {
-        private const val PREFS_FILE = "settings.json"
     }
 
 }

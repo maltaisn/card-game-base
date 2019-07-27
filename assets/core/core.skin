@@ -49,6 +49,12 @@
       border: background-border
     }
   }
+  com.maltaisn.cardgame.widget.dialog.Dialog$DialogStyle: {
+    default: {
+      shadow: shadow-background
+      background: dialog
+    }
+  }
   com.maltaisn.cardgame.widget.Popup$PopupStyle: {
     default: {
       body: popup
@@ -171,7 +177,7 @@
   }
   com.maltaisn.cardgame.widget.menu.MenuDrawer$MenuDrawerStyle: {
     default: {
-      background: menu-drawer-background
+      background: shadow-background
       drawerBackground: menu-drawer
       backBtnFontStyle: {
         fontSize: 40

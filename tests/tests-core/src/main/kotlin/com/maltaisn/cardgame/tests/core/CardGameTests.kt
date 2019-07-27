@@ -32,6 +32,7 @@ object CardGameTests {
             ContainerTransitionTest::class.java,
             DealerChipTest::class.java,
             DefaultGameMenuTest::class.java,
+            DialogTest::class.java,
             InGameMenuTest::class.java,
             MainMenuTest::class.java,
             MarkdownViewTest::class.java,
