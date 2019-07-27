@@ -24,6 +24,8 @@ import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.Font
 import java.awt.Insets
+import java.awt.event.KeyEvent
+import java.awt.event.KeyListener
 import java.util.prefs.Preferences
 import javax.swing.*
 import javax.swing.border.EmptyBorder
@@ -31,9 +33,10 @@ import javax.swing.border.EmptyBorder
 
 object DesktopLauncher {
 
+    private val prefs = Preferences.userNodeForPackage(DesktopLauncher::class.java)
+
     @JvmStatic
     fun main(args: Array<String>) {
-        val prefs = Preferences.userNodeForPackage(DesktopLauncher::class.java)
         val lastTest = prefs.get("lastTest", null)
 
         val frame = JFrame().apply {
@@ -54,6 +57,17 @@ object DesktopLauncher {
             layoutOrientation = JList.VERTICAL
             font = Font(font.name, Font.PLAIN, 16)
             border = EmptyBorder(5, 5, 5, 5)
+            addKeyListener(object : KeyListener {
+                override fun keyTyped(e: KeyEvent) = Unit
+
+                override fun keyPressed(e: KeyEvent) {
+                    if (e.keyCode == KeyEvent.VK_ENTER && selectedValue != null) {
+                        runTest(selectedValue)
+                    }
+                }
+
+                override fun keyReleased(e: KeyEvent) = Unit
+            })
         }
 
         JScrollPane().apply {
@@ -66,12 +80,8 @@ object DesktopLauncher {
             font = Font(font.name, Font.BOLD, 16)
             margin = Insets(15, 15, 15, 15)
             addActionListener {
-                val testName = list.selectedValue
-                if (testName != null) {
-                    prefs.put("lastTest", testName)
-
-                    // Run selected test
-                    runTest(testName)
+                if (list.selectedValue != null) {
+                    runTest(list.selectedValue)
                 }
             }
             frame.add(this, BorderLayout.PAGE_END)
@@ -81,6 +91,7 @@ object DesktopLauncher {
     }
 
     private fun runTest(testName: String) {
+        prefs.put("lastTest", testName)
         Lwjgl3Application(object : CardGameApp() {
             override fun create() {
                 setScreen(CardGameTests.newTest(testName))
