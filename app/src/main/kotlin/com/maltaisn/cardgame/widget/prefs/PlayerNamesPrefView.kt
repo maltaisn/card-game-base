@@ -46,7 +46,7 @@ class PlayerNamesPrefView(skin: Skin, pref: PlayerNamesPref) : GamePrefView<Play
         add(titleLabel).colspan(2).growX().pad(10f, 20f, 20f, 20f).row()
 
         textFields = Array(pref.size) { player ->
-            val textField = SdfTextField(skin, style.fieldStyle,
+            val textField = SdfTextField(skin, skin.get<TextField.TextFieldStyle>(),
                     style.fieldFontStyle, text = pref.names[player]).apply {
                 maxLength = pref.maxLength
                 onKeyboardFocus {
@@ -82,7 +82,6 @@ class PlayerNamesPrefView(skin: Skin, pref: PlayerNamesPref) : GamePrefView<Play
 
 
     class PlayerNamesPrefViewStyle {
-        lateinit var fieldStyle: TextField.TextFieldStyle
         lateinit var fieldFontStyle: FontStyle
     }
 

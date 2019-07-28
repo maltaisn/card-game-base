@@ -40,7 +40,7 @@ class TextPrefView(skin: Skin, pref: TextPref) : GamePrefView<TextPref>(skin, pr
     init {
         val style: TextPrefViewStyle = skin.get()
 
-        textField = SdfTextField(skin, style.fieldStyle,
+        textField = SdfTextField(skin, skin.get<TextField.TextFieldStyle>(),
                 style.fieldFontStyle, text = pref.value).apply {
             maxLength = pref.maxLength
             onKeyboardFocus {
@@ -65,7 +65,6 @@ class TextPrefView(skin: Skin, pref: TextPref) : GamePrefView<TextPref>(skin, pr
 
 
     class TextPrefViewStyle {
-        lateinit var fieldStyle: TextField.TextFieldStyle
         lateinit var fieldFontStyle: FontStyle
     }
 

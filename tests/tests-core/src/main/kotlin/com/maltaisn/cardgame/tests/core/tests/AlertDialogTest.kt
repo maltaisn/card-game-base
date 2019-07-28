@@ -16,20 +16,21 @@
 
 package com.maltaisn.cardgame.tests.core.tests
 
+import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.tests.core.TestRes
-import com.maltaisn.cardgame.widget.Button
+import com.maltaisn.cardgame.widget.AlertDialog
 import com.maltaisn.cardgame.widget.CardGameLayout
-import com.maltaisn.cardgame.widget.Dialog
 import com.maltaisn.cardgame.widget.ScrollView
+import com.maltaisn.cardgame.widget.Separator
 import com.maltaisn.cardgame.widget.markdown.MarkdownView
 import ktx.actors.onClick
 import ktx.assets.load
 import ktx.log.info
 
 
-class DialogTest : ActionBarTest() {
+class AlertDialogTest : ActionBarTest() {
 
     override fun load() {
         super.load()
@@ -41,34 +42,48 @@ class DialogTest : ActionBarTest() {
 
         layout.centerTable.add().grow()  // Prevent action bar from being centered
 
-        val dialog = object : Dialog(skin) {
-            override fun onDismiss() {
-                info { "Dialog dismissed" }
-            }
-        }
+        val dialog = AlertDialog(skin)
+        dialog.dialogWidth = 1000f
+        dialog.dismissOnClickOutside = true
 
         val markdown: Markdown = assetManager.get(TestRes.LOREM_IPSUM_MARKDOWN)
         val mdView = MarkdownView(skin, markdown)
 
-        val closeBtn = Button(skin, "Close dialog")
-        closeBtn.onClick {
-            dialog.hide()
-        }
+        val btnSeparator = Separator(skin)
+        btnSeparator.isVisible = false
 
-        dialog.content.apply {
-            add(ScrollView(mdView)).grow().pad(0f, 50f, 0f, 50f).row()
-            add(closeBtn).growX().pad(50f)
+        dialog.alertContent.apply {
+            add(ScrollView(mdView)).grow().pad(0f, 30f, 0f, 30f).row()
+            add(btnSeparator).growX().pad(0f, 60f, 0f, 60f)
         }
 
         // Action buttons
         addActionBtn("Show dialog") {
             dialog.show(this)
         }
-        addToggleBtn("Dismiss on click outside") { _, dismiss ->
-            dialog.dismissOnClickOutside = dismiss
+        addToggleBtn("Show title") { _, shown ->
+            dialog.title = if (shown) "Privacy policy" else null
         }
-        addValueBtn("Width", 400f, 1600f, dialog.dialogWidth, 200f) { _, value, _ ->
-            dialog.dialogWidth = value
+        addToggleBtn("Center title") { _, shown ->
+            dialog.titleLabel.setAlignment(if (shown) Align.center else Align.left)
+        }
+        addToggleBtn("Show buttons") { _, shown ->
+            if (shown) {
+                val denyBtn = dialog.addButton("Deny")
+                denyBtn.onClick {
+                    info { "Denied" }
+                    dialog.hide()
+                }
+
+                val acceptBtn = dialog.addButton("Accept")
+                acceptBtn.onClick {
+                    info { "Accepted" }
+                    dialog.hide()
+                }
+            } else {
+                dialog.clearButtons()
+            }
+            btnSeparator.isVisible = shown
         }
         addToggleBtn("Debug") { _, debug ->
             dialog.setDebug(debug, true)

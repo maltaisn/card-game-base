@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.cardgame.widget.dialog
+package com.maltaisn.cardgame.widget
 
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.math.Interpolation
@@ -25,7 +25,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.maltaisn.cardgame.defaultSize
 import com.maltaisn.cardgame.findScrollFocus
-import com.maltaisn.cardgame.widget.FboTable
 import com.maltaisn.cardgame.widget.action.ActionDelegate
 import com.maltaisn.cardgame.widget.action.TimeAction
 import ktx.actors.alpha
@@ -172,7 +171,7 @@ open class Dialog(skin: Skin) : FboTable(skin) {
 
 
     private inner class TransitionAction :
-            TimeAction(0.4f, Interpolation.smooth, reversed = !shown) {
+            TimeAction(0.3f, Interpolation.fade, reversed = !shown) {
 
         init {
             isVisible = true

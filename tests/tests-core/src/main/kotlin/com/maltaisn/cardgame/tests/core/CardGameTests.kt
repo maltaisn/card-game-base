@@ -22,6 +22,7 @@ import com.maltaisn.cardgame.tests.core.tests.*
 object CardGameTests {
 
     private val TESTS = listOf(
+            AlertDialogTest::class.java,
             CardActorTest::class.java,
             CardAnimationTest::class.java,
             CardDealTest::class.java,

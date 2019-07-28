@@ -55,6 +55,11 @@
       background: dialog
     }
   }
+  com.maltaisn.cardgame.widget.AlertDialog$AlertDialogStyle: {
+    default: {
+      titleFontStyle: title
+    }
+  }
   com.maltaisn.cardgame.widget.Popup$PopupStyle: {
     default: {
       body: popup
@@ -254,13 +259,11 @@
   }
   com.maltaisn.cardgame.widget.prefs.TextPrefView$TextPrefViewStyle: {
     default: {
-      fieldStyle: default
       fieldFontStyle: normal
     }
   }
   com.maltaisn.cardgame.widget.prefs.PlayerNamesPrefView$PlayerNamesPrefViewStyle: {
     default: {
-      fieldStyle: default
       fieldFontStyle: normal
     }
   }

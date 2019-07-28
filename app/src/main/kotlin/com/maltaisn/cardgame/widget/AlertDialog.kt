@@ -1,0 +1,98 @@
+/*
+ * Copyright 2019 Nicolas Maltais
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.maltaisn.cardgame.widget
+
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.maltaisn.cardgame.defaultSize
+import com.maltaisn.cardgame.widget.text.FontStyle
+import com.maltaisn.cardgame.widget.text.SdfLabel
+import ktx.style.get
+
+
+/**
+ * A dialog class with a title, a content pane and buttons.
+ */
+class AlertDialog(skin: Skin) : Dialog(skin) {
+
+    private val style: AlertDialogStyle = skin.get()
+
+    /**
+     * The dialog title, or `null` for no title bar.
+     */
+    var title: CharSequence? = null
+        set(value) {
+            field = value
+            titleLabel.setText(value)
+            if (value != null) {
+                // Show title bar
+                content.getCell(titleLabel).defaultSize().pad(30f, 60f, 0f, 60f)
+                content.getCell(titleSeparator).defaultSize().pad(30f, 50f, 0f, 50f)
+            } else {
+                // Hide title bar
+                content.getCell(titleLabel).size(0f, 0f).pad(0f)
+                content.getCell(titleSeparator).size(0f, 0f).pad(0f)
+            }
+            titleSeparator.isVisible = (value != null)
+        }
+
+    /**
+     * The content table of the alert dialog.
+     */
+    val alertContent = Table()
+
+
+    val titleLabel = SdfLabel(skin, style.titleFontStyle)
+
+    private val titleSeparator = Separator(skin)
+    private val buttonBar = Table()
+
+
+    init {
+        content.add(titleLabel).growX().row()
+        content.add(titleSeparator).growX().row()
+        content.add(alertContent).grow().row()
+        content.add(buttonBar).growX().row()
+
+        title = null
+    }
+
+    /**
+     * Add a button with a [text] to the button bar and return it.
+     */
+    fun addButton(text: String): Button {
+        if (buttonBar.children.size == 0) {
+            buttonBar.pad(30f, 50f, 30f, 50f)
+        }
+        val btn = Button(skin, text)
+        buttonBar.add(btn).growX().space(30f)
+        return btn
+    }
+
+    /**
+     * Remove all buttons from the layout and hide the button bar.
+     */
+    fun clearButtons() {
+        buttonBar.clearChildren()
+        buttonBar.pad(0f)
+    }
+
+    class AlertDialogStyle {
+        lateinit var titleFontStyle: FontStyle
+    }
+
+}
