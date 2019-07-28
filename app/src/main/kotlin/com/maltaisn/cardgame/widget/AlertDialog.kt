@@ -27,7 +27,7 @@ import ktx.style.get
 /**
  * A dialog class with a title, a content pane and buttons.
  */
-class AlertDialog(skin: Skin) : Dialog(skin) {
+open class AlertDialog(skin: Skin) : Dialog(skin) {
 
     private val style: AlertDialogStyle = skin.get()
 
@@ -38,16 +38,35 @@ class AlertDialog(skin: Skin) : Dialog(skin) {
         set(value) {
             field = value
             titleLabel.setText(value)
+            val titleCell = content.getCell(titleLabel)
+            val sepCell = content.getCell(titleSeparator)
             if (value != null) {
                 // Show title bar
-                content.getCell(titleLabel).defaultSize().pad(30f, 60f, 0f, 60f)
-                content.getCell(titleSeparator).defaultSize().pad(30f, 50f, 0f, 50f)
+                titleCell.defaultSize().pad(30f, 60f, 0f, 60f)
+                sepCell.defaultSize().pad(30f, 50f, 0f, 50f)
             } else {
                 // Hide title bar
-                content.getCell(titleLabel).size(0f, 0f).pad(0f)
-                content.getCell(titleSeparator).size(0f, 0f).pad(0f)
+                titleCell.size(0f, 0f).pad(0f)
+                sepCell.size(0f, 0f).pad(0f)
             }
             titleSeparator.isVisible = (value != null)
+        }
+
+    /**
+     * The dialog message, or `null` for none.
+     */
+    var message: CharSequence? = null
+        set(value) {
+            field = value
+            messageLabel.setText(value)
+            val cell = content.getCell(messageLabel)
+            if (value != null) {
+                // Show message
+                cell.defaultSize().pad(30f, 60f, 30f, 60f)
+            } else {
+                // Hide message
+                cell.size(0f, 0f).pad(0f)
+            }
         }
 
     /**
@@ -57,6 +76,9 @@ class AlertDialog(skin: Skin) : Dialog(skin) {
 
 
     val titleLabel = SdfLabel(skin, style.titleFontStyle)
+    val messageLabel = SdfLabel(skin, style.messageFontStyle).apply {
+        setWrap(true)
+    }
 
     private val titleSeparator = Separator(skin)
     private val buttonBar = Table()
@@ -65,10 +87,12 @@ class AlertDialog(skin: Skin) : Dialog(skin) {
     init {
         content.add(titleLabel).growX().row()
         content.add(titleSeparator).growX().row()
+        content.add(messageLabel).growX().row()
         content.add(alertContent).grow().row()
         content.add(buttonBar).growX().row()
 
         title = null
+        message = null
     }
 
     /**
@@ -93,6 +117,7 @@ class AlertDialog(skin: Skin) : Dialog(skin) {
 
     class AlertDialogStyle {
         lateinit var titleFontStyle: FontStyle
+        lateinit var messageFontStyle: FontStyle
     }
 
 }

@@ -58,6 +58,7 @@
   com.maltaisn.cardgame.widget.AlertDialog$AlertDialogStyle: {
     default: {
       titleFontStyle: title
+      messageFontStyle: normal
     }
   }
   com.maltaisn.cardgame.widget.Popup$PopupStyle: {

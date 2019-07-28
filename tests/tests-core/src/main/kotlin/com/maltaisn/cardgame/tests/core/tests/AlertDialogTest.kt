@@ -47,15 +47,13 @@ class AlertDialogTest : ActionBarTest() {
         dialog.dismissOnClickOutside = true
 
         val markdown: Markdown = assetManager.get(TestRes.LOREM_IPSUM_MARKDOWN)
-        val mdView = MarkdownView(skin, markdown)
+        val mdView = ScrollView(MarkdownView(skin, markdown))
 
         val btnSeparator = Separator(skin)
         btnSeparator.isVisible = false
 
-        dialog.alertContent.apply {
-            add(ScrollView(mdView)).grow().pad(0f, 30f, 0f, 30f).row()
-            add(btnSeparator).growX().pad(0f, 60f, 0f, 60f)
-        }
+        var contentShown = false
+        var buttonsShown = false
 
         // Action buttons
         addActionBtn("Show dialog") {
@@ -67,7 +65,23 @@ class AlertDialogTest : ActionBarTest() {
         addToggleBtn("Center title") { _, shown ->
             dialog.titleLabel.setAlignment(if (shown) Align.center else Align.left)
         }
+        addToggleBtn("Show message") { _, shown ->
+            dialog.message = if (shown) "Please read the privary policy and click accept to continue." else null
+        }
+        addToggleBtn("Show content") { _, shown ->
+            contentShown = shown
+            if (shown) {
+                dialog.alertContent.apply {
+                    add(mdView).grow().pad(0f, 30f, 0f, 30f).row()
+                    add(btnSeparator).growX().pad(0f, 60f, 0f, 60f)
+                }
+            } else {
+                dialog.alertContent.clearChildren()
+            }
+            btnSeparator.isVisible = contentShown && buttonsShown
+        }
         addToggleBtn("Show buttons") { _, shown ->
+            buttonsShown = shown
             if (shown) {
                 val denyBtn = dialog.addButton("Deny")
                 denyBtn.onClick {
@@ -83,7 +97,7 @@ class AlertDialogTest : ActionBarTest() {
             } else {
                 dialog.clearButtons()
             }
-            btnSeparator.isVisible = shown
+            btnSeparator.isVisible = contentShown && buttonsShown
         }
         addToggleBtn("Debug") { _, debug ->
             dialog.setDebug(debug, true)
