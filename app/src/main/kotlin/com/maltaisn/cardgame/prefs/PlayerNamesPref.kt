@@ -27,19 +27,20 @@ import ktx.log.error
  * Names are saved under the preference key suffixed with "_<playerPos>"
  * These keys can be obtained with [getPlayerNameKey].
  */
-class PlayerNamesPref : GamePref() {
+class PlayerNamesPref : GamePref<Array<String>>() {
 
-    /** The player names array. */
-    var names = emptyArray<String>()
+    /**
+     * The player names array. Should be an immutable list but reflection won't allow it.
+     * The value should be set everytime the array is changed.
+     */
+    override var value = emptyArray<String>()
         set(value) {
-            if (!field.contentEquals(value)) {
-                field = value
-                notifyValueChanged()
-            }
+            field = value
+            notifyValueChanged()
         }
 
     /** The default player names array. */
-    lateinit var defaultNames: Array<String>
+    lateinit var defaultValue: Array<String>
 
     /** The maximum number of characters in a name, or [NO_MAX_LENGTH] for no maximum. */
     var maxLength = NO_MAX_LENGTH
@@ -49,33 +50,25 @@ class PlayerNamesPref : GamePref() {
 
     /** The number of players. */
     val size: Int
-        get() = defaultNames.size
+        get() = defaultValue.size
 
 
     override fun loadValue(prefs: Preferences) {
-        names = Array(size) {
+        value = Array(size) {
             val playerKey = getPlayerNameKey(it)
             try {
-                prefs.getString(playerKey, defaultNames[it])
+                prefs.getString(playerKey, defaultValue[it])
             } catch (e: Exception) {
                 error { "Wrong saved type for preference '$playerKey', using default value." }
-                defaultNames[it]
+                defaultValue[it]
             }
         }
     }
 
     override fun saveValue(prefs: Preferences) {
         @Suppress("LibGDXMissingFlush")
-        for ((i, name) in names.withIndex()) {
+        for ((i, name) in value.withIndex()) {
             prefs.putString(getPlayerNameKey(i), name)
-        }
-    }
-
-    /** Set the name of a player and call change listener. */
-    fun setName(player: Int, name: String) {
-        if (names[player] != name) {
-            names[player] = name
-            notifyValueChanged()
         }
     }
 
@@ -86,8 +79,8 @@ class PlayerNamesPref : GamePref() {
     override fun createView(skin: Skin) = PlayerNamesPrefView(skin, this)
 
 
-    override fun toString() = super.toString().dropLast(1) + ", names: ${names.contentToString()}, " +
-            "defaultNames: ${defaultNames.contentToString()}, maxLength: $maxLength]"
+    override fun toString() = super.toString().dropLast(1) + ", value: ${value.contentToString()}, " +
+            "defaultValue: ${defaultValue.contentToString()}, maxLength: $maxLength]"
 
     companion object {
         const val NO_MAX_LENGTH = 0

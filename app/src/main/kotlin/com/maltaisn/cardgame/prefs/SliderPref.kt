@@ -25,7 +25,7 @@ import ktx.log.error
 /**
  * A float preference that shows a slider to the user.
  */
-class SliderPref : GamePref() {
+class SliderPref : GamePref<Float>() {
 
     /** Slider minimum value. */
     var minValue = 0f
@@ -37,7 +37,7 @@ class SliderPref : GamePref() {
     var step = 1f
 
     /** The slider value. */
-    var value = 0f
+    override var value = 0f
         set(value) {
             if (field != value) {
                 field = value

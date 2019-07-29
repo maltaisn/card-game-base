@@ -23,8 +23,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Scaling
+import com.maltaisn.cardgame.prefs.GamePref
 import com.maltaisn.cardgame.prefs.ListPref
-import com.maltaisn.cardgame.prefs.PrefEntry
 import com.maltaisn.cardgame.widget.text.FontStyle
 import com.maltaisn.cardgame.widget.text.SdfLabel
 import ktx.actors.alpha
@@ -32,7 +32,8 @@ import ktx.actors.onClick
 import ktx.style.get
 
 
-class ListPrefView(skin: Skin, pref: ListPref) : GamePrefView<ListPref>(skin, pref) {
+class ListPrefView(skin: Skin, pref: ListPref) :
+        GamePrefView<ListPref, String?>(skin, pref) {
 
     override var enabled
         get() = super.enabled
@@ -41,9 +42,6 @@ class ListPrefView(skin: Skin, pref: ListPref) : GamePrefView<ListPref>(skin, pr
             valueLabel.enabled = value
             arrowIcon.alpha = if (value) 1f else 0.5f
         }
-
-    /** The listener called when the value button is clicked, `null` for none. */
-    var valueClickListener: (() -> Unit)? = null
 
 
     private val valueLabel: SdfLabel
@@ -59,13 +57,14 @@ class ListPrefView(skin: Skin, pref: ListPref) : GamePrefView<ListPref>(skin, pr
         arrowIcon = Image(style.arrowIcon, Scaling.fit)
         arrowIcon.color = style.arrowIconColor
 
-        val valueBtn = Table()
-        valueBtn.touchable = Touchable.enabled
-        valueBtn.add(valueLabel).padRight(20f)
-        valueBtn.add(arrowIcon).size(style.valueFontStyle.fontSize + 16f)
-        valueBtn.onClick {
-            if (enabled) {
-                valueClickListener?.invoke()
+        val valueBtn = Table().apply {
+            touchable = Touchable.enabled
+            add(valueLabel).padRight(20f)
+            add(arrowIcon).size(style.valueFontStyle.fontSize + 16f)
+            onClick {
+                if (enabled) {
+                    prefsGroup?.showListPrefChoices(this@ListPrefView)
+                }
             }
         }
 
@@ -75,7 +74,7 @@ class ListPrefView(skin: Skin, pref: ListPref) : GamePrefView<ListPref>(skin, pr
     }
 
 
-    override fun onPreferenceValueChanged(pref: PrefEntry) {
+    override fun onPreferenceValueChanged(pref: GamePref<String?>, value: String?) {
         valueLabel.setText(this.pref.displayValue)
     }
 

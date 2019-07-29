@@ -16,6 +16,7 @@
 
 package com.maltaisn.cardgame.widget.prefs
 
+import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Align
@@ -26,7 +27,7 @@ import ktx.style.get
 /**
  * The view for a preference with a value (a [GamePref]).
  */
-abstract class GamePrefView<T : GamePref>(skin: Skin, pref: T) : PrefEntryView<T>(skin, pref) {
+abstract class GamePrefView<P : GamePref<T>, T : Any?>(skin: Skin, pref: P) : PrefEntryView<P>(skin, pref) {
 
     override var enabled
         get() = super.enabled
@@ -37,12 +38,11 @@ abstract class GamePrefView<T : GamePref>(skin: Skin, pref: T) : PrefEntryView<T
 
     protected val titleLabel: PrefTitleLabel
 
-    /** The listener called when the help icon is clicked. */
-    var helpListener: (() -> Unit)?
-        get() = titleLabel.iconClickListener
-        set(value) {
-            titleLabel.iconClickListener = value
-        }
+    /**
+     * The [PrefsGroup] in which the game preference view is added, or `null` if none is found.
+     */
+    var prefsGroup: PrefsGroup? = null
+        private set
 
 
     init {
@@ -51,6 +51,50 @@ abstract class GamePrefView<T : GamePref>(skin: Skin, pref: T) : PrefEntryView<T
                 if (pref.help == null) null else style.helpIcon).apply {
             setWrap(true)
             setAlignment(Align.left)
+            iconClickListener = { prefsGroup?.showHelpText(pref) }
+        }
+    }
+
+
+    override fun setStage(stage: Stage?) {
+        super.setStage(stage)
+        if (stage == null) {
+            pref.valueListeners -= ::onPreferenceValueChanged
+            prefsGroup = null
+        } else {
+            pref.valueListeners += ::onPreferenceValueChanged
+
+            var parent = parent
+            while (parent !is PrefsGroup?) {
+                parent = parent.parent
+            }
+            prefsGroup = parent
+        }
+    }
+
+
+    /**
+     * Called when the value of the preference attached to this view is changed.
+     */
+    protected abstract fun onPreferenceValueChanged(pref: GamePref<T>, value: T)
+
+    /**
+     * Must be called when the value of the preference has to be changed to [newValue]
+     * by the view. If the preference resets the current game, a dialog will be shown
+     * and [revert] may be called if the user decides not to keep the change.
+     */
+    internal fun changePreferenceValue(newValue: T, revert: () -> Unit) {
+        if (pref.confirmChanges) {
+            // Confirm if user wants to change preference value or not.
+            prefsGroup?.confirmCallback?.invoke(pref) { keep ->
+                if (keep) {
+                    pref.value = newValue
+                } else {
+                    revert()
+                }
+            }
+        } else {
+            pref.value = newValue
         }
     }
 

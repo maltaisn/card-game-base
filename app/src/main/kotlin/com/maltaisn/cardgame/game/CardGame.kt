@@ -19,13 +19,12 @@ package com.maltaisn.cardgame.game
 import com.badlogic.gdx.utils.Disposable
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
-import com.maltaisn.cardgame.prefs.PrefEntry
 
 
 /**
  * Base class for managing the game itself.
  */
-abstract class CardGame : PrefEntry.PrefListener, Disposable, Json.Serializable {
+abstract class CardGame : Disposable, Json.Serializable {
 
     override fun read(json: Json, jsonData: JsonValue) {
         json as CardGameJson

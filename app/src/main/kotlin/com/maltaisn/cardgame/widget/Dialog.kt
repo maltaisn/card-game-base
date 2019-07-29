@@ -130,6 +130,8 @@ open class Dialog(skin: Skin) : FboTable(skin) {
         if (shown) return
         shown = true
 
+        onShow()
+
         stage.addActor(this@Dialog)
 
         oldKeyboardFocus = stage.keyboardFocus
@@ -150,6 +152,8 @@ open class Dialog(skin: Skin) : FboTable(skin) {
         if (!shown) return
         shown = false
 
+        onHide()
+
         stage?.keyboardFocus = oldKeyboardFocus
         stage?.scrollFocus = oldScrollFocus
 
@@ -158,10 +162,23 @@ open class Dialog(skin: Skin) : FboTable(skin) {
         }
     }
 
+    /**
+     * Dismiss the dialog, calling the listener.
+     */
     fun dismiss() {
         onDismiss()
         hide()
     }
+
+    /**
+     * Called when the dialog is shown.
+     */
+    open fun onShow() = Unit
+
+    /**
+     * Called when the dialog is hidden, whether it's by being dismissed or programmatically.
+     */
+    open fun onHide() = Unit
 
     /**
      * Called when the dialog is hidden by a back press or

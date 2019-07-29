@@ -25,10 +25,10 @@ import ktx.log.error
 /**
  * A string preference that shows a text field to the user.
  */
-class TextPref : GamePref() {
+class TextPref : GamePref<String>() {
 
     /** The field text. */
-    var value = ""
+    override var value = ""
         set(value) {
             if (field != value) {
                 field = value

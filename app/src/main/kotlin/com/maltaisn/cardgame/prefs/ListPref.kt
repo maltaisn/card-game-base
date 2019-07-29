@@ -26,10 +26,10 @@ import ktx.log.error
  * A preference that shows a list to the user.
  * Each list item have a key, used to save them, and a value displayed.
  */
-class ListPref : GamePref() {
+class ListPref : GamePref<String?>() {
 
     /** The selected item key. */
-    var value: String? = null
+    override var value: String? = null
         set(value) {
             if (field != value) {
                 field = value

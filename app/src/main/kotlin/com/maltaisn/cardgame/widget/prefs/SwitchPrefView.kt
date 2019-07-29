@@ -17,12 +17,13 @@
 package com.maltaisn.cardgame.widget.prefs
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.maltaisn.cardgame.prefs.PrefEntry
+import com.maltaisn.cardgame.prefs.GamePref
 import com.maltaisn.cardgame.prefs.SwitchPref
 import com.maltaisn.cardgame.widget.Switch
 
 
-class SwitchPrefView(skin: Skin, pref: SwitchPref) : GamePrefView<SwitchPref>(skin, pref) {
+class SwitchPrefView(skin: Skin, pref: SwitchPref) :
+        GamePrefView<SwitchPref, Boolean>(skin, pref) {
 
     override var enabled
         get() = super.enabled
@@ -35,7 +36,11 @@ class SwitchPrefView(skin: Skin, pref: SwitchPref) : GamePrefView<SwitchPref>(sk
 
     init {
         switch.check(pref.value, false)
-        switch.checkListener = { pref.value = it }
+        switch.checkListener = { checked ->
+            if (checked != pref.value) {
+                changePreferenceValue(checked) { switch.check(!checked) }
+            }
+        }
 
         pad(20f, 0f, 20f, 0f)
         add(titleLabel).growX().pad(0f, 20f, 0f, 20f)
@@ -44,7 +49,7 @@ class SwitchPrefView(skin: Skin, pref: SwitchPref) : GamePrefView<SwitchPref>(sk
         this.enabled = enabled
     }
 
-    override fun onPreferenceValueChanged(pref: PrefEntry) {
+    override fun onPreferenceValueChanged(pref: GamePref<Boolean>, value: Boolean) {
         switch.checked = this.pref.value
     }
 

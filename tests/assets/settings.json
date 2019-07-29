@@ -33,7 +33,7 @@
           type: "player-names"
           title: "Player names"
           maxLength: 20
-          defaultNames: [
+          defaultValue: [
             "North",
             "East",
             "South",
@@ -102,19 +102,71 @@
           step: 2
           defaultValue: 6
         }
-        points_queen: {
+        game_speed_variant: {
           type: "slider"
-          title: "Points if queen of spade is taken"
+          title: "Game speed"
+          enumValues: [
+            "Slow"
+            "Normal"
+            "Fast"
+            "Very fast"
+          ]
           minValue: 0
-          maxValue: 50
-          step: 5
-          defaultValue: 15
-          dependency: "fullscreen"
+          maxValue: 3
+          defaultValue: 1
         }
         cheats: {
           type: "switch"
           title: "Enable cheats"
           defaultValue: false
+        }
+      }
+    }
+    reset_game_category: {
+      type: "category"
+      title: "Resets game"
+      prefs: {
+        rg_switch: {
+          type: "switch"
+          title: "Switch preference"
+          defaultValue: false
+          confirmChanges: true
+        }
+        rg_slider: {
+          type: "slider"
+          title: "Slider preference"
+          minValue: 1
+          maxValue: 10
+          step: 1
+          defaultValue: 5
+          confirmChanges: true
+        }
+        rg_text: {
+          type: "text"
+          title: "Text preference"
+          defaultValue: "Text"
+          confirmChanges: true
+        }
+        rg_list: {
+          type: "list"
+          title: "List preference"
+          entries: {
+            choice1: "Choice 1"
+            choice2: "Choice 2"
+            choice3: "Choice 3"
+          }
+          defaultValue: "choice1"
+          confirmChanges: true
+        }
+        rg_player_names: {
+          type: "player-names"
+          title: "Player names preference"
+          maxLength: 20
+          defaultValue: [
+            "Player 1",
+            "Player 2"
+          ]
+          confirmChanges: true
         }
       }
     }

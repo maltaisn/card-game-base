@@ -20,11 +20,11 @@ import com.badlogic.gdx.Input
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.prefs.GamePrefs
-import com.maltaisn.cardgame.prefs.PrefEntry
 import com.maltaisn.cardgame.prefs.SwitchPref
 import com.maltaisn.cardgame.tests.core.CardGameTest
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.menu.*
+import com.maltaisn.cardgame.widget.prefs.ResetGameDialog
 import com.maltaisn.cardgame.widget.table.ScoresTable
 import ktx.actors.onKeyDown
 import ktx.assets.load
@@ -53,6 +53,8 @@ class DefaultGameMenuTest : CardGameTest() {
         super.layout(layout)
 
         menu = DefaultGameMenu(skin)
+        layout.addActor(menu)
+
         menu.callback = object : DefaultGameMenu.Callback {
             override fun onContinueClicked() {
                 menu.showMenu(menu.inGameMenu)
@@ -83,7 +85,15 @@ class DefaultGameMenuTest : CardGameTest() {
                 info { "Scoreboard closed" }
             }
         }
-        layout.addActor(menu)
+
+        val confirmDialog = ResetGameDialog(skin)
+        menu.confirmCallback = { pref, callback ->
+            confirmDialog.let {
+                it.pref = pref
+                it.callback = callback
+                it.show(this@DefaultGameMenuTest)
+            }
+        }
 
         // New game
         val newGamePrefs: GamePrefs = assetManager.get(PREFS_NEW_GAME)
@@ -100,11 +110,7 @@ class DefaultGameMenuTest : CardGameTest() {
 
         // Continue
         val continuePref = settingsPrefs[PREF_CONTINUE] as SwitchPref
-        continuePref.listeners += object : PrefEntry.PrefListener {
-            override fun onPreferenceValueChanged(pref: PrefEntry) {
-                menu.continueItem.enabled = continuePref.value
-            }
-        }
+        continuePref.valueListeners += { _, value -> menu.continueItem.enabled = value }
         menu.continueItem.enabled = continuePref.value
 
         // In-game
@@ -132,11 +138,7 @@ class DefaultGameMenuTest : CardGameTest() {
 
         // Debug
         val debugPref = settingsPrefs[PREF_DEBUG] as SwitchPref
-        debugPref.listeners += object : PrefEntry.PrefListener {
-            override fun onPreferenceValueChanged(pref: PrefEntry) {
-                isDebugAll = debugPref.value
-            }
-        }
+        debugPref.valueListeners += { _, value -> isDebugAll = value }
         isDebugAll = debugPref.value
 
         // Back key listener

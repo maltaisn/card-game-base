@@ -42,8 +42,8 @@ fun buildGamePrefsFromMap(map: Map<String, Any>): GamePrefs {
             }
             value is Array<*> && value.first() is String -> PlayerNamesPref().apply {
                 @Suppress("UNCHECKED_CAST")
-                names = value as Array<String>
-                defaultNames = names
+                defaultValue = value as Array<String>
+                this.value = value
             }
             else -> error("Unknown preference value type.")
         }

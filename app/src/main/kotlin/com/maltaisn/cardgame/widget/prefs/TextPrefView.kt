@@ -18,7 +18,7 @@ package com.maltaisn.cardgame.widget.prefs
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.TextField
-import com.maltaisn.cardgame.prefs.PrefEntry
+import com.maltaisn.cardgame.prefs.GamePref
 import com.maltaisn.cardgame.prefs.TextPref
 import com.maltaisn.cardgame.widget.text.FontStyle
 import com.maltaisn.cardgame.widget.text.SdfTextField
@@ -26,7 +26,8 @@ import ktx.actors.onKeyboardFocus
 import ktx.style.get
 
 
-class TextPrefView(skin: Skin, pref: TextPref) : GamePrefView<TextPref>(skin, pref) {
+class TextPrefView(skin: Skin, pref: TextPref) :
+        GamePrefView<TextPref, String>(skin, pref) {
 
     override var enabled
         get() = super.enabled
@@ -41,15 +42,15 @@ class TextPrefView(skin: Skin, pref: TextPref) : GamePrefView<TextPref>(skin, pr
         val style: TextPrefViewStyle = skin.get()
 
         textField = SdfTextField(skin, skin.get<TextField.TextFieldStyle>(),
-                style.fieldFontStyle, text = pref.value).apply {
-            maxLength = pref.maxLength
-            onKeyboardFocus {
-                if (!it) {
-                    // Change the preference value when the text field is unfocused.
-                    pref.value = text
+                style.fieldFontStyle, text = pref.value)
+        textField.maxLength = pref.maxLength
+        textField.setTextFieldFilter { _, c -> pref.filter == null || c in pref.filter!! }
+        textField.onKeyboardFocus { focused ->
+            if (!focused && textField.text != pref.value) {
+                changePreferenceValue(textField.text) {
+                    textField.text = pref.value
                 }
             }
-            setTextFieldFilter { _, c -> pref.filter == null || c in pref.filter!! }
         }
 
         pad(10f, 20f, 10f, 40f)
@@ -59,7 +60,7 @@ class TextPrefView(skin: Skin, pref: TextPref) : GamePrefView<TextPref>(skin, pr
         this.enabled = enabled
     }
 
-    override fun onPreferenceValueChanged(pref: PrefEntry) {
+    override fun onPreferenceValueChanged(pref: GamePref<String>, value: String) {
         textField.text = this.pref.value
     }
 

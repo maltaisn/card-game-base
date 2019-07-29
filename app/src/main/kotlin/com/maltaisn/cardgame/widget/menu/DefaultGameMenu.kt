@@ -18,22 +18,17 @@ package com.maltaisn.cardgame.widget.menu
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.scenes.scene2d.ui.Value
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
-import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.I18NBundle
 import com.gmail.blueboxware.libgdxplugin.annotations.GDXAssets
 import com.maltaisn.cardgame.CoreRes
 import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.markdown.MdElement
-import com.maltaisn.cardgame.prefs.GamePref
 import com.maltaisn.cardgame.prefs.GamePrefs
-import com.maltaisn.cardgame.prefs.ListPref
 import com.maltaisn.cardgame.prefs.PrefCategory
 import com.maltaisn.cardgame.widget.markdown.MarkdownView
+import com.maltaisn.cardgame.widget.prefs.ConfirmCallback
 import com.maltaisn.cardgame.widget.prefs.PrefsGroup
-import com.maltaisn.cardgame.widget.text.FontStyle
-import com.maltaisn.cardgame.widget.text.SdfLabel
 import ktx.style.get
 
 
@@ -44,8 +39,19 @@ import ktx.style.get
  */
 open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
 
+    private val style: DefaultGameMenuStyle = skin.get()
+
+
     /** The callback interface called when an event happens in the menu. */
     var callback: Callback? = null
+
+    /** See [PrefsGroup.confirmCallback] */
+    var confirmCallback: ConfirmCallback? = null
+        set(value) {
+            field = value
+            settingsView?.confirmCallback = value
+            newGameView?.confirmCallback = value
+        }
 
     /** The continue menu item. Can be disabled. */
     val continueItem: MenuItem
@@ -92,8 +98,6 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
             rulesMenu.scrollContent.actor = rulesView
         }
 
-    private val style: DefaultGameMenuStyle = skin.get()
-
 
     /** The main menu. */
     val mainMenu = MainMenu(skin)
@@ -118,37 +122,6 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
 
     private val aboutMenu = ScrollSubMenu(skin)
 
-
-    // Preference help drawer
-    private val prefsHelpLabel = SdfLabel(skin, style.prefsHelpFontStyle)
-    private val prefsHelpListener: (GamePref) -> Unit = { pref ->
-        // When a help icon is clicked, show drawer with help text
-        drawer.apply {
-            content.actor = prefsHelpLabel
-            content.pad(0f, 60f, 0f, 60f)
-            drawerWidth = Value.percentWidth(0.5f, drawer)
-            title = pref.shortTitle ?: pref.title
-            shown = true
-        }
-        prefsHelpLabel.setText(pref.help)
-    }
-
-    // Preference list drawer
-    private var prefsListCurrentPref: ListPref? = null
-    private val prefsList = MenuDrawerList(skin)
-    private val prefsListListener: (ListPref) -> Unit = { pref ->
-        // When a list preference value is clicked, show drawer with the list items.
-        prefsListCurrentPref = pref
-        drawer.apply {
-            content.actor = prefsList
-            content.pad(0f, 0f, 0f, 0f)
-            drawerWidth = Value.percentWidth(0.4f, drawer)
-            title = pref.shortTitle ?: pref.title
-            shown = true
-        }
-        prefsList.items = pref.values
-        prefsList.selectedIndex = pref.keys.indexOf(pref.value)
-    }
 
     init {
         @GDXAssets(propertiesFiles = ["assets/core/strings.properties"])
@@ -187,16 +160,6 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
             }
         }
 
-        // Drawer widgets
-        prefsHelpLabel.setWrap(true)
-        prefsHelpLabel.setAlignment(Align.topLeft)
-
-        prefsList.selectionChangeListener = { index ->
-            if (index != -1) {
-                prefsListCurrentPref!!.value = prefsListCurrentPref!!.keys[index]
-            }
-        }
-
         // New game menu
         newGameMenu.apply {
             title = newGameStr
@@ -229,14 +192,10 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
         }
 
         // Rules menu
-        rulesMenu.apply {
-            title = rulesStr
-        }
+        rulesMenu.title = rulesStr
 
         // Statistics menu
-        statsMenu.apply {
-            title = statsStr
-        }
+        statsMenu.title = statsStr
 
         // About menu
         aboutMenu.apply {
@@ -273,9 +232,8 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
      */
     private fun createPreferenceView(menu: ScrollSubMenu, prefs: GamePrefs): PrefsGroup {
         // Create preference group view and set listeners
-        val view = PrefsGroup(skin, prefs)
-        view.helpListener = prefsHelpListener
-        view.listClickListener = prefsListListener
+        val view = PrefsGroup(skin, prefs, drawer)
+        view.confirmCallback = confirmCallback
 
         // Add menu items for each preference category
         var id = 0
@@ -332,8 +290,6 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
 
     class DefaultGameMenuStyle {
         lateinit var defaultIcon: Drawable
-
-        lateinit var prefsHelpFontStyle: FontStyle
 
         lateinit var newGameIcon: Drawable
         lateinit var continueIcon: Drawable

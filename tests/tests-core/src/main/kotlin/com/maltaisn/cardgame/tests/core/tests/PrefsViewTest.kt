@@ -18,13 +18,16 @@ package com.maltaisn.cardgame.tests.core.tests
 
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.maltaisn.cardgame.prefs.GamePref
 import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.PrefEntry
 import com.maltaisn.cardgame.tests.core.SubmenuContentTest
 import com.maltaisn.cardgame.tests.core.TestRes
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.ScrollView
+import com.maltaisn.cardgame.widget.menu.MenuDrawer
 import com.maltaisn.cardgame.widget.prefs.PrefsGroup
+import com.maltaisn.cardgame.widget.prefs.ResetGameDialog
 import ktx.assets.load
 import ktx.log.info
 
@@ -32,7 +35,7 @@ import ktx.log.info
 /**
  * Test for preference group and views, preference parsing and inflating.
  */
-class PrefsViewTest : SubmenuContentTest(), PrefEntry.PrefListener {
+class PrefsViewTest : SubmenuContentTest() {
 
     override fun load() {
         super.load()
@@ -40,36 +43,50 @@ class PrefsViewTest : SubmenuContentTest(), PrefEntry.PrefListener {
     }
 
     override fun layoutContent(layout: CardGameLayout, content: Table) {
+        val drawer = MenuDrawer(skin)
+        drawer.backBtnText = "Back"
+        layout.addActor(drawer)
+
         val prefs: GamePrefs = assetManager.get(TestRes.PREFS)
-        val prefsView = PrefsGroup(skin, prefs)
-        prefsView.helpListener = { pref ->
-            info { "Help for ${pref.shortTitle ?: pref.title}: ${pref.help}" }
-        }
-        prefsView.listClickListener = { pref ->
-            info { "List preference clicked. Available choices: ${pref.values.joinToString()}." }
+        val prefsGroup = PrefsGroup(skin, prefs, drawer)
+
+        var confirmChanges = true
+        val confirmDialog = ResetGameDialog(skin)
+        prefsGroup.confirmCallback = { pref, callback ->
+            if (confirmChanges) {
+                confirmDialog.let {
+                    it.pref = pref
+                    it.callback = callback
+                    it.show(this@PrefsViewTest)
+                }
+            }
         }
 
-        prefs.addListener(this)
+        prefs.addValueListener(::onPrefValueChanged)
+        prefs.forEachPref { it.enabledListeners += ::onPrefEnabledChanged }
 
         this.prefs += prefs
 
         // Do the layout
-        val prefsContainer = Container(prefsView)
+        val prefsContainer = Container(prefsGroup)
         prefsContainer.fill().pad(0f, 40f, 0f, 40f)
 
         content.add(ScrollView(prefsContainer)).grow()
 
         // Action buttons
+        addToggleBtn("Enable confirmation", startState = confirmChanges) { _, enabled ->
+            confirmChanges = enabled
+        }
         addToggleBtn("Debug") { _, debug ->
-            prefsView.setDebug(debug, true)
+            prefsGroup.setDebug(debug, true)
         }
     }
 
-    override fun onPreferenceValueChanged(pref: PrefEntry) {
+    private fun <T : Any?> onPrefValueChanged(pref: GamePref<T>, value: T) {
         info { "Preference '${pref.key}' value changed." }
     }
 
-    override fun onPreferenceEnabledStateChanged(pref: PrefEntry, enabled: Boolean) {
+    private fun onPrefEnabledChanged(pref: PrefEntry, enabled: Boolean) {
         info { "Preference '${pref.key}' enabled state changed." }
     }
 

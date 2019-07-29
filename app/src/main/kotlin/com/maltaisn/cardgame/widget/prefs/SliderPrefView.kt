@@ -16,9 +16,11 @@
 
 package com.maltaisn.cardgame.widget.prefs
 
+import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Align
-import com.maltaisn.cardgame.prefs.PrefEntry
+import com.maltaisn.cardgame.prefs.GamePref
 import com.maltaisn.cardgame.prefs.SliderPref
 import com.maltaisn.cardgame.widget.Slider
 import com.maltaisn.cardgame.widget.text.FontStyle
@@ -27,7 +29,8 @@ import ktx.style.get
 import java.text.NumberFormat
 
 
-class SliderPrefView(skin: Skin, pref: SliderPref) : GamePrefView<SliderPref>(skin, pref) {
+class SliderPrefView(skin: Skin, pref: SliderPref) :
+        GamePrefView<SliderPref, Float>(skin, pref) {
 
     override var enabled
         get() = super.enabled
@@ -40,19 +43,11 @@ class SliderPrefView(skin: Skin, pref: SliderPref) : GamePrefView<SliderPref>(sk
     private val valueLabel: SdfLabel
     private val slider: Slider
 
-    /** The value label text to display. */
-    private val valueText: String
-        get() = if (pref.enumValues == null) {
-            NUMBER_FORMAT.format(pref.value)
-        } else {
-            val index = ((pref.value - pref.minValue) / pref.step).toInt()
-            pref.enumValues!!.getOrElse(index) { NUMBER_FORMAT.format(pref.value) }
-        }
 
     init {
         val style: SliderPrefViewStyle = skin.get()
 
-        valueLabel = SdfLabel(skin, style.valueFontStyle, valueText)
+        valueLabel = SdfLabel(skin, style.valueFontStyle, getValueText(pref.value))
         valueLabel.setAlignment(Align.right)
 
         slider = Slider(skin).apply {
@@ -60,10 +55,21 @@ class SliderPrefView(skin: Skin, pref: SliderPref) : GamePrefView<SliderPref>(sk
             maxProgress = pref.maxValue
             step = pref.step
             progress = pref.value
-            changeListener = {
-                pref.value = it
-                valueLabel.setText(valueText)
-            }
+            changeListener = { valueLabel.setText(getValueText(it)) }
+            addCaptureListener(object : InputListener() {
+                private var oldValue = 0f
+
+                override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                    oldValue = progress
+                    return true
+                }
+
+                override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
+                    if (progress != oldValue) {
+                        changePreferenceValue(progress) { slideTo(oldValue) }
+                    }
+                }
+            })
         }
 
         pad(10f, 0f, 10f, 0f)
@@ -74,10 +80,16 @@ class SliderPrefView(skin: Skin, pref: SliderPref) : GamePrefView<SliderPref>(sk
         this.enabled = enabled
     }
 
-    override fun onPreferenceValueChanged(pref: PrefEntry) {
+    override fun onPreferenceValueChanged(pref: GamePref<Float>, value: Float) {
         slider.progress = this.pref.value
     }
 
+    private fun getValueText(progress: Float) = if (pref.enumValues == null) {
+        NUMBER_FORMAT.format(progress)
+    } else {
+        val index = ((progress - pref.minValue) / pref.step).toInt()
+        pref.enumValues!!.getOrElse(index) { NUMBER_FORMAT.format(progress) }
+    }
 
     class SliderPrefViewStyle {
         lateinit var valueFontStyle: FontStyle

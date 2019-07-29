@@ -235,6 +235,11 @@
       checkIcon: table-view-checkbox
     }
   }
+  com.maltaisn.cardgame.widget.prefs.PrefsGroup$PrefsGroupStyle: {
+    default: {
+      prefsHelpFontStyle: normal
+    }
+  }
   com.maltaisn.cardgame.widget.prefs.GamePrefView$GamePrefViewStyle: {
     default: {
       titleFontStyle: normal
@@ -300,7 +305,6 @@
   com.maltaisn.cardgame.widget.menu.DefaultGameMenu$DefaultGameMenuStyle: {
     default: {
       defaultIcon: icon-cards
-      prefsHelpFontStyle: normal
       newGameIcon: icon-cards
       continueIcon: icon-arrow-right
       settingsIcon: icon-settings

@@ -28,8 +28,7 @@ import com.maltaisn.cardgame.widget.text.FontStyle
  * The view attaches a listener to the preference when added to the stage and
  * the listener is removed when removed from the stage.
  */
-abstract class PrefEntryView<T : PrefEntry>(skin: Skin, val pref: T) :
-        Table(skin), PrefEntry.PrefListener {
+abstract class PrefEntryView<T : PrefEntry>(skin: Skin, val pref: T) : Table(skin) {
 
     /** Whether the preference view is enabled or not. */
     open var enabled = pref.enabled
@@ -38,17 +37,16 @@ abstract class PrefEntryView<T : PrefEntry>(skin: Skin, val pref: T) :
     override fun setStage(stage: Stage?) {
         super.setStage(stage)
         if (stage == null) {
-            pref.listeners -= this
+            pref.enabledListeners -= ::onPreferenceEnabledStateChanged
         } else {
-            pref.listeners += this
+            pref.enabledListeners += ::onPreferenceEnabledStateChanged
         }
     }
 
-    final override fun onPreferenceEnabledStateChanged(pref: PrefEntry, enabled: Boolean) {
+    private fun onPreferenceEnabledStateChanged(pref: PrefEntry, enabled: Boolean) {
         val categoryEnabled = (parent as? PrefCategoryView)?.pref?.enabled ?: true
         this.enabled = categoryEnabled && enabled
     }
-
 
     abstract class PrefEntryViewStyle {
         lateinit var titleFontStyle: FontStyle

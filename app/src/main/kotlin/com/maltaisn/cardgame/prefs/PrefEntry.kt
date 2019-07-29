@@ -36,8 +36,8 @@ abstract class PrefEntry {
     open var enabled = true
         set(value) {
             field = value
-            for (listener in listeners) {
-                listener.onPreferenceEnabledStateChanged(this, enabled)
+            for (listener in enabledListeners) {
+                listener(this, enabled)
             }
         }
 
@@ -47,15 +47,9 @@ abstract class PrefEntry {
     /** Optional dependency, the key of a switch preference. */
     var dependency: String? = null
 
-    /** Listeners called when the value or enabled state of this preference has changed. */
-    val listeners = mutableListOf<PrefListener>()
+    /** Listeners called when the enabled state of this preference is changed. */
+    val enabledListeners = mutableListOf<GamePrefEnabledListener>()
 
-
-    protected fun notifyValueChanged() {
-        for (listener in listeners) {
-            listener.onPreferenceValueChanged(this)
-        }
-    }
 
     /** Create a view for this preference. */
     abstract fun createView(skin: Skin): PrefEntryView<*>
@@ -65,17 +59,6 @@ abstract class PrefEntry {
             (if (dependency != null) ", dependency: \"$dependency\"" else "") +
             (if (!enabled) ", disabled" else "") + "]"
 
-
-    interface PrefListener {
-        /**
-         * Called when the preference value is changed.
-         */
-        fun onPreferenceValueChanged(pref: PrefEntry) = Unit
-
-        /**
-         * Called when the preference enabled state is changed.
-         */
-        fun onPreferenceEnabledStateChanged(pref: PrefEntry, enabled: Boolean) = Unit
-    }
-
 }
+
+typealias GamePrefEnabledListener = (pref: PrefEntry, enabled: Boolean) -> Unit

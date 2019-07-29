@@ -25,10 +25,10 @@ import ktx.log.error
 /**
  * A boolean preference that shows a switch to the user.
  */
-class SwitchPref : GamePref() {
+class SwitchPref : GamePref<Boolean>() {
 
     /** The switch value. */
-    var value = false
+    override var value = false
         set(value) {
             if (field != value) {
                 field = value

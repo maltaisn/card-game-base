@@ -26,7 +26,7 @@ import com.maltaisn.cardgame.widget.prefs.PrefCategoryView
 class PrefCategory : PrefEntry() {
 
     /** The map of preferences in the category. */
-    var prefs = linkedMapOf<String, GamePref>()
+    var prefs = linkedMapOf<String, GamePref<*>>()
 
     /** The category icon name, a drawable in the core skin, or `null` to use the default icon. */
     var icon: String? = null

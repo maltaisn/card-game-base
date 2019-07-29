@@ -49,7 +49,6 @@ class GamePrefs {
      */
     private val preferences: Preferences?
 
-
     /**
      * Create empty game preferences object with a [name].
      * Name can be `null` for test preferences.
@@ -123,10 +122,8 @@ class GamePrefs {
                 val depPref = this[dependency]
                 checkNotNull(depPref) { "Preference '${dependant.key}' has dependency that doesn't exists." }
                 check(depPref is SwitchPref) { "Preference '${dependant.key}' has dependency that isn't a switch." }
-                depPref.listeners += object : PrefEntry.PrefListener {
-                    override fun onPreferenceValueChanged(pref: PrefEntry) {
-                        dependant.enabled = (depPref.value != depPref.disableDependentsState)
-                    }
+                depPref.valueListeners += { _, _ ->
+                    dependant.enabled = (depPref.value != depPref.disableDependentsState)
                 }
                 dependant.enabled = (depPref.value != depPref.disableDependentsState)
             }
@@ -188,7 +185,7 @@ class GamePrefs {
 
         var prefsChanged = false
         forEachPref {
-            if (it is GamePref) {
+            if (it is GamePref<*>) {
                 it.loadValue(preferences)
                 if (!preferences.contains(it.key)) {
                     it.saveValue(preferences)
@@ -208,7 +205,7 @@ class GamePrefs {
         checkNotNull(preferences) { "Cannot save preferences without name." }
 
         forEachPref {
-            if (it is GamePref) {
+            if (it is GamePref<*>) {
                 it.saveValue(preferences)
             }
         }
@@ -235,30 +232,33 @@ class GamePrefs {
     }
 
     /**
-     * Add a preference listener for all preferences.
+     * Add a preference value listener for all preferences.
      */
-    fun addListener(listener: PrefEntry.PrefListener) {
+    fun addValueListener(listener: (GamePref<Any?>, Any?) -> Unit) {
         forEachPref(true) {
-            it.listeners += listener
+            @Suppress("UNCHECKED_CAST")
+            (it as? GamePref<Any?>)?.valueListeners?.add(listener)
         }
     }
 
     /**
-     * Remove a preference listener for all preferences.
+     * Remove a preference value listener for all preferences.
      */
-    fun removeListener(listener: PrefEntry.PrefListener) {
+    fun removeValueListener(listener: (GamePref<Any?>, Any?) -> Unit) {
         forEachPref(true) {
-            it.listeners -= listener
+            @Suppress("UNCHECKED_CAST")
+            (it as? GamePref<Any?>)?.valueListeners?.remove(listener)
         }
     }
 
     /**
      * Clear all preference listeners.
-     * Preference object should not but used after calling this.
+     * Preference object should not be used after calling this.
      */
     fun clearAllListeners() {
         for (pref in prefs.values) {
-            pref.listeners.clear()
+            pref.enabledListeners.clear()
+            (pref as? GamePref<*>)?.valueListeners?.clear()
         }
     }
 

@@ -24,13 +24,35 @@ import com.maltaisn.cardgame.widget.prefs.GamePrefView
 /**
  * The base class for a preference in [GamePrefs].
  */
-abstract class GamePref : PrefEntry() {
+abstract class GamePref<T : Any?> : PrefEntry() {
+
+    /** The preference value. */
+    abstract var value: T
 
     /** Optional help message shown to the user, use `null` for no help message. */
     var help: String? = null
 
     /** Optional shorter title to use in menu drawer, use `null` to use normal title. */
     var shortTitle: String? = null
+
+    /** Listeners called when the value of this preference is changed. */
+    val valueListeners = mutableListOf<(pref: GamePref<T>, value: T) -> Unit>()
+
+    /**
+     * Whether a confirmation dialog must be shown to the user
+     * before effectively changing the preference value.
+     */
+    var confirmChanges = false
+
+
+    /**
+     * Has to be called when the preference value is changed to call the value listeners.
+     */
+    protected fun notifyValueChanged() {
+        for (listener in valueListeners) {
+            listener(this, value)
+        }
+    }
 
     /**
      * Load the value of this preference from [prefs] into [progress].
@@ -44,6 +66,6 @@ abstract class GamePref : PrefEntry() {
     internal abstract fun saveValue(prefs: Preferences)
 
 
-    abstract override fun createView(skin: Skin): GamePrefView<*>
+    abstract override fun createView(skin: Skin): GamePrefView<*, T>
 
 }

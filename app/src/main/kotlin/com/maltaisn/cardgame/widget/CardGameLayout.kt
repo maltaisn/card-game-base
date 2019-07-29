@@ -21,7 +21,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Stack
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
-import com.maltaisn.cardgame.prefs.PrefEntry
 import com.maltaisn.cardgame.widget.card.CardAnimationGroup
 import ktx.actors.onKeyboardFocusEvent
 import ktx.actors.setKeyboardFocus
@@ -31,7 +30,7 @@ import ktx.style.get
 /**
  * The game layout that contains all game components (card containers, popups, menus, etc).
  */
-open class CardGameLayout(val skin: Skin) : Stack(), PrefEntry.PrefListener {
+open class CardGameLayout(val skin: Skin) : Stack() {
 
     private val style: CardGameLayoutStyle = skin.get()
 

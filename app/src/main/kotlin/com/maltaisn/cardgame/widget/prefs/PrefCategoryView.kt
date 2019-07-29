@@ -18,8 +18,6 @@ package com.maltaisn.cardgame.widget.prefs
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Align
-import com.maltaisn.cardgame.prefs.GamePref
-import com.maltaisn.cardgame.prefs.ListPref
 import com.maltaisn.cardgame.prefs.PrefCategory
 import com.maltaisn.cardgame.widget.Separator
 import com.maltaisn.cardgame.widget.menu.ScrollSubMenu
@@ -37,12 +35,6 @@ class PrefCategoryView(skin: Skin, category: PrefCategory) :
             titleLabel.enabled = enabled
         }
 
-    /** Listener called when a preference help icon is clicked in a preference of the category. */
-    var helpListener: ((GamePref) -> Unit)? = null
-
-    /** Listener called when a list preference value is clicked. */
-    var listClickListener: ((ListPref) -> Unit)? = null
-
     private var titleLabel: SdfLabel
 
 
@@ -57,16 +49,7 @@ class PrefCategoryView(skin: Skin, category: PrefCategory) :
         val prefs = category.prefs.values
         for (pref in prefs) {
             // Preference view
-            val view = pref.createView(skin)
-            view.helpListener = {
-                helpListener?.invoke(view.pref)
-            }
-            if (view is ListPrefView) {
-                view.valueClickListener = {
-                    listClickListener?.invoke(view.pref)
-                }
-            }
-            add(view).growX().row()
+            add(pref.createView(skin)).growX().row()
 
             // Separator between preferences
             if (pref !== prefs.last()) {
