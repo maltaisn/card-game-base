@@ -41,6 +41,7 @@ object CardGameTests {
             MenuDrawerTest::class.java,
             NCardTest::class.java,
             PagedSubMenuTest::class.java,
+            PCardLabelTest::class.java,
             PlayerLabelFadeTest::class.java,
             PlayerLabelTest::class.java,
             PopupTest::class.java,

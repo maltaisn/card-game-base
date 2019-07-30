@@ -20,7 +20,7 @@
     }
   }
   Color: {
-    pcard-red: { hex: #d40000 }
-    pcard-black: { hex: #000000 }
+    pcardRed: { hex: #d40000 }
+    pcardBlack: { hex: #000000 }
   }
 }
