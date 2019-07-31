@@ -53,8 +53,8 @@ tasks.create<DokkaTask>("dokkaJavadoc") {
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            groupId = "com.maltaisn"
-            artifactId = "cardgame"
+            groupId = "com.maltaisn.cardgame"
+            artifactId = "core"
             version = rootProject.extra["cardGameVersion"] as String
             pom {
                 name.set("Card game")

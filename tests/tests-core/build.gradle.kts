@@ -7,7 +7,8 @@ dependencies {
     val ktxVersion: String by project
     val junitVersion: String by project
 
-    api(project(":app"))
+    api(project(":core"))
+    api(project(":pcard"))
 
     implementation(kotlin("stdlib"))
 
@@ -44,10 +45,10 @@ tasks.register<Delete>("cleanAssets") {
     delete("../assets/pcard")
 }
 
-tasks.named("clean") {
+tasks.clean {
     finalizedBy("cleanAssets")
 }
 
-tasks.named("build") {
+tasks.build {
     finalizedBy("copyAssets")
 }

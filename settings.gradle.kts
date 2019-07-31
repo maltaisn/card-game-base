@@ -1,4 +1,5 @@
 rootProject.name = "cardgame"
 
-include(":app")
+include(":core")
+include(":pcard")
 include(":tests:tests-core", ":tests:tests-desktop", ":tests:tests-android")

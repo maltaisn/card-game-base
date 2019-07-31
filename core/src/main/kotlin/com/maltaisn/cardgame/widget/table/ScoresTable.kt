@@ -139,7 +139,7 @@ class ScoresTable(skin: Skin, playerCount: Int) : TableView(skin, List(playerCou
         }
 
         fun bind(score: Score) {
-            cell.pad(15f)
+            cell.pad(15f, 25f, 15f, 25f)
             table.background = when (score.highlight) {
                 Score.Highlight.NONE -> null
                 Score.Highlight.POSITIVE -> style.scoreHighlightPositive

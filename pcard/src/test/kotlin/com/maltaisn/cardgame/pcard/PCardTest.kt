@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.maltaisn.cardgame.game
+package com.maltaisn.cardgame.pcard
 
-import com.maltaisn.cardgame.pcard.PCard
+import com.maltaisn.cardgame.game.sortWith
 import org.junit.Assert.*
 import org.junit.Test
 

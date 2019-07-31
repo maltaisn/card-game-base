@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package com.maltaisn.cardgame.game
+package com.maltaisn.cardgame.pcard
 
-import com.maltaisn.cardgame.pcard.PCard
+import com.maltaisn.cardgame.game.drawBottom
+import com.maltaisn.cardgame.game.drawTop
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
