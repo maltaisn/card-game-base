@@ -101,7 +101,7 @@ class Popup(skin: Skin) : FboTable() {
         }
     }
 
-    override fun delegateDraw(batch: Batch, parentAlpha: Float) {
+    override fun drawChildren(batch: Batch, parentAlpha: Float) {
         batch.setColor(color.r, color.g, color.b, alpha * parentAlpha)
 
         // Draw the body
@@ -145,7 +145,7 @@ class Popup(skin: Skin) : FboTable() {
             tip.draw(batch, x + offsetX, y + offsetY, tip.minWidth, tip.minHeight)
         }
 
-        super.delegateDraw(batch, parentAlpha)
+        super.drawChildren(batch, parentAlpha)
     }
 
     override fun clearActions() {
