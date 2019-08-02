@@ -192,7 +192,7 @@ open class Dialog(skin: Skin) : FboTable(skin) {
 
         init {
             isVisible = true
-            alpha = if (shown) 1f else 0f
+            alpha = if (shown) 0f else 1f
             renderToFrameBuffer = true
         }
 

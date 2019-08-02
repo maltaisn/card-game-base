@@ -82,7 +82,7 @@ open class FadeTable(skin: Skin? = null, val duration: Float = DEFAULT_FADE_DURA
         init {
             _isVisible = true
             renderToFrameBuffer = true
-            alpha = if (shown) 1f else 0f
+            alpha = if (shown) 0f else 1f
         }
 
         override fun update(progress: Float) {

@@ -444,7 +444,7 @@ abstract class CardContainer(val cardStyle: CardActor.CardStyle) : FboWidgetGrou
         init {
             _isVisible = true
             renderToFrameBuffer = true
-            alpha = if (shown) 1f else 0f
+            alpha = if (shown) 0f else 1f
             translate.x = 0f
             translate.y = 0f
         }
