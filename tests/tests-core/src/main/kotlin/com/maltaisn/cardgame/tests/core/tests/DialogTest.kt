@@ -64,8 +64,8 @@ class DialogTest : ActionBarTest() {
         addActionBtn("Show dialog") {
             dialog.show(this)
         }
-        addToggleBtn("Dismiss on click outside") { _, dismiss ->
-            dialog.dismissOnClickOutside = dismiss
+        addEnumBtn("Shadow type", Dialog.ShadowType.values().toList(), initialIndex = 2) { _, value ->
+            dialog.shadowType = value
         }
         addValueBtn("Width", 400f, 1600f, dialog.dialogWidth, 200f) { _, value, _ ->
             dialog.dialogWidth = value

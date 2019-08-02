@@ -20,10 +20,7 @@ import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.tests.core.TestRes
-import com.maltaisn.cardgame.widget.AlertDialog
-import com.maltaisn.cardgame.widget.CardGameLayout
-import com.maltaisn.cardgame.widget.ScrollView
-import com.maltaisn.cardgame.widget.Separator
+import com.maltaisn.cardgame.widget.*
 import com.maltaisn.cardgame.widget.markdown.MarkdownView
 import ktx.actors.onClick
 import ktx.assets.load
@@ -44,7 +41,7 @@ class AlertDialogTest : ActionBarTest() {
 
         val dialog = AlertDialog(skin)
         dialog.dialogWidth = 1000f
-        dialog.dismissOnClickOutside = true
+        dialog.shadowType = Dialog.ShadowType.DISMISSABLE
 
         val markdown: Markdown = assetManager.get(TestRes.LOREM_IPSUM_MARKDOWN)
         val mdView = ScrollView(MarkdownView(skin, markdown))

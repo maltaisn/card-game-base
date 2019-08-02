@@ -37,7 +37,7 @@ class ResetGameDialog(skin: Skin) : AlertDialog(skin) {
 
     init {
         dialogWidth = 800f
-        dismissOnClickOutside = true
+        shadowType = ShadowType.DISMISSABLE
 
         title = strings["prefs_reset_game"]
 

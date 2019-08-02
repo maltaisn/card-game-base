@@ -72,9 +72,20 @@ open class Dialog(skin: Skin) : FboTable(skin) {
         }
 
     /**
-     * Whether to hide the dialog when user clicks outside of it.
+     * The style and behavior of the background shadow of the dialog.
      */
-    var dismissOnClickOutside = false
+    var shadowType = ShadowType.STATIC
+        set(value) {
+            field = value
+            if (value == ShadowType.NONE) {
+                background = null
+                touchable = Touchable.childrenOnly
+            } else {
+                background = style.shadow
+                touchable = Touchable.enabled
+            }
+        }
+
 
     private var oldKeyboardFocus: Actor? = null
     private var oldScrollFocus: Actor? = null
@@ -82,8 +93,6 @@ open class Dialog(skin: Skin) : FboTable(skin) {
 
     init {
         isVisible = false
-        touchable = Touchable.enabled
-        background = style.shadow
         content.background = style.background
         contentCell = add(content).width(800f).pad(60f)
         setFillParent(true)
@@ -98,7 +107,7 @@ open class Dialog(skin: Skin) : FboTable(skin) {
             private var backgroundPressed = false
 
             override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                if (dismissOnClickOutside && isClickOutside(x, y)) {
+                if (shadowType == ShadowType.DISMISSABLE && isClickOutside(x, y)) {
                     backgroundPressed = true
                     return true
                 }
@@ -115,6 +124,8 @@ open class Dialog(skin: Skin) : FboTable(skin) {
             fun isClickOutside(x: Float, y: Float) =
                     (shown && hit(x, y, false) === this@Dialog)
         })
+
+        shadowType = ShadowType.STATIC
     }
 
     override fun clearActions() {
@@ -182,7 +193,7 @@ open class Dialog(skin: Skin) : FboTable(skin) {
 
     /**
      * Called when the dialog is hidden by a back press or
-     * by a click outside if [dismissOnClickOutside] is `true`.
+     * by a click outside if [shadowType] is [ShadowType.DISMISSABLE].
      */
     open fun onDismiss() = Unit
 
@@ -210,6 +221,15 @@ open class Dialog(skin: Skin) : FboTable(skin) {
                 remove()
             }
         }
+    }
+
+    enum class ShadowType {
+        /** No shadow shown, click events in the background are not intercepted. */
+        NONE,
+        /** Shadow that can be dismissed on click. */
+        DISMISSABLE,
+        /** Shadow that cannot be dismsised. */
+        STATIC
     }
 
     class DialogStyle {
