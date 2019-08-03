@@ -48,12 +48,13 @@ class ScrollView(actor: Actor? = null, style: ScrollPaneStyle? = null) :
                     private var lastScrollY = 0f
 
                     override fun act(delta: Float): Boolean {
+                        // FIXME never ending action might prevent non-continuous rendering?
                         val view = this@ScrollView
                         val scrollX = view.scrollX
                         val scrollY = view.scrollY
                         if (scrollX != lastScrollX || scrollY != lastScrollY) {
                             // Scroll changed
-                            value(view, scrollX, scrollY, scrollX - lastScrollX, scrollY - lastScrollY)
+                            value(view, scrollX, scrollY, lastScrollX - scrollX, lastScrollY - scrollY)
                             lastScrollX = scrollX
                             lastScrollY = scrollY
                         }
@@ -79,8 +80,12 @@ class ScrollView(actor: Actor? = null, style: ScrollPaneStyle? = null) :
         }
     }
 
-    fun scrollToTop() = scrollTo(0f, actor?.height ?: 0f, 0f, 0f)
+    fun scrollToTop() {
+        scrollY = 0f
+    }
 
-    fun scrollToBottom() = scrollTo(0f, 0f, 0f, 0f)
+    fun scrollToBottom() {
+        scrollY = maxY
+    }
 
 }

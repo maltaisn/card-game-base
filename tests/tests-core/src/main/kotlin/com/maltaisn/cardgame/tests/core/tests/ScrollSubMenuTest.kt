@@ -57,15 +57,14 @@ class ScrollSubMenuTest : ActionBarTest() {
             for (item in menuItems) {
                 addItem(item)
             }
+
+            scrollToTop()
         }
 
         layout.centerTable.apply {
             getCell(btnTable).padBottom(0f)
             add(menu).grow()
         }
-
-        // Note: this doesn't work since layout hasn't happened yet.
-        //menu.checkItem(menuItems.first())
 
         menu.shown = true
 

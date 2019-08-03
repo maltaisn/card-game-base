@@ -38,7 +38,7 @@ open class CardGameLayout(val skin: Skin) : Stack() {
      * The size of the tables hidden on each side in pixels.
      * These can be used to put other player hands or other hidden card containers.
      */
-    var sideTableSize = 400f
+    var sideTableSize = 500f
         set(value) {
             field = value
             topTable.height = value

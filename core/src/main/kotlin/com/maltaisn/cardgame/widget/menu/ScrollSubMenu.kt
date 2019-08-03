@@ -38,7 +38,6 @@ class ScrollSubMenu(skin: Skin) : SubMenu(skin) {
     /** The scroll view containing the [scrollContent] container. */
     val scrollView = ScrollView(scrollContent)
 
-    private var listenerEnabled = true
 
     init {
         itemClickListener = null  // Adds the scroll on click action
@@ -121,7 +120,16 @@ class ScrollSubMenu(skin: Skin) : SubMenu(skin) {
         }
     }
 
-    fun scrollToTop() = scrollView.scrollToTop()
+    fun scrollToTop() {
+        scrollView.scrollToTop()
+
+        // Check the first item
+        for (item in items) {
+            if (item.checkable && item.id == 0) {
+                super.checkItem(item)
+            }
+        }
+    }
 
     /**
      * A marker interface for a content section in a scroll submenu content.
