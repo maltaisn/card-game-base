@@ -38,41 +38,30 @@ abstract class MenuTable(skin: Skin) : FboTable(skin) {
 
     private val _items = mutableListOf<MenuItem>()
 
-    /** Whether the items in the menu can be checked or not. */
-    var checkable = false
-
     /**
      * Changing this value animates a visibility change by sliding the menu parts in and out of the screen.
      * If changed during an outgoing transition, the previous one will be inverted.
      */
     open var shown = false
 
-    internal open var transitionAction by ActionDelegate<TimeAction>()
+    /** Whether the items in the menu can be checked or not. */
+    var checkable = false
 
-    /** The listener called when a menu item is clicked, `null` for none. */
-    open var itemClickListener: ((item: MenuItem) -> Unit)? = null
-
-    protected val btnClickListener = { btn: MenuButton ->
-        // Check the new item if needed, call listener
-        lateinit var clickedItem: MenuItem
-        for (item in items) {
-            if (item.button === btn) {
-                item.checked = true
-                itemClickListener?.invoke(item)
-                clickedItem = item
-                break
-            }
-        }
-
-        // If new item was checked, uncheck the last one
-        if (clickedItem.checked) {
+    /** Returns the first checked item in the menu, `null` if none are checked */
+    val checkedItem: MenuItem?
+        get() {
             for (item in items) {
-                if (item !== clickedItem) {
-                    item.checked = false
+                if (item.checked) {
+                    return item
                 }
             }
+            return null
         }
-    }
+
+    /** The listener called when a menu item is clicked or checked, `null` for none. */
+    var itemClickListener: ((MenuItem) -> Unit)? = null
+
+    internal var transitionAction by ActionDelegate<TimeAction>()
 
     private var invalidLayout = false
 
@@ -94,6 +83,13 @@ abstract class MenuTable(skin: Skin) : FboTable(skin) {
         invalidateMenuLayout()
     }
 
+    /** Add [items] to the menu. */
+    fun addItems(vararg items: MenuItem) {
+        for (item in items) {
+            addItem(item)
+        }
+    }
+
     /** Remove an [item] in the menu. */
     open fun removeItem(item: MenuItem) {
         if (_items.remove(item)) {
@@ -106,6 +102,30 @@ abstract class MenuTable(skin: Skin) : FboTable(skin) {
     open fun clearItems() {
         _items.clear()
         invalidateMenuLayout()
+    }
+
+    /**
+     * Check an [item] in the menu. The menu and the item must be checkable.
+     * The last checked item is unchecked and the item click listener is called for the new item.
+     */
+    open fun checkItem(item: MenuItem) {
+        require(item.menu === this) { "Item doesn't belong to this menu." }
+        require(checkable && item.checkable) { "Menu or item isn't checkable." }
+
+        // Uncheck last checked item
+        checkedItem?.checked = false
+
+        // Check new item
+        item.checked = true
+        itemClickListener?.invoke(item)
+    }
+
+    protected fun onItemBtnClicked(item: MenuItem) {
+        if (checkable && item.checkable) {
+            checkItem(item)
+        } else {
+            itemClickListener?.invoke(item)
+        }
     }
 
     /** Invalidate the menu layout, must be called if items are changed. */

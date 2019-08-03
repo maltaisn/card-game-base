@@ -74,7 +74,7 @@ class MainMenu(skin: Skin) : MenuTable(skin) {
         for (item in items) {
             val onTopRow = (item.position == ITEM_POS_TOP)
             val btn = MenuButton(skin, style.itemFontStyle, item.title, item.icon).apply {
-                onClick { btnClickListener(this) }
+                onClick { onItemBtnClicked(item) }
                 anchorSide = if (onTopRow) MenuButton.Side.TOP else MenuButton.Side.BOTTOM
                 iconSide = MenuButton.Side.LEFT
                 iconSize = this@MainMenu.style.itemIconSize

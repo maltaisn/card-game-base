@@ -114,7 +114,8 @@ class DefaultGameMenuTest : CardGameTest() {
         menu.continueItem.enabled = continuePref.value
 
         // In-game
-        menu.inGameMenu.addItem(MenuItem(0, null, skin.getDrawable(MenuIcons.CARDS), InGameMenu.ITEM_POS_LEFT))
+        menu.inGameMenu.addItem(MenuItem(0, null,
+                skin.getDrawable(MenuIcons.CARDS), InGameMenu.ITEM_POS_LEFT))
 
         // Scoreboard
         val scoresTable = ScoresTable(skin, 4)
@@ -131,10 +132,12 @@ class DefaultGameMenuTest : CardGameTest() {
         }
 
         val scoresView = Container(scoresTable).pad(60f, 30f, 60f, 30f).fill()
-        val scoresPage = PagedSubMenu.Page(1, "Scores", skin.getDrawable(MenuIcons.CHART), SubMenu.ITEM_POS_TOP)
-        scoresPage.content = scoresView
-        scoresPage.checked = true
-        menu.scoreboardMenu.addItem(scoresPage)
+        val scoresPage = PagedSubMenu.Page(1, "Scores",
+                skin.getDrawable(MenuIcons.CHART), SubMenu.ITEM_POS_TOP, scoresView)
+        menu.scoreboardMenu.apply {
+            addItem(scoresPage)
+            checkItem(scoresPage)
+        }
 
         // Debug
         val debugPref = settingsPrefs[PREF_DEBUG] as SwitchPref

@@ -38,17 +38,6 @@ class ScrollSubMenu(skin: Skin) : SubMenu(skin) {
     /** The scroll view containing the [scrollContent] container. */
     val scrollView = ScrollView(scrollContent)
 
-    override var itemClickListener: ((item: MenuItem) -> Unit)?
-        get() = super.itemClickListener
-        set(value) {
-            super.itemClickListener = {
-                if (listenerEnabled) {
-                    scrollToItem(it)
-                    value?.invoke(it)
-                }
-            }
-        }
-
     private var listenerEnabled = true
 
     init {
@@ -73,13 +62,7 @@ class ScrollSubMenu(skin: Skin) : SubMenu(skin) {
                 }
                 scrollView.isBottomEdge -> {
                     // Scrolled to bottom edge, check last item with a corresponding section
-                    newId = -1
-                    val content = scrollContent.actor
-                    for (child in content.children) {
-                        if (child is Section) {
-                            newId++
-                        }
-                    }
+                    newId = scrollContent.actor.children.count { it is Section } - 1
                 }
                 else -> {
                     // Find the view of the currently checked category
@@ -108,13 +91,16 @@ class ScrollSubMenu(skin: Skin) : SubMenu(skin) {
                 }
             }
             if (newId != MenuItem.NO_ID && newId != oldId) {
-                listenerEnabled = false
-                items.find { it.id == newId }?.checked = true
-                listenerEnabled = true
+                items.find { it.id == newId }?.let { checkItem(it) }
             }
         }
 
         doMenuLayout()
+    }
+
+    override fun checkItem(item: MenuItem) {
+        super.checkItem(item)
+        scrollToItem(item)
     }
 
     private fun scrollToItem(item: MenuItem) {
@@ -126,8 +112,7 @@ class ScrollSubMenu(skin: Skin) : SubMenu(skin) {
                 if (child is Section) {
                     if (id == item.id) {
                         val top = child.y + child.height + 40f - scrollView.height
-                        val height = scrollView.height
-                        scrollView.scrollTo(0f, top, 0f, height)
+                        scrollView.scrollTo(0f, top, 0f, scrollView.height)
                         break
                     }
                     id++
@@ -136,22 +121,7 @@ class ScrollSubMenu(skin: Skin) : SubMenu(skin) {
         }
     }
 
-    /**
-     * Scroll to the top of the content and check the first item.
-     */
-    fun scrollToTop() {
-        // Check the first checkable item
-        if (items.isNotEmpty() && checkable) {
-            for (item in items) {
-                if (item.checkable) {
-                    item.checked = true
-                    break
-                }
-            }
-        }
-
-        scrollView.scrollToTop()
-    }
+    fun scrollToTop() = scrollView.scrollToTop()
 
     /**
      * A marker interface for a content section in a scroll submenu content.

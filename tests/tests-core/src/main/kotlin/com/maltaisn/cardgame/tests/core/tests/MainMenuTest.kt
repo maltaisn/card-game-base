@@ -39,13 +39,12 @@ class MainMenuTest : ActionBarTest() {
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
-        val menu = MainMenu(skin).apply {
-            addItem(MenuItem(0, "Settings", this@MainMenuTest.skin.getDrawable(MenuIcons.SETTINGS), MainMenu.ITEM_POS_TOP))
-            addItem(MenuItem(1, "Rules", this@MainMenuTest.skin.getDrawable(MenuIcons.BOOK), MainMenu.ITEM_POS_TOP))
-            addItem(MenuItem(2, "Stats", this@MainMenuTest.skin.getDrawable(MenuIcons.LIST), MainMenu.ITEM_POS_TOP))
-            addItem(MenuItem(3, "New game", this@MainMenuTest.skin.getDrawable(MenuIcons.CARDS), MainMenu.ITEM_POS_BOTTOM))
-            addItem(MenuItem(4, "Continue", this@MainMenuTest.skin.getDrawable(MenuIcons.ARROW_RIGHT), MainMenu.ITEM_POS_BOTTOM))
-        }
+        val menu = MainMenu(skin)
+        menu.addItems(MenuItem(0, "Settings", this@MainMenuTest.skin.getDrawable(MenuIcons.SETTINGS), MainMenu.ITEM_POS_TOP),
+                MenuItem(1, "Rules", this@MainMenuTest.skin.getDrawable(MenuIcons.BOOK), MainMenu.ITEM_POS_TOP),
+                MenuItem(2, "Stats", this@MainMenuTest.skin.getDrawable(MenuIcons.LIST), MainMenu.ITEM_POS_TOP),
+                MenuItem(3, "New game", this@MainMenuTest.skin.getDrawable(MenuIcons.CARDS), MainMenu.ITEM_POS_BOTTOM),
+                MenuItem(4, "Continue", this@MainMenuTest.skin.getDrawable(MenuIcons.ARROW_RIGHT), MainMenu.ITEM_POS_BOTTOM))
 
         menu.itemClickListener = {
             info { "Menu item clicked: $it" }

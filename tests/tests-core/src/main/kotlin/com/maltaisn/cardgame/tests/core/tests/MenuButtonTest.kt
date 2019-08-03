@@ -18,6 +18,7 @@ package com.maltaisn.cardgame.tests.core.tests
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.utils.Align
+import com.maltaisn.cardgame.defaultSize
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.menu.MenuButton
@@ -50,6 +51,7 @@ class MenuButtonTest : ActionBarTest() {
         val btnCell = layout.centerTable.add(btn).expand()
 
         // Action buttons
+        btnFontSize = 24f
         addTwoStateActionBtn("Disable", "Enable") { _, enabled ->
             btn.enabled = enabled
         }
@@ -74,6 +76,21 @@ class MenuButtonTest : ActionBarTest() {
         }
         addValueBtn("Icon size", 32f, 128f, btn.iconSize, 8f) { _, size, _ ->
             btn.iconSize = size
+        }
+        addEnumBtn("Title align", listOf(Align.center, Align.top, Align.left, Align.bottom, Align.right),
+                listOf("CENTER", "TOP", "LEFT", "BOTTOM", "RIGHT")) { _, align ->
+            btn.titleAlign = align
+        }
+        addToggleBtn("Constrained size", startState = true) { _, constrained ->
+            if (constrained) {
+                btnCell.fill(0f, 0f).defaultSize()
+            } else {
+                btnCell.size(500f, 300f).fill()
+            }
+            btn.invalidateHierarchy()
+        }
+        addToggleBtn("Debug") { _, debug ->
+            btn.setDebug(debug, true)
         }
     }
 

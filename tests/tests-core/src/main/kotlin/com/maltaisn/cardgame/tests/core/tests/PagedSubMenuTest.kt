@@ -17,6 +17,7 @@
 package com.maltaisn.cardgame.tests.core.tests
 
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.maltaisn.cardgame.markdown.Markdown
@@ -52,25 +53,21 @@ class PagedSubMenuTest : ActionBarTest() {
         continueItem.checkable = false
 
         val rules: Markdown = assetManager.get("lorem-ipsum")
-        val rulesView = ScrollView(MarkdownView(skin, rules).pad(0f, 40f, 0f, 40f))
-        val rulesPage = object : TestPage(0, "Rules", skin.getDrawable(MenuIcons.BOOK), SubMenu.ITEM_POS_TOP) {
-            override fun onPageSelectionChanged(selected: Boolean) {
-                super.onPageSelectionChanged(selected)
-                info { "Rules page selected" }
-            }
-        }
-        rulesPage.content = rulesView
+        val rulesView = ScrollView(MarkdownView(skin, rules)
+                .pad(0f, 40f, 0f, 40f))
+        val rulesPage = TestPage(0, "Rules",
+                skin.getDrawable(MenuIcons.BOOK), SubMenu.ITEM_POS_TOP, rulesView)
 
-        val scoresView = Container(SdfLabel(skin, FontStyle(fontColor = Color.BLACK, fontSize = 60f), "TODO!"))
-        val scoresPage = TestPage(1, "Scores", skin.getDrawable(MenuIcons.LIST), SubMenu.ITEM_POS_BOTTOM)
-        scoresPage.content = scoresView
-        scoresPage.checked = true
+        val scoresView = Container(SdfLabel(skin,
+                FontStyle(fontColor = Color.BLACK, fontSize = 60f), "TODO!"))
+        val scoresPage = TestPage(1, "Scores",
+                skin.getDrawable(MenuIcons.LIST), SubMenu.ITEM_POS_BOTTOM, scoresView)
 
         val menu = PagedSubMenu(skin).apply {
             title = "Scoreboard"
-            addItem(rulesPage)
-            addItem(scoresPage)
-            addItem(continueItem)
+            itemClickListener = { info { "Item clicked: $it" } }
+            addItems(rulesPage, scoresPage, continueItem)
+            checkItem(scoresPage)
         }
 
         layout.centerTable.apply {
@@ -95,13 +92,18 @@ class PagedSubMenuTest : ActionBarTest() {
             rulesPage.shown = shown
         }
 
+        addActionBtn("Check scores page") {
+            menu.checkItem(scoresPage)
+        }
+
         addToggleBtn("Debug") { _, debug ->
             menu.setDebug(debug, true)
         }
     }
 
-    private open class TestPage(id: Int, title: String, icon: Drawable?, position: Int) :
-            PagedSubMenu.Page(id, title, icon, position) {
+    private open class TestPage(id: Int, title: String, icon: Drawable?, position: Int,
+                                content: Actor? = null) :
+            PagedSubMenu.Page(id, title, icon, position, content) {
 
         override fun onPageSelectionChanged(selected: Boolean) {
             info { "Page '$title' was ${if (selected) "selected" else "unselected"}" }

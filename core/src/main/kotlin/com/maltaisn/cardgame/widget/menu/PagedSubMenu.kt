@@ -20,34 +20,17 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.maltaisn.cardgame.findScrollFocus
+import com.maltaisn.cardgame.widget.menu.PagedSubMenu.Page
 
 
 /**
  * A sub menu with different pages, where items change pages.
+ * Pages can be added with [addItem] where the item is a [Page].
  */
 class PagedSubMenu(skin: Skin) : SubMenu(skin) {
 
-    override var itemClickListener: ((item: MenuItem) -> Unit)?
-        get() = super.itemClickListener
-        set(value) {
-            super.itemClickListener = {
-                // Unselect last page and select new page
-                if (it is Page && selectedPage !== it) {
-                    selectedPage?.onPageSelectionChanged(false)
-                    selectedPage = it
-                    it.onPageSelectionChanged(true)
-
-                    // Change content
-                    content.clearChildren()
-                    content.add(it.content).grow()
-                    content.findScrollFocus()
-                }
-
-                value?.invoke(it)
-            }
-        }
-
     private var selectedPage: Page? = null
+
 
     init {
         itemClickListener = null  // Adds the change page on click action
@@ -55,6 +38,22 @@ class PagedSubMenu(skin: Skin) : SubMenu(skin) {
         doMenuLayout()
     }
 
+
+    override fun checkItem(item: MenuItem) {
+        super.checkItem(item)
+
+        // Unselect last page and select new page
+        if (item is Page && selectedPage !== item) {
+            selectedPage?.onPageSelectionChanged(false)
+            selectedPage = item
+            item.onPageSelectionChanged(true)
+
+            // Change content
+            content.clearChildren()
+            content.add(item.content).grow()
+            content.findScrollFocus()
+        }
+    }
 
     override fun clearItems() {
         super.clearItems()
@@ -69,9 +68,8 @@ class PagedSubMenu(skin: Skin) : SubMenu(skin) {
     }
 
     open class Page(id: Int, title: String,
-                    icon: Drawable?, position: Int) : MenuItem(id, title, icon, position) {
-
-        var content: Actor? = null
+                    icon: Drawable?, position: Int,
+                    var content: Actor? = null) : MenuItem(id, title, icon, position) {
 
         /**
          * Called when a page is selected or unselected.

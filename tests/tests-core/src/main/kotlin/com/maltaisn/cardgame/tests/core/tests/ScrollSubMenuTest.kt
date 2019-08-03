@@ -44,15 +44,13 @@ class ScrollSubMenuTest : ActionBarTest() {
         val menuItems = listOf(MenuItem(0, "First item", skin.getDrawable(MenuIcons.BOOK), SubMenu.ITEM_POS_TOP),
                 MenuItem(1, "No icon", null, SubMenu.ITEM_POS_TOP),
                 MenuItem(2, "Bottom aligned", skin.getDrawable(MenuIcons.CHEVRON_RIGHT), SubMenu.ITEM_POS_BOTTOM))
-
-        menuItems[0].checked = true
         menuItems[2].checkable = false
 
         val markdown: Markdown = assetManager.get("lorem-ipsum")
         val mdView = MarkdownView(skin, markdown)
 
         val menu = ScrollSubMenu(skin).apply {
-            itemClickListener = { info { "Item checked: $it" } }
+            itemClickListener = { info { "Item clicked: $it" } }
             title = "Sub menu test"
             scrollContent.actor = mdView
 
@@ -65,6 +63,9 @@ class ScrollSubMenuTest : ActionBarTest() {
             getCell(btnTable).padBottom(0f)
             add(menu).grow()
         }
+
+        // Note: this doesn't work since layout hasn't happened yet.
+        //menu.checkItem(menuItems.first())
 
         menu.shown = true
 
@@ -81,6 +82,10 @@ class ScrollSubMenuTest : ActionBarTest() {
 
         addActionBtn("Scroll to top") {
             menu.scrollToTop()
+        }
+
+        addActionBtn("Check 2nd item") {
+            menu.checkItem(menuItems[1])
         }
 
         var option = 0

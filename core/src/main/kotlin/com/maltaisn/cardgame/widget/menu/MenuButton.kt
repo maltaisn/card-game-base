@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
+import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Scaling
 import com.maltaisn.cardgame.post
 import com.maltaisn.cardgame.widget.CheckableWidget
@@ -47,7 +48,6 @@ open class MenuButton(skin: Skin,
                 invalidateLayout()
             }
             titleLabel.setText(value)
-
         }
 
     /** The button icon, or `null` for none. */
@@ -87,6 +87,16 @@ open class MenuButton(skin: Skin,
             invalidateLayout()
         }
 
+    /**
+     * The alignment of the title label.
+     */
+    var titleAlign = Align.center
+        set(value) {
+            if (field == value) return
+            field = value
+            invalidateLayout()
+        }
+
     override var enabled
         get() = super.enabled
         set(value) {
@@ -98,8 +108,8 @@ open class MenuButton(skin: Skin,
         }
 
 
-    private val titleLabel: SdfLabel
-    private val iconImage: ShadowImage
+    val titleLabel: SdfLabel
+    val iconImage: ShadowImage
 
     private var invalidLayout = false
 
@@ -156,9 +166,10 @@ open class MenuButton(skin: Skin,
      */
     private fun updateLayout() {
         clearChildren()
+
         when {
             !title.isNullOrBlank() && icon == null -> {
-                add(titleLabel).expand()
+                add(titleLabel).expand().align(titleAlign)
             }
             icon != null && title.isNullOrBlank() -> {
                 add(iconImage).expand()
@@ -167,18 +178,19 @@ open class MenuButton(skin: Skin,
                 when (if (iconSide == Side.NONE) anchorSide else iconSide) {
                     Side.NONE, Side.TOP -> {
                         add(iconImage).expandX().padBottom(30f).row()
-                        add(titleLabel).expandX()
+                        add(titleLabel).expand(true, !Align.isCenterVertical(titleAlign)).align(titleAlign)
                     }
                     Side.BOTTOM -> {
-                        add(titleLabel).expandX().row()
+                        add(titleLabel).expand(true, !Align.isCenterVertical(titleAlign)).align(titleAlign)
+                        row()
                         add(iconImage).padTop(30f).expandX()
                     }
                     Side.LEFT -> {
                         add(iconImage).padRight(30f).expandY()
-                        add(titleLabel).expandY()
+                        add(titleLabel).expand(!Align.isCenterHorizontal(titleAlign), true).align(titleAlign)
                     }
                     Side.RIGHT -> {
-                        add(titleLabel).expandY()
+                        add(titleLabel).expand(!Align.isCenterHorizontal(titleAlign), true).align(titleAlign)
                         add(iconImage).padLeft(30f).expandY()
                     }
                 }

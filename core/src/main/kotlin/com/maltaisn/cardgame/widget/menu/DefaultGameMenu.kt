@@ -139,12 +139,12 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
         mainMenu.apply {
             // Add main menu items
             val icons = this@DefaultGameMenu.style
-            addItem(MenuItem(ITEM_ID_NEW_GAME, newGameStr, icons.newGameIcon, MainMenu.ITEM_POS_BOTTOM))
-            addItem(MenuItem(ITEM_ID_CONTINUE, continueStr, icons.continueIcon, MainMenu.ITEM_POS_BOTTOM))
-            addItem(MenuItem(ITEM_ID_SETTINGS, settingsStr, icons.settingsIcon, MainMenu.ITEM_POS_BOTTOM))
-            addItem(MenuItem(ITEM_ID_RULES, rulesStr, icons.rulesIcon, MainMenu.ITEM_POS_TOP))
-            addItem(MenuItem(ITEM_ID_STATS, statsStr, icons.statsIcon, MainMenu.ITEM_POS_TOP))
-            addItem(MenuItem(ITEM_ID_ABOUT, aboutStr, icons.aboutIcon, MainMenu.ITEM_POS_TOP))
+            addItems(MenuItem(ITEM_ID_NEW_GAME, newGameStr, icons.newGameIcon, MainMenu.ITEM_POS_BOTTOM),
+                    MenuItem(ITEM_ID_CONTINUE, continueStr, icons.continueIcon, MainMenu.ITEM_POS_BOTTOM),
+                    MenuItem(ITEM_ID_SETTINGS, settingsStr, icons.settingsIcon, MainMenu.ITEM_POS_BOTTOM),
+                    MenuItem(ITEM_ID_RULES, rulesStr, icons.rulesIcon, MainMenu.ITEM_POS_TOP),
+                    MenuItem(ITEM_ID_STATS, statsStr, icons.statsIcon, MainMenu.ITEM_POS_TOP),
+                    MenuItem(ITEM_ID_ABOUT, aboutStr, icons.aboutIcon, MainMenu.ITEM_POS_TOP))
 
             continueItem = items[1]
 
@@ -177,6 +177,7 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
 
             itemClickListener = {
                 if (it === startGameItem) {
+                    newGameOptions?.save()
                     callback?.onStartGameClicked()
                 }
             }
@@ -200,15 +201,15 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
         // About menu
         aboutMenu.apply {
             title = aboutStr
-            addItem(MenuItem(0, "About", skin.getDrawable(MenuIcons.INFO), SubMenu.ITEM_POS_TOP))
-            addItem(MenuItem(1, "Donate", skin.getDrawable(MenuIcons.ARROW_RIGHT), SubMenu.ITEM_POS_TOP))
+            addItems(MenuItem(0, "About", skin.getDrawable(MenuIcons.INFO), SubMenu.ITEM_POS_TOP),
+                    MenuItem(1, "Donate", skin.getDrawable(MenuIcons.ARROW_RIGHT), SubMenu.ITEM_POS_TOP))
         }
 
         // In game menu
         inGameMenu.apply {
             val icons = this@DefaultGameMenu.style
-            addItem(MenuItem(ITEM_ID_BACK, null, icons.backBtnIcon, InGameMenu.ITEM_POS_LEFT))
-            addItem(MenuItem(ITEM_ID_SCOREBOARD, null, icons.scoreboardBtnIcon, InGameMenu.ITEM_POS_RIGHT))
+            addItems(MenuItem(ITEM_ID_BACK, null, icons.backBtnIcon, InGameMenu.ITEM_POS_LEFT),
+                    MenuItem(ITEM_ID_SCOREBOARD, null, icons.scoreboardBtnIcon, InGameMenu.ITEM_POS_RIGHT))
 
             itemClickListener = {
                 when (it.id) {
@@ -248,7 +249,7 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
         return view
     }
 
-    private fun createMarkdownView(menu: ScrollSubMenu, markdown: Markdown): Table {
+    private fun createMarkdownView(menu: ScrollSubMenu, markdown: Markdown): MarkdownView {
         // Create preference group view and set listeners
         val view = MarkdownView(skin, markdown)
         menu.scrollContent.actor = view

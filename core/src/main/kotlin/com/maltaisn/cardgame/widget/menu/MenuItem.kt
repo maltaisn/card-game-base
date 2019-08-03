@@ -23,7 +23,7 @@ import com.maltaisn.cardgame.widget.menu.MenuItem.Companion.NO_ID
 /**
  * An item in a menu, with an [id], a [title], an [icon] and a [position] in the menu.
  * Each item should have an unique ID to identify them in click listener, different than [NO_ID].
- * Implementation should have item position constants.
+ * Menu implementations should have item position constants.
  */
 open class MenuItem(val id: Int,
                     val title: CharSequence?,
@@ -34,13 +34,16 @@ open class MenuItem(val id: Int,
         require(id != NO_ID) { "A menu item cannot have an ID of $NO_ID." }
     }
 
-    /** The menu this is in. */
+    /**
+     * The menu this is in, or `null` if not added yet.
+     */
     var menu: MenuTable? = null
         internal set
 
-    /** The button this item is attached to. */
-    var button: MenuButton? = null
-        internal set
+    /**
+     * The button this item is attached to.
+     */
+    internal var button: MenuButton? = null
 
     /**
      * Whether this item is shown or hidden.
@@ -51,32 +54,22 @@ open class MenuItem(val id: Int,
             menu?.invalidateMenuLayout()
         }
 
-    /**
-     * Whether this item is checked or not.
-     */
+    /** Whether this item is checked or not. */
     var checked = false
-        set(value) {
-            field = value && checkable && menu?.checkable != false
-            button?.checked = field
-
-            if (field) {
-                val menu = menu ?: return
-                menu.itemClickListener?.invoke(this)
-
-                for (item in menu.items) {
-                    if (item !== this) {
-                        item.checked = false
-                    }
-                }
-            }
+        internal set(value) {
+            field = value
+            button?.checked = value
         }
 
-    /** If the [menu] is checkable, whether this item can be checked. */
+    /**
+     * If the [menu] is checkable, whether this item can be checked.
+     */
     var checkable = true
 
-    /** Whether this item is enabled or not. */
+    /**
+     * Whether this item is enabled or not.
+     */
     var enabled = true
-        get() = if (button == null) field else button?.enabled != false
         set(value) {
             field = value
             button?.enabled = value

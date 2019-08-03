@@ -36,6 +36,9 @@ abstract class ActionBarTest : CardGameTest() {
 
     protected val btnTable = Table()
 
+    protected var btnFontSize = 32f
+
+
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
@@ -43,12 +46,13 @@ abstract class ActionBarTest : CardGameTest() {
                 .pad(50f, 40f, 40f, 40f).row()
     }
 
+
     /**
      * Add a button with a [title] and a click [action].
      */
     protected inline fun addActionBtn(title: String,
                                       crossinline action: (MenuButton) -> Unit): MenuButton {
-        val btn = MenuButton(skin, BTN_FONT_STYLE, title, null)
+        val btn = MenuButton(skin, FontStyle(fontSize = btnFontSize, drawShadow = true), title, null)
         btn.onClick { action(btn) }
         btnTable.add(btn).grow().pad(0f, 10f, 0f, 10f).expand()
         return btn
@@ -108,16 +112,17 @@ abstract class ActionBarTest : CardGameTest() {
                               minValue: Float, maxValue: Float, startValue: Float, step: Float,
                               numberFmt: NumberFormat? = NumberFormat.getInstance(),
                               action: (MenuButton, Float, Float) -> Unit): ValueMenuButton {
-        val btn = ValueMenuButton(skin, title, minValue, maxValue, startValue, step, numberFmt, action)
+        val btn = ValueMenuButton(skin, FontStyle(fontSize = btnFontSize, drawShadow = true),
+                title, minValue, maxValue, startValue, step, numberFmt, action)
         btnTable.add(btn).grow().pad(0f, 10f, 0f, 10f).expand()
         return btn
     }
 
-    class ValueMenuButton(skin: Skin, private val valueTitle: String,
+    class ValueMenuButton(skin: Skin, fontStyle: FontStyle, private val valueTitle: String,
                           minValue: Float, maxValue: Float, startValue: Float, step: Float,
                           private val numberFmt: NumberFormat? = NumberFormat.getInstance(),
                           private val action: (MenuButton, value: Float, oldValue: Float) -> Unit) :
-            MenuButton(skin, BTN_FONT_STYLE) {
+            MenuButton(skin, fontStyle) {
 
         private val min = step * round(minValue / step)
         private val max = step * round(maxValue / step)
@@ -150,10 +155,6 @@ abstract class ActionBarTest : CardGameTest() {
             title = if (numberFmt != null) "$valueTitle: ${numberFmt.format(value)}" else valueTitle
         }
 
-    }
-
-    companion object {
-        val BTN_FONT_STYLE = FontStyle(fontSize = 32f, drawShadow = true)
     }
 
 }

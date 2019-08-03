@@ -75,17 +75,6 @@ open class SubMenu(skin: Skin) : MenuTable(skin) {
             }
         }
 
-    /** Returns the first checked item in the menu, `null` if none are checked */
-    val checkedItem: MenuItem?
-        get() {
-            for (item in items) {
-                if (item.checked) {
-                    return item
-                }
-            }
-            return null
-        }
-
     /** The listener called when the back arrow is clicked. */
     var backArrowClickListener: (() -> Unit)? = null
 
@@ -159,22 +148,18 @@ open class SubMenu(skin: Skin) : MenuTable(skin) {
             }
         }
 
-        // Check any checked item
-        for (item in items) {
-            item.checked = item.checked
-        }
-
         content.findScrollFocus()
     }
 
     private fun addButtonToMenuTable(item: MenuItem) {
         val btn = MenuButton(skin, style.itemFontStyle, item.title, item.icon).apply {
-            onClick { btnClickListener(this) }
+            onClick { onItemBtnClicked(item) }
             anchorSide = if (menuPosition == MenuPosition.LEFT) MenuButton.Side.RIGHT else MenuButton.Side.LEFT
             iconSide = MenuButton.Side.LEFT
             iconSize = this@SubMenu.style.itemIconSize
+            titleAlign = Align.left
             enabled = item.enabled
-            align(Align.left)
+            checked = item.checked
         }
         item.button = btn
 
