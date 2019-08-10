@@ -24,6 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
 import com.maltaisn.cardgame.game.Card
 import com.maltaisn.cardgame.widget.SelectableWidget
+import com.maltaisn.cardgame.widget.action.ActionDelegate
 import com.maltaisn.cardgame.withinBounds
 import ktx.actors.alpha
 
@@ -87,20 +88,10 @@ class CardActor(private val style: CardStyle,
     internal var dst: CardContainer? = null
 
     // Used internally by CardAnimationLayer
-    internal var moveAction: CardAnimationGroup.MoveCardAction? = null
-        set(value) {
-            if (field != null) removeAction(field)
-            field = value
-            if (value != null) addAction(value)
-        }
+    internal var moveAction by ActionDelegate<CardAnimationGroup.MoveCardAction>()
 
     // Used internally by CardHand
-    internal var highlightAction: CardHand.HighlightAction? = null
-        set(value) {
-            if (field != null) removeAction(field)
-            field = value
-            if (value != null) addAction(value)
-        }
+    internal var highlightAction by ActionDelegate<CardHand.HighlightAction>()
 
 
     init {
