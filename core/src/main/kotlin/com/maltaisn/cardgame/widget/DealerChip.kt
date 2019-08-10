@@ -91,7 +91,8 @@ class DealerChip(skin: Skin) : Image(skin.get<DealerChipStyle>().drawable, Scali
         this.side = side
         invalidateHierarchy()
 
-        if (transitionAction == null) {
+        if (transitionAction !is FadeAction) {
+            transitionAction?.end()
             transitionAction = FadeAction()
         }
     }
@@ -104,7 +105,8 @@ class DealerChip(skin: Skin) : Image(skin.get<DealerChipStyle>().drawable, Scali
 
         shown = false
 
-        if (transitionAction == null) {
+        if (transitionAction !is FadeAction) {
+            transitionAction?.end()
             transitionAction = FadeAction()
         }
     }
@@ -119,6 +121,7 @@ class DealerChip(skin: Skin) : Image(skin.get<DealerChipStyle>().drawable, Scali
 
         this.actor = actor
         this.side = side
+
         transitionAction = MoveAction(x, y)
     }
 
