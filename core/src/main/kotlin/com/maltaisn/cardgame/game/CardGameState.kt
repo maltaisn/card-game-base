@@ -115,14 +115,6 @@ abstract class CardGameState<P : CardPlayer> : Cloneable, Json.Serializable {
         s.result = result?.clone()
     }
 
-    /**
-     * Get a randomized deep copy of this game state.
-     * All information unknown to [observer] player is randomized.
-     * By default this returns the same as a normal clone.
-     * This should only be called by players using MCTS.
-     */
-    open fun randomizedClone(observer: Int) = clone()
-
 
     override fun read(json: Json, jsonData: JsonValue) {
         result = json.readValue("result", jsonData)

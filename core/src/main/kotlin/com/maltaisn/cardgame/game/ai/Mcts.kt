@@ -51,7 +51,9 @@ object Mcts {
 
         repeat(iter) {
             var node = rootNode
-            val state = rootState.randomizedClone(rootState.posToMove)
+
+            val state = rootState.clone()
+            state.playerToMove.randomizeGameState(state)
 
             // Select
             var moves = state.getMoves()
@@ -107,7 +109,9 @@ object Mcts {
         var score = 0f
         val player = rootState.posToMove
         repeat(iter) {
-            val state = rootState.randomizedClone(player)
+            val state = rootState.clone()
+            state.playerToMove.randomizeGameState(state)
+
             state.doMove(move)
 
             // Simulate

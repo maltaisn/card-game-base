@@ -27,11 +27,11 @@ abstract class CardPlayer : Cloneable, Json.Serializable {
     /** Player position, set by the game state. */
     var position = NO_POSITION
 
-
     /**
-     * Called when [state] performs a [move] for any player.
+     * Called to randomize the cloned game [state] to reflect the point of view
+     * of this player, randomizing any unknown information. This is only used by the MCTS.
      */
-    open fun onMove(state: CardGameState<*>, move: CardGameEvent.Move) = Unit
+    open fun randomizeGameState(state: CardGameState<*>) = Unit
 
     /**
      * Create a deep copy of this player.
