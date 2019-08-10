@@ -24,7 +24,7 @@ package com.maltaisn.cardgame.prefs
 fun buildGamePrefsFromMap(map: Map<String, Any>): GamePrefs {
     val prefs = GamePrefs(null)
     for ((key, value) in map) {
-        prefs[key] = when {
+        val pref = when {
             value is Boolean -> SwitchPref().apply {
                 defaultValue = value
                 this.value = value
@@ -47,6 +47,8 @@ fun buildGamePrefsFromMap(map: Map<String, Any>): GamePrefs {
             }
             else -> error("Unknown preference value type.")
         }
+        pref.key = key
+        prefs[key] = pref
     }
     return prefs
 }
