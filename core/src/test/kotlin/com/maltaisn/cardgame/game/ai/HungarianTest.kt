@@ -17,13 +17,14 @@
 package com.maltaisn.cardgame.game.ai
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Test
 import java.text.NumberFormat
 import kotlin.random.Random
 import kotlin.system.measureNanoTime
 
 
-internal class MunkresTest {
+internal class HungarianTest {
 
     @Test
     fun `Simple matrix 1, n=3`() = validateAssignment(arrayOf(
@@ -39,9 +40,8 @@ internal class MunkresTest {
 
     @Test
     fun `Random matrices, n=3`() {
-        repeat(100000) {
+        repeat(1000) {
             validateAssignment(randomMatrix(3))
-            println(it + 1)
         }
     }
 
@@ -66,7 +66,7 @@ internal class MunkresTest {
         for (n in 1..10) {
             val size = 1 shl n
             val time = measureNanoTime {
-                Munkres(worstCaseMatrix(size)).findOptimalAssignment()
+                Hungarian(worstCaseMatrix(size)).execute()
             }
             println("n=$size, t=${NumberFormat.getInstance().format(time / 1E6)} ms")
         }
@@ -74,35 +74,26 @@ internal class MunkresTest {
 
     @Test
     fun `Performance test, n=1024`() {
-        Munkres(worstCaseMatrix(1024)).findOptimalAssignment()
+        Hungarian(worstCaseMatrix(1024)).execute()
     }
 
 
     private fun validateAssignment(costMatrix: Array<IntArray>) {
         val matrixCopy = Array(costMatrix.size) { costMatrix[it].clone() }
 
-        val assignment = Munkres(costMatrix).findOptimalAssignment()
+        val assignment = Hungarian(costMatrix).execute()
+
+        val message = "Wrong assignment for matrix: ${matrixCopy.contentDeepToString()}," +
+                "assignment = ${assignment.contentToString()}"
 
         // All rows must be matched to an unique column.
-        assertEquals("Wrong assignment for matrix: ${matrixCopy.contentDeepToString()}",
-                costMatrix.size, assignment.toSet().size)
-
-        // All assignments must be zeroes in cost matrix.
-        for ((row, col) in assignment.withIndex()) {
-            assertEquals(0, costMatrix[row][col])
-        }
+        val assignmentSet = assignment.toSet()
+        assertEquals(message, costMatrix.size, assignmentSet.size)
+        assertFalse(message, -1 in assignmentSet)
     }
 
-    private fun randomMatrix(n: Int) = Array(n) {
-        IntArray(n) {
-            Random.nextInt(1024)
-        }
-    }
+    private fun randomMatrix(n: Int) = Array(n) { IntArray(n) { Random.nextInt(1024) } }
 
-    private fun worstCaseMatrix(n: Int) = Array(n) { row ->
-        IntArray(n) { col ->
-            (row + 1) * (col + 1)
-        }
-    }
+    private fun worstCaseMatrix(n: Int) = Array(n) { row -> IntArray(n) { col -> (row + 1) * (col + 1) } }
 
 }
