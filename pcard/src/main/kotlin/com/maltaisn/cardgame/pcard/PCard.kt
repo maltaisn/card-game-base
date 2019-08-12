@@ -19,6 +19,7 @@ package com.maltaisn.cardgame.pcard
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
 import com.maltaisn.cardgame.game.Card
+import com.maltaisn.cardgame.utils.BitField
 
 
 /**
@@ -85,16 +86,16 @@ class PCard private constructor(val rank: Int, val suit: Int, value: Int) : Card
         val RANK_STR = listOf("A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "*")
         val SUIT_STR = listOf('♥', '♠', '♦', '♣', 'B', 'R')
 
-        val RANK_RANGE = 1..13
-        val SUIT_RANGE = 0..3
+        val RANKS = 1..13
+        val SUITS = 0..3
 
         private val cards = arrayOfNulls<PCard>(52)
 
         init {
             // Create instances of all possible cards.
             var i = 0
-            for (suit in SUIT_RANGE) {
-                for (rank in RANK_RANGE) {
+            for (suit in SUITS) {
+                for (rank in RANKS) {
                     cards[i] = PCard(rank, suit, i)
                     i++
                 }
@@ -119,7 +120,7 @@ class PCard private constructor(val rank: Int, val suit: Int, value: Int) : Card
                 } else if (suit == RED) {
                     card = RED_JOKER
                 }
-            } else if (rank in RANK_RANGE && suit in SUIT_RANGE) {
+            } else if (rank in RANKS && suit in SUITS) {
                 card = cards[suit * 13 + (rank - 1)]
             }
             requireNotNull(card) { "No playing card exist with this rank and suit." }
@@ -222,21 +223,23 @@ class PCard private constructor(val rank: Int, val suit: Int, value: Int) : Card
                 // Colors need to be separated so suit order might change.
                 val suitsList = suitOrder.toMutableList()
 
-                var suitsFound = 0
+                var suitsFound = BitField()
                 for (item in list) {
-                    suitsFound = suitsFound or (1 shl selector(item).suit)
+                    suitsFound += selector(item).suit
                 }
-                suitsFound = suitsFound and 0xF // Ignore red and black
-                if (Integer.bitCount(suitsFound) == 3) {
+                suitsFound -= RED
+                suitsFound -= BLACK
+
+                if (suitsFound.count == 3) {
                     // There are 3 suits in the cards, colors may need to be separated.
                     // If there were 2 suits of the same color, nothing could be done.
 
                     // Find which suit is missing and which suit will be used to separate the
                     // two suits of the same color
                     var missingSuit = -1
-                    for (i in SUIT_RANGE) {
-                        if (suitsFound and (1 shl i) == 0) {
-                            missingSuit = i
+                    for (suit in SUITS) {
+                        if (suit !in suitsFound) {
+                            missingSuit = suit
                             break
                         }
                     }
@@ -246,7 +249,7 @@ class PCard private constructor(val rank: Int, val suit: Int, value: Int) : Card
                     var inserted = false
                     for (i in suitsList.indices.reversed()) {
                         val suit = suitsList[i]
-                        if (suitsFound and (1 shl suit) != 0) {
+                        if (suit in suitsFound) {
                             if (suit == separatingSuit) {
                                 suitsList.removeAt(i)
                             } else if (!inserted) {

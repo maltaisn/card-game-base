@@ -16,6 +16,7 @@
 
 package com.maltaisn.cardgame.game.ai
 
+import com.maltaisn.cardgame.utils.Hungarian
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Test

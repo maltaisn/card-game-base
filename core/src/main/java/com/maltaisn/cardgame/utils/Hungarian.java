@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.maltaisn.cardgame.game.ai;
+package com.maltaisn.cardgame.utils;
 
 import java.util.Arrays;
 
