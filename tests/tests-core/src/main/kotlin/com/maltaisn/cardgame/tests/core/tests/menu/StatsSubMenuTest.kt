@@ -14,44 +14,55 @@
  * limitations under the License.
  */
 
-package com.maltaisn.cardgame.tests.core.tests
+package com.maltaisn.cardgame.tests.core.tests.menu
 
-import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.maltaisn.cardgame.stats.Statistics
-import com.maltaisn.cardgame.tests.core.SubmenuContentTest
+import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.tests.core.TestRes
 import com.maltaisn.cardgame.widget.CardGameLayout
-import com.maltaisn.cardgame.widget.ScrollView
-import com.maltaisn.cardgame.widget.stats.StatsGroup
+import com.maltaisn.cardgame.widget.stats.StatsSubMenu
 import ktx.assets.load
+import ktx.log.info
 import kotlin.random.Random
 
 
-/**
- * Test for statistics views, parsing and inflating.
- */
-class StatsViewTest : SubmenuContentTest() {
+class StatsSubMenuTest : ActionBarTest() {
 
     override fun load() {
         super.load()
         assetManager.load<Statistics>(TestRes.STATS)
     }
 
-    override fun layoutContent(layout: CardGameLayout, content: Table) {
+    override fun layout(layout: CardGameLayout) {
+        super.layout(layout)
+
         val stats: Statistics = assetManager[TestRes.STATS]
 
-        // Do the layout
-        val statsGroup = StatsGroup(skin, stats)
-        statsGroup.padLeft(40f).padRight(40f)
-        content.add(ScrollView(statsGroup)).grow()
+        val menu = StatsSubMenu(skin).apply {
+            this.stats = stats
+            itemClickListener = { info { "Item clicked: $it" } }
+        }
+
+        layout.centerTable.apply {
+            getCell(btnTable).padBottom(0f)
+            add(menu).grow()
+        }
+
+        menu.shown = true
 
         // Action buttons
-        addEnumBtn("Variant", stats.variants!!.indices.toList(), stats.variants) { _, value ->
-            statsGroup.shownVariant = value
+        val showBtn = addActionBtn("Hide") {
+            menu.shown = !menu.shown
+            it.title = if (menu.shown) "Hide" else "Show"
+        }
+        menu.backArrowClickListener = {
+            menu.shown = false
+            showBtn.title = "Show"
+            info { "Back arrow clicked" }
         }
         addActionBtn("Change all values") {
             stats.apply {
-                val v = statsGroup.shownVariant
+                val v = menu.checkedItem?.id ?: return@addActionBtn
                 getNumber("tricksTaken")[v] += Random.nextInt(8)
                 getNumber("roundsPlayed")[v]++
                 getNumber("gamesPlayed")[v] += Random.nextInt(1, 4)
@@ -60,15 +71,16 @@ class StatsViewTest : SubmenuContentTest() {
                 getNumber("totalPoints")[v] += Random.nextInt(10)
                 save()
             }
-            statsGroup.refresh()
+            menu.refresh()
         }
-        addActionBtn("Reset") {
-            stats.reset()
-            stats.save()
-            statsGroup.refresh()
+        addTwoStateActionBtn("Unset stats", "Set stats") { _, set ->
+            menu.stats = if (set) stats else null
+        }
+        addActionBtn("Check 2nd variant") {
+            menu.checkItem(menu.items[1])
         }
         addToggleBtn("Debug") { _, debug ->
-            statsGroup.setDebug(debug, true)
+            menu.setDebug(debug, true)
         }
     }
 

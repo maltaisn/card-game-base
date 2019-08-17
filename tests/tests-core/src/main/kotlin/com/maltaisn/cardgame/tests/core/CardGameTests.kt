@@ -56,6 +56,7 @@ object CardGameTests {
             SdfTextFieldTest::class.java,
             SliderTest::class.java,
             SolitaireTest::class.java,
+            StatsSubMenuTest::class.java,
             StatsViewTest::class.java,
             SwitchTest::class.java,
             TableViewTest::class.java,

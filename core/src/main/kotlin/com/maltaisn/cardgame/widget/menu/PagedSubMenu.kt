@@ -33,8 +33,6 @@ class PagedSubMenu(skin: Skin) : SubMenu(skin) {
 
 
     init {
-        itemClickListener = null  // Adds the change page on click action
-
         doMenuLayout()
     }
 

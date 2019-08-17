@@ -26,9 +26,11 @@ import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.markdown.MdElement
 import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.PrefCategory
+import com.maltaisn.cardgame.stats.Statistics
 import com.maltaisn.cardgame.widget.markdown.MarkdownView
 import com.maltaisn.cardgame.widget.prefs.ConfirmCallback
 import com.maltaisn.cardgame.widget.prefs.PrefsGroup
+import com.maltaisn.cardgame.widget.stats.StatsSubMenu
 import ktx.style.get
 
 
@@ -98,6 +100,12 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
             rulesMenu.scrollContent.actor = rulesView
         }
 
+    /** The game statistics. */
+    var stats: Statistics? = null
+        set(value) {
+            field = value
+            statsMenu.stats = value
+        }
 
     /** The main menu. */
     val mainMenu = MainMenu(skin)
@@ -118,7 +126,7 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
     private val rulesMenu = ScrollSubMenu(skin)
     private var rulesView: Table? = null
 
-    private val statsMenu = ScrollSubMenu(skin)
+    private val statsMenu = StatsSubMenu(skin)
 
     private val aboutMenu = ScrollSubMenu(skin)
 
@@ -194,9 +202,6 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
 
         // Rules menu
         rulesMenu.title = rulesStr
-
-        // Statistics menu
-        statsMenu.title = statsStr
 
         // About menu
         aboutMenu.apply {

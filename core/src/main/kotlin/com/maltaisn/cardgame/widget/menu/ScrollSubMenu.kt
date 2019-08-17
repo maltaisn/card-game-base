@@ -40,8 +40,6 @@ class ScrollSubMenu(skin: Skin) : SubMenu(skin) {
 
 
     init {
-        itemClickListener = null  // Adds the scroll on click action
-
         content.add(scrollView).grow()
 
         scrollContent.fill()

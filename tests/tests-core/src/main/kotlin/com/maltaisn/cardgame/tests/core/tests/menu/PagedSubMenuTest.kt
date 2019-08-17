@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.cardgame.tests.core.tests
+package com.maltaisn.cardgame.tests.core.tests.menu
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.Actor
@@ -22,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.tests.core.ActionBarTest
+import com.maltaisn.cardgame.tests.core.TestRes
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.ScrollView
 import com.maltaisn.cardgame.widget.markdown.MarkdownView
@@ -42,7 +43,7 @@ class PagedSubMenuTest : ActionBarTest() {
 
     override fun load() {
         super.load()
-        assetManager.load<Markdown>("lorem-ipsum")
+        assetManager.load<Markdown>(TestRes.LOREM_IPSUM_MARKDOWN)
     }
 
     override fun layout(layout: CardGameLayout) {
@@ -52,7 +53,7 @@ class PagedSubMenuTest : ActionBarTest() {
                 skin.getDrawable(MenuIcons.ARROW_RIGHT), SubMenu.ITEM_POS_BOTTOM)
         continueItem.checkable = false
 
-        val rules: Markdown = assetManager.get("lorem-ipsum")
+        val rules: Markdown = assetManager[TestRes.LOREM_IPSUM_MARKDOWN]
         val rulesView = ScrollView(MarkdownView(skin, rules)
                 .pad(0f, 40f, 0f, 40f))
         val rulesPage = TestPage(0, "Rules",

@@ -43,7 +43,7 @@ class AlertDialogTest : ActionBarTest() {
         dialog.dialogWidth = 1000f
         dialog.shadowType = Dialog.ShadowType.DISMISSABLE
 
-        val markdown: Markdown = assetManager.get(TestRes.LOREM_IPSUM_MARKDOWN)
+        val markdown: Markdown = assetManager[TestRes.LOREM_IPSUM_MARKDOWN]
         val mdView = ScrollView(MarkdownView(skin, markdown))
 
         val btnSeparator = Separator(skin)

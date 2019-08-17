@@ -21,7 +21,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.SwitchPref
+import com.maltaisn.cardgame.stats.Statistics
 import com.maltaisn.cardgame.tests.core.CardGameTest
+import com.maltaisn.cardgame.tests.core.TestRes
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.menu.*
 import com.maltaisn.cardgame.widget.prefs.ResetGameDialog
@@ -44,9 +46,10 @@ class DefaultGameMenuTest : CardGameTest() {
     override fun load() {
         super.load()
 
-        assetManager.load<GamePrefs>(PREFS_NEW_GAME)
-        assetManager.load<GamePrefs>(PREFS_SETTINGS)
-        assetManager.load<Markdown>(MD_RULES)
+        assetManager.load<GamePrefs>(TestRes.NEW_GAME_OPTIONS)
+        assetManager.load<GamePrefs>(TestRes.SETTINGS)
+        assetManager.load<Markdown>(TestRes.LOREM_IPSUM_MARKDOWN)
+        assetManager.load<Statistics>(TestRes.STATS)
     }
 
     override fun layout(layout: CardGameLayout) {
@@ -96,17 +99,20 @@ class DefaultGameMenuTest : CardGameTest() {
         }
 
         // New game
-        val newGamePrefs: GamePrefs = assetManager.get(PREFS_NEW_GAME)
+        val newGamePrefs: GamePrefs = assetManager[TestRes.NEW_GAME_OPTIONS]
         menu.newGameOptions = newGamePrefs
         prefs += newGamePrefs
 
         // Settings
-        val settingsPrefs: GamePrefs = assetManager.get(PREFS_SETTINGS)
+        val settingsPrefs: GamePrefs = assetManager[TestRes.SETTINGS]
         menu.settings = settingsPrefs
         prefs += settingsPrefs
 
         // Rules
-        menu.rules = assetManager.get(MD_RULES)
+        menu.rules = assetManager[TestRes.LOREM_IPSUM_MARKDOWN]
+
+        // Stats
+        menu.stats = assetManager[TestRes.STATS]
 
         // Continue
         val continuePref = settingsPrefs[PREF_CONTINUE] as SwitchPref
@@ -162,10 +168,6 @@ class DefaultGameMenuTest : CardGameTest() {
     }
 
     companion object {
-        private const val PREFS_NEW_GAME = "new-game-options.json"
-        private const val PREFS_SETTINGS = "settings.json"
-        private const val MD_RULES = "lorem-ipsum"
-
         private const val PREF_CONTINUE = "enable_continue"
         private const val PREF_DEBUG = "debug"
     }

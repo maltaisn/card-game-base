@@ -21,7 +21,8 @@ object TestRes {
 
     const val LOREM_IPSUM_MARKDOWN = "lorem-ipsum"
 
-    const val PREFS = "settings.json"
+    const val SETTINGS = "settings.json"
+    const val NEW_GAME_OPTIONS = "new-game-options.json"
 
     const val STATS = "stats.json"
 

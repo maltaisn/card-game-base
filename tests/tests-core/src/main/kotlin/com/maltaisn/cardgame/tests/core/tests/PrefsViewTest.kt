@@ -39,7 +39,7 @@ class PrefsViewTest : SubmenuContentTest() {
 
     override fun load() {
         super.load()
-        assetManager.load<GamePrefs>(TestRes.PREFS)
+        assetManager.load<GamePrefs>(TestRes.SETTINGS)
     }
 
     override fun layoutContent(layout: CardGameLayout, content: Table) {
@@ -47,7 +47,7 @@ class PrefsViewTest : SubmenuContentTest() {
         drawer.backBtnText = "Back"
         layout.addActor(drawer)
 
-        val prefs: GamePrefs = assetManager.get(TestRes.PREFS)
+        val prefs: GamePrefs = assetManager[TestRes.SETTINGS]
         val prefsGroup = PrefsGroup(skin, prefs, drawer)
 
         var confirmChanges = true

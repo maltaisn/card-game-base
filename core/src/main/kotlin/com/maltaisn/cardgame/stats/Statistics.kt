@@ -36,7 +36,7 @@ class Statistics {
      * The names of the variants for this statistic object.
      * `null` if there are no variants.
      */
-    val variants: List<String?>
+    val variants: List<String>?
 
     /**
      * The name under which the statistics are stored.
@@ -58,7 +58,7 @@ class Statistics {
     private val preferences: Preferences
 
 
-    constructor(name: String, variants: List<String?> = listOf(null)) {
+    constructor(name: String, variants: List<String>? = null) {
         this.variants = variants
         this.name = name
         preferences = Gdx.app.getPreferences(name)
@@ -83,7 +83,7 @@ class Statistics {
         val data = JsonReader().parse(file)
 
         // Get name and create the preferences handles
-        variants = data["variants"]?.asStringArray()?.toList() ?: listOf(null)
+        variants = data["variants"]?.asStringArray()?.toList()
         name = checkNotNull(data["name"]?.asString()) { "JSON statistics file must specify a name attribute." }
         preferences = Gdx.app.getPreferences(name)
 
@@ -108,7 +108,7 @@ class Statistics {
     /** Set the statistic at [key] to a [stat]. */
     operator fun set(key: String, stat: Statistic<*>) {
         stat.key = key
-        stat.initialize(variants.size)
+        stat.initialize(variants?.size ?: 1)
         if (stat is CompositeStat<*>) {
             stat.setOtherStats(this)
         }

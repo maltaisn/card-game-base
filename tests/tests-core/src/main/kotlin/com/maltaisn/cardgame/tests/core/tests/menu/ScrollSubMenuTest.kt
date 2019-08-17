@@ -18,6 +18,7 @@ package com.maltaisn.cardgame.tests.core.tests.menu
 
 import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.tests.core.ActionBarTest
+import com.maltaisn.cardgame.tests.core.TestRes
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.markdown.MarkdownView
 import com.maltaisn.cardgame.widget.menu.MenuIcons
@@ -35,7 +36,7 @@ class ScrollSubMenuTest : ActionBarTest() {
 
     override fun load() {
         super.load()
-        assetManager.load<Markdown>("lorem-ipsum")
+        assetManager.load<Markdown>(TestRes.LOREM_IPSUM_MARKDOWN)
     }
 
     override fun layout(layout: CardGameLayout) {
@@ -46,7 +47,7 @@ class ScrollSubMenuTest : ActionBarTest() {
                 MenuItem(2, "Bottom aligned", skin.getDrawable(MenuIcons.CHEVRON_RIGHT), SubMenu.ITEM_POS_BOTTOM))
         menuItems[2].checkable = false
 
-        val markdown: Markdown = assetManager.get("lorem-ipsum")
+        val markdown: Markdown = assetManager[TestRes.LOREM_IPSUM_MARKDOWN]
         val mdView = MarkdownView(skin, markdown)
 
         val menu = ScrollSubMenu(skin).apply {

@@ -44,7 +44,7 @@ class GameResult() : Cloneable, Json.Serializable {
 
 
     override fun read(json: Json, jsonData: JsonValue) {
-        playerResults = jsonData.get("results").asFloatArray().toList()
+        playerResults = jsonData["results"].asFloatArray().toList()
     }
 
     override fun write(json: Json) {

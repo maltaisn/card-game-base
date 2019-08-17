@@ -84,7 +84,7 @@ open class CardGameScreen : Stage(ExtendViewport(1920f, 1080f)), Screen {
         // Load core skin
         assetManager.load<Skin>(CoreRes.SKIN, SkinLoader.SkinParameter(CoreRes.SKIN_ATLAS))
         assetManager.finishLoading()
-        skin = assetManager.get(CoreRes.SKIN)
+        skin = assetManager[CoreRes.SKIN]
 
         // Listener to unfocus text field when clicked outside
         root.addCaptureListener(object : InputListener() {
@@ -120,7 +120,7 @@ open class CardGameScreen : Stage(ExtendViewport(1920f, 1080f)), Screen {
      */
     protected fun addSkin(skinFile: String, atlasFile: String? = null) {
         if (atlasFile != null) {
-            val atlas: TextureAtlas = assetManager.get(atlasFile)
+            val atlas: TextureAtlas = assetManager[atlasFile]
             skin.addRegions(atlas)
         }
         skin.load(file(skinFile))

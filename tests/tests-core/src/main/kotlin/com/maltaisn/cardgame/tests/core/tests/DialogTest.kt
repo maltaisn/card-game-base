@@ -47,7 +47,7 @@ class DialogTest : ActionBarTest() {
             }
         }
 
-        val markdown: Markdown = assetManager.get(TestRes.LOREM_IPSUM_MARKDOWN)
+        val markdown: Markdown = assetManager[TestRes.LOREM_IPSUM_MARKDOWN]
         val mdView = MarkdownView(skin, markdown)
 
         val closeBtn = Button(skin, "Close dialog")

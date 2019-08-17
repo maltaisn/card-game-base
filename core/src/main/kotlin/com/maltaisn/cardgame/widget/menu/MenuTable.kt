@@ -59,7 +59,7 @@ abstract class MenuTable(skin: Skin) : FboTable(skin) {
         }
 
     /** The listener called when a menu item is clicked or checked, `null` for none. */
-    var itemClickListener: ((MenuItem) -> Unit)? = null
+    open var itemClickListener: ((MenuItem) -> Unit)? = null
 
     internal var transitionAction by ActionDelegate<TimeAction>()
 

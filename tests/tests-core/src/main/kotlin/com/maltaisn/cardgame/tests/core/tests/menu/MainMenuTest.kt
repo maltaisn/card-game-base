@@ -16,13 +16,11 @@
 
 package com.maltaisn.cardgame.tests.core.tests.menu
 
-import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.menu.MainMenu
 import com.maltaisn.cardgame.widget.menu.MenuIcons
 import com.maltaisn.cardgame.widget.menu.MenuItem
-import ktx.assets.load
 import ktx.log.info
 
 
@@ -30,11 +28,6 @@ import ktx.log.info
  * Test [MainMenu] layout options and behavior with dummy content and items.
  */
 class MainMenuTest : ActionBarTest() {
-
-    override fun load() {
-        super.load()
-        assetManager.load<Markdown>("lorem-ipsum")
-    }
 
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
