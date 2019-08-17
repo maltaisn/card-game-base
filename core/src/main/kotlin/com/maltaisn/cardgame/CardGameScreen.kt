@@ -82,9 +82,9 @@ open class CardGameScreen : Stage(ExtendViewport(1920f, 1080f)), Screen {
         assetManager.setLoader(StatsLoader(fileResolver))
 
         // Load core skin
-        assetManager.load<Skin>(CoreRes.CORE_SKIN, SkinLoader.SkinParameter(CoreRes.CORE_SKIN_ATLAS))
+        assetManager.load<Skin>(CoreRes.SKIN, SkinLoader.SkinParameter(CoreRes.SKIN_ATLAS))
         assetManager.finishLoading()
-        skin = assetManager.get(CoreRes.CORE_SKIN)
+        skin = assetManager.get(CoreRes.SKIN)
 
         // Listener to unfocus text field when clicked outside
         root.addCaptureListener(object : InputListener() {

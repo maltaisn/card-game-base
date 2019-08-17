@@ -14,24 +14,16 @@
  * limitations under the License.
  */
 
-package com.maltaisn.cardgame
+package com.maltaisn.cardgame.pcard
 
 
 /**
- * Stores the paths of core game resources.
- * Project should use a Gradle task to copy the core assets to an `core/` folder under their assets.
+ * Stores the paths of PCard resources.
+ * Project should use a Gradle task to copy the core assets to an `pcard/` folder under their assets.
  */
-object CoreRes {
+object PCardRes {
 
-    const val SKIN = "core/core.skin"
-    const val SKIN_ATLAS = "core/core.atlas"
-
-    const val FONT_NAME = "core/font/font"
-    const val FONT_BOLD_NAME = "core/font/font-bold"
-    const val FONT_SHADER_VERT = "core/font/font.vert"
-    const val FONT_SHADER_FRAG = "core/font/font.frag"
-
-    const val CORE_STRINGS_FILE = "core/strings"
-    const val CORE_STRINGS_NAME = "core-strings"
+    const val SKIN = "pcard/pcard.skin"
+    const val SKIN_ATLAS = "pcard/pcard.atlas"
 
 }
