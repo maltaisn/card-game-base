@@ -16,14 +16,11 @@
 
 package com.maltaisn.cardgame
 
-import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.Cell
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
 import com.badlogic.gdx.scenes.scene2d.ui.Value
-import com.badlogic.gdx.utils.Json
-import com.badlogic.gdx.utils.JsonValue
 import com.maltaisn.cardgame.widget.action.TimeAction
 import ktx.actors.setScrollFocus
 
@@ -75,20 +72,3 @@ fun Group.findScrollFocus() {
         }
     }
 }
-
-inline fun <reified T> Json.fromJson(file: FileHandle) =
-        fromJson(T::class.java, file)
-
-inline fun <reified T> Json.addClassTag(tag: String) = addClassTag(tag, T::class.java)
-
-inline fun <reified T> Json.setSerializer(serializer: Json.Serializer<T>) =
-        setSerializer(T::class.java, serializer)
-
-inline fun <reified T> Json.readValue(jsonData: JsonValue): T =
-        readValue(T::class.java, jsonData)
-
-inline fun <reified T> Json.readValue(name: String, jsonData: JsonValue): T =
-        readValue(name, T::class.java, jsonData)
-
-inline fun <reified T : Iterable<E>, reified E> Json.readArrayValue(name: String, jsonData: JsonValue): T =
-        readValue(name, T::class.java, E::class.java, jsonData)

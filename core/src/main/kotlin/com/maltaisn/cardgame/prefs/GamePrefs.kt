@@ -21,9 +21,9 @@ import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.utils.I18NBundle
 import com.badlogic.gdx.utils.JsonReader
-import com.maltaisn.cardgame.addClassTag
-import com.maltaisn.cardgame.readValue
 import com.maltaisn.cardgame.utils.StringRefJson
+import ktx.json.addClassTag
+import ktx.json.readValue
 import kotlin.collections.component1
 import kotlin.collections.component2
 
