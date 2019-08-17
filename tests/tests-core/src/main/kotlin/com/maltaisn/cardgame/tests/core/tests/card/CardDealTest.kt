@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.cardgame.tests.core.tests
+package com.maltaisn.cardgame.tests.core.tests.card
 
 import com.maltaisn.cardgame.game.drawTop
 import com.maltaisn.cardgame.pcard.PCard

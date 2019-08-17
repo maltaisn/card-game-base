@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.cardgame.tests.core.tests
+package com.maltaisn.cardgame.tests.core.tests.card
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.maltaisn.cardgame.game.Card

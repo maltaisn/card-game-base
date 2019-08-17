@@ -296,6 +296,12 @@
       fontStyle: normal
     }
   }
+  com.maltaisn.cardgame.widget.stats.StatView$StatViewStyle: {
+    default: {
+      titleFontStyle: normal
+      valueFontStyle: prefValue
+    }
+  }
   com.maltaisn.cardgame.widget.menu.MenuDrawerListItem$DrawerListItemStyle: {
     default: {
       fontStyle: normal

@@ -55,13 +55,13 @@ abstract class GamePref<T : Any?> : PrefEntry() {
     }
 
     /**
-     * Load the value of this preference from [prefs] into [progress].
+     * Load the value of this preference from [prefs].
      */
     internal abstract fun loadValue(prefs: Preferences)
 
     /**
      * Save the value of this preference to [prefs], if it's not null.
-     * Doesn't flush the preferences, must be done after.
+     * Doesn't flush the preferences, must be done afterwards.
      */
     internal abstract fun saveValue(prefs: Preferences)
 

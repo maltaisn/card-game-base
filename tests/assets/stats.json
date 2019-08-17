@@ -1,0 +1,55 @@
+{
+  name: "com.maltaisn.cardgametest.stats"
+  variants: [
+    "Easy",
+    "Intermediate",
+    "Hard"
+  ]
+  stats: {
+    tricksTaken: {
+      type: "number"
+      internal: true
+    }
+    roundsPlayed: {
+      type: "number"
+      internal: true
+    }
+    gamesPlayed: {
+      type: "number"
+      title: "@string/games_played"
+    }
+    averageTricksTaken: {
+      type: "average"
+      title: "@string/average_tricks"
+      totalStatKey: "tricksTaken"
+      countStatKey: "roundsPlayed"
+      precision: 2
+    }
+    gamesWon: {
+      type: "number"
+      title: "@string/games_won"
+    }
+    percentGamesWon: {
+      type: "percent"
+      title: "@string/percent_games_won"
+      fracStatKey: "gamesWon"
+      totalStatKey: "gamesPlayed"
+      precision: 1
+    }
+    tradeCount_internal: {
+      type: "number"
+      internal: true
+    }
+    tradeCount: {
+      type: "percent"
+      title: "Number and percentage hands traded"
+      fracStatKey: "tradeCount_internal"
+      totalStatKey: "roundsPlayed"
+      showFrac: true
+    }
+    totalPoints: {
+      type: "number"
+      title: "Total points scored"
+    }
+  }
+}

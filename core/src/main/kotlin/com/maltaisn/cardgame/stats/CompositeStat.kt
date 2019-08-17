@@ -14,18 +14,25 @@
  * limitations under the License.
  */
 
-package com.maltaisn.cardgame.tests.core
+package com.maltaisn.cardgame.stats
+
+import com.badlogic.gdx.Preferences
 
 
-object TestRes {
+/**
+ * A statistic that relies other statistics to calculate its value.
+ */
+abstract class CompositeStat<T> : Statistic<T>() {
 
-    const val LOREM_IPSUM_MARKDOWN = "lorem-ipsum"
+    /**
+     * Set the references to the other stats with a [stats] object.
+     */
+    internal abstract fun setOtherStats(stats: Statistics)
 
-    const val PREFS = "settings.json"
+    override fun initialize(variants: Int) = Unit
 
-    const val STATS = "stats.json"
+    override fun loadValue(prefs: Preferences) = Unit
 
-    const val NCARD_SKIN = "ncard/ncard.skin"
-    const val NCARD_ATLAS = "ncard/ncard.atlas"
+    override fun saveValue(prefs: Preferences) = Unit
 
 }

@@ -17,6 +17,8 @@
 package com.maltaisn.cardgame.tests.core
 
 import com.maltaisn.cardgame.tests.core.tests.*
+import com.maltaisn.cardgame.tests.core.tests.card.*
+import com.maltaisn.cardgame.tests.core.tests.menu.*
 
 
 object CardGameTests {
@@ -54,6 +56,7 @@ object CardGameTests {
             SdfTextFieldTest::class.java,
             SliderTest::class.java,
             SolitaireTest::class.java,
+            StatsViewTest::class.java,
             SwitchTest::class.java,
             TableViewTest::class.java,
             TimeActionTest::class.java,

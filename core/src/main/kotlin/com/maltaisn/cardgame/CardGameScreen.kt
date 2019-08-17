@@ -37,6 +37,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.maltaisn.cardgame.markdown.MdLoader
 import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.GamePrefsLoader
+import com.maltaisn.cardgame.stats.StatsLoader
 import com.maltaisn.cardgame.widget.text.SdfShader
 import ktx.assets.file
 import ktx.assets.getAsset
@@ -64,6 +65,7 @@ open class CardGameScreen : Stage(ExtendViewport(1920f, 1080f)), Screen {
     lateinit var offscreenFboRegion: TextureRegion
         private set
 
+
     private var started = false
 
 
@@ -77,6 +79,7 @@ open class CardGameScreen : Stage(ExtendViewport(1920f, 1080f)), Screen {
         val fileResolver = InternalFileHandleResolver()
         assetManager.setLoader(GamePrefsLoader(fileResolver))
         assetManager.setLoader(MdLoader(fileResolver))
+        assetManager.setLoader(StatsLoader(fileResolver))
 
         // Load core skin
         assetManager.load<Skin>(CoreRes.CORE_SKIN, SkinLoader.SkinParameter(CoreRes.CORE_SKIN_ATLAS))

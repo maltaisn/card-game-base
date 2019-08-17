@@ -20,11 +20,10 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.utils.I18NBundle
-import com.badlogic.gdx.utils.Json
-import com.badlogic.gdx.utils.JsonValue
+import com.badlogic.gdx.utils.JsonReader
 import com.maltaisn.cardgame.addClassTag
-import com.maltaisn.cardgame.fromJson
 import com.maltaisn.cardgame.readValue
+import com.maltaisn.cardgame.utils.StringRefJson
 import kotlin.collections.component1
 import kotlin.collections.component2
 
@@ -42,7 +41,7 @@ class GamePrefs {
     val name: String?
 
     /** The map of preferences and categories by key, can be safely edited. */
-    val prefs = linkedMapOf<String, PrefEntry>()
+    val prefs = mutableMapOf<String, PrefEntry>()
 
     /**
      * The preferences where the values get stored.
@@ -63,47 +62,36 @@ class GamePrefs {
     }
 
     /**
-     * Load game preferences to this preferences object, from a [file] and using a [bundle] for resolving
-     * the string references. Any previous preferences are cleared.
+     * Create a preferences object from a [file] and
+     * using a [bundle] for resolving the string references.
      */
     constructor(file: FileHandle, bundle: I18NBundle) {
         // Create JSON parser
-        val json = object : Json() {
-            init {
-                setTypeName("type")
-                setUsePrototypes(false)
+        val json = StringRefJson(bundle).apply {
+            setTypeName("type")
+            setUsePrototypes(false)
 
-                // Add class tags
-                addClassTag<PrefCategory>("category")
-                addClassTag<SwitchPref>("switch")
-                addClassTag<SliderPref>("slider")
-                addClassTag<ListPref>("list")
-                addClassTag<TextPref>("text")
-                addClassTag<PlayerNamesPref>("player-names")
-            }
-
-            override fun <T : Any?> readValue(type: Class<T>?, elementType: Class<*>?, jsonData: JsonValue): T {
-                if (jsonData.isString && jsonData.asString().startsWith("@string/")) {
-                    // The string is a reference, resolve it.
-                    @Suppress("UNCHECKED_CAST")
-                    return bundle[jsonData.asString().substring(8)] as T
-                }
-                return super.readValue(type, elementType, jsonData)
-            }
+            // Add class tags
+            addClassTag<PrefCategory>("category")
+            addClassTag<SwitchPref>("switch")
+            addClassTag<SliderPref>("slider")
+            addClassTag<ListPref>("list")
+            addClassTag<TextPref>("text")
+            addClassTag<PlayerNamesPref>("player-names")
         }
 
-        val data: HashMap<String, Any> = json.fromJson(file)
+        val data = JsonReader().parse(file)
 
         // Get name and create a preferences handle
-        name = checkNotNull(data["name"] as? String) { "JSON preferences file must specify a name attribute." }
+        name = checkNotNull(data["name"]?.asString()) { "JSON preferences file must specify a name attribute." }
         preferences = Gdx.app.getPreferences(name)
 
         // Load preference entries
-        val entryData = data["prefs"] as? JsonValue
-        if (entryData != null) {
+        val prefsJson = data["prefs"]
+        if (prefsJson != null) {
             // Parse preference entries, and set the keys
-            prefs += json.readValue<LinkedHashMap<String, PrefEntry>>(entryData)
-            for ((key, pref) in prefs.entries) {
+            prefs += json.readValue<LinkedHashMap<String, PrefEntry>>(prefsJson)
+            for ((key, pref) in prefs) {
                 pref.key = key
                 if (pref is PrefCategory) {
                     for ((subKey, subPref) in pref.prefs) {

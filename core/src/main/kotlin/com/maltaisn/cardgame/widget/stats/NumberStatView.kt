@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-package com.maltaisn.cardgame.tests.core
+package com.maltaisn.cardgame.widget.stats
+
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.maltaisn.cardgame.stats.Statistic
 
 
-object TestRes {
+class NumberStatView(skin: Skin, stat: Statistic<Float>) : StatView<Statistic<Float>>(skin, stat) {
 
-    const val LOREM_IPSUM_MARKDOWN = "lorem-ipsum"
-
-    const val PREFS = "settings.json"
-
-    const val STATS = "stats.json"
-
-    const val NCARD_SKIN = "ncard/ncard.skin"
-    const val NCARD_ATLAS = "ncard/ncard.atlas"
+    override fun refresh() {
+        val value = stat[shownVariant]
+        valueLabel.setText(if (value.isFinite()) {
+            stat.numberFmt.format(value)
+        } else {
+            INVALID_PLACEHOLDER
+        })
+    }
 
 }
