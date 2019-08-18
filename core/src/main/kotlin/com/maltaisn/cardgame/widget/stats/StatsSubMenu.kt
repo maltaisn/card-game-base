@@ -41,7 +41,17 @@ class StatsSubMenu(skin: Skin) : SubMenu(skin) {
         get() = super.shown
         set(value) {
             super.shown = value
-            refresh()
+
+            if (value) {
+                // Check first item and scroll to top.
+                scrollView?.scrollToTop()
+                if (stats?.variants != null) {
+                    checkItem(items.first())
+                }
+
+                // Update stats values.
+                refresh()
+            }
         }
 
     override var itemClickListener: ((MenuItem) -> Unit)?
@@ -81,11 +91,13 @@ class StatsSubMenu(skin: Skin) : SubMenu(skin) {
 
                 // Set content
                 statsGroup = StatsGroup(skin, value)
-                content.add(ScrollView(statsGroup)).grow()
+                scrollView = ScrollView(statsGroup)
+                content.add(scrollView).grow()
             }
         }
 
     private var statsGroup: StatsGroup? = null
+    private var scrollView: ScrollView? = null
 
     private val resetItem: MenuItem
     private val resetDialog: AlertDialog
@@ -106,8 +118,8 @@ class StatsSubMenu(skin: Skin) : SubMenu(skin) {
 
         // Reset confirm dialog
         resetDialog = AlertDialog(skin).apply {
-            title = strings["stats_reset"]
-            message = strings["stats_reset_confirm"]
+            title = strings["stats_reset_confirm_title"]
+            message = strings["stats_reset_confirm_message"]
             addButton(strings["action_no"]).onClick {
                 // Do nothing
                 dismiss()

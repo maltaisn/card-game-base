@@ -101,12 +101,10 @@ class DefaultGameMenuTest : CardGameTest() {
         // New game
         val newGamePrefs: GamePrefs = assetManager[TestRes.NEW_GAME_OPTIONS]
         menu.newGameOptions = newGamePrefs
-        prefs += newGamePrefs
 
         // Settings
         val settingsPrefs: GamePrefs = assetManager[TestRes.SETTINGS]
         menu.settings = settingsPrefs
-        prefs += settingsPrefs
 
         // Rules
         menu.rules = assetManager[TestRes.LOREM_IPSUM_MARKDOWN]
@@ -161,10 +159,8 @@ class DefaultGameMenuTest : CardGameTest() {
     override fun pause() {
         super.pause()
 
-        // Save all preferences when game is paused
-        for (pref in prefs) {
-            pref.save()
-        }
+        menu.settings?.save()
+        menu.newGameOptions?.save()
     }
 
     companion object {

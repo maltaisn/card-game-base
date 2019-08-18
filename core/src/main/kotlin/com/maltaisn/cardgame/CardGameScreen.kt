@@ -35,7 +35,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField
 import com.badlogic.gdx.utils.I18NBundle
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.maltaisn.cardgame.markdown.MdLoader
-import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.GamePrefsLoader
 import com.maltaisn.cardgame.stats.StatsLoader
 import com.maltaisn.cardgame.widget.text.SdfShader
@@ -55,9 +54,6 @@ open class CardGameScreen : Stage(ExtendViewport(1920f, 1080f)), Screen {
      */
     val skin: Skin
 
-    /** List of game prefs to save on pause. */
-    val prefs = mutableListOf<GamePrefs>()
-
     // This frame buffer is used to draw sprites offscreen, not on the screen batch.
     // The buffer can then be rendered to screen, allowing uniform transparency for example.
     lateinit var offscreenFbo: FrameBuffer
@@ -66,12 +62,10 @@ open class CardGameScreen : Stage(ExtendViewport(1920f, 1080f)), Screen {
         private set
 
 
-    private var started = false
+    protected var started = false
 
 
     init {
-        @Suppress("LibGDXLogLevel")
-
         updateOffscreenFrameBuffer()
         actionsRequestRendering = true
 
@@ -157,12 +151,7 @@ open class CardGameScreen : Stage(ExtendViewport(1920f, 1080f)), Screen {
         }
     }
 
-    override fun pause() {
-        // Save all preferences when game is paused
-        for (pref in prefs) {
-            pref.save()
-        }
-    }
+    override fun pause() = Unit
 
     override fun resume() = Unit
 
@@ -175,12 +164,6 @@ open class CardGameScreen : Stage(ExtendViewport(1920f, 1080f)), Screen {
         super.dispose()
         assetManager.dispose()
         offscreenFbo.dispose()
-
-        // Clear all remaining preference listeners.
-        // This is usually done by then but just to make sure.
-        for (gamePrefs in prefs) {
-            gamePrefs.clearAllListeners()
-        }
     }
 
     private fun updateOffscreenFrameBuffer() {

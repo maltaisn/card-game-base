@@ -37,6 +37,8 @@ import ktx.log.info
  */
 class PrefsViewTest : SubmenuContentTest() {
 
+    private lateinit var prefs: GamePrefs
+
     override fun load() {
         super.load()
         assetManager.load<GamePrefs>(TestRes.SETTINGS)
@@ -47,7 +49,7 @@ class PrefsViewTest : SubmenuContentTest() {
         drawer.backBtnText = "Back"
         layout.addActor(drawer)
 
-        val prefs: GamePrefs = assetManager[TestRes.SETTINGS]
+        prefs = assetManager[TestRes.SETTINGS]
         val prefsGroup = PrefsGroup(skin, prefs, drawer)
 
         var confirmChanges = true
@@ -65,8 +67,6 @@ class PrefsViewTest : SubmenuContentTest() {
         prefs.addValueListener(::onPrefValueChanged)
         prefs.forEachPref { it.enabledListeners += ::onPrefEnabledChanged }
 
-        this.prefs += prefs
-
         // Do the layout
         val prefsContainer = Container(prefsGroup)
         prefsContainer.fill().pad(0f, 40f, 0f, 40f)
@@ -80,6 +80,11 @@ class PrefsViewTest : SubmenuContentTest() {
         addToggleBtn("Debug") { _, debug ->
             prefsGroup.setDebug(debug, true)
         }
+    }
+
+    override fun pause() {
+        super.pause()
+        prefs.save()
     }
 
     private fun <T : Any?> onPrefValueChanged(pref: GamePref<T>, value: T) {

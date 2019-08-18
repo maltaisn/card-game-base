@@ -19,6 +19,7 @@ package com.maltaisn.cardgame.prefs
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.files.FileHandle
+import com.badlogic.gdx.utils.Disposable
 import com.badlogic.gdx.utils.I18NBundle
 import com.badlogic.gdx.utils.JsonReader
 import com.maltaisn.cardgame.utils.StringRefJson
@@ -35,7 +36,7 @@ import kotlin.collections.component2
  * To get a preference object, use `gamePrefs["key"]`.
  * The preference value can be changed, listeners can be attached to get notified of changes.
  */
-class GamePrefs {
+class GamePrefs : Disposable {
 
     /** The name under which the preferences are stored. */
     val name: String?
@@ -250,6 +251,10 @@ class GamePrefs {
             pref.enabledListeners.clear()
             (pref as? GamePref<*>)?.valueListeners?.clear()
         }
+    }
+
+    override fun dispose() {
+        clearAllListeners()
     }
 
     override fun toString() = "[name: \"$name\", ${prefs.size} entries]"
