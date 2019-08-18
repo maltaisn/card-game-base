@@ -29,6 +29,9 @@ class NumberStat : Statistic<Float>() {
 
     private lateinit var value: FloatArray
 
+    /** The value used to reset the statistic. */
+    var defaultValue = 0f
+
 
     override fun get(variant: Int) = value[variant]
 
@@ -41,7 +44,7 @@ class NumberStat : Statistic<Float>() {
     }
 
     override fun reset() {
-        value.fill(0f)
+        value.fill(defaultValue)
     }
 
     override fun initialize(variants: Int) {
@@ -52,10 +55,10 @@ class NumberStat : Statistic<Float>() {
         for (i in 0 until value.size) {
             val variantKey = "${key}_$i"
             value[i] = try {
-                prefs.getFloat(variantKey, 0f)
+                prefs.getFloat(variantKey, defaultValue)
             } catch (e: Exception) {
                 error { "Wrong saved type for statistic '$variantKey', resetting." }
-                0f
+                defaultValue
             }
         }
     }

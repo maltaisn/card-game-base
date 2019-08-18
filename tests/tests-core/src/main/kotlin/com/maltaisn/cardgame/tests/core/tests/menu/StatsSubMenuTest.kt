@@ -69,6 +69,7 @@ class StatsSubMenuTest : ActionBarTest() {
                 getNumber("gamesWon")[v]++
                 getNumber("tradeCount_internal")[v] += Random.nextInt(2)
                 getNumber("totalPoints")[v] += Random.nextInt(10)
+                getNumber("minRoundsInGame")[v] = 3
                 save()
             }
             menu.refresh()

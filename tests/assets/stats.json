@@ -51,5 +51,10 @@
       type: "number"
       title: "Total points scored"
     }
+    minRoundsInGame: {
+      type: "number"
+      defaultValue: NaN
+      title: "Minimum rounds before the game ended"
+    }
   }
 }
