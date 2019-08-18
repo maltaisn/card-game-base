@@ -1,7 +1,7 @@
 {
   name: "com.maltaisn.cardgametest.stats"
   variants: [
-    "Easy",
+    "@string/variant_0",
     "Intermediate",
     "Hard"
   ]

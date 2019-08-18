@@ -83,7 +83,9 @@ class GamePrefs {
         val data = JsonReader().parse(file)
 
         // Get name and create a preferences handle
-        name = checkNotNull(data["name"]?.asString()) { "JSON preferences file must specify a name attribute." }
+        name = checkNotNull(json.readValue<String>(data, "name")) {
+            "JSON preferences file must specify a name attribute."
+        }
         preferences = Gdx.app.getPreferences(name)
 
         // Load preference entries

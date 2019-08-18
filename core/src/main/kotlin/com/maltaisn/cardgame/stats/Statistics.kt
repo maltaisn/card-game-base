@@ -83,8 +83,10 @@ class Statistics {
         val data = JsonReader().parse(file)
 
         // Get name and create the preferences handles
-        variants = data["variants"]?.asStringArray()?.toList()
-        name = checkNotNull(data["name"]?.asString()) { "JSON statistics file must specify a name attribute." }
+        variants = json.readValue(data, "variants")
+        name = checkNotNull(json.readValue<String>(data, "name")) {
+            "JSON statistics file must specify a name attribute."
+        }
         preferences = Gdx.app.getPreferences(name)
 
         // Create statistics entries for all variants
