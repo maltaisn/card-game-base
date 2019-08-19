@@ -19,7 +19,7 @@ package com.maltaisn.cardgame.widget.table
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Align
-import com.maltaisn.cardgame.defaultSize
+import com.maltaisn.cardgame.utils.defaultSize
 import com.maltaisn.cardgame.widget.text.FontStyle
 import com.maltaisn.cardgame.widget.text.SdfLabel
 import ktx.style.get

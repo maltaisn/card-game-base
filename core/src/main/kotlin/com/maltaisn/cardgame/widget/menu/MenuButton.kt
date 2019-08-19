@@ -23,7 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Scaling
-import com.maltaisn.cardgame.post
+import com.maltaisn.cardgame.utils.post
 import com.maltaisn.cardgame.widget.CheckableWidget
 import com.maltaisn.cardgame.widget.ShadowImage
 import com.maltaisn.cardgame.widget.text.FontStyle

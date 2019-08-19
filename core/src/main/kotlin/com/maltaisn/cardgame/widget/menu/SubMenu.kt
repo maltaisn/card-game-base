@@ -22,7 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.Value
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Align
-import com.maltaisn.cardgame.findScrollFocus
+import com.maltaisn.cardgame.utils.findScrollFocus
 import com.maltaisn.cardgame.widget.action.TimeAction
 import com.maltaisn.cardgame.widget.action.applyBounded
 import com.maltaisn.cardgame.widget.text.FontStyle

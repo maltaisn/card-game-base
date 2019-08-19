@@ -17,7 +17,7 @@
 package com.maltaisn.cardgame.tests.core
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.maltaisn.cardgame.findScrollFocus
+import com.maltaisn.cardgame.utils.findScrollFocus
 import com.maltaisn.cardgame.widget.CardGameLayout
 
 

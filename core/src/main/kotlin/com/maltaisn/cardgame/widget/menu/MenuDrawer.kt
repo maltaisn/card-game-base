@@ -27,7 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Scaling
-import com.maltaisn.cardgame.defaultSize
+import com.maltaisn.cardgame.utils.defaultSize
 import com.maltaisn.cardgame.widget.ScrollView
 import com.maltaisn.cardgame.widget.Separator
 import com.maltaisn.cardgame.widget.action.ActionDelegate

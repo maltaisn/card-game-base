@@ -28,9 +28,9 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
+import com.maltaisn.cardgame.utils.withinBounds
 import com.maltaisn.cardgame.widget.action.ActionDelegate
 import com.maltaisn.cardgame.widget.action.TimeAction
-import com.maltaisn.cardgame.withinBounds
 import ktx.actors.setKeyboardFocus
 import ktx.math.vec2
 import ktx.style.get

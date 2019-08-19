@@ -19,7 +19,6 @@ package com.maltaisn.cardgame.game
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
 import com.maltaisn.cardgame.prefs.GamePrefs
-import ktx.json.readArrayValue
 
 /**
  * Defines the state of a game at a particular moment.
@@ -117,7 +116,7 @@ abstract class CardGameState<P : CardPlayer> : Cloneable, Json.Serializable {
 
 
     override fun read(json: Json, jsonData: JsonValue) {
-        result = json.readArrayValue(jsonData, "result")
+        result = jsonData["result"].asFloatArray().toList()
         posToMove = jsonData.getInt("posToMove")
     }
 

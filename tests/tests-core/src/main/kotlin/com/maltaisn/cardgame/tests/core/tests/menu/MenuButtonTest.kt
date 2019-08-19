@@ -18,8 +18,8 @@ package com.maltaisn.cardgame.tests.core.tests.menu
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.utils.Align
-import com.maltaisn.cardgame.defaultSize
 import com.maltaisn.cardgame.tests.core.ActionBarTest
+import com.maltaisn.cardgame.utils.defaultSize
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.menu.MenuButton
 import com.maltaisn.cardgame.widget.menu.MenuButton.Side

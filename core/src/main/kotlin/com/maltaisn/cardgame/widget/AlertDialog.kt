@@ -18,7 +18,7 @@ package com.maltaisn.cardgame.widget
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.maltaisn.cardgame.defaultSize
+import com.maltaisn.cardgame.utils.defaultSize
 import com.maltaisn.cardgame.widget.text.FontStyle
 import com.maltaisn.cardgame.widget.text.SdfLabel
 import ktx.style.get

@@ -19,7 +19,7 @@ package com.maltaisn.cardgame.widget.table
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Scaling
-import com.maltaisn.cardgame.post
+import com.maltaisn.cardgame.utils.post
 import com.maltaisn.cardgame.widget.ScrollView
 import ktx.assets.pool
 import ktx.style.get

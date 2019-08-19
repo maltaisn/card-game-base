@@ -23,9 +23,9 @@ import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
 import com.maltaisn.cardgame.game.Card
+import com.maltaisn.cardgame.utils.withinBounds
 import com.maltaisn.cardgame.widget.SelectableWidget
 import com.maltaisn.cardgame.widget.action.ActionDelegate
-import com.maltaisn.cardgame.withinBounds
 import ktx.actors.alpha
 
 
