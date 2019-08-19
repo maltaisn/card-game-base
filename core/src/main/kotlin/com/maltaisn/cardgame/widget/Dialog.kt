@@ -61,12 +61,12 @@ open class Dialog(skin: Skin) : FboTable(skin) {
      * The default width is 640 pixels. Use `0` for no fixed size.
      */
     var dialogWidth: Float
-        get() = contentCell.maxWidth
+        get() = contentCell.minWidth
         set(value) {
             if (value == 0f) {
                 contentCell.defaultSize()
             } else {
-                contentCell.width(value)
+                contentCell.minWidth(value)
                 content.invalidateHierarchy()
             }
         }
@@ -94,7 +94,7 @@ open class Dialog(skin: Skin) : FboTable(skin) {
     init {
         isVisible = false
         content.background = style.background
-        contentCell = add(content).width(800f).pad(60f)
+        contentCell = add(content).minWidth(800f).pad(60f)
         setFillParent(true)
 
         onKeyDown(true) {

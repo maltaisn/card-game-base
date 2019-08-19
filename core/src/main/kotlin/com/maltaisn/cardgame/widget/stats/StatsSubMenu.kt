@@ -22,6 +22,7 @@ import com.gmail.blueboxware.libgdxplugin.annotations.GDXAssets
 import com.maltaisn.cardgame.CoreRes
 import com.maltaisn.cardgame.stats.Statistics
 import com.maltaisn.cardgame.widget.AlertDialog
+import com.maltaisn.cardgame.widget.Dialog
 import com.maltaisn.cardgame.widget.ScrollView
 import com.maltaisn.cardgame.widget.menu.MenuIcons
 import com.maltaisn.cardgame.widget.menu.MenuItem
@@ -120,6 +121,7 @@ class StatsSubMenu(skin: Skin) : SubMenu(skin) {
         resetDialog = AlertDialog(skin).apply {
             title = strings["stats_reset_confirm_title"]
             message = strings["stats_reset_confirm_message"]
+            shadowType = Dialog.ShadowType.DISMISSABLE
             addButton(strings["action_no"]).onClick {
                 // Do nothing
                 dismiss()

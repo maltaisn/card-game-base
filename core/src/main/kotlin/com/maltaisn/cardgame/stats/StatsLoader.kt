@@ -21,10 +21,12 @@ import com.badlogic.gdx.assets.AssetLoaderParameters
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader
 import com.badlogic.gdx.assets.loaders.FileHandleResolver
+import com.badlogic.gdx.assets.loaders.I18NBundleLoader
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.I18NBundle
 import ktx.collections.GdxArray
+import java.util.*
 
 
 /**
@@ -40,7 +42,8 @@ class StatsLoader(resolver: FileHandleResolver) :
     override fun getDependencies(fileName: String, file: FileHandle, parameter: Parameter?): Array<AssetDescriptor<*>>? {
         // Add a dependency to the strings bundle for string references
         val dependencies = GdxArray<AssetDescriptor<*>>()
-        dependencies.add(AssetDescriptor(getBundleName(file, parameter), I18NBundle::class.java))
+        dependencies.add(AssetDescriptor(getBundleName(file, parameter), I18NBundle::class.java,
+                I18NBundleLoader.I18NBundleParameter(parameter?.locale)))
         return dependencies
     }
 
@@ -62,7 +65,9 @@ class StatsLoader(resolver: FileHandleResolver) :
      * Parameters for the statistics loader.
      * @property bundlePath The path of the strings bundle used to resolve string references. (without .properties).
      * By default a bundle with the same name as the statistics file is used.
+     * @property locale The locale used to load the bundle.
      */
-    class Parameter(var bundlePath: String? = null) : AssetLoaderParameters<Statistics>()
+    class Parameter(var bundlePath: String? = null,
+                    var locale: Locale? = null) : AssetLoaderParameters<Statistics>()
 
 }

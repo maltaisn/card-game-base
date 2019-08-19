@@ -39,8 +39,8 @@ class MdLoader(resolver: FileHandleResolver) :
     override fun getDependencies(fileName: String, file: FileHandle, parameter: Parameter?) = null
 
     override fun loadAsync(manager: AssetManager, fileName: String, file: FileHandle, parameter: Parameter?) {
-        val param = parameter ?: Parameter()
-        markdown = Markdown(getLocalizedFileHandle(file, param.locale), param.encoding)
+        markdown = Markdown(getLocalizedFileHandle(file, parameter?.locale ?: Locale.getDefault()),
+                parameter?.encoding ?: "UTF-8")
     }
 
     override fun loadSync(manager: AssetManager, fileName: String, file: FileHandle, parameter: Parameter?): Markdown {
@@ -99,10 +99,10 @@ class MdLoader(resolver: FileHandleResolver) :
 
     /**
      * Parameters for the markdown loader.
-     * @property locale Markdown file locale, default is [Locale.getDefault].
+     * @property locale Markdown file locale, default is device locale.
      * @property encoding File encoding, default is UTF-8.
      */
-    class Parameter(var locale: Locale = Locale.getDefault(),
-                    val encoding: String = "UTF-8") : AssetLoaderParameters<Markdown>()
+    class Parameter(var locale: Locale? = null,
+                    val encoding: String? = null) : AssetLoaderParameters<Markdown>()
 
 }

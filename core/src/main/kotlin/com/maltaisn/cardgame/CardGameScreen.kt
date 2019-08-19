@@ -20,6 +20,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.assets.loaders.I18NBundleLoader
 import com.badlogic.gdx.assets.loaders.SkinLoader
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
 import com.badlogic.gdx.graphics.GL20
@@ -42,9 +43,15 @@ import ktx.assets.file
 import ktx.assets.getAsset
 import ktx.assets.load
 import ktx.assets.setLoader
+import java.util.*
 
 
-open class CardGameScreen : Stage(ExtendViewport(1920f, 1080f)), Screen {
+/**
+ * The stage and screen for a card game.
+ * @property locale The game locale, used to load the core strings.
+ */
+open class CardGameScreen(val locale: Locale = Locale.getDefault()) :
+        Stage(ExtendViewport(1920f, 1080f)), Screen {
 
     val assetManager = AssetManager()
 
@@ -76,9 +83,12 @@ open class CardGameScreen : Stage(ExtendViewport(1920f, 1080f)), Screen {
         assetManager.setLoader(StatsLoader(fileResolver))
 
         // Load core skin
-        assetManager.load<Skin>(CoreRes.SKIN, SkinLoader.SkinParameter(CoreRes.SKIN_ATLAS))
+        assetManager.load(CoreRes.SKIN, SkinLoader.SkinParameter(CoreRes.SKIN_ATLAS))
         assetManager.finishLoading()
         skin = assetManager[CoreRes.SKIN]
+
+        // Load core strings
+        assetManager.load(CoreRes.CORE_STRINGS_FILE, I18NBundleLoader.I18NBundleParameter(locale))
 
         // Listener to unfocus text field when clicked outside
         root.addCaptureListener(object : InputListener() {
@@ -91,7 +101,6 @@ open class CardGameScreen : Stage(ExtendViewport(1920f, 1080f)), Screen {
             }
         })
 
-        assetManager.load<I18NBundle>(CoreRes.CORE_STRINGS_FILE)
         load()
     }
 
