@@ -18,7 +18,6 @@ package com.maltaisn.cardgame.game.ai
 
 import com.maltaisn.cardgame.game.CardGameEvent
 import com.maltaisn.cardgame.game.CardGameState
-import com.maltaisn.cardgame.game.GameResult
 import kotlin.math.ln
 import kotlin.math.sqrt
 
@@ -57,7 +56,9 @@ object Mcts {
 
             // Select
             var moves = state.getMoves()
-            if (moves.size == 1) {
+            if (moves.size == 0) {
+                error("Cannot run MCTS on state with no available moves.")
+            } else if (moves.size == 1) {
                 // Root state has only 1 possible move, no choice to make.
                 return moves.first()
             }
@@ -82,15 +83,17 @@ object Mcts {
             // Simulate
             if (moves.isNotEmpty()) {
                 var randomMove: CardGameEvent.Move? = moves.random()
-                do {
-                    state.doMove(randomMove!!)
+                while (randomMove != null) {
+                    state.doMove(randomMove)
                     randomMove = state.getRandomMove()
-                } while (randomMove != null)
+                }
             }
 
             // Backpropagate
             var parent: Node? = node
-            val result = state.result!!
+            val result = checkNotNull(state.result) {
+                "Game result should be set since no moves are available."
+            }
             while (parent != null) {
                 parent.update(result)
                 parent = parent.parent
@@ -121,7 +124,10 @@ object Mcts {
                 randomMove = state.getRandomMove()
             }
 
-            score += state.result!!.playerResults[player]
+            val result = checkNotNull(state.result) {
+                "Game result should be set since no moves are available."
+            }
+            score += result[player]
         }
         return score / iter
     }
@@ -179,11 +185,11 @@ object Mcts {
         }
 
         /**
-         * Update the node visits and wins from a state [result].
+         * Update the node visits and wins from a state [results].
          */
-        fun update(result: GameResult) {
+        fun update(results: List<Float>) {
             visits++
-            wins += result.playerResults[playerThatMoved]
+            wins += results[playerThatMoved]
         }
 
         override fun toString(): String = if (move == null) {

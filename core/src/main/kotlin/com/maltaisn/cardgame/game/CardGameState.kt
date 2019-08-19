@@ -19,7 +19,7 @@ package com.maltaisn.cardgame.game
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
 import com.maltaisn.cardgame.prefs.GamePrefs
-import ktx.json.readValue
+import ktx.json.readArrayValue
 
 /**
  * Defines the state of a game at a particular moment.
@@ -37,16 +37,16 @@ abstract class CardGameState<P : CardPlayer> : Cloneable, Json.Serializable {
     lateinit var players: List<P>
 
     /**
-     * The result of the game.
+     * The result of the game for each player, indexed by their position.
      * If the game is not done, this is `null`.
      */
-    open var result: GameResult? = null
+    var result: List<Float>? = null
         protected set
 
     /**
      * Returns whether the game is done, i.e when [getMoves] is an empty list.
      */
-    open val isGameDone: Boolean
+    val isGameDone: Boolean
         get() = result != null
 
     /**
@@ -112,12 +112,12 @@ abstract class CardGameState<P : CardPlayer> : Cloneable, Json.Serializable {
         s.settings = settings
         s.players = players.map { it.clone() as P }
         s.posToMove = posToMove
-        s.result = result?.clone()
+        s.result = result?.toList()
     }
 
 
     override fun read(json: Json, jsonData: JsonValue) {
-        result = json.readValue(jsonData, "result")
+        result = json.readArrayValue(jsonData, "result")
         posToMove = jsonData.getInt("posToMove")
     }
 
