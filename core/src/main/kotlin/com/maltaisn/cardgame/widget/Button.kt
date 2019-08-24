@@ -25,17 +25,14 @@ import com.maltaisn.cardgame.widget.text.FontStyle
 import com.maltaisn.cardgame.widget.text.SdfLabel
 import ktx.actors.alpha
 import ktx.style.get
-import kotlin.math.max
 
 
 /**
- * A button for a popup. Unlike [Button], hover and press states are animated,
- * but there are no checked or focused states. Button can be disabled to act like a label.
- * A popup button has a label by default but it can be replaced or more actors can be added.
+ * A button widget. Unlike [Button], hover and press states are animated.
  */
-class Button(skin: Skin, text: String? = null) : SelectableWidget() {
+class Button(skin: Skin, text: String? = null, styleName: String = "default") : SelectableWidget() {
 
-    val style: ButtonStyle = skin.get()
+    val style: ButtonStyle = skin[styleName]
 
     /** The button label showing its text. */
     val label: SdfLabel
@@ -48,9 +45,10 @@ class Button(skin: Skin, text: String? = null) : SelectableWidget() {
         }
 
     init {
-        // Apply the background padding to the table
-        val background = style.background
-        pad(background.topHeight, background.leftWidth, background.bottomHeight, background.rightWidth)
+        background = style.background
+        if (style.background == null) {
+            pad(20f)
+        }
 
         // Add the button label
         label = SdfLabel(skin, style.fontStyle, text)
@@ -60,32 +58,30 @@ class Button(skin: Skin, text: String? = null) : SelectableWidget() {
         addListener(SelectionListener())
     }
 
-    override fun drawChildren(batch: Batch, parentAlpha: Float) {
-        // Draw background
-        batch.setColor(color.r, color.g, color.b, alpha * parentAlpha)
-        style.background.draw(batch, x, y, width, height)
 
+    override fun drawChildren(batch: Batch, parentAlpha: Float) {
         // Draw button content
-        super.drawChildren(batch, parentAlpha)
+        super.drawChildren(batch, alpha * parentAlpha *
+                if (enabled) 1f else style.disabledAlpha)
 
         // Draw hover and selection overlay
         batch.setColor(color.r, color.g, color.b, alpha * parentAlpha *
-                (hoverAlpha * 0.2f + pressAlpha * 0.2f + if (enabled) 0f else 0.2f))
+                (hoverAlpha * style.hoverOverlayAlpha +
+                        pressAlpha * style.pressOverlayAlpha +
+                        if (enabled) 0f else style.disabledOverlayAlpha))
         style.selectionOverlay.draw(batch, x, y, width, height)
     }
 
-    override fun getPrefWidth() = max(style.background.minWidth, super.getPrefWidth())
-
-    override fun getPrefHeight() = max(style.background.minHeight, super.getPrefHeight())
-
-    override fun getMinWidth() = style.background.minWidth
-
-    override fun getMinHeight() = style.background.minHeight
 
     class ButtonStyle {
-        lateinit var background: Drawable
+        var background: Drawable? = null
         lateinit var selectionOverlay: Drawable
         lateinit var fontStyle: FontStyle
+
+        var disabledAlpha = 0f
+        var hoverOverlayAlpha = 0f
+        var pressOverlayAlpha = 0f
+        var disabledOverlayAlpha = 0f
     }
 
 }

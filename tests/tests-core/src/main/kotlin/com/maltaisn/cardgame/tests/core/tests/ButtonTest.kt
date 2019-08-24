@@ -26,15 +26,15 @@ import com.maltaisn.cardgame.widget.CardGameLayout
 class ButtonTest : SubmenuContentTest() {
 
     override fun layoutContent(layout: CardGameLayout, content: Table) {
-        val btn1 = Button(skin, text = "Default style")
+        val btn1 = Button(skin, "Default style")
         content.add(btn1).expand().row()
 
-        val btn2 = Button(skin, "borderless", "Borderless style")
+        val btn2 = Button(skin, "Borderless style", "borderless")
         content.add(btn2).expand().row()
 
         val image = Image(skin.getDrawable("icon-book"))
         image.setColor(0f, 0f, 0f, 0.7f)
-        val btn3 = Button(skin, "borderless", "Image button").apply {
+        val btn3 = Button(skin, "Image button", "borderless").apply {
             clearChildren()
             add(image).pad(0f, 10f, 0f, 0f)
             add(label).pad(0f, 50f, 0f, 30f)
