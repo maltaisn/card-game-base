@@ -64,7 +64,7 @@ btn-menu-top
   orig: 30, 30
   offset: 0, 0
   index: -1
-btn-popup
+btn-background
   rotate: false
   xy: 695, 383
   size: 90, 90
@@ -73,7 +73,7 @@ btn-popup
   orig: 90, 90
   offset: 0, 0
   index: -1
-btn-popup-overlay
+btn-overlay
   rotate: false
   xy: 789, 383
   size: 90, 90

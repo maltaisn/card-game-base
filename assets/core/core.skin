@@ -82,14 +82,30 @@
   }
   com.maltaisn.cardgame.widget.Button$ButtonStyle: {
     default: {
-      background: btn-popup
-      selectionOverlay: btn-popup-overlay
+      background: btn-background
+      selectionOverlay: btn-overlay
       fontStyle: {
         fontSize: 44
         fontColor: textColorBlack
         drawShadow: true
         shadowColor: white
       }
+      disabledAlpha: 0.6
+      hoverOverlayAlpha: 0.1
+      pressOverlayAlpha: 0.1
+      disabledOverlayAlpha: 0.1
+    }
+    borderless: {
+      selectionOverlay: btn-menu-center
+      fontStyle: {
+        fontSize: 44
+        fontColor: textColorBlack
+        allCaps: true
+      }
+      disabledAlpha: 0.6
+      hoverOverlayAlpha: 0.05
+      pressOverlayAlpha: 0.1
+      disabledOverlayAlpha: 0.03
     }
   }
   com.maltaisn.cardgame.widget.Separator$SeparatorStyle: {
