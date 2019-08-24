@@ -77,16 +77,24 @@ open class GameMenu(skin: Skin) : Stack() {
     }
 
     /**
+     * Add a [menu] to the game menu, without showing it.
+     * If the menu is already added, nothing will happen.
+     */
+    fun addMenu(menu: MenuTable) {
+        if (menu !in children) {
+            // Add the menu if not added yet.
+            addActorBefore(drawer, menu)
+        }
+    }
+
+    /**
      * Show any [menu], hiding the previous one then showing the new one in a sequence animation.
      * If no back arrow listener was set on [SubMenu], a default one that only returns the previous menu is set.
      * If [saveLast], the last menu will be added to the back stack.
      */
     fun showMenu(menu: MenuTable, saveLast: Boolean = true) {
         if (shownMenu !== menu && nextShownMenu !== menu) {
-            if (menu !in children) {
-                // Add the menu if not added yet.
-                addActorBefore(drawer, menu)
-            }
+            addMenu(menu)
 
             if (saveLast && shownMenu != null) {
                 backStack.push(shownMenu)

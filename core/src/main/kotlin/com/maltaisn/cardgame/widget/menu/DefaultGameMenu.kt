@@ -167,6 +167,7 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
                 }
             }
         }
+        addMenu(mainMenu)
 
         // New game menu
         newGameMenu.apply {
@@ -190,6 +191,7 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
                 }
             }
         }
+        addMenu(newGameMenu)
 
         // Settings menu
         settingsMenu.apply {
@@ -199,9 +201,11 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
                 goBack()
             }
         }
+        addMenu(settingsMenu)
 
         // Rules menu
         rulesMenu.title = rulesStr
+        addMenu(rulesMenu)
 
         // About menu
         aboutMenu.apply {
@@ -209,6 +213,7 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
             addItems(MenuItem(0, "About", skin.getDrawable(MenuIcons.INFO), SubMenu.ITEM_POS_TOP),
                     MenuItem(1, "Donate", skin.getDrawable(MenuIcons.ARROW_RIGHT), SubMenu.ITEM_POS_TOP))
         }
+        addMenu(aboutMenu)
 
         // In game menu
         inGameMenu.apply {
@@ -224,10 +229,12 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
                 }
             }
         }
+        addMenu(inGameMenu)
 
         // Scoreboard
         scoreboardMenu.title = strings["scoreboard"]
         scoreboardMenu.backArrowClickListener = { callback?.onScoreboardCloseClicked() }
+        addMenu(scoreboardMenu)
 
         // Show main menu at first
         showMenu(mainMenu)

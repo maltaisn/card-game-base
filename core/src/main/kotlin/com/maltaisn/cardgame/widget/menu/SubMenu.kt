@@ -165,7 +165,7 @@ open class SubMenu(skin: Skin) : MenuTable(skin) {
 
         if (item.shown) {
             val iconPadding = if (item.icon == null) btn.iconSize + 30f else 0f
-            menuTable.add(btn).growX().pad(2f, 0f, 2f, 0f).prefHeight(140f)
+            menuTable.add(btn).growX().pad(5f, 0f, 5f, 0f).prefHeight(140f)
             if (menuPosition == MenuPosition.LEFT) {
                 btn.pad(20f, 20f + iconPadding, 20f, 40f)
             } else {

@@ -101,6 +101,9 @@ class TableViewTest : SubmenuContentTest() {
             }
             tableView.cellAdapter?.notifyChanged()
         }
+        addActionBtn("Scroll to bottom") {
+            tableView.itemScrollView.scrollToBottom()
+        }
         addToggleBtn("Show header", startState = true) { _, show ->
             tableView.headerAdapter = if (show) headerAdapter else null
         }
