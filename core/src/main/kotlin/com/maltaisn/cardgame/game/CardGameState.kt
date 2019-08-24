@@ -116,7 +116,7 @@ abstract class CardGameState<P : CardPlayer> : Cloneable, Json.Serializable {
 
 
     override fun read(json: Json, jsonData: JsonValue) {
-        result = jsonData["result"].asFloatArray().toList()
+        result = jsonData["result"]?.asFloatArray()?.toList()
         posToMove = jsonData.getInt("posToMove")
     }
 

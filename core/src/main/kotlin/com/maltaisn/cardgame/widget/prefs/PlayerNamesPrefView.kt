@@ -48,13 +48,17 @@ class PlayerNamesPrefView(skin: Skin, pref: PlayerNamesPref) :
 
         textFields = Array(pref.size) { playerPos ->
             val textField = SdfTextField(skin, skin.get<TextField.TextFieldStyle>(),
-                    style.fieldFontStyle, text = pref.value[playerPos])
+                    style.fieldFontStyle, text = pref.getPlayerName(playerPos))
             textField.maxLength = pref.maxLength
             textField.onKeyboardFocus { focused ->
                 if (!focused) {
-                    val oldValue = pref.value[playerPos]
-                    val newValue = (if (textField.text.isBlank())
-                        pref.defaultValue[playerPos] else textField.text).trim()
+                    val oldValue = pref.getPlayerName(playerPos)
+                    val newValue = (if (textField.text.isBlank()) {
+                        pref.defaultValue[playerPos]
+                    } else {
+                        textField.text
+                    }).trim()
+
                     if (newValue != oldValue) {
                         // Change the preference value when the text field is unfocused.
                         // If user enters nothing, set default name
@@ -69,7 +73,7 @@ class PlayerNamesPrefView(skin: Skin, pref: PlayerNamesPref) :
                     }
                 }
             }
-            textField.setTextFieldFilter { _, c -> pref.filter == null || c in pref.filter!! }
+            textField.setTextFieldFilter { _, c -> c.isLetterOrDigit() || c == ' ' }
 
             add(textField).growX().pad(20f, 20f, 20f, 20f)
             if (playerPos % 2 == 1) {
@@ -83,8 +87,8 @@ class PlayerNamesPrefView(skin: Skin, pref: PlayerNamesPref) :
     }
 
     override fun onPreferenceValueChanged(pref: GamePref<Array<String>>, value: Array<String>) {
-        for ((i, name) in this.pref.value.withIndex()) {
-            textFields[i].text = name
+        for (i in 0 until this.pref.size) {
+            textFields[i].text = this.pref.getPlayerName(i)
         }
     }
 

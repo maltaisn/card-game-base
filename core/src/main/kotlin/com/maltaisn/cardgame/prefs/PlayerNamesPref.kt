@@ -30,12 +30,17 @@ import ktx.log.error
 class PlayerNamesPref : GamePref<Array<String>>() {
 
     /**
-     * The player names array. Should be an immutable list but reflection won't allow it.
-     * The value should be set everytime the array is changed.
+     * The player names array.
+     * Should be set everytime the array is changed.
      */
     override var value = emptyArray<String>()
         set(value) {
             field = value
+            for (i in value.indices) {
+                if (value[i] == defaultValue[i]) {
+                    value[i] = ""
+                }
+            }
             notifyValueChanged()
         }
 
@@ -44,9 +49,6 @@ class PlayerNamesPref : GamePref<Array<String>>() {
 
     /** The maximum number of characters in a name, or [NO_MAX_LENGTH] for no maximum. */
     var maxLength = NO_MAX_LENGTH
-
-    /** A string of accepted input characters, or `null` for no filter. */
-    var filter: String? = null
 
     /** The number of players. */
     val size: Int
@@ -57,10 +59,10 @@ class PlayerNamesPref : GamePref<Array<String>>() {
         value = Array(size) {
             val playerKey = getPlayerNameKey(it)
             try {
-                prefs.getString(playerKey, defaultValue[it])
+                prefs.getString(playerKey, "")
             } catch (e: Exception) {
                 error { "Wrong saved type for preference '$playerKey', using default value." }
-                defaultValue[it]
+                ""
             }
         }
     }
@@ -72,7 +74,21 @@ class PlayerNamesPref : GamePref<Array<String>>() {
         }
     }
 
-    /** Get the key under which the name of a [player] is saved. */
+    /**
+     * Get the player name, or the default value if none was set.
+     */
+    fun getPlayerName(player: Int): String {
+        val name = value[player]
+        return if (name.isEmpty()) {
+            defaultValue[player]
+        } else {
+            name
+        }
+    }
+
+    /**
+     * Get the key under which the name of a [player] is saved.
+     */
     fun getPlayerNameKey(player: Int) = "${key}_$player"
 
 
