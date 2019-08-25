@@ -22,6 +22,7 @@ import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
+import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.game.Card
 import com.maltaisn.cardgame.widget.FboWidgetGroup
@@ -95,9 +96,7 @@ abstract class CardContainer(val cardStyle: CardActor.CardStyle) : FboWidgetGrou
     var enabled = true
         set(value) {
             field = value
-            for (actor in actors) {
-                actor?.enabled = value
-            }
+            touchable = if (enabled) Touchable.enabled else Touchable.disabled
         }
 
     /** The size of the card actors in the container. */
@@ -188,7 +187,6 @@ abstract class CardContainer(val cardStyle: CardActor.CardStyle) : FboWidgetGrou
         for (actor in actors) {
             if (actor != null) {
                 actor.size = cardSize
-                actor.enabled = enabled
                 if (visibility == Visibility.ALL) {
                     actor.shown = true
                 } else if (visibility == Visibility.NONE) {
@@ -223,12 +221,12 @@ abstract class CardContainer(val cardStyle: CardActor.CardStyle) : FboWidgetGrou
 
         override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
             startPos = vec2(event.stageX, event.stageY)
-            return enabled && dragListener != null && pointer == Input.Buttons.LEFT
+            return dragListener != null && pointer == Input.Buttons.LEFT
         }
 
         override fun touchDragged(event: InputEvent, x: Float, y: Float, pointer: Int) {
             val pos = vec2(event.stageX, event.stageY)
-            if (enabled && pointer == Input.Buttons.LEFT && (cardDragger != null ||
+            if (pointer == Input.Buttons.LEFT && (cardDragger != null ||
                             dragListener != null && (pos - startPos).len() > MIN_DRAG_DISTANCE)) {
                 // Start dragging only when touch has been dragged for a minimum distance
                 if (cardDragger == null) {
@@ -239,7 +237,7 @@ abstract class CardContainer(val cardStyle: CardActor.CardStyle) : FboWidgetGrou
         }
 
         override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
-            if (enabled && cardDragger != null && pointer == Input.Buttons.LEFT) {
+            if (cardDragger != null && pointer == Input.Buttons.LEFT) {
                 cardDragger?.touchUp(vec2(event.stageX, event.stageY))
                 cardDragger = null
             }
@@ -283,7 +281,6 @@ abstract class CardContainer(val cardStyle: CardActor.CardStyle) : FboWidgetGrou
                 }
                 val actor = oldActors.removeAt(oldActors.lastIndex)
                 actor.card = card
-                actor.enabled = enabled
                 actor.highlightable = true
                 actor.highlighted = false
                 _actors += actor
@@ -304,7 +301,6 @@ abstract class CardContainer(val cardStyle: CardActor.CardStyle) : FboWidgetGrou
             val card = newCards[actors.size]
             if (card != null) {
                 val actor = CardActor(cardStyle, card)
-                actor.enabled = enabled
                 actor.clickListener = cardClickListener
                 actor.longClickListener = cardLongClickListener
                 if (dragListener != null) actor.listeners.add(cardInputListener)
@@ -574,7 +570,6 @@ abstract class CardContainer(val cardStyle: CardActor.CardStyle) : FboWidgetGrou
         // Apply this container visibility to the new actors
         for (actor in actors) {
             actor ?: continue
-            actor.enabled = enabled
             if (visibility == Visibility.ALL) {
                 actor.shown = true
             } else if (visibility == Visibility.NONE) {
