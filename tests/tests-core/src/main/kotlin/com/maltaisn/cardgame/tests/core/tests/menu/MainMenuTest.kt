@@ -16,6 +16,7 @@
 
 package com.maltaisn.cardgame.tests.core.tests.menu
 
+import com.maltaisn.cardgame.pcard.PCard
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.CoreIcons
@@ -32,12 +33,15 @@ class MainMenuTest : ActionBarTest() {
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
-        val menu = MainMenu(skin)
-        menu.addItems(MenuItem(0, "Settings", this@MainMenuTest.skin.getDrawable(CoreIcons.SETTINGS), MainMenu.ITEM_POS_TOP),
-                MenuItem(1, "Rules", this@MainMenuTest.skin.getDrawable(CoreIcons.BOOK), MainMenu.ITEM_POS_TOP),
-                MenuItem(2, "Stats", this@MainMenuTest.skin.getDrawable(CoreIcons.LIST), MainMenu.ITEM_POS_TOP),
-                MenuItem(3, "New game", this@MainMenuTest.skin.getDrawable(CoreIcons.CARDS), MainMenu.ITEM_POS_BOTTOM),
-                MenuItem(4, "Continue", this@MainMenuTest.skin.getDrawable(CoreIcons.ARROW_RIGHT), MainMenu.ITEM_POS_BOTTOM))
+        val menu = MainMenu(skin, pcardStyle)
+        menu.addItems(MenuItem(0, "Settings", skin.getDrawable(CoreIcons.SETTINGS), MainMenu.ITEM_POS_LEFT),
+                MenuItem(1, "Rules", skin.getDrawable(CoreIcons.BOOK), MainMenu.ITEM_POS_LEFT),
+                MenuItem(2, "Stats", skin.getDrawable(CoreIcons.LIST), MainMenu.ITEM_POS_LEFT),
+                MenuItem(3, "New game", skin.getDrawable(CoreIcons.CARDS), MainMenu.ITEM_POS_RIGHT),
+                MenuItem(4, "Continue", skin.getDrawable(CoreIcons.ARROW_RIGHT), MainMenu.ITEM_POS_RIGHT))
+
+        menu.cards = listOf(PCard("Q♥"), PCard("K♥"),
+                PCard("A♥"), PCard("J♥"), PCard("10♥"))
 
         menu.itemClickListener = {
             info { "Menu item clicked: $it" }

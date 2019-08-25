@@ -58,15 +58,15 @@ class CardTrick(cardStyle: CardActor.CardStyle, capacity: Int) : CardContainer(c
      * Angles are relative to [startAngle] and are affected by [clockwisePlacement].
      * Must be set after [capacity].
      */
-    var cardAngles: List<Float> = emptyList()
+    var cardAngles = emptyList<Float>()
         set(value) {
             require(value.size == capacity) {
-                "Card angles array must be the same size as capacity."
+                "Card angles list must be the same size as capacity."
             }
 
             // Sort and clamp angles
             val angles = value.toMutableList()
-            angles.sort()
+            anglesAreSorted = (angles == angles.sorted())
             for (i in angles.indices) {
                 angles[i] = (angles[i] + TAU) % TAU
             }
@@ -74,6 +74,7 @@ class CardTrick(cardStyle: CardActor.CardStyle, capacity: Int) : CardContainer(c
             intersectionAngles = null
         }
 
+    private var anglesAreSorted = true
     private var intersectionAngles: List<Float>? = null
 
     /**
@@ -111,8 +112,9 @@ class CardTrick(cardStyle: CardActor.CardStyle, capacity: Int) : CardContainer(c
         val r2x = radius.x + 10f
         val r2y = radius.y + 10f
         for (i in 0 until capacity) {
-            var angle = cardAngles[i] - startAngle
+            var angle = cardAngles[i]
             if (clockwisePlacement) angle = -angle
+            angle += startAngle
             val x = cos(angle)
             val y = sin(angle)
             shapes.line(center.x + x * r1x, center.y + y * r1y,
@@ -163,6 +165,8 @@ class CardTrick(cardStyle: CardActor.CardStyle, capacity: Int) : CardContainer(c
 
     override fun findCardPositionForCoordinates(x: Float, y: Float): Int {
         if (capacity == 1) return 0
+
+        check(anglesAreSorted) { "Card angles must be sorted in ascending order to find position." }
 
         var angles = intersectionAngles
         if (angles == null) {

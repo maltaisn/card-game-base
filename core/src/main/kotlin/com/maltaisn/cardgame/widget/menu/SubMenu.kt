@@ -152,7 +152,8 @@ open class SubMenu(skin: Skin) : MenuTable(skin) {
     }
 
     private fun addButtonToMenuTable(item: MenuItem) {
-        val btn = MenuButton(skin, style.itemFontStyle, item.title, item.icon).apply {
+        val fontStyle = if (item.important) style.importantItemFontStyle else style.itemFontStyle
+        val btn = MenuButton(skin, fontStyle, item.title, item.icon).apply {
             onClick { onItemBtnClicked(item) }
             anchorSide = if (menuPosition == MenuPosition.LEFT) MenuButton.Side.RIGHT else MenuButton.Side.LEFT
             iconSide = MenuButton.Side.LEFT

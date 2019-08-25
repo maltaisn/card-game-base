@@ -227,8 +227,7 @@ open class MenuButton(skin: Skin,
         backgroundDrawable.draw(batch, x, y, width, height)
 
         // Draw button content
-        batch.setColor(color.r, color.g, color.b, alpha * parentAlpha)
-        super.drawChildren(batch, parentAlpha)
+        super.drawChildren(batch, parentAlpha * if (enabled) 1f else 0.5f)
     }
 
     private fun interpolateColors(start: Color, end: Color, percent: Float): Color {

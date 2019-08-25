@@ -19,6 +19,7 @@ package com.maltaisn.cardgame.tests.core.tests.menu
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.maltaisn.cardgame.markdown.Markdown
+import com.maltaisn.cardgame.pcard.PCard
 import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.SwitchPref
 import com.maltaisn.cardgame.stats.Statistics
@@ -57,7 +58,7 @@ class DefaultGameMenuTest : CardGameTest() {
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
-        menu = DefaultGameMenu(skin)
+        menu = DefaultGameMenu(skin, pcardStyle)
         layout.addActor(menu)
 
         menu.callback = object : DefaultGameMenu.Callback {
@@ -99,6 +100,10 @@ class DefaultGameMenuTest : CardGameTest() {
                 it.show(this@DefaultGameMenuTest)
             }
         }
+
+        // Main menu
+        menu.mainMenu.cards = listOf(PCard("K♥"), PCard("A♥"),
+                PCard("Q♠"), PCard("J♥"), PCard("Q♥"))
 
         // New game
         val newGamePrefs: GamePrefs = assetManager[TestRes.NEW_GAME_OPTIONS]
@@ -148,11 +153,21 @@ class DefaultGameMenuTest : CardGameTest() {
         }
 
         val scoresView = Container(scoresTable).pad(60f, 30f, 60f, 30f).fill()
-        val scoresPage = PagedSubMenu.Page(1, "Scores",
+        val scoresPage = PagedSubMenu.Page(0, "Scores",
                 skin.getDrawable(CoreIcons.CHART), SubMenu.ITEM_POS_TOP, scoresView)
+
+        val continueItem = MenuItem(1000, "Continue",
+                skin.getDrawable(CoreIcons.ARROW_RIGHT), SubMenu.ITEM_POS_BOTTOM, true)
+        continueItem.checkable = false
+
         menu.scoreboardMenu.apply {
-            addItem(scoresPage)
+            addItems(scoresPage, continueItem)
             checkItem(scoresPage)
+            itemClickListener = {
+                if (it === continueItem) {
+                    menu.goBack()
+                }
+            }
         }
 
         // Debug

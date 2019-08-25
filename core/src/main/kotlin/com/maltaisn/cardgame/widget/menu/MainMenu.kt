@@ -19,22 +19,57 @@ package com.maltaisn.cardgame.widget.menu
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
-import com.badlogic.gdx.utils.Align
+import com.maltaisn.cardgame.game.Card
 import com.maltaisn.cardgame.widget.action.TimeAction
+import com.maltaisn.cardgame.widget.card.CardActor
+import com.maltaisn.cardgame.widget.card.CardTrick
 import ktx.actors.alpha
 import ktx.actors.onClick
 import ktx.style.get
+import kotlin.math.PI
 
 
 /**
  * The main menu of the game, has a row of items on top and one on bottom.
  */
-class MainMenu(skin: Skin) : MenuTable(skin) {
+class MainMenu(skin: Skin, cardStyle: CardActor.CardStyle) : MenuTable(skin) {
 
-    val style: MainMenuStyle = skin.get()
+    private val style: MainMenuStyle = skin.get()
 
-    private val topRow = Table()
-    private val bottomRow = Table()
+    /**
+     * The cards shown in the main menu, can be empty for none.
+     * There should be an odd number of cards. The cards set are placed in the same order,
+     * with the middle card on top of the others.
+     */
+    var cards = emptyList<Card>()
+        set(value) {
+            require(value.size % 2 == 1) { "There must be an odd number of cards" }
+            field = value
+
+            // Put them in correct order of Z-index
+            val halfSize = value.size / 2
+            val cards = mutableListOf<Card?>()
+            cards += value.subList(0, halfSize)
+            cards += value.subList(halfSize + 1, value.size).reversed()
+            cards += value[halfSize]
+            cardTrick.cards = cards + arrayOfNulls(16 - value.size)
+
+            // Find the angle of each card
+            val angles = mutableListOf<Float>()
+            for (i in 0 until halfSize) {
+                val distance = CARDS_SPACING * (i + 1)
+                angles.add(i, distance)
+                angles.add(0, -distance)
+            }
+            angles += List(16 - angles.size) { 0f }
+            cardTrick.cardAngles = angles
+        }
+
+
+    private val leftSide = Table()
+    private val rightSide = Table()
+    private val cardTrick = CardTrick(cardStyle, 16)
+
 
     override var shown
         get() = super.shown
@@ -51,39 +86,55 @@ class MainMenu(skin: Skin) : MenuTable(skin) {
     init {
         checkable = false
 
+        cardTrick.apply {
+            enabled = false
+            cardSize = CardActor.SIZE_BIG
+            radius.set(450f, 300f)
+            startAngle = PI.toFloat() / 2
+        }
+
         // Do the layout
-        add(topRow).growX().expandY().height(MENU_ROW_HEIGHT)
-                .align(Align.top).pad(0f, 20f, 0f, 20f).row()
-        add(bottomRow).growX().expandY().height(MENU_ROW_HEIGHT)
-                .align(Align.bottom).pad(0f, 20f, 0f, 10f).growX()
+        add(leftSide).width(MENU_COL_WIDTH).growY()
+                .pad(40f, 0f, 40f, 0f)
+        add().grow()
+        add(rightSide).width(MENU_COL_WIDTH).growY()
+                .pad(40f, 0f, 40f, 0f)
+        addActor(cardTrick)
     }
 
     override fun layout() {
         super.layout()
 
+        cardTrick.setSize(cardTrick.prefWidth, cardTrick.prefHeight)
+        cardTrick.setPosition((width - cardTrick.width) / 2,
+                -cardTrick.height + CARD_TRICK_HEIGHT)
+
         (transitionAction as TransitionAction?)?.let {
-            it.topStartY = topRow.y
-            it.bottomStartY = bottomRow.y
+            it.leftStartX = leftSide.x
+            it.rightStartX = rightSide.x
+            it.trickStartY = cardTrick.y
         }
     }
 
     override fun doMenuLayout() {
-        topRow.clearChildren()
-        bottomRow.clearChildren()
+        leftSide.clearChildren()
+        rightSide.clearChildren()
 
         for (item in items) {
-            val onTopRow = (item.position == ITEM_POS_TOP)
-            val btn = MenuButton(skin, style.itemFontStyle, item.title, item.icon).apply {
+            val onLeftSide = (item.position == ITEM_POS_LEFT)
+            val fontStyle = if (item.important) style.importantItemFontStyle else style.itemFontStyle
+            val btn = MenuButton(skin, fontStyle, item.title, item.icon).apply {
                 onClick { onItemBtnClicked(item) }
-                anchorSide = if (onTopRow) MenuButton.Side.TOP else MenuButton.Side.BOTTOM
-                iconSide = MenuButton.Side.LEFT
+                anchorSide = if (onLeftSide) MenuButton.Side.LEFT else MenuButton.Side.RIGHT
+                iconSide = MenuButton.Side.TOP
                 iconSize = this@MainMenu.style.itemIconSize
                 enabled = item.enabled
             }
             item.button = btn
 
             if (item.shown) {
-                (if (onTopRow) topRow else bottomRow).add(btn).grow().pad(0f, 30f, 0f, 30f)
+                (if (onLeftSide) leftSide else rightSide).add(btn)
+                        .grow().pad(20f, 0f, 20f, 0f).row()
             }
         }
     }
@@ -92,8 +143,9 @@ class MainMenu(skin: Skin) : MenuTable(skin) {
     private inner class TransitionAction :
             TimeAction(0.3f, Interpolation.smooth, reversed = !shown) {
 
-        var topStartY = topRow.y
-        var bottomStartY = bottomRow.y
+        var leftStartX = leftSide.x
+        var rightStartX = rightSide.x
+        var trickStartY = cardTrick.y
 
         init {
             isVisible = true
@@ -104,8 +156,10 @@ class MainMenu(skin: Skin) : MenuTable(skin) {
         override fun update(progress: Float) {
             reversed = !shown
 
-            topRow.y = topStartY + (1 - progress) * MENU_ROW_HEIGHT
-            bottomRow.y = bottomStartY + (1 - progress) * -MENU_ROW_HEIGHT
+            val invProgress = 1 - progress
+            leftSide.x = leftStartX - invProgress * MENU_COL_WIDTH
+            rightSide.x = rightStartX + invProgress * MENU_COL_WIDTH
+            cardTrick.y = trickStartY - invProgress * CARD_TRICK_HEIGHT * 0.5f
             alpha = progress
         }
 
@@ -115,18 +169,24 @@ class MainMenu(skin: Skin) : MenuTable(skin) {
             transitionAction = null
 
             // Place all animated widgets to their correct position
-            topRow.y = topStartY
-            bottomRow.y = bottomStartY
+            leftSide.x = leftStartX
+            rightSide.x = rightStartX
+            cardTrick.y = trickStartY
         }
     }
 
+
     class MainMenuStyle : MenuTableStyle()
 
-    companion object {
-        const val ITEM_POS_TOP = 0
-        const val ITEM_POS_BOTTOM = 1
 
-        private const val MENU_ROW_HEIGHT = 200f
+    companion object {
+        const val ITEM_POS_LEFT = 0
+        const val ITEM_POS_RIGHT = 1
+
+        private const val MENU_COL_WIDTH = 400f
+        private const val CARD_TRICK_HEIGHT = 360f
+
+        private const val CARDS_SPACING = PI.toFloat() / 8
     }
 
 }

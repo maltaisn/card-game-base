@@ -27,6 +27,7 @@ import com.maltaisn.cardgame.markdown.MdElement
 import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.PrefCategory
 import com.maltaisn.cardgame.stats.Statistics
+import com.maltaisn.cardgame.widget.card.CardActor
 import com.maltaisn.cardgame.widget.markdown.MarkdownView
 import com.maltaisn.cardgame.widget.prefs.ConfirmCallback
 import com.maltaisn.cardgame.widget.prefs.PrefsGroup
@@ -39,7 +40,8 @@ import ktx.style.get
  * new game, continue, settings, rules, statistics and about.
  * The in game menu has a back button and a scoreboard button.
  */
-open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
+open class DefaultGameMenu(private val skin: Skin,
+                           cardStyle: CardActor.CardStyle) : GameMenu(skin) {
 
     private val style: DefaultGameMenuStyle = skin.get()
 
@@ -108,7 +110,7 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
         }
 
     /** The main menu. */
-    val mainMenu = MainMenu(skin)
+    val mainMenu = MainMenu(skin, cardStyle)
 
     /** The menu shown in game. */
     val inGameMenu = InGameMenu(skin)
@@ -147,14 +149,14 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
         mainMenu.apply {
             // Add main menu items
             val icons = this@DefaultGameMenu.style
-            addItems(MenuItem(ITEM_ID_NEW_GAME, newGameStr, icons.newGameIcon, MainMenu.ITEM_POS_BOTTOM),
-                    MenuItem(ITEM_ID_CONTINUE, continueStr, icons.continueIcon, MainMenu.ITEM_POS_BOTTOM),
-                    MenuItem(ITEM_ID_SETTINGS, settingsStr, icons.settingsIcon, MainMenu.ITEM_POS_BOTTOM),
-                    MenuItem(ITEM_ID_RULES, rulesStr, icons.rulesIcon, MainMenu.ITEM_POS_TOP),
-                    MenuItem(ITEM_ID_STATS, statsStr, icons.statsIcon, MainMenu.ITEM_POS_TOP),
-                    MenuItem(ITEM_ID_ABOUT, aboutStr, icons.aboutIcon, MainMenu.ITEM_POS_TOP))
+            addItems(MenuItem(ITEM_ID_RULES, rulesStr, icons.rulesIcon, MainMenu.ITEM_POS_LEFT),
+                    MenuItem(ITEM_ID_SETTINGS, settingsStr, icons.settingsIcon, MainMenu.ITEM_POS_LEFT),
+                    MenuItem(ITEM_ID_NEW_GAME, newGameStr, icons.newGameIcon, MainMenu.ITEM_POS_LEFT, true),
+                    MenuItem(ITEM_ID_ABOUT, aboutStr, icons.aboutIcon, MainMenu.ITEM_POS_RIGHT),
+                    MenuItem(ITEM_ID_STATS, statsStr, icons.statsIcon, MainMenu.ITEM_POS_RIGHT),
+                    MenuItem(ITEM_ID_CONTINUE, continueStr, icons.continueIcon, MainMenu.ITEM_POS_RIGHT, true))
 
-            continueItem = items[1]
+            continueItem = items.last()
 
             itemClickListener = {
                 when (it.id) {

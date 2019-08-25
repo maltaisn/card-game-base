@@ -65,9 +65,9 @@ class PagedSubMenu(skin: Skin) : SubMenu(skin) {
         }
     }
 
-    open class Page(id: Int, title: String,
-                    icon: Drawable?, position: Int,
-                    var content: Actor? = null) : MenuItem(id, title, icon, position) {
+    open class Page(id: Int, title: String, icon: Drawable?, position: Int,
+                    var content: Actor? = null, important: Boolean = false) :
+            MenuItem(id, title, icon, position, important) {
 
         /**
          * Called when a page is selected or unselected.

@@ -28,7 +28,8 @@ import com.maltaisn.cardgame.widget.menu.MenuItem.Companion.NO_ID
 open class MenuItem(val id: Int,
                     val title: CharSequence?,
                     val icon: Drawable?,
-                    val position: Int) {
+                    val position: Int,
+                    val important: Boolean = false) {
 
     init {
         require(id != NO_ID) { "A menu item cannot have an ID of $NO_ID." }

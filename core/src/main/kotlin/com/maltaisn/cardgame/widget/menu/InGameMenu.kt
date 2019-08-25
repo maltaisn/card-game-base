@@ -65,7 +65,8 @@ class InGameMenu(skin: Skin) : MenuTable(skin) {
         rightGroup.clearChildren()
 
         for (item in items) {
-            val btn = MenuButton(skin, style.itemFontStyle, item.title, item.icon).apply {
+            val fontStyle = if (item.important) style.importantItemFontStyle else style.itemFontStyle
+            val btn = MenuButton(skin, fontStyle, item.title, item.icon).apply {
                 pad(30f)
                 onClick { onItemBtnClicked(item) }
                 anchorSide = MenuButton.Side.NONE

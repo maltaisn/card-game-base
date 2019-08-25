@@ -28,8 +28,16 @@
     menuItem: {
       bold: true
       allCaps: true
-      fontSize: 44
+      fontSize: 42
       fontColor: textColorWhite
+      drawShadow: true
+      shadowColor: black
+    }
+    importantMenuItem: {
+      bold: true
+      allCaps: true
+      fontSize: 52
+      fontColor: white
       drawShadow: true
       shadowColor: black
     }
@@ -174,6 +182,7 @@
   com.maltaisn.cardgame.widget.menu.MainMenu$MainMenuStyle: {
     default: {
       itemFontStyle: menuItem
+      importantItemFontStyle: importantMenuItem
       itemIconSize: 80
     }
   }
@@ -188,6 +197,7 @@
       backArrowIcon: icon-chevron-left
       backArrowSize: 96
       itemFontStyle: menuItem
+      importantItemFontStyle: importantMenuItem
       itemIconSize: 64
       contentBackground: submenu-content-background
     }
@@ -195,6 +205,7 @@
   com.maltaisn.cardgame.widget.menu.InGameMenu$InGameMenuStyle: {
     default: {
       itemFontStyle: menuItem
+      importantItemFontStyle: importantMenuItem
       itemIconSize: 96
     }
   }
