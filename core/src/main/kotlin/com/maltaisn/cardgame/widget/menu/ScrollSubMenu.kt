@@ -88,7 +88,7 @@ class ScrollSubMenu(skin: Skin) : SubMenu(skin) {
                 }
             }
             if (newId != MenuItem.NO_ID && newId != oldId) {
-                items.find { it.id == newId }?.let { checkItem(it) }
+                items.find { it.id == newId }?.let { super.checkItem(it) }
             }
         }
 
