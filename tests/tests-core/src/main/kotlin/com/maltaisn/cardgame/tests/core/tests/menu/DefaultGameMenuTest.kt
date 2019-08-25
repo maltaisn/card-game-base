@@ -24,7 +24,9 @@ import com.maltaisn.cardgame.prefs.SwitchPref
 import com.maltaisn.cardgame.stats.Statistics
 import com.maltaisn.cardgame.tests.core.CardGameTest
 import com.maltaisn.cardgame.tests.core.TestRes
+import com.maltaisn.cardgame.widget.AboutView
 import com.maltaisn.cardgame.widget.CardGameLayout
+import com.maltaisn.cardgame.widget.CoreIcons
 import com.maltaisn.cardgame.widget.menu.*
 import com.maltaisn.cardgame.widget.prefs.ResetGameDialog
 import com.maltaisn.cardgame.widget.table.ScoresTable
@@ -112,6 +114,16 @@ class DefaultGameMenuTest : CardGameTest() {
         // Stats
         menu.stats = assetManager[TestRes.STATS]
 
+        // About
+        val aboutView = AboutView(skin, "App name", "1.0.0", "Author name").apply {
+            addButton("Rate app", skin.getDrawable(CoreIcons.STAR))
+            addButton("View changelog", skin.getDrawable(CoreIcons.LIST))
+        }
+        val aboutPage = PagedSubMenu.Page(0, "About",
+                skin.getDrawable(CoreIcons.INFO), SubMenu.ITEM_POS_TOP, aboutView)
+        menu.aboutMenu.addItem(aboutPage)
+        menu.aboutMenu.checkItem(aboutPage)
+
         // Continue
         val continuePref = settingsPrefs[PREF_CONTINUE] as SwitchPref
         continuePref.valueListeners += { _, value -> menu.continueItem.enabled = value }
@@ -119,7 +131,7 @@ class DefaultGameMenuTest : CardGameTest() {
 
         // In-game
         menu.inGameMenu.addItem(MenuItem(0, null,
-                skin.getDrawable(MenuIcons.CARDS), InGameMenu.ITEM_POS_LEFT))
+                skin.getDrawable(CoreIcons.CARDS), InGameMenu.ITEM_POS_LEFT))
 
         // Scoreboard
         val scoresTable = ScoresTable(skin, 4)
@@ -137,7 +149,7 @@ class DefaultGameMenuTest : CardGameTest() {
 
         val scoresView = Container(scoresTable).pad(60f, 30f, 60f, 30f).fill()
         val scoresPage = PagedSubMenu.Page(1, "Scores",
-                skin.getDrawable(MenuIcons.CHART), SubMenu.ITEM_POS_TOP, scoresView)
+                skin.getDrawable(CoreIcons.CHART), SubMenu.ITEM_POS_TOP, scoresView)
         menu.scoreboardMenu.apply {
             addItem(scoresPage)
             checkItem(scoresPage)

@@ -97,11 +97,7 @@
     }
     borderless: {
       selectionOverlay: btn-menu-center
-      fontStyle: {
-        fontSize: 44
-        fontColor: textColorBlack
-        allCaps: true
-      }
+      fontStyle: normal
       disabledAlpha: 0.6
       hoverOverlayAlpha: 0.05
       pressOverlayAlpha: 0.1
@@ -336,6 +332,21 @@
       startGameIcon: icon-arrow-right
       backBtnIcon: icon-chevron-left
       scoreboardBtnIcon: icon-chart
+    }
+  }
+  com.maltaisn.cardgame.widget.AboutView$AboutViewStyle: {
+    default: {
+      appNameFontStyle: title
+      authorFontStyle: {
+        fontSize: 40
+        fontColor: textColorGray
+      }
+      versionFontStyle: {
+        fontSize: 36
+        fontColor: textColorDarkGray
+      }
+      buttonStyle: borderless
+      buttonIconColor: textColorGray
     }
   }
 }

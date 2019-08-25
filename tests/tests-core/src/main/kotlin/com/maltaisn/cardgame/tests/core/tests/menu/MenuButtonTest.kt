@@ -21,9 +21,9 @@ import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.utils.defaultSize
 import com.maltaisn.cardgame.widget.CardGameLayout
+import com.maltaisn.cardgame.widget.CoreIcons
 import com.maltaisn.cardgame.widget.menu.MenuButton
 import com.maltaisn.cardgame.widget.menu.MenuButton.Side
-import com.maltaisn.cardgame.widget.menu.MenuIcons
 import com.maltaisn.cardgame.widget.text.FontStyle
 import ktx.actors.onClick
 import ktx.log.info
@@ -59,7 +59,7 @@ class MenuButtonTest : ActionBarTest() {
             btn.title = if (shown) "Menu button" else null
         }
         addToggleBtn("Icon shown") { _, shown ->
-            btn.icon = if (shown) skin.getDrawable(MenuIcons.CARDS) else null
+            btn.icon = if (shown) skin.getDrawable(CoreIcons.CARDS) else null
         }
         addEnumBtn("Anchor side", Side.values().toList()) { _, value ->
             btn.anchorSide = value

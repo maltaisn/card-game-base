@@ -16,38 +16,34 @@
 
 package com.maltaisn.cardgame.tests.core.tests
 
-import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.maltaisn.cardgame.tests.core.SubmenuContentTest
-import com.maltaisn.cardgame.widget.Button
+import com.maltaisn.cardgame.widget.AboutView
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.CoreIcons
+import ktx.actors.onClick
+import ktx.log.info
 
 
-class ButtonTest : SubmenuContentTest() {
+class AboutViewTest : SubmenuContentTest() {
 
     override fun layoutContent(layout: CardGameLayout, content: Table) {
-        val btn1 = Button(skin, "Default style")
-        content.add(btn1).expand().row()
+        val aboutView = AboutView(skin, "Hearts", "1.0.0", "Chuck Norris")
 
-        val btn2 = Button(skin, "Borderless style", "borderless")
-        content.add(btn2).expand().row()
+        aboutView.addButton("Rate app", skin.getDrawable(CoreIcons.STAR))
+                .onClick { info { "Rate app" } }
+        aboutView.addButton("Send feedback", skin.getDrawable(CoreIcons.ALERT))
+                .onClick { info { "Send feedback" } }
+        aboutView.addButton("View changelog", skin.getDrawable(CoreIcons.LIST))
+                .onClick { info { "View changelog" } }
+        aboutView.addButton("Open source libraries", skin.getDrawable(CoreIcons.INFO))
+                .onClick { info { "Open source libraries" } }
+        aboutView.addButton("Donate", skin.getDrawable(CoreIcons.COIN))
+                .onClick { info { "Please" } }
 
-        val image = Image(skin.getDrawable(CoreIcons.BOOK))
-        image.setColor(0f, 0f, 0f, 0.7f)
-        val btn3 = Button(skin, "Image button", "borderless").apply {
-            clearChildren()
-            add(image).pad(0f, 10f, 0f, 0f)
-            add(label).pad(0f, 50f, 0f, 30f)
-        }
-        content.add(btn3).expand().row()
+        content.add(aboutView).growX().pad(0f, 300f, 0f, 300f)
 
         // Action buttons
-        addTwoStateActionBtn("Disable", "Enable") { _, enabled ->
-            btn1.enabled = enabled
-            btn2.enabled = enabled
-            btn3.enabled = enabled
-        }
         addToggleBtn("Debug") { _, debug ->
             content.setDebug(debug, true)
         }

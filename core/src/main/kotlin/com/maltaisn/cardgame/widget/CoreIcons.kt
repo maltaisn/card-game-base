@@ -14,24 +14,28 @@
  * limitations under the License.
  */
 
-package com.maltaisn.cardgame.widget.menu
+package com.maltaisn.cardgame.widget
 
 
 /**
  * Constants for default icons region names.
  * Icon can be obtained with `Skin.getDrawable(name)`.
  */
-object MenuIcons {
+object CoreIcons {
 
+    const val ALERT = "icon-alert"
     const val ARROW_RIGHT = "icon-arrow-right"
     const val BOOK = "icon-book"
     const val CARDS = "icon-cards"
     const val CHART = "icon-chart"
     const val CHEVRON_LEFT = "icon-chevron-left"
     const val CHEVRON_RIGHT = "icon-chevron-right"
+    const val COIN = "icon-coin"
     const val INFO = "icon-info"
     const val LIST = "icon-list"
     const val PENCIL = "icon-pencil"
+    const val REFRESH = "icon-refresh"
     const val SETTINGS = "icon-settings"
+    const val STAR = "icon-star"
 
 }

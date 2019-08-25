@@ -22,9 +22,9 @@ import com.gmail.blueboxware.libgdxplugin.annotations.GDXAssets
 import com.maltaisn.cardgame.CoreRes
 import com.maltaisn.cardgame.stats.Statistics
 import com.maltaisn.cardgame.widget.AlertDialog
+import com.maltaisn.cardgame.widget.CoreIcons
 import com.maltaisn.cardgame.widget.Dialog
 import com.maltaisn.cardgame.widget.ScrollView
-import com.maltaisn.cardgame.widget.menu.MenuIcons
 import com.maltaisn.cardgame.widget.menu.MenuItem
 import com.maltaisn.cardgame.widget.menu.PagedSubMenu.Page
 import com.maltaisn.cardgame.widget.menu.SubMenu
@@ -82,7 +82,7 @@ class StatsSubMenu(skin: Skin) : SubMenu(skin) {
                 // Add items
                 value.variants?.let { variants ->
                     // If there are variants, add a menu item for each of them.
-                    val icon = skin.getDrawable(MenuIcons.CHEVRON_RIGHT)
+                    val icon = skin.getDrawable(CoreIcons.CHEVRON_RIGHT)
                     for ((i, variant) in variants.withIndex()) {
                         addItem(MenuItem(i, variant, icon, ITEM_POS_TOP))
                     }
@@ -114,7 +114,7 @@ class StatsSubMenu(skin: Skin) : SubMenu(skin) {
 
         // Reset item
         resetItem = MenuItem(ITEM_ID_RESET, strings["stats_reset"],
-                skin.getDrawable(MenuIcons.PENCIL), ITEM_POS_BOTTOM)
+                skin.getDrawable(CoreIcons.REFRESH), ITEM_POS_BOTTOM)
         resetItem.checkable = false
 
         // Reset confirm dialog

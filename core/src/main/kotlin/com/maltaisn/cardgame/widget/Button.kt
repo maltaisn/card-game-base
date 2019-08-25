@@ -30,9 +30,7 @@ import ktx.style.get
 /**
  * A button widget. Unlike [Button], hover and press states are animated.
  */
-class Button(skin: Skin, text: String? = null, styleName: String = "default") : SelectableWidget() {
-
-    val style: ButtonStyle = skin[styleName]
+class Button(skin: Skin, val style: ButtonStyle, text: String? = null) : SelectableWidget() {
 
     /** The button label showing its text. */
     val label: SdfLabel
@@ -57,6 +55,10 @@ class Button(skin: Skin, text: String? = null, styleName: String = "default") : 
 
         addListener(SelectionListener())
     }
+
+
+    constructor(skin: Skin, text: String? = null, styleName: String = "default") :
+            this(skin, skin[styleName], text)
 
 
     override fun drawChildren(batch: Batch, parentAlpha: Float) {

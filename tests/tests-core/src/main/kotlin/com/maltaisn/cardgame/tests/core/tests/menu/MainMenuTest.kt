@@ -18,8 +18,8 @@ package com.maltaisn.cardgame.tests.core.tests.menu
 
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.widget.CardGameLayout
+import com.maltaisn.cardgame.widget.CoreIcons
 import com.maltaisn.cardgame.widget.menu.MainMenu
-import com.maltaisn.cardgame.widget.menu.MenuIcons
 import com.maltaisn.cardgame.widget.menu.MenuItem
 import ktx.log.info
 
@@ -33,11 +33,11 @@ class MainMenuTest : ActionBarTest() {
         super.layout(layout)
 
         val menu = MainMenu(skin)
-        menu.addItems(MenuItem(0, "Settings", this@MainMenuTest.skin.getDrawable(MenuIcons.SETTINGS), MainMenu.ITEM_POS_TOP),
-                MenuItem(1, "Rules", this@MainMenuTest.skin.getDrawable(MenuIcons.BOOK), MainMenu.ITEM_POS_TOP),
-                MenuItem(2, "Stats", this@MainMenuTest.skin.getDrawable(MenuIcons.LIST), MainMenu.ITEM_POS_TOP),
-                MenuItem(3, "New game", this@MainMenuTest.skin.getDrawable(MenuIcons.CARDS), MainMenu.ITEM_POS_BOTTOM),
-                MenuItem(4, "Continue", this@MainMenuTest.skin.getDrawable(MenuIcons.ARROW_RIGHT), MainMenu.ITEM_POS_BOTTOM))
+        menu.addItems(MenuItem(0, "Settings", this@MainMenuTest.skin.getDrawable(CoreIcons.SETTINGS), MainMenu.ITEM_POS_TOP),
+                MenuItem(1, "Rules", this@MainMenuTest.skin.getDrawable(CoreIcons.BOOK), MainMenu.ITEM_POS_TOP),
+                MenuItem(2, "Stats", this@MainMenuTest.skin.getDrawable(CoreIcons.LIST), MainMenu.ITEM_POS_TOP),
+                MenuItem(3, "New game", this@MainMenuTest.skin.getDrawable(CoreIcons.CARDS), MainMenu.ITEM_POS_BOTTOM),
+                MenuItem(4, "Continue", this@MainMenuTest.skin.getDrawable(CoreIcons.ARROW_RIGHT), MainMenu.ITEM_POS_BOTTOM))
 
         menu.itemClickListener = {
             info { "Menu item clicked: $it" }

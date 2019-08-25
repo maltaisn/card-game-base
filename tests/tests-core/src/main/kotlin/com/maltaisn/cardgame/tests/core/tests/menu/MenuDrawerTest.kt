@@ -23,9 +23,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Value
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.widget.CardGameLayout
+import com.maltaisn.cardgame.widget.CoreIcons
 import com.maltaisn.cardgame.widget.menu.MenuDrawer
 import com.maltaisn.cardgame.widget.menu.MenuDrawerList
-import com.maltaisn.cardgame.widget.menu.MenuIcons
 import com.maltaisn.cardgame.widget.text.FontStyle
 import com.maltaisn.cardgame.widget.text.SdfLabel
 import ktx.log.info
@@ -48,7 +48,7 @@ class MenuDrawerTest : ActionBarTest() {
         var drawerWidth = 0.5f
         drawer.drawerWidth = Value.percentWidth(drawerWidth, drawer)
 
-        val image = Image(skin.getDrawable(MenuIcons.INFO))
+        val image = Image(skin.getDrawable(CoreIcons.INFO))
         image.color = Color.BLACK
         val imageContent = Container(image).size(300f, 300f)
 

@@ -26,7 +26,7 @@ import com.maltaisn.cardgame.widget.action.ActionDelegate
  * Custom class that provides extended functionality to the built-in [ScrollPane].
  * Scroll vertically only by default.
  */
-class ScrollView(actor: Actor? = null, style: ScrollPaneStyle? = null) :
+open class ScrollView(actor: Actor? = null, style: ScrollPaneStyle? = null) :
         ScrollPane(actor, style ?: ScrollPaneStyle()) {
 
     /**

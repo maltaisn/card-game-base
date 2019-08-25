@@ -117,18 +117,18 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
     val scoreboardMenu = PagedSubMenu(skin)
 
     // The submenus
-    private val newGameMenu = ScrollSubMenu(skin)
+    val newGameMenu = ScrollSubMenu(skin)
     private var newGameView: PrefsGroup? = null
 
-    private val settingsMenu = ScrollSubMenu(skin)
+    val settingsMenu = ScrollSubMenu(skin)
     private var settingsView: PrefsGroup? = null
 
-    private val rulesMenu = ScrollSubMenu(skin)
+    val rulesMenu = ScrollSubMenu(skin)
     private var rulesView: Table? = null
 
-    private val statsMenu = StatsSubMenu(skin)
+    val statsMenu = StatsSubMenu(skin)
 
-    private val aboutMenu = ScrollSubMenu(skin)
+    val aboutMenu = PagedSubMenu(skin)
 
 
     init {
@@ -208,11 +208,7 @@ open class DefaultGameMenu(private val skin: Skin) : GameMenu(skin) {
         addMenu(rulesMenu)
 
         // About menu
-        aboutMenu.apply {
-            title = aboutStr
-            addItems(MenuItem(0, "About", skin.getDrawable(MenuIcons.INFO), SubMenu.ITEM_POS_TOP),
-                    MenuItem(1, "Donate", skin.getDrawable(MenuIcons.ARROW_RIGHT), SubMenu.ITEM_POS_TOP))
-        }
+        aboutMenu.title = aboutStr
         addMenu(aboutMenu)
 
         // In game menu

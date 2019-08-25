@@ -24,9 +24,9 @@ import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.tests.core.TestRes
 import com.maltaisn.cardgame.widget.CardGameLayout
+import com.maltaisn.cardgame.widget.CoreIcons
 import com.maltaisn.cardgame.widget.ScrollView
 import com.maltaisn.cardgame.widget.markdown.MarkdownView
-import com.maltaisn.cardgame.widget.menu.MenuIcons
 import com.maltaisn.cardgame.widget.menu.MenuItem
 import com.maltaisn.cardgame.widget.menu.PagedSubMenu
 import com.maltaisn.cardgame.widget.menu.SubMenu
@@ -50,19 +50,19 @@ class PagedSubMenuTest : ActionBarTest() {
         super.layout(layout)
 
         val continueItem = MenuItem(1000, "Continue",
-                skin.getDrawable(MenuIcons.ARROW_RIGHT), SubMenu.ITEM_POS_BOTTOM)
+                skin.getDrawable(CoreIcons.ARROW_RIGHT), SubMenu.ITEM_POS_BOTTOM)
         continueItem.checkable = false
 
         val rules: Markdown = assetManager[TestRes.LOREM_IPSUM_MARKDOWN]
         val rulesView = ScrollView(MarkdownView(skin, rules)
                 .pad(0f, 40f, 0f, 40f))
         val rulesPage = TestPage(0, "Rules",
-                skin.getDrawable(MenuIcons.BOOK), SubMenu.ITEM_POS_TOP, rulesView)
+                skin.getDrawable(CoreIcons.BOOK), SubMenu.ITEM_POS_TOP, rulesView)
 
         val scoresView = Container(SdfLabel(skin,
                 FontStyle(fontColor = Color.BLACK, fontSize = 60f), "TODO!"))
         val scoresPage = TestPage(1, "Scores",
-                skin.getDrawable(MenuIcons.LIST), SubMenu.ITEM_POS_BOTTOM, scoresView)
+                skin.getDrawable(CoreIcons.LIST), SubMenu.ITEM_POS_BOTTOM, scoresView)
 
         val menu = PagedSubMenu(skin).apply {
             title = "Scoreboard"

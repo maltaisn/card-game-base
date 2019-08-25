@@ -24,6 +24,7 @@ import com.maltaisn.cardgame.tests.core.tests.menu.*
 object CardGameTests {
 
     private val TESTS = listOf(
+            AboutViewTest::class.java,
             AlertDialogTest::class.java,
             ButtonTest::class.java,
             CardActorTest::class.java,
