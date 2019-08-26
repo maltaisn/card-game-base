@@ -31,7 +31,7 @@ import com.maltaisn.cardgame.widget.CoreIcons
 import com.maltaisn.cardgame.widget.menu.*
 import com.maltaisn.cardgame.widget.prefs.ResetGameDialog
 import com.maltaisn.cardgame.widget.table.ScoresTable
-import ktx.actors.onKeyDown
+import ktx.actors.onKeyDownEvent
 import ktx.assets.load
 import ktx.log.info
 import kotlin.random.Random
@@ -176,8 +176,8 @@ class DefaultGameMenuTest : CardGameTest() {
         isDebugAll = debugPref.value
 
         // Back key listener
-        layout.onKeyDown(true) {
-            if (it == Input.Keys.BACK || it == Input.Keys.ESCAPE) {
+        layout.onKeyDownEvent(true) { event, _, key ->
+            if (!event.isHandled && (key == Input.Keys.BACK || key == Input.Keys.ESCAPE)) {
                 menu.goBack()
             }
         }

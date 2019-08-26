@@ -16,6 +16,7 @@
 
 package com.maltaisn.cardgame.widget.menu
 
+import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Interpolation
@@ -35,6 +36,7 @@ import com.maltaisn.cardgame.widget.action.TimeAction
 import com.maltaisn.cardgame.widget.text.FontStyle
 import com.maltaisn.cardgame.widget.text.SdfLabel
 import ktx.actors.onClick
+import ktx.actors.onKeyDown
 import ktx.style.get
 
 
@@ -84,13 +86,17 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
         set(value) {
             if (field == value) return
 
-            // Focus or unfocus the drawer for scrolling
+            // Set or unset the scroll and keyboard focuses
             if (!field) {
-                scrollFocusBefore = stage.scrollFocus
+                oldKeyboardFocus = stage.keyboardFocus
+                oldScrollFocus = stage.scrollFocus
                 stage.scrollFocus = contentPane
+                stage.keyboardFocus = this
             } else {
-                stage.scrollFocus = scrollFocusBefore
-                scrollFocusBefore = null
+                stage.scrollFocus = oldScrollFocus
+                stage.keyboardFocus = oldKeyboardFocus
+                oldScrollFocus = null
+                oldKeyboardFocus = null
             }
 
             field = value
@@ -113,14 +119,23 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
     private val titleLabel = SdfLabel(skin, style.titleFontStyle)
     private val backBtnLabel = SdfLabel(skin, style.backBtnFontStyle)
 
-    private var scrollFocusBefore: Actor? = null
+    private var oldKeyboardFocus: Actor? = null
+    private var oldScrollFocus: Actor? = null
 
     private var transitionAction by ActionDelegate<TransitionAction>()
 
     private var backgroundAlpha = 1f
 
+
     init {
         isVisible = false
+
+        onKeyDown(true) {
+            if (it == Input.Keys.BACK || it == Input.Keys.ESCAPE) {
+                // Close drawer on back press.
+                shown = false
+            }
+        }
 
         // A capture listener is used to block event from going through the shadowed background.
         addCaptureListener(object : InputListener() {
