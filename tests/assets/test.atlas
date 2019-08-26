@@ -1,0 +1,13 @@
+
+test.png
+size: 1024,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+logo
+  rotate: false
+  xy: 4, 4
+  size: 856, 236
+  orig: 856, 236
+  offset: 0, 0
+  index: -1

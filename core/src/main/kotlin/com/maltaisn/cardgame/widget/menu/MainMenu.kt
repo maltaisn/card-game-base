@@ -17,8 +17,12 @@
 package com.maltaisn.cardgame.widget.menu
 
 import com.badlogic.gdx.math.Interpolation
+import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable
+import com.badlogic.gdx.utils.Align
+import com.badlogic.gdx.utils.Scaling
 import com.maltaisn.cardgame.game.Card
 import com.maltaisn.cardgame.widget.action.TimeAction
 import com.maltaisn.cardgame.widget.card.CardActor
@@ -35,6 +39,15 @@ import kotlin.math.PI
 class MainMenu(skin: Skin, cardStyle: CardActor.CardStyle) : MenuTable(skin) {
 
     private val style: MainMenuStyle = skin.get()
+
+    /**
+     * The logo displayed in the main menu, or `null` for none.
+     */
+    var logo: Drawable?
+        get() = logoImage.drawable
+        set(value) {
+            logoImage.drawable = value
+        }
 
     /**
      * The cards shown in the main menu, can be empty for none.
@@ -68,6 +81,7 @@ class MainMenu(skin: Skin, cardStyle: CardActor.CardStyle) : MenuTable(skin) {
 
     private val leftSide = Table()
     private val rightSide = Table()
+    private val logoImage = Image(null, Scaling.fit)
     private val cardTrick = CardTrick(cardStyle, 16)
 
 
@@ -96,7 +110,7 @@ class MainMenu(skin: Skin, cardStyle: CardActor.CardStyle) : MenuTable(skin) {
         // Do the layout
         add(leftSide).width(MENU_COL_WIDTH).growY()
                 .pad(40f, 0f, 40f, 0f)
-        add().grow()
+        add(logoImage).growX().align(Align.top).pad(250f, 50f, 0f, 50f)
         add(rightSide).width(MENU_COL_WIDTH).growY()
                 .pad(40f, 0f, 40f, 0f)
         addActor(cardTrick)

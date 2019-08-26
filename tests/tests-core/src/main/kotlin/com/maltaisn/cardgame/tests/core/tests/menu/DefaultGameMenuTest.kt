@@ -102,6 +102,7 @@ class DefaultGameMenuTest : CardGameTest() {
         }
 
         // Main menu
+        menu.mainMenu.logo = skin.getDrawable("logo")
         menu.mainMenu.cards = listOf(PCard("K♥"), PCard("A♥"),
                 PCard("Q♠"), PCard("J♥"), PCard("Q♥"))
 

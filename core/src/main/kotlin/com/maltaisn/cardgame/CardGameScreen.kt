@@ -121,12 +121,14 @@ open class CardGameScreen(val locale: Locale = Locale.getDefault()) :
      * This must be called during [start] and `assetManager.load<TextureAtlas>(atlasFile)`
      * must have been called before hand if the skin has an atlas.
      */
-    protected fun addSkin(skinFile: String, atlasFile: String? = null) {
+    protected fun addSkin(skinFile: String? = null, atlasFile: String? = null) {
         if (atlasFile != null) {
             val atlas: TextureAtlas = assetManager[atlasFile]
             skin.addRegions(atlas)
         }
-        skin.load(file(skinFile))
+        if (skinFile != null) {
+            skin.load(file(skinFile))
+        }
     }
 
     override fun show() {
