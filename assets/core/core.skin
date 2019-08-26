@@ -347,13 +347,16 @@
   }
   com.maltaisn.cardgame.widget.AboutView$AboutViewStyle: {
     default: {
-      appNameFontStyle: title
+      appNameFontStyle: {
+        fontSize: 80
+        fontColor: textColorBlack
+      }
       authorFontStyle: {
-        fontSize: 40
+        fontSize: 44
         fontColor: textColorGray
       }
       versionFontStyle: {
-        fontSize: 36
+        fontSize: 40
         fontColor: textColorDarkGray
       }
       buttonStyle: borderless

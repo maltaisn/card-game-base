@@ -56,7 +56,7 @@ class PrefsGroup(skin: Skin,
 
 
     init {
-        pad(20f, 0f, 40f, 0f)
+        pad(40f, 0f, 80f, 0f)
         align(Align.top)
 
         val prefsList = prefs.prefs.values.toList()

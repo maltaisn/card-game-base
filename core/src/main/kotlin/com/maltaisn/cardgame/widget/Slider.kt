@@ -170,7 +170,7 @@ class Slider(skin: Skin) : SelectableWidget() {
 
     /** Returns true if point at ([x]; [y]) is on the slider thumb. (in actor coordinates) */
     private fun isPointInThumb(x: Float, y: Float): Boolean {
-        val radius = style.thumbSize / 2
+        val radius = style.thumbSize / 2 * 1.3f  // Slightly bigger touch area
         return Vector2.len(thumbX + radius - x, radius - y) <= radius
     }
 

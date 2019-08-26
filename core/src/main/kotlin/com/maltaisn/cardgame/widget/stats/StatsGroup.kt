@@ -42,7 +42,7 @@ class StatsGroup(skin: Skin, val stats: Statistics) : Table() {
 
     init {
         // Do the layout
-        pad(20f, 0f, 40f, 0f)
+        pad(40f, 0f, 80f, 0f)
         align(Align.top)
 
         val visibleStats = stats.stats.values.filter { !it.internal }
