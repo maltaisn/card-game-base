@@ -74,6 +74,10 @@ class Button(skin: Skin, val style: ButtonStyle, text: String? = null) : Selecta
         style.selectionOverlay.draw(batch, x, y, width, height)
     }
 
+    override fun getMinHeight() = style.background?.minHeight ?: 0f
+
+    override fun getMinWidth() = style.background?.minWidth ?: 0f
+
 
     class ButtonStyle {
         var background: Drawable? = null
