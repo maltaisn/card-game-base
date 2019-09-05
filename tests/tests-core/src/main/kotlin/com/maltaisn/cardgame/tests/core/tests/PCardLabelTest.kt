@@ -20,8 +20,8 @@ import com.badlogic.gdx.graphics.Color
 import com.maltaisn.cardgame.pcard.PCard
 import com.maltaisn.cardgame.pcard.PCardLabel
 import com.maltaisn.cardgame.tests.core.ActionBarTest
+import com.maltaisn.cardgame.tests.core.fontStyle
 import com.maltaisn.cardgame.widget.CardGameLayout
-import com.maltaisn.cardgame.widget.text.FontStyle
 
 
 class PCardLabelTest : ActionBarTest() {
@@ -31,8 +31,7 @@ class PCardLabelTest : ActionBarTest() {
 
         val deck = PCard.fullDecks(withJokers = false)
 
-        val fontStyle = FontStyle(fontSize = 64f,
-                fontColor = Color.WHITE, shadowColor = Color.BLACK)
+        val fontStyle = fontStyle(size = 64f, color = Color.WHITE, shadowColor = Color.BLACK)
         val pcardLabel = PCardLabel(skin, deck.random(), fontStyle)
 
         layout.centerTable.add(pcardLabel).expand()
@@ -42,7 +41,7 @@ class PCardLabelTest : ActionBarTest() {
         val pcardBlack = skin.getColor("pcardBlack")
 
         fun setLabelColor() {
-            fontStyle.fontColor = if (useSuitColor) {
+            fontStyle.color = if (useSuitColor) {
                 if (pcardLabel.card.color == PCard.RED) pcardRed else pcardBlack
             } else {
                 Color.WHITE
@@ -56,15 +55,15 @@ class PCardLabelTest : ActionBarTest() {
             setLabelColor()
         }
         addToggleBtn("Shadow") { _, shadow ->
-            fontStyle.drawShadow = shadow
+            fontStyle.shadowColor.a = if (shadow) 1f else 0f
             pcardLabel.fontStyle = fontStyle
         }
         addToggleBtn("Use suit color") { _, state ->
             useSuitColor = state
             setLabelColor()
         }
-        addValueBtn("Size", 32f, 128f, fontStyle.fontSize, 8f) { _, size, _ ->
-            fontStyle.fontSize = size
+        addValueBtn("Size", 32f, 128f, fontStyle.size, 8f) { _, size, _ ->
+            fontStyle.size = size
             pcardLabel.fontStyle = fontStyle
         }
         addToggleBtn("Debug") { _, debug ->

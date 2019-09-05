@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.tests.core.TestRes
+import com.maltaisn.cardgame.tests.core.fontStyle
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.CoreIcons
 import com.maltaisn.cardgame.widget.ScrollView
@@ -30,8 +31,7 @@ import com.maltaisn.cardgame.widget.markdown.MarkdownView
 import com.maltaisn.cardgame.widget.menu.MenuItem
 import com.maltaisn.cardgame.widget.menu.PagedSubMenu
 import com.maltaisn.cardgame.widget.menu.SubMenu
-import com.maltaisn.cardgame.widget.text.FontStyle
-import com.maltaisn.cardgame.widget.text.SdfLabel
+import com.maltaisn.msdfgdx.widget.MsdfLabel
 import ktx.assets.load
 import ktx.log.info
 
@@ -59,8 +59,8 @@ class PagedSubMenuTest : ActionBarTest() {
         val rulesPage = TestPage(0, "Rules",
                 skin.getDrawable(CoreIcons.BOOK), SubMenu.ITEM_POS_TOP, rulesView)
 
-        val scoresView = Container(SdfLabel(skin,
-                FontStyle(fontColor = Color.BLACK, fontSize = 60f), "TODO!"))
+        val scoresView = Container(MsdfLabel("Nothing here.", skin,
+                fontStyle(color = Color.BLACK, size = 60f)))
         val scoresPage = TestPage(1, "Scores",
                 skin.getDrawable(CoreIcons.LIST), SubMenu.ITEM_POS_BOTTOM, scoresView)
 

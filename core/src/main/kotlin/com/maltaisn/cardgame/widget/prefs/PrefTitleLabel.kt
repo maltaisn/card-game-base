@@ -20,8 +20,8 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
-import com.maltaisn.cardgame.widget.text.FontStyle
-import com.maltaisn.cardgame.widget.text.SdfLabel
+import com.maltaisn.msdfgdx.FontStyle
+import com.maltaisn.msdfgdx.widget.MsdfLabel
 import ktx.actors.onClickEvent
 
 
@@ -30,20 +30,20 @@ import ktx.actors.onClickEvent
  * The icon is size proportionally to the font size.
  * This widget must always be drawn
  */
-class PrefTitleLabel(skin: Skin, sdfStyle: FontStyle, text: CharSequence? = null,
-                     private val helpIcon: Drawable? = null) : SdfLabel(skin, sdfStyle, text) {
+class PrefTitleLabel(text: CharSequence?, skin: Skin, fontStyle: FontStyle,
+                     private val helpIcon: Drawable? = null) : MsdfLabel(text, skin, fontStyle) {
 
     /** The listener called when the icon is clicked. */
     var iconClickListener: (() -> Unit)? = null
 
-    private val iconSize = sdfStyle.fontSize + 8f
+    private val iconSize = fontStyle.size + 8f
     private val iconRect = Rectangle(0f, 1f - ICON_PADDING,
             iconSize + 2 * ICON_PADDING, iconSize + 2 * ICON_PADDING)
 
 
     init {
         onClickEvent { _, _, x, y ->
-            if (enabled && helpIcon != null && iconRect.contains(x, y)) {
+            if (!isDisabled && helpIcon != null && iconRect.contains(x, y)) {
                 iconClickListener?.invoke()
             }
         }
@@ -57,7 +57,7 @@ class PrefTitleLabel(skin: Skin, sdfStyle: FontStyle, text: CharSequence? = null
             val lastLine = glyphLayout.runs.last()
             iconRect.x = lastLine.x + lastLine.width + 20f - ICON_PADDING
             batch.setColor(color.r, color.g, color.b,
-                    color.a * parentAlpha * if (enabled) 1f else 0.5f)
+                    color.a * parentAlpha * if (isDisabled) 0.5f else 1f)
             helpIcon.draw(batch, x + iconRect.x + ICON_PADDING,
                     y + iconRect.y + ICON_PADDING, iconSize, iconSize)
         }

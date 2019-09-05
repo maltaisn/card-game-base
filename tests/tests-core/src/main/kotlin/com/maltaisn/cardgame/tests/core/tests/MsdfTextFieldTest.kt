@@ -19,27 +19,21 @@ package com.maltaisn.cardgame.tests.core.tests
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.maltaisn.cardgame.tests.core.SubmenuContentTest
+import com.maltaisn.cardgame.tests.core.fontStyle
 import com.maltaisn.cardgame.widget.CardGameLayout
-import com.maltaisn.cardgame.widget.text.FontStyle
-import com.maltaisn.cardgame.widget.text.SdfTextField
+import com.maltaisn.cardgame.widget.MsdfTextField
 
 
-class SdfTextFieldTest : SubmenuContentTest() {
+class MsdfTextFieldTest : SubmenuContentTest() {
 
     override fun layoutContent(layout: CardGameLayout, content: Table) {
-        val topField = SdfTextField(skin, FontStyle().apply {
-            fontSize = 48f
-            fontColor = Color.BLACK
-        }, text = "Text input")
+        val topField = MsdfTextField(skin, fontStyle(size = 48f, color = Color.BLACK),
+                text = "Text input")
         topField.maxLength = 20
 
-        val bottomField = SdfTextField(skin, FontStyle().apply {
-            fontSize = 48f
-            fontColor = Color.BLACK
-        }, FontStyle().apply {
-            fontSize = 48f
-            fontColor = Color.GRAY
-        }, "Text input 2")
+        val bottomField = MsdfTextField(skin,
+                fontStyle(size = 48f, color = Color.BLACK),
+                fontStyle(size = 48f, color = Color.GRAY), "Text input 2")
         bottomField.maxLength = 128
         bottomField.messageText = "Enter text here"
 

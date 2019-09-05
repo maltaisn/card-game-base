@@ -37,7 +37,7 @@ class PercentStatView(skin: Skin, stat: PercentStat) : StatView<PercentStat>(ski
                 INVALID_PLACEHOLDER
             } + if (text == INVALID_PLACEHOLDER) "" else " ($text)"
         }
-        valueLabel.setText(text)
+        valueLabel.txt = text
     }
 
 }

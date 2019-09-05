@@ -20,7 +20,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.assets.loaders.I18NBundleLoader
+import com.badlogic.gdx.assets.loaders.I18NBundleLoader.I18NBundleParameter
 import com.badlogic.gdx.assets.loaders.SkinLoader
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
 import com.badlogic.gdx.graphics.GL20
@@ -38,11 +38,10 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.maltaisn.cardgame.markdown.MdLoader
 import com.maltaisn.cardgame.prefs.GamePrefsLoader
 import com.maltaisn.cardgame.stats.StatsLoader
-import com.maltaisn.cardgame.widget.text.SdfShader
-import ktx.assets.file
-import ktx.assets.getAsset
-import ktx.assets.load
-import ktx.assets.setLoader
+import com.maltaisn.msdfgdx.MsdfFontLoader
+import com.maltaisn.msdfgdx.MsdfFontLoader.MsdfFontParameter
+import com.maltaisn.msdfgdx.MsdfShader
+import ktx.assets.*
 import java.util.*
 
 
@@ -78,19 +77,28 @@ open class CardGameScreen(val locale: Locale = Locale.getDefault()) :
 
         // Register asset loaders
         val fileResolver = InternalFileHandleResolver()
-        assetManager.setLoader(GamePrefsLoader(fileResolver))
-        assetManager.setLoader(MdLoader(fileResolver))
-        assetManager.setLoader(StatsLoader(fileResolver))
+        assetManager.apply {
+            setLoader(GamePrefsLoader(fileResolver))
+            setLoader(MdLoader(fileResolver))
+            setLoader(StatsLoader(fileResolver))
+            setLoader(MsdfFontLoader(fileResolver))
+        }
 
-        // Load core skin
-        assetManager.load(CoreRes.SKIN, SkinLoader.SkinParameter(CoreRes.SKIN_ATLAS))
-        assetManager.finishLoading()
-        skin = assetManager[CoreRes.SKIN]
+        // Load core skin and strings
+        skin = assetManager.loadOnDemand(CoreRes.SKIN,
+                SkinLoader.SkinParameter(CoreRes.SKIN_ATLAS)).asset
+        skin.add(CoreRes.CORE_STRINGS_NAME, assetManager
+                .loadOnDemand<I18NBundle>(CoreRes.CORE_STRINGS_FILE).asset)
 
-        // Load core strings
-        assetManager.load(CoreRes.CORE_STRINGS_FILE, I18NBundleLoader.I18NBundleParameter(locale))
+        // Add font and shader immediately.
+        skin.add("default", MsdfShader())
+        skin.add("default", assetManager.loadOnDemand(CoreRes.FONT,
+                MsdfFontParameter(32f, 5f)).asset)
 
-        // Listener to unfocus text field when clicked outside
+        // Load other assets
+        load()
+
+        // Add listener to unfocus text field when clicked outside
         root.addCaptureListener(object : InputListener() {
             override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                 if (event.target !is TextField && keyboardFocus is TextField) {
@@ -100,8 +108,6 @@ open class CardGameScreen(val locale: Locale = Locale.getDefault()) :
                 return false
             }
         })
-
-        load()
     }
 
 
@@ -109,12 +115,16 @@ open class CardGameScreen(val locale: Locale = Locale.getDefault()) :
      * Called when the game is created.
      * Good place to load the resources asynchronously with the asset manager.
      */
-    open fun load() = Unit
+    open fun load() {
+        assetManager.load(CoreRes.CORE_STRINGS_FILE, I18NBundleParameter(locale))
+    }
 
     /**
      * Called when the asset manager is done loading.
      */
-    open fun start() = Unit
+    open fun start() {
+        skin.add(CoreRes.CORE_STRINGS_NAME, assetManager.getAsset<I18NBundle>(CoreRes.CORE_STRINGS_FILE))
+    }
 
     /**
      * Add the styles and regions of a skin to the core skin.
@@ -152,10 +162,6 @@ open class CardGameScreen(val locale: Locale = Locale.getDefault()) :
         if (!started) {
             if (assetManager.update()) {
                 started = true
-
-                skin.add(CoreRes.CORE_STRINGS_NAME,
-                        assetManager.getAsset<I18NBundle>(CoreRes.CORE_STRINGS_FILE))
-                SdfShader.getShader(skin)
                 start()
             }
             Gdx.graphics.requestRendering()

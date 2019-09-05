@@ -24,8 +24,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Scaling
 import com.maltaisn.cardgame.widget.action.ActionDelegate
 import com.maltaisn.cardgame.widget.action.TimeAction
-import com.maltaisn.cardgame.widget.text.FontStyle
-import com.maltaisn.cardgame.widget.text.SdfLabel
+import com.maltaisn.msdfgdx.FontStyle
+import com.maltaisn.msdfgdx.widget.MsdfLabel
 import ktx.actors.alpha
 import ktx.style.get
 import kotlin.math.abs
@@ -41,7 +41,7 @@ class PlayerLabel(skin: Skin, name: CharSequence? = null) : Table() {
     var name: CharSequence?
         get() = nameLabel.text
         set(value) {
-            nameLabel.setText(value)
+            nameLabel.txt = value
         }
 
     /**
@@ -55,8 +55,8 @@ class PlayerLabel(skin: Skin, name: CharSequence? = null) : Table() {
             scoreTransitionAction = ScoreTransitionAction()
         }
 
-    private val nameLabel = SdfLabel(skin, style.nameFontStyle, name)
-    private val scoreLabel = SdfLabel(skin, style.scoreFontStyle)
+    private val nameLabel = MsdfLabel(name, skin, style.nameFontStyle)
+    private val scoreLabel = MsdfLabel(null, skin, style.scoreFontStyle)
 
     private var scoreTransitionAction by ActionDelegate<TimeAction>()
 
@@ -81,12 +81,12 @@ class PlayerLabel(skin: Skin, name: CharSequence? = null) : Table() {
             // Fade to 50% alpha, change text, then fade back to full alpha.
             scoreLabel.alpha = abs(0.5f - progress) + 0.5f
             if (progress >= 0.5f) {
-                scoreLabel.setText(score)
+                scoreLabel.txt = score
             }
         }
 
         override fun end() {
-            scoreLabel.setText(score)
+            scoreLabel.txt = score
             scoreTransitionAction = null
         }
     }

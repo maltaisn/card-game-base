@@ -21,10 +21,10 @@ import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.tests.core.SubmenuContentTest
+import com.maltaisn.cardgame.tests.core.fontStyle
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.table.TableView
-import com.maltaisn.cardgame.widget.text.FontStyle
-import com.maltaisn.cardgame.widget.text.SdfLabel
+import com.maltaisn.msdfgdx.widget.MsdfLabel
 import ktx.actors.onClick
 import ktx.log.info
 import java.text.SimpleDateFormat
@@ -127,7 +127,7 @@ class TableViewTest : SubmenuContentTest() {
 
     private inner class TextViewHolder : TableView.ViewHolder() {
 
-        private val label = SdfLabel(skin, FONT_STYLE)
+        private val label = MsdfLabel(null, skin, FONT_STYLE)
 
         init {
             label.setAlignment(Align.center)
@@ -142,7 +142,7 @@ class TableViewTest : SubmenuContentTest() {
 
         fun bind(text: String, bold: Boolean) {
             cell.pad(20f)
-            label.setText(text)
+            label.txt = text
             label.fontStyle = if (bold) FONT_STYLE_BOLD else FONT_STYLE
         }
 
@@ -150,7 +150,7 @@ class TableViewTest : SubmenuContentTest() {
 
     private inner class HeaderViewHolder : TableView.ViewHolder() {
 
-        private val label = SdfLabel(skin, FONT_STYLE_BOLD)
+        private val label = MsdfLabel(null, skin, FONT_STYLE_BOLD)
 
         init {
             label.setAlignment(Align.center)
@@ -166,14 +166,14 @@ class TableViewTest : SubmenuContentTest() {
 
         fun bind(text: String) {
             cell.pad(20f)
-            label.setText(text)
+            label.txt = text
         }
 
     }
 
     companion object {
-        private val FONT_STYLE = FontStyle(fontSize = 44f, fontColor = Color.BLACK)
-        private val FONT_STYLE_BOLD = FONT_STYLE.copy(bold = true)
+        private val FONT_STYLE = fontStyle(size = 44f, color = Color.BLACK)
+        private val FONT_STYLE_BOLD = fontStyle(size = 44f, color = Color.BLACK, weight = 0.1f)
         private val DATE_FORMAT = SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH)
 
         private val FIRST_NAMES = listOf("Ned", "Robert", "Jon", "Daenerys", "Gendry")

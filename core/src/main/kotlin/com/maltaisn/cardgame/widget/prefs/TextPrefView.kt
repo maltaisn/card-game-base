@@ -20,8 +20,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.TextField
 import com.maltaisn.cardgame.prefs.GamePref
 import com.maltaisn.cardgame.prefs.TextPref
-import com.maltaisn.cardgame.widget.text.FontStyle
-import com.maltaisn.cardgame.widget.text.SdfTextField
+import com.maltaisn.cardgame.widget.MsdfTextField
+import com.maltaisn.msdfgdx.FontStyle
 import ktx.actors.onKeyboardFocus
 import ktx.style.get
 
@@ -36,12 +36,12 @@ class TextPrefView(skin: Skin, pref: TextPref) :
             textField.isDisabled = !value
         }
 
-    private val textField: SdfTextField
+    private val textField: MsdfTextField
 
     init {
         val style: TextPrefViewStyle = skin.get()
 
-        textField = SdfTextField(skin, skin.get<TextField.TextFieldStyle>(),
+        textField = MsdfTextField(skin, skin.get<TextField.TextFieldStyle>(),
                 style.fieldFontStyle, text = pref.value)
         textField.maxLength = pref.maxLength
         textField.setTextFieldFilter { _, c -> pref.filter == null || c in pref.filter!! }

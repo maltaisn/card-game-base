@@ -19,12 +19,12 @@ package com.maltaisn.cardgame.tests.core.tests.menu
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.tests.core.ActionBarTest
+import com.maltaisn.cardgame.tests.core.fontStyle
 import com.maltaisn.cardgame.utils.defaultSize
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.CoreIcons
 import com.maltaisn.cardgame.widget.menu.MenuButton
 import com.maltaisn.cardgame.widget.menu.MenuButton.Side
-import com.maltaisn.cardgame.widget.text.FontStyle
 import ktx.actors.onClick
 import ktx.log.info
 
@@ -37,11 +37,10 @@ class MenuButtonTest : ActionBarTest() {
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
-        val fontStyle = FontStyle(
-                bold = true,
-                fontSize = 48f,
-                fontColor = Color.WHITE,
-                drawShadow = true,
+        val fontStyle = fontStyle(
+                weight = 0.1f,
+                size = 48f,
+                color = Color.WHITE,
                 shadowColor = Color.BLACK)
 
         val btn = MenuButton(skin, fontStyle)
@@ -51,7 +50,7 @@ class MenuButtonTest : ActionBarTest() {
         val btnCell = layout.centerTable.add(btn).expand()
 
         // Action buttons
-        btnFontSize = 24f
+        btnFontStyle.size = 24f
         addTwoStateActionBtn("Disable", "Enable") { _, enabled ->
             btn.enabled = enabled
         }

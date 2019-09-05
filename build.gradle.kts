@@ -4,8 +4,10 @@ buildscript {
 
     val kotlinVersion by extra("1.3.50")
     val gdxVersion by extra("1.9.10")
-    val ktxVersion by extra("1.9.10-SNAPSHOT")
+    val ktxVersion by extra("1.9.10-b1")
     val junitVersion by extra("4.12")
+
+    val msdfVersion by extra("0.1.0")
 
     repositories {
         gradlePluginPortal()
@@ -24,6 +26,7 @@ plugins {
 
 allprojects {
     repositories {
+        mavenLocal()
         mavenCentral()
         maven("https://oss.sonatype.org/content/repositories/snapshots/")
         jcenter()

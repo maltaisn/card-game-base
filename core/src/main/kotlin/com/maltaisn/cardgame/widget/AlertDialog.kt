@@ -19,8 +19,8 @@ package com.maltaisn.cardgame.widget
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.maltaisn.cardgame.utils.defaultSize
-import com.maltaisn.cardgame.widget.text.FontStyle
-import com.maltaisn.cardgame.widget.text.SdfLabel
+import com.maltaisn.msdfgdx.FontStyle
+import com.maltaisn.msdfgdx.widget.MsdfLabel
 import ktx.style.get
 
 
@@ -37,7 +37,7 @@ open class AlertDialog(skin: Skin) : Dialog(skin) {
     var title: CharSequence? = null
         set(value) {
             field = value
-            titleLabel.setText(value)
+            titleLabel.txt = value
             val titleCell = content.getCell(titleLabel)
             val sepCell = content.getCell(titleSeparator)
             if (value != null) {
@@ -58,7 +58,7 @@ open class AlertDialog(skin: Skin) : Dialog(skin) {
     var message: CharSequence? = null
         set(value) {
             field = value
-            messageLabel.setText(value)
+            messageLabel.txt = value
             val cell = content.getCell(messageLabel)
             if (value != null) {
                 // Show message
@@ -75,8 +75,8 @@ open class AlertDialog(skin: Skin) : Dialog(skin) {
     val alertContent = Table()
 
 
-    val titleLabel = SdfLabel(skin, style.titleFontStyle)
-    val messageLabel = SdfLabel(skin, style.messageFontStyle).apply {
+    val titleLabel = MsdfLabel(null, skin, style.titleFontStyle)
+    val messageLabel = MsdfLabel(null, skin, style.messageFontStyle).apply {
         setWrap(true)
     }
 

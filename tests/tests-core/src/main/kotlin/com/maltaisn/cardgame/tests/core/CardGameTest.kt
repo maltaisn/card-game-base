@@ -33,6 +33,7 @@ abstract class CardGameTest : CardGameScreen() {
 
 
     override fun load() {
+        super.load()
         assetManager.load<TextureAtlas>(TestRes.ATLAS)
         assetManager.load<TextureAtlas>(PCardRes.SKIN_ATLAS)
     }

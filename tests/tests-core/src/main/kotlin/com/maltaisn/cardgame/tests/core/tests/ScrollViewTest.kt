@@ -20,10 +20,10 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.tests.core.SubmenuContentTest
+import com.maltaisn.cardgame.tests.core.fontStyle
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.ScrollView
-import com.maltaisn.cardgame.widget.text.FontStyle
-import com.maltaisn.cardgame.widget.text.SdfLabel
+import com.maltaisn.msdfgdx.widget.MsdfLabel
 import ktx.log.info
 import java.util.*
 
@@ -33,9 +33,10 @@ class ScrollViewTest : SubmenuContentTest() {
     override fun layoutContent(layout: CardGameLayout, content: Table) {
         // Do the layout
         val scrollView = ScrollView(Table().apply {
-            val fontStyle = FontStyle(fontSize = 44f, fontColor = Color.BLACK)
+            val fontStyle = fontStyle(size = 44f, color = Color.BLACK)
             repeat(30) {
-                val label = SdfLabel(this@ScrollViewTest.skin, fontStyle, UUID.randomUUID().toString())
+                val label = MsdfLabel(UUID.randomUUID().toString(),
+                        this@ScrollViewTest.skin, fontStyle)
                 label.setAlignment(Align.center)
                 add(label).grow().pad(20f).row()
             }

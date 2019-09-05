@@ -19,16 +19,16 @@ package com.maltaisn.cardgame.widget.markdown
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.maltaisn.cardgame.markdown.MdElement
-import com.maltaisn.cardgame.widget.text.FontStyle
-import com.maltaisn.cardgame.widget.text.SdfLabel
+import com.maltaisn.msdfgdx.FontStyle
+import com.maltaisn.msdfgdx.widget.MsdfLabel
 import ktx.style.get
 
 
-class MdTextView(skin: Skin, element: MdElement.Text) : Container<SdfLabel>() {
+class MdTextView(skin: Skin, element: MdElement.Text) : Container<MsdfLabel>() {
 
     init {
         val style: MdTextViewStyle = skin.get()
-        actor = SdfLabel(skin, style.fontStyle, element.text)
+        actor = MsdfLabel(element.text, skin, style.fontStyle)
         actor.setWrap(true)
         fill().pad(10f, 0f, 20f, 0f)
     }

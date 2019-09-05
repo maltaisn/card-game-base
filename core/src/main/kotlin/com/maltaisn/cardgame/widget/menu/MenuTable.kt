@@ -21,7 +21,7 @@ import com.maltaisn.cardgame.utils.post
 import com.maltaisn.cardgame.widget.FboTable
 import com.maltaisn.cardgame.widget.action.ActionDelegate
 import com.maltaisn.cardgame.widget.action.TimeAction
-import com.maltaisn.cardgame.widget.text.FontStyle
+import com.maltaisn.msdfgdx.FontStyle
 
 
 /**

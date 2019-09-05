@@ -25,8 +25,8 @@ import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.utils.findScrollFocus
 import com.maltaisn.cardgame.widget.action.TimeAction
 import com.maltaisn.cardgame.widget.action.applyBounded
-import com.maltaisn.cardgame.widget.text.FontStyle
-import com.maltaisn.cardgame.widget.text.SdfLabel
+import com.maltaisn.msdfgdx.FontStyle
+import com.maltaisn.msdfgdx.widget.MsdfLabel
 import ktx.actors.alpha
 import ktx.actors.onClick
 import ktx.style.get
@@ -48,7 +48,7 @@ open class SubMenu(skin: Skin) : MenuTable(skin) {
     var title: CharSequence?
         get() = titleLabel.text
         set(value) {
-            titleLabel.setText(value)
+            titleLabel.txt = value
         }
 
     /** The position of the menu pane. */
@@ -79,7 +79,7 @@ open class SubMenu(skin: Skin) : MenuTable(skin) {
     var backArrowClickListener: (() -> Unit)? = null
 
     private val headerTable = Table()
-    private val titleLabel = SdfLabel(skin, style.titleStyle)
+    private val titleLabel = MsdfLabel(null, skin, style.titleStyle)
     private val menuTable = Table()
 
     init {

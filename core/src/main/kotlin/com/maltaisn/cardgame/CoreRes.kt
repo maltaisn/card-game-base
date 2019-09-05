@@ -19,19 +19,30 @@ package com.maltaisn.cardgame
 
 /**
  * Stores the paths of core game resources.
- * Project should use a Gradle task to copy the core assets to an `core/` folder under their assets.
+ * Project should use a Gradle task to copy the core assets to a `core/` folder under their assets.
  */
 object CoreRes {
 
+    // Core skin and atlas
     const val SKIN = "core/core.skin"
     const val SKIN_ATLAS = "core/core.atlas"
 
-    const val FONT_NAME = "core/font/font"
-    const val FONT_BOLD_NAME = "core/font/font-bold"
-    const val FONT_SHADER_VERT = "core/font/font.vert"
-    const val FONT_SHADER_FRAG = "core/font/font.frag"
+    // Font
+    const val FONT = "core/font.fnt"
 
+    // Strings
     const val CORE_STRINGS_FILE = "core/strings"
-    const val CORE_STRINGS_NAME = "core-strings"
+    const val CORE_STRINGS_NAME = "core"
+
+    // Sounds
+    const val SOUND_GAME_WIN = "sound/game-win.mp3"
+    const val SOUND_GAME_LOSE = "sound/game-lose.mp3"
+    const val SOUND_GAME_DONE = "sound/game-done.mp3"
+    const val SOUND_EVENT_BAD = "sound/event-bad.mp3"
+    const val SOUND_EVENT_ERROR = "sound/event-error.mp3"
+    const val SOUND_CARD_TAKE = "sound/card-take.mp3"
+    const val SOUND_CARD_SHOVE = "sound/card-shove.mp3"
+    const val SOUND_CARD_DRAW = "sound/card-draw.mp3"
+    const val SOUND_CARD_DROP = "sound/card-drop.mp3"
 
 }

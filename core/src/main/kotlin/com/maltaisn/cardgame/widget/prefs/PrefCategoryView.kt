@@ -21,7 +21,7 @@ import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.prefs.PrefCategory
 import com.maltaisn.cardgame.widget.Separator
 import com.maltaisn.cardgame.widget.menu.ScrollSubMenu
-import com.maltaisn.cardgame.widget.text.SdfLabel
+import com.maltaisn.msdfgdx.widget.MsdfLabel
 import ktx.style.get
 
 
@@ -32,15 +32,15 @@ class PrefCategoryView(skin: Skin, category: PrefCategory) :
         get() = super.enabled
         set(value) {
             super.enabled = value
-            titleLabel.enabled = enabled
+            titleLabel.isDisabled = !enabled
         }
 
-    private var titleLabel: SdfLabel
+    private var titleLabel: MsdfLabel
 
 
     init {
         val style: PrefCategoryViewStyle = skin.get()
-        titleLabel = SdfLabel(skin, style.titleFontStyle, category.title).apply {
+        titleLabel = MsdfLabel(category.title, skin, style.titleFontStyle).apply {
             setWrap(true)
             setAlignment(Align.left)
         }

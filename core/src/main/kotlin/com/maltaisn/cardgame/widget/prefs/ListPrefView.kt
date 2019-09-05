@@ -25,8 +25,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Scaling
 import com.maltaisn.cardgame.prefs.GamePref
 import com.maltaisn.cardgame.prefs.ListPref
-import com.maltaisn.cardgame.widget.text.FontStyle
-import com.maltaisn.cardgame.widget.text.SdfLabel
+import com.maltaisn.msdfgdx.FontStyle
+import com.maltaisn.msdfgdx.widget.MsdfLabel
 import ktx.actors.alpha
 import ktx.actors.onClick
 import ktx.style.get
@@ -39,20 +39,20 @@ class ListPrefView(skin: Skin, pref: ListPref) :
         get() = super.enabled
         set(value) {
             super.enabled = value
-            valueLabel.enabled = value
+            valueLabel.isDisabled = !value
             arrowIcon.alpha = if (value) 1f else 0.5f
         }
 
 
-    private val valueLabel: SdfLabel
+    private val valueLabel: MsdfLabel
     private val arrowIcon: Image
 
 
     init {
         val style: ListPrefViewStyle = skin.get()
 
-        valueLabel = SdfLabel(skin, style.valueFontStyle, pref.displayValue)
-        valueLabel.enabled = enabled
+        valueLabel = MsdfLabel(pref.displayValue, skin, style.valueFontStyle)
+        valueLabel.isDisabled = !enabled
 
         arrowIcon = Image(style.arrowIcon, Scaling.fit)
         arrowIcon.color = style.arrowIconColor
@@ -60,7 +60,7 @@ class ListPrefView(skin: Skin, pref: ListPref) :
         val valueBtn = Table().apply {
             touchable = Touchable.enabled
             add(valueLabel).padRight(20f)
-            add(arrowIcon).size(style.valueFontStyle.fontSize + 16f)
+            add(arrowIcon).size(style.valueFontStyle.size + 16f)
             onClick {
                 if (enabled) {
                     prefsGroup?.showListPrefChoices(this@ListPrefView)
@@ -75,7 +75,7 @@ class ListPrefView(skin: Skin, pref: ListPref) :
 
 
     override fun onPreferenceValueChanged(pref: GamePref<String?>, value: String?) {
-        valueLabel.setText(this.pref.displayValue)
+        valueLabel.txt = this.pref.displayValue
     }
 
 

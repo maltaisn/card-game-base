@@ -23,8 +23,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Scaling
 import com.maltaisn.cardgame.markdown.MdElement
-import com.maltaisn.cardgame.widget.text.FontStyle
-import com.maltaisn.cardgame.widget.text.SdfLabel
+import com.maltaisn.msdfgdx.FontStyle
+import com.maltaisn.msdfgdx.widget.MsdfLabel
 import ktx.style.get
 
 
@@ -39,7 +39,7 @@ class MdListView(skin: Skin, list: MdElement.List) : Table() {
             if (element !is MdElement.List) {
                 // Add list item marker
                 if (list.type == MdElement.List.Type.NUMBER) {
-                    val label = SdfLabel(skin, style.numberFontStyle, list.getItemMarker(n) + '.')
+                    val label = MsdfLabel(list.getItemMarker(n) + '.', skin, style.numberFontStyle)
                     label.setAlignment(Align.right)
                     add(label).minWidth(60f).pad(10f, 10f, 20f, 10f)
                 } else {

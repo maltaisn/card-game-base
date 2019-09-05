@@ -26,8 +26,8 @@ import com.badlogic.gdx.utils.Scaling
 import com.maltaisn.cardgame.utils.post
 import com.maltaisn.cardgame.widget.CheckableWidget
 import com.maltaisn.cardgame.widget.ShadowImage
-import com.maltaisn.cardgame.widget.text.FontStyle
-import com.maltaisn.cardgame.widget.text.SdfLabel
+import com.maltaisn.msdfgdx.FontStyle
+import com.maltaisn.msdfgdx.widget.MsdfLabel
 import ktx.actors.alpha
 import ktx.style.get
 
@@ -47,7 +47,7 @@ open class MenuButton(skin: Skin,
             if (!value.isNullOrBlank() != !titleLabel.text.isBlank()) {
                 invalidateLayout()
             }
-            titleLabel.setText(value)
+            titleLabel.txt = value
         }
 
     /** The button icon, or `null` for none. */
@@ -60,7 +60,7 @@ open class MenuButton(skin: Skin,
             iconImage.drawable = value
         }
 
-    /** The icon size (width actually), in pixels. */
+    /** The icon width in pixels. */
     var iconSize = 64f
         set(value) {
             field = value
@@ -102,13 +102,13 @@ open class MenuButton(skin: Skin,
         set(value) {
             super.enabled = value
 
-            val color = if (value) fontStyle.fontColor else style.disabledColor
+            val color = if (value) fontStyle.color else style.disabledColor
             titleLabel.color.set(color)
             iconImage.color.set(color)
         }
 
 
-    val titleLabel: SdfLabel
+    val titleLabel: MsdfLabel
     val iconImage: ShadowImage
 
     private var invalidLayout = false
@@ -117,7 +117,7 @@ open class MenuButton(skin: Skin,
         get() = super.pressAlpha
         set(value) {
             super.pressAlpha = value
-            val color = interpolateColors(fontStyle.fontColor, style.selectedColor, value)
+            val color = interpolateColors(fontStyle.color, style.selectedColor, value)
             titleLabel.color.set(color)
             iconImage.color.set(color)
         }
@@ -137,10 +137,9 @@ open class MenuButton(skin: Skin,
     init {
         addListener(SelectionListener())
 
-        titleLabel = SdfLabel(skin, fontStyle)
+        titleLabel = MsdfLabel(null, skin, fontStyle)
         iconImage = ShadowImage().apply {
             setScaling(Scaling.fit)
-            drawShadow = fontStyle.drawShadow
             shadowColor = fontStyle.shadowColor
         }
 
@@ -157,7 +156,7 @@ open class MenuButton(skin: Skin,
      */
     constructor(skin: Skin, iconColor: Color, icon: Drawable,
                 style: MenuButtonStyle = skin.get()) :
-            this(skin, FontStyle(fontColor = iconColor), null, icon, style)
+            this(skin, FontStyle().apply { color = iconColor }, null, icon, style)
 
 
     /**

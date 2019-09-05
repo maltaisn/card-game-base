@@ -26,8 +26,8 @@ import com.maltaisn.cardgame.prefs.ListPref
 import com.maltaisn.cardgame.widget.Separator
 import com.maltaisn.cardgame.widget.menu.MenuDrawer
 import com.maltaisn.cardgame.widget.menu.MenuDrawerList
-import com.maltaisn.cardgame.widget.text.FontStyle
-import com.maltaisn.cardgame.widget.text.SdfLabel
+import com.maltaisn.msdfgdx.FontStyle
+import com.maltaisn.msdfgdx.widget.MsdfLabel
 import ktx.style.get
 
 
@@ -49,7 +49,7 @@ class PrefsGroup(skin: Skin,
     var confirmCallback: ConfirmCallback? = null
 
 
-    private val prefsHelpLabel = SdfLabel(skin, style.prefsHelpFontStyle)
+    private val prefsHelpLabel = MsdfLabel(null, skin, style.prefsHelpFontStyle)
 
     private var currentListPrefView: ListPrefView? = null
     private val prefsDrawerList = MenuDrawerList(skin)
@@ -99,7 +99,7 @@ class PrefsGroup(skin: Skin,
             title = pref.shortTitle ?: pref.title
             shown = true
         }
-        prefsHelpLabel.setText(pref.help)
+        prefsHelpLabel.txt = pref.help
     }
 
     /**

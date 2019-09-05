@@ -11,44 +11,42 @@
     textColorDarkGray: { hex: #3b3b3bff }
     textColorWhite: { hex: #e3e3e3ff }
   }
-  com.maltaisn.cardgame.widget.text.FontStyle: {
+  com.maltaisn.msdfgdx.FontStyle: {
     normal: {
-      fontSize: 44
-      fontColor: textColorBlack
+      size: 44
+      color: textColorBlack
     }
     normalBold: {
-      bold: true
-      fontSize: 44
-      fontColor: textColorBlack
+      weight: 0.1
+      size: 44
+      color: textColorBlack
     }
     normalInverse: {
-      fontSize: 44
-      fontColor: white
+      size: 44
+      color: white
     }
     menuItem: {
-      bold: true
+      weight: 0.1
       allCaps: true
-      fontSize: 42
-      fontColor: textColorWhite
-      drawShadow: true
+      size: 42
+      color: textColorWhite
       shadowColor: black
     }
     importantMenuItem: {
-      bold: true
+      weight: 0.1
       allCaps: true
-      fontSize: 52
-      fontColor: white
-      drawShadow: true
+      size: 52
+      color: white
       shadowColor: black
     }
     prefValue: {
-      fontSize: 48
-      fontColor: textColorGray
+      size: 48
+      color: textColorGray
     }
     title: {
-      fontSize: 64
-      fontColor: textColorBlack
-      bold: true
+      weight: 0.1
+      size: 64
+      color: textColorBlack
     }
   }
   com.maltaisn.cardgame.widget.CardGameLayout$CardGameLayoutStyle: {
@@ -93,9 +91,8 @@
       background: btn-background
       selectionOverlay: btn-overlay
       fontStyle: {
-        fontSize: 44
-        fontColor: textColorBlack
-        drawShadow: true
+        size: 44
+        color: textColorBlack
         shadowColor: white
       }
       disabledAlpha: 0.6
@@ -156,14 +153,18 @@
     default: {
       arrowDrawable: player-arrow
       nameFontStyle: {
-        bold: true
-        fontSize: 44
-        fontColor: { hex: #0000007f }
+        weight: 0.1
+        size: 44
+        color: { hex: #0000007f }
+        shadowColor: { hex: #ffffff7f }
+        shadowOffset: {
+          x: 1,
+          y: 1
+        }
       }
       scoreFontStyle: {
-        fontSize: 36
-        fontColor: textColorWhite
-        drawShadow: true
+        size: 36
+        color: textColorWhite
         shadowColor: black
       }
     }
@@ -189,9 +190,8 @@
   com.maltaisn.cardgame.widget.menu.SubMenu$SubMenuStyle: {
     default: {
       titleStyle: {
-        fontSize: 96
-        fontColor: textColorWhite
-        drawShadow: true
+        size: 96
+        color: textColorWhite
         shadowColor: black
       }
       backArrowIcon: icon-chevron-left
@@ -214,15 +214,15 @@
       background: shadow-background
       drawerBackground: menu-drawer
       backBtnFontStyle: {
-        fontSize: 40
-        fontColor: textColorBlack
+        size: 40
+        color: textColorBlack
       }
       backBtnIcon: icon-chevron-left
       backBtnIconColor: textColorDarkGray
       titleFontStyle: {
-        fontSize: 64
-        fontColor: textColorBlack
-        bold: true
+        weight: 0.1
+        size: 64
+        color: textColorBlack
       }
     }
   }
@@ -243,8 +243,8 @@
     default: {
       headerTitleFontStyle: normalBold
       headerSubtitleFontStyle: {
-        fontSize: 40
-        fontColor: textColorGray
+        size: 40
+        color: textColorGray
       }
       scoreFontStyle: normal
       scoreFontStyleHighlighted: normalInverse
@@ -301,9 +301,9 @@
       fontStyles: [
         title,
         {
-          fontSize: 48
-          fontColor: textColorBlack
-          bold: true
+          weight: 0.1
+          size: 48
+          color: textColorBlack
         }
       ]
     }
@@ -348,16 +348,16 @@
   com.maltaisn.cardgame.widget.AboutView$AboutViewStyle: {
     default: {
       appNameFontStyle: {
-        fontSize: 80
-        fontColor: textColorBlack
+        size: 80
+        color: textColorBlack
       }
       authorFontStyle: {
-        fontSize: 44
-        fontColor: textColorGray
+        size: 44
+        color: textColorGray
       }
       versionFontStyle: {
-        fontSize: 40
-        fontColor: textColorDarkGray
+        size: 40
+        color: textColorDarkGray
       }
       buttonStyle: borderless
       buttonIconColor: textColorGray

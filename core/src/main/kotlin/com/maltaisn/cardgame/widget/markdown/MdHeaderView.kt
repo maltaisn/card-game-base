@@ -21,8 +21,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.maltaisn.cardgame.markdown.MdElement
 import com.maltaisn.cardgame.widget.Separator
 import com.maltaisn.cardgame.widget.menu.ScrollSubMenu
-import com.maltaisn.cardgame.widget.text.FontStyle
-import com.maltaisn.cardgame.widget.text.SdfLabel
+import com.maltaisn.msdfgdx.FontStyle
+import com.maltaisn.msdfgdx.widget.MsdfLabel
 import ktx.style.get
 
 
@@ -30,7 +30,7 @@ class MdHeaderView(skin: Skin, header: MdElement.Header) : Table(), ScrollSubMen
 
     init {
         val style: MdHeaderViewStyle = skin.get()
-        val headerLabel = SdfLabel(skin, style.fontStyles[header.size - 1], header.text)
+        val headerLabel = MsdfLabel(header.text, skin, style.fontStyles[header.size - 1])
         headerLabel.setWrap(true)
         add(headerLabel).growX().pad(40f, 0f, 10f, 0f).row()
 

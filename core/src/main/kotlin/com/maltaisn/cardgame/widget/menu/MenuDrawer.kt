@@ -33,8 +33,8 @@ import com.maltaisn.cardgame.widget.ScrollView
 import com.maltaisn.cardgame.widget.Separator
 import com.maltaisn.cardgame.widget.action.ActionDelegate
 import com.maltaisn.cardgame.widget.action.TimeAction
-import com.maltaisn.cardgame.widget.text.FontStyle
-import com.maltaisn.cardgame.widget.text.SdfLabel
+import com.maltaisn.msdfgdx.FontStyle
+import com.maltaisn.msdfgdx.widget.MsdfLabel
 import ktx.actors.onClick
 import ktx.actors.onKeyDown
 import ktx.style.get
@@ -52,7 +52,7 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
         set(value) {
             val titleShown = (value != null && value.isNotEmpty())
             titleLabel.isVisible = titleShown
-            titleLabel.setText(value)
+            titleLabel.txt = value
 
             // Change the size of the cell according to its visibility
             // since no text in a label still take a certain height.
@@ -68,7 +68,7 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
     var backBtnText: CharSequence?
         get() = backBtnLabel.text
         set(value) {
-            backBtnLabel.setText(value)
+            backBtnLabel.txt = value
         }
 
     /** The drawer width. */
@@ -116,8 +116,8 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
     private val style: MenuDrawerStyle = skin.get()
 
     private val drawerTable = Table()
-    private val titleLabel = SdfLabel(skin, style.titleFontStyle)
-    private val backBtnLabel = SdfLabel(skin, style.backBtnFontStyle)
+    private val titleLabel = MsdfLabel(null, skin, style.titleFontStyle)
+    private val backBtnLabel = MsdfLabel(null, skin, style.backBtnFontStyle)
 
     private var oldKeyboardFocus: Actor? = null
     private var oldScrollFocus: Actor? = null
@@ -171,7 +171,7 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
             shown = false
         }
         backBtn.touchable = Touchable.enabled
-        backBtn.add(backBtnIcon).size(style.backBtnFontStyle.fontSize + 12f)
+        backBtn.add(backBtnIcon).size(style.backBtnFontStyle.size + 12f)
         backBtn.add(backBtnLabel).padLeft(20f)
         backBtn.pad(40f, 60f, 30f, 60f)
 

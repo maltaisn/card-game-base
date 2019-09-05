@@ -21,8 +21,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
-import com.maltaisn.cardgame.widget.text.FontStyle
-import com.maltaisn.cardgame.widget.text.SdfLabel
+import com.maltaisn.msdfgdx.FontStyle
+import com.maltaisn.msdfgdx.widget.MsdfLabel
 import ktx.style.get
 
 
@@ -34,9 +34,9 @@ class AboutView(private val skin: Skin,
     private val content = Table()
 
     init {
-        val appNameLabel = SdfLabel(skin, style.appNameFontStyle, appName)
-        val versionLabel = SdfLabel(skin, style.versionFontStyle, "v$version")
-        val authorLabel = SdfLabel(skin, style.authorFontStyle, author)
+        val appNameLabel = MsdfLabel(appName, skin, style.appNameFontStyle)
+        val versionLabel = MsdfLabel("v$version", skin, style.versionFontStyle)
+        val authorLabel = MsdfLabel(author, skin, style.authorFontStyle)
         val separator = Separator(skin)
 
         // Do the layout

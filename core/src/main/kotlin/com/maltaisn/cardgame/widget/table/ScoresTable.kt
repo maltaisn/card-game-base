@@ -20,8 +20,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.utils.defaultSize
-import com.maltaisn.cardgame.widget.text.FontStyle
-import com.maltaisn.cardgame.widget.text.SdfLabel
+import com.maltaisn.msdfgdx.FontStyle
+import com.maltaisn.msdfgdx.widget.MsdfLabel
 import ktx.style.get
 
 
@@ -101,8 +101,8 @@ class ScoresTable(skin: Skin, playerCount: Int) : TableView(skin, List(playerCou
 
     private inner class HeaderViewHolder : ViewHolder() {
 
-        private val titleLabel = SdfLabel(skin, style.headerTitleFontStyle)
-        private val subtitleLabel = SdfLabel(skin, style.headerSubtitleFontStyle)
+        private val titleLabel = MsdfLabel(null, skin, style.headerTitleFontStyle)
+        private val subtitleLabel = MsdfLabel(null, skin, style.headerSubtitleFontStyle)
 
         init {
             table.add(titleLabel).growX().row()
@@ -117,8 +117,8 @@ class ScoresTable(skin: Skin, playerCount: Int) : TableView(skin, List(playerCou
         }
 
         fun bind(header: Header) {
-            titleLabel.setText(header.title)
-            subtitleLabel.setText(header.subtitle)
+            titleLabel.txt = header.title
+            subtitleLabel.txt = header.subtitle
 
             val subtitleCell = table.getCell(subtitleLabel)
             if (header.subtitle == null) {
@@ -131,7 +131,7 @@ class ScoresTable(skin: Skin, playerCount: Int) : TableView(skin, List(playerCou
 
     private inner class ScoreViewHolder : ViewHolder() {
 
-        private val scoreLabel = SdfLabel(skin, style.scoreFontStyle)
+        private val scoreLabel = MsdfLabel(null, skin, style.scoreFontStyle)
 
         init {
             table.add(scoreLabel).expand()
@@ -146,7 +146,7 @@ class ScoresTable(skin: Skin, playerCount: Int) : TableView(skin, List(playerCou
                 Score.Highlight.NEGATIVE -> style.scoreHighlightNegative
             }
 
-            scoreLabel.setText(score.value)
+            scoreLabel.txt = score.value
             scoreLabel.fontStyle = if (score.highlight == Score.Highlight.NONE) {
                 style.scoreFontStyle
             } else {

@@ -30,20 +30,20 @@ import ktx.math.vec2
  */
 class ShadowImage : Image() {
 
-    /** Whether to draw a shadow by drawing the drawable twice. */
-    var drawShadow = true
-
-    /** The offset in pixels at which the shadow is drawn. */
-    var shadowOffset = vec2(4f, -4f)
+    /**
+     * The offset in pixels at which the shadow is drawn.
+     * Y positive down coordinate system.
+     */
+    var shadowOffset = vec2(4f, 4f)
 
     /** The tint of this icon. */
-    var shadowColor: Color = Color.BLACK
+    var shadowColor = Color()
 
 
     override fun draw(batch: Batch, parentAlpha: Float) {
         validate()
 
-        if (drawShadow) {
+        if (shadowColor.a > 0f) {
             drawIcon(batch, shadowOffset, shadowColor, parentAlpha)
         }
         drawIcon(batch, Vector2.Zero, color, parentAlpha)
@@ -55,11 +55,11 @@ class ShadowImage : Image() {
         batch.setColor(color.r, color.g, color.b, alpha * parentAlpha)
 
         if (icon is TransformDrawable && (scaleX != 1f || scaleY != 1f || rotation != 0f)) {
-            icon.draw(batch, x + imageX + offset.x, y + imageY + offset.y,
+            icon.draw(batch, x + imageX + offset.x, y + imageY - offset.y,
                     originX - imageX, originY - imageY,
                     imageWidth, imageHeight, scaleX, scaleY, rotation)
         } else {
-            icon.draw(batch, x + imageX + offset.x, y + imageY + offset.y,
+            icon.draw(batch, x + imageX + offset.x, y + imageY - offset.y,
                     imageWidth * scaleX, imageHeight * scaleY)
         }
     }

@@ -22,8 +22,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.game.Card
 import com.maltaisn.cardgame.widget.card.CardActor
-import com.maltaisn.cardgame.widget.text.FontStyle
-import com.maltaisn.cardgame.widget.text.SdfLabel
+import com.maltaisn.msdfgdx.FontStyle
+import com.maltaisn.msdfgdx.widget.MsdfLabel
 import ktx.style.get
 
 
@@ -84,7 +84,7 @@ class TricksTable(skin: Skin, private val cardStyle: CardActor.CardStyle, player
         }
 
         headerAdapter = object : HeaderAdapter() {
-            override fun createViewHolder(column: Int) = HeaderViewHolder(skin)
+            override fun createViewHolder(column: Int) = HeaderViewHolder()
 
             override fun bindViewHolder(viewHolder: ViewHolder, column: Int) {
                 (viewHolder as HeaderViewHolder).bind(headers[column])
@@ -93,9 +93,9 @@ class TricksTable(skin: Skin, private val cardStyle: CardActor.CardStyle, player
     }
 
 
-    private inner class HeaderViewHolder(skin: Skin) : ViewHolder() {
+    private inner class HeaderViewHolder : ViewHolder() {
 
-        private val titleLabel = SdfLabel(skin, style.headerFontStyle)
+        private val titleLabel = MsdfLabel(null, skin, style.headerFontStyle)
 
         init {
             table.add(titleLabel).growX().pad(20f)
@@ -104,7 +104,7 @@ class TricksTable(skin: Skin, private val cardStyle: CardActor.CardStyle, player
         }
 
         fun bind(header: String) {
-            titleLabel.setText(header)
+            titleLabel.txt = header
         }
     }
 

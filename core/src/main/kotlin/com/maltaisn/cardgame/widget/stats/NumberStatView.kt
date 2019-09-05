@@ -24,11 +24,11 @@ class NumberStatView(skin: Skin, stat: Statistic<Float>) : StatView<Statistic<Fl
 
     override fun refresh() {
         val value = stat[shownVariant]
-        valueLabel.setText(if (value.isFinite()) {
+        valueLabel.txt = if (value.isFinite()) {
             stat.numberFmt.format(value)
         } else {
             INVALID_PLACEHOLDER
-        })
+        }
     }
 
 }

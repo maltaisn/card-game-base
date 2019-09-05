@@ -20,10 +20,10 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.tests.core.SubmenuContentTest
+import com.maltaisn.cardgame.tests.core.fontStyle
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.Slider
-import com.maltaisn.cardgame.widget.text.FontStyle
-import com.maltaisn.cardgame.widget.text.SdfLabel
+import com.maltaisn.msdfgdx.widget.MsdfLabel
 import kotlin.random.Random
 
 
@@ -33,17 +33,17 @@ class SliderTest : SubmenuContentTest() {
         val sliders = mutableListOf<Slider>()
 
         repeat(5) { n ->
-            val label = SdfLabel(skin, FontStyle(fontSize = 44f, fontColor = Color.BLACK))
+            val label = MsdfLabel(null, skin, fontStyle(size = 44f, color = Color.BLACK))
             val slider = Slider(skin).apply {
                 minProgress = n * 10f
                 maxProgress = 100 - minProgress
                 progress = randomValue()
                 step = (n + 1).toFloat() / 2f
                 changeListener = {
-                    label.setText(it.toString())
+                    label.txt = it.toString()
                 }
             }
-            label.setText(slider.progress.toString())
+            label.txt = slider.progress.toString()
             content.add(slider).width(1000f).expand().align(Align.right).pad(20f)
             content.add(label).width(200f).expand().align(Align.left).row()
             sliders += slider

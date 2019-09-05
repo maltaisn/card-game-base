@@ -22,8 +22,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Pool
 import com.maltaisn.cardgame.widget.CheckableWidget
-import com.maltaisn.cardgame.widget.text.FontStyle
-import com.maltaisn.cardgame.widget.text.SdfLabel
+import com.maltaisn.msdfgdx.FontStyle
+import com.maltaisn.msdfgdx.widget.MsdfLabel
 import ktx.style.get
 
 
@@ -32,17 +32,19 @@ class MenuDrawerListItem(skin: Skin) : CheckableWidget(), Pool.Poolable {
     /** The item text. */
     var text: CharSequence?
         get() = label.text
-        set(value) = label.setText(value)
+        set(value) {
+            label.txt = value
+        }
 
     override var enabled: Boolean
         get() = super.enabled
         set(value) {
             super.enabled = value
-            label.enabled = value
+            label.isDisabled = !value
         }
 
     private val itemStyle: DrawerListItemStyle = skin.get()
-    private val label = SdfLabel(skin, itemStyle.fontStyle)
+    private val label = MsdfLabel(null, skin, itemStyle.fontStyle)
 
     private val inputListener = SelectionListener()
 
@@ -87,5 +89,4 @@ class MenuDrawerListItem(skin: Skin) : CheckableWidget(), Pool.Poolable {
         lateinit var fontStyle: FontStyle
         lateinit var selectionOverlay: Drawable
     }
-
 }

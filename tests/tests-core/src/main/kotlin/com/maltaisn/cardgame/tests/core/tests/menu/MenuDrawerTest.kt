@@ -22,12 +22,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Value
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.tests.core.ActionBarTest
+import com.maltaisn.cardgame.tests.core.fontStyle
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.CoreIcons
 import com.maltaisn.cardgame.widget.menu.MenuDrawer
 import com.maltaisn.cardgame.widget.menu.MenuDrawerList
-import com.maltaisn.cardgame.widget.text.FontStyle
-import com.maltaisn.cardgame.widget.text.SdfLabel
+import com.maltaisn.msdfgdx.widget.MsdfLabel
 import ktx.log.info
 import kotlin.math.max
 import kotlin.math.min
@@ -52,7 +52,7 @@ class MenuDrawerTest : ActionBarTest() {
         image.color = Color.BLACK
         val imageContent = Container(image).size(300f, 300f)
 
-        val text = SdfLabel(skin, FontStyle(fontSize = 44f, fontColor = Color.BLACK), """
+        val text = MsdfLabel("""
             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             Nulla consectetur nunc scelerisque, pretium urna eu, maximus
             augue. In lacinia lobortis enim, quis sodales turpis pulvinar
@@ -60,7 +60,8 @@ class MenuDrawerTest : ActionBarTest() {
             tellus. Aenean erat odio, fringilla in interdum et, dapibus at
             nulla. Donec massa velit, elementum id rhoncus sed, sagittis
             eget velit.
-        """.trimIndent().replace('\n', ' '))
+        """.trimIndent().replace('\n', ' '),
+                skin, fontStyle(size = 44f, color = Color.BLACK))
         text.setWrap(true)
         val textContent = Container(text).pad(0f, 60f, 0f, 60f).align(Align.top).fillX()
 

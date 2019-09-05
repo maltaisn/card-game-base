@@ -19,8 +19,8 @@ package com.maltaisn.cardgame.pcard
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.maltaisn.cardgame.widget.ShadowImage
-import com.maltaisn.cardgame.widget.text.FontStyle
-import com.maltaisn.cardgame.widget.text.SdfLabel
+import com.maltaisn.msdfgdx.FontStyle
+import com.maltaisn.msdfgdx.widget.MsdfLabel
 import ktx.math.vec2
 import ktx.style.get
 
@@ -39,14 +39,13 @@ class PCardLabel(skin: Skin, card: PCard, fontStyle: FontStyle) : Table(skin) {
     var fontStyle = fontStyle
         set(value) {
             field = value
-            val size = value.fontSize
+            val size = value.size
 
             rankLabel.fontStyle = value
 
-            suitIcon.color.set(value.fontColor)
-            suitIcon.drawShadow = value.drawShadow
-            val shadowOffset = size / 16f
-            suitIcon.shadowOffset = vec2(shadowOffset, -shadowOffset)
+            suitIcon.color.set(value.color)
+            suitIcon.shadowColor.set(value.shadowColor)
+            suitIcon.shadowOffset = vec2(size / 16f, size / 16f)
             getCell(suitIcon).size(size).padLeft(size / 4)
         }
 
@@ -59,12 +58,12 @@ class PCardLabel(skin: Skin, card: PCard, fontStyle: FontStyle) : Table(skin) {
             require(value.rank != PCard.JOKER) { "PCardLabel can't show a joker." }
 
             field = value
-            rankLabel.setText(PCard.RANK_STR[card.rank - 1])
+            rankLabel.txt = PCard.RANK_STR[card.rank - 1]
             suitIcon.drawable = pcardStyle.suitIcons[card.suit]
         }
 
 
-    private val rankLabel = SdfLabel(skin, fontStyle)
+    private val rankLabel = MsdfLabel(null, skin, fontStyle)
     private val suitIcon = ShadowImage()
 
 

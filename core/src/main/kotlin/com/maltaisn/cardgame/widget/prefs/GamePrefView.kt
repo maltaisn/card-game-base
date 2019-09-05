@@ -33,7 +33,7 @@ abstract class GamePrefView<P : GamePref<T>, T : Any?>(skin: Skin, pref: P) : Pr
         get() = super.enabled
         set(value) {
             super.enabled = value
-            titleLabel.enabled = value
+            titleLabel.isDisabled = !value
         }
 
     protected val titleLabel: PrefTitleLabel
@@ -47,7 +47,7 @@ abstract class GamePrefView<P : GamePref<T>, T : Any?>(skin: Skin, pref: P) : Pr
 
     init {
         val style: GamePrefViewStyle = skin.get()
-        titleLabel = PrefTitleLabel(skin, style.titleFontStyle, pref.title,
+        titleLabel = PrefTitleLabel(pref.title, skin, style.titleFontStyle,
                 if (pref.help == null) null else style.helpIcon).apply {
             setWrap(true)
             setAlignment(Align.left)

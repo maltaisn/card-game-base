@@ -23,8 +23,8 @@ import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.prefs.GamePref
 import com.maltaisn.cardgame.prefs.SliderPref
 import com.maltaisn.cardgame.widget.Slider
-import com.maltaisn.cardgame.widget.text.FontStyle
-import com.maltaisn.cardgame.widget.text.SdfLabel
+import com.maltaisn.msdfgdx.FontStyle
+import com.maltaisn.msdfgdx.widget.MsdfLabel
 import ktx.style.get
 import java.text.NumberFormat
 
@@ -36,18 +36,18 @@ class SliderPrefView(skin: Skin, pref: SliderPref) :
         get() = super.enabled
         set(value) {
             super.enabled = value
-            valueLabel.enabled = value
+            valueLabel.isDisabled = !value
             slider.enabled = value
         }
 
-    private val valueLabel: SdfLabel
+    private val valueLabel: MsdfLabel
     private val slider: Slider
 
 
     init {
         val style: SliderPrefViewStyle = skin.get()
 
-        valueLabel = SdfLabel(skin, style.valueFontStyle, getValueText(pref.value))
+        valueLabel = MsdfLabel(getValueText(pref.value), skin, style.valueFontStyle)
         valueLabel.setAlignment(Align.right)
 
         slider = Slider(skin).apply {
@@ -55,7 +55,7 @@ class SliderPrefView(skin: Skin, pref: SliderPref) :
             maxProgress = pref.maxValue
             step = pref.step
             progress = pref.value
-            changeListener = { valueLabel.setText(getValueText(it)) }
+            changeListener = { valueLabel.txt = getValueText(it) }
             addCaptureListener(object : InputListener() {
                 private var oldValue = 0f
 

@@ -17,13 +17,14 @@
 package com.maltaisn.cardgame.tests.core
 
 import com.badlogic.gdx.Input
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.menu.MenuButton
-import com.maltaisn.cardgame.widget.text.FontStyle
+import com.maltaisn.msdfgdx.FontStyle
 import ktx.actors.onClick
 import java.text.NumberFormat
 import kotlin.math.round
@@ -36,8 +37,11 @@ abstract class ActionBarTest : CardGameTest() {
 
     protected val btnTable = Table()
 
-    protected var btnFontSize = 32f
-
+    val btnFontStyle = fontStyle(
+            weight = 0.1f,
+            size = 32f,
+            color = Color.WHITE,
+            shadowColor = Color.BLACK)
 
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
@@ -52,7 +56,7 @@ abstract class ActionBarTest : CardGameTest() {
      */
     protected inline fun addActionBtn(title: String,
                                       crossinline action: (MenuButton) -> Unit): MenuButton {
-        val btn = MenuButton(skin, FontStyle(fontSize = btnFontSize, drawShadow = true), title, null)
+        val btn = MenuButton(skin, btnFontStyle, title, null)
         btn.onClick { action(btn) }
         btnTable.add(btn).grow().pad(0f, 10f, 0f, 10f).expand()
         return btn
@@ -112,8 +116,8 @@ abstract class ActionBarTest : CardGameTest() {
                               minValue: Float, maxValue: Float, startValue: Float, step: Float,
                               numberFmt: NumberFormat? = NumberFormat.getInstance(),
                               action: (MenuButton, Float, Float) -> Unit): ValueMenuButton {
-        val btn = ValueMenuButton(skin, FontStyle(fontSize = btnFontSize, drawShadow = true),
-                title, minValue, maxValue, startValue, step, numberFmt, action)
+        val btn = ValueMenuButton(skin, btnFontStyle, title, minValue, maxValue,
+                startValue, step, numberFmt, action)
         btnTable.add(btn).grow().pad(0f, 10f, 0f, 10f).expand()
         return btn
     }

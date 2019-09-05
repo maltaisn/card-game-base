@@ -20,8 +20,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.TextField
 import com.maltaisn.cardgame.prefs.GamePref
 import com.maltaisn.cardgame.prefs.PlayerNamesPref
-import com.maltaisn.cardgame.widget.text.FontStyle
-import com.maltaisn.cardgame.widget.text.SdfTextField
+import com.maltaisn.cardgame.widget.MsdfTextField
+import com.maltaisn.msdfgdx.FontStyle
 import ktx.actors.onKeyboardFocus
 import ktx.style.get
 
@@ -38,7 +38,7 @@ class PlayerNamesPrefView(skin: Skin, pref: PlayerNamesPref) :
             }
         }
 
-    private val textFields: Array<SdfTextField>
+    private val textFields: Array<MsdfTextField>
 
     init {
         val style: PlayerNamesPrefViewStyle = skin.get()
@@ -47,7 +47,7 @@ class PlayerNamesPrefView(skin: Skin, pref: PlayerNamesPref) :
         add(titleLabel).colspan(2).growX().pad(10f, 20f, 20f, 20f).row()
 
         textFields = Array(pref.size) { playerPos ->
-            val textField = SdfTextField(skin, skin.get<TextField.TextFieldStyle>(),
+            val textField = MsdfTextField(skin, skin.get<TextField.TextFieldStyle>(),
                     style.fieldFontStyle, text = pref.getPlayerName(playerPos))
             textField.maxLength = pref.maxLength
             textField.onKeyboardFocus { focused ->

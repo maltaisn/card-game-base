@@ -21,8 +21,8 @@ import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
-import com.maltaisn.cardgame.widget.text.FontStyle
-import com.maltaisn.cardgame.widget.text.SdfLabel
+import com.maltaisn.msdfgdx.FontStyle
+import com.maltaisn.msdfgdx.widget.MsdfLabel
 import ktx.actors.alpha
 import ktx.style.get
 
@@ -33,13 +33,13 @@ import ktx.style.get
 class Button(skin: Skin, val style: ButtonStyle, text: String? = null) : SelectableWidget() {
 
     /** The button label showing its text. */
-    val label: SdfLabel
+    val label: MsdfLabel
 
     /** The button text. */
     var text: CharSequence?
         get() = label.text
         set(value) {
-            label.setText(value)
+            label.txt = value
         }
 
     init {
@@ -49,7 +49,7 @@ class Button(skin: Skin, val style: ButtonStyle, text: String? = null) : Selecta
         }
 
         // Add the button label
-        label = SdfLabel(skin, style.fontStyle, text)
+        label = MsdfLabel(text, skin, style.fontStyle)
         label.touchable = Touchable.disabled
         add(label).expand().pad(0f, 30f, 0f, 30f)
 

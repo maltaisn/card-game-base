@@ -14,36 +14,39 @@
  * limitations under the License.
  */
 
-package com.maltaisn.cardgame.widget.text
+package com.maltaisn.cardgame.widget
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.TextField
-import ktx.actors.alpha
+import com.maltaisn.msdfgdx.FontStyle
+import com.maltaisn.msdfgdx.MsdfFont
+import com.maltaisn.msdfgdx.MsdfShader
 import ktx.actors.onKeyDownEvent
 import ktx.actors.setKeyboardFocus
 import ktx.style.get
 
 
 /**
- * Wrapper class around [Label] for rendering text with a distance field font.
- * Doesn't support [FontStyle.allCaps] and [messageText].
+ * Wrapper class around [TextField] for rendering text with a distance field font.
+ * Doesn't support [FontStyle.allCaps].
  * FIXME Different font sizes not supported, see https://github.com/libgdx/libgdx/issues/5719
  */
-class SdfTextField(skin: Skin,
-                   fieldStyle: TextFieldStyle,
-                   val fontStyle: FontStyle,
-                   val messageFontStyle: FontStyle? = null,
-                   text: String? = null) :
+class MsdfTextField(skin: Skin,
+                    fieldStyle: TextFieldStyle,
+                    val fontStyle: FontStyle,
+                    val messageFontStyle: FontStyle? = null,
+                    text: String? = null) :
         TextField(text, createStyle(skin, fieldStyle, fontStyle, messageFontStyle)) {
 
-    private val shader = SdfShader.getShader(skin)
-    private val tempColor = Color()
+
+    private val shader: MsdfShader = skin.get()
+
+    private val font: MsdfFont = skin[fontStyle.fontName]
+    private val messageFont: MsdfFont? = messageFontStyle?.let { skin[it.fontName] }
 
 
     constructor(skin: Skin, fontStyle: FontStyle,
@@ -62,30 +65,29 @@ class SdfTextField(skin: Skin,
         }
     }
 
+
     override fun drawText(batch: Batch, font: BitmapFont, x: Float, y: Float) =
-            drawTextWithShader(batch, font) { super.drawText(batch, font, x, y) }
+            drawTextWithShader(batch, this.font, fontStyle) {
+                super.drawText(batch, font, x, y)
+            }
 
     override fun drawMessageText(batch: Batch, font: BitmapFont, x: Float, y: Float, maxWidth: Float) =
-            drawTextWithShader(batch, font) { super.drawMessageText(batch, font, x, y, maxWidth) }
+            drawTextWithShader(batch, messageFont!!, messageFontStyle!!) {
+                super.drawMessageText(batch, font, x, y, maxWidth)
+            }
 
-    private inline fun drawTextWithShader(batch: Batch, font: BitmapFont, draw: () -> Unit) {
-        font.color.a *= if (isDisabled) 0.5f else 1f
+    private inline fun drawTextWithShader(batch: Batch, font: MsdfFont,
+                                          fontStyle: FontStyle, draw: () -> Unit) {
+        val alphaBefore = font.font.color.a
+        font.font.color.a *= if (isDisabled) 0.5f else 1f
+
         batch.shader = shader
-        updateFontShader()
-        draw()
-        batch.shader = null
-    }
+        shader.updateForFont(font, fontStyle)
 
-    private fun updateFontShader() {
-        // Update shader parameters
-        shader.drawShadow = fontStyle.drawShadow
-        if (fontStyle.drawShadow) {
-            // Adjust shadow alpha to font color alpha and label alpha
-            val sc = fontStyle.shadowColor
-            tempColor.set(sc.r, sc.g, sc.b, sc.a * fontStyle.fontColor.a * alpha)
-            shader.shadowColor = tempColor
-        }
-        shader.updateUniforms()
+        draw()
+
+        batch.shader = null
+        font.font.color.a = alphaBefore
     }
 
     companion object {
@@ -93,17 +95,19 @@ class SdfTextField(skin: Skin,
                                 fontStyle: FontStyle, messageFontStyle: FontStyle?): TextFieldStyle {
             val style = TextFieldStyle(fieldStyle)
 
-            style.font = SdfShader.getFont(skin, fontStyle.bold)
-            style.font.data.setScale(fontStyle.fontSize / SdfShader.FONT_GLYPH_SIZE)
+            // Font
+            val font: MsdfFont = skin[fontStyle.fontName]
+            style.font = font.font
+            style.font.data.setScale(fontStyle.size / font.glyphSize)
+            style.fontColor = fontStyle.color
 
+            // Message font
             if (messageFontStyle != null) {
-                style.messageFont = SdfShader.getFont(skin, messageFontStyle.bold)
-                style.messageFont.data.setScale(fontStyle.fontSize / SdfShader.FONT_GLYPH_SIZE)
+                val messageFont: MsdfFont = skin[messageFontStyle.fontName]
+                style.font = messageFont.font
+                style.font.data.setScale(messageFontStyle.size / messageFont.glyphSize)
+                style.messageFontColor = messageFontStyle.color
             }
-
-            val color = fontStyle.fontColor
-            style.fontColor = color
-            style.messageFontColor = messageFontStyle?.fontColor
 
             return style
         }
