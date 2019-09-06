@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.cardgame.widget.table
+package com.maltaisn.cardgame.widget
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
@@ -154,9 +154,13 @@ class AutoSizeLabel(text: CharSequence?, skin: Skin, fontStyle: FontStyle) :
      * Returns true if the text of this label fits into a [width] and [height] at a [size].
      */
     private fun textSizeFitsIn(size: Float, width: Float, height: Float): Boolean {
-        font.font.data.setScale(size / font.glyphSize)
+        val data = font.font.data
+        val oldScaleX = data.scaleX
+        val oldScaleY = data.scaleY
+        data.setScale(size / font.glyphSize)
         glyphLayout.setText(font.font, txt, 0, txt.length,
                 Color.WHITE, width, lineAlign, wrap, ellipsis)
+        data.setScale(oldScaleX, oldScaleY)
         return glyphLayout.width < width && glyphLayout.height < height
     }
 

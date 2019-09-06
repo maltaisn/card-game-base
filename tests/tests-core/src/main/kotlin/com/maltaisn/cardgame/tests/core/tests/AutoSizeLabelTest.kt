@@ -22,8 +22,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.tests.core.SubmenuContentTest
 import com.maltaisn.cardgame.tests.core.fontStyle
+import com.maltaisn.cardgame.widget.AutoSizeLabel
 import com.maltaisn.cardgame.widget.CardGameLayout
-import com.maltaisn.cardgame.widget.table.AutoSizeLabel
 import kotlin.math.max
 import kotlin.math.min
 

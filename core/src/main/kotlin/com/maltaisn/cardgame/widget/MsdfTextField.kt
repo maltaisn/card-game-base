@@ -18,6 +18,7 @@ package com.maltaisn.cardgame.widget
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
@@ -99,14 +100,14 @@ class MsdfTextField(skin: Skin,
             val font: MsdfFont = skin[fontStyle.fontName]
             style.font = font.font
             style.font.data.setScale(fontStyle.size / font.glyphSize)
-            style.fontColor = fontStyle.color
+            style.fontColor = Color.WHITE
 
             // Message font
             if (messageFontStyle != null) {
                 val messageFont: MsdfFont = skin[messageFontStyle.fontName]
                 style.font = messageFont.font
                 style.font.data.setScale(messageFontStyle.size / messageFont.glyphSize)
-                style.messageFontColor = messageFontStyle.color
+                style.messageFontColor = Color.WHITE
             }
 
             return style
