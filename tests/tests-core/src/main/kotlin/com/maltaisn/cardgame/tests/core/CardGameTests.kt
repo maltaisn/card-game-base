@@ -26,6 +26,7 @@ object CardGameTests {
     private val TESTS = listOf(
             AboutViewTest::class.java,
             AlertDialogTest::class.java,
+            AutoSizeLabelTest::class.java,
             ButtonTest::class.java,
             CardActorTest::class.java,
             CardAnimationTest::class.java,

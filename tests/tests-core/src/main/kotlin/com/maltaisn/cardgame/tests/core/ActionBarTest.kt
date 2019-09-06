@@ -115,7 +115,7 @@ abstract class ActionBarTest : CardGameTest() {
     protected fun addValueBtn(title: String,
                               minValue: Float, maxValue: Float, startValue: Float, step: Float,
                               numberFmt: NumberFormat? = NumberFormat.getInstance(),
-                              action: (MenuButton, Float, Float) -> Unit): ValueMenuButton {
+                              action: (ValueMenuButton, Float, Float) -> Unit): ValueMenuButton {
         val btn = ValueMenuButton(skin, btnFontStyle, title, minValue, maxValue,
                 startValue, step, numberFmt, action)
         btnTable.add(btn).grow().pad(0f, 10f, 0f, 10f).expand()
@@ -125,7 +125,7 @@ abstract class ActionBarTest : CardGameTest() {
     class ValueMenuButton(skin: Skin, fontStyle: FontStyle, private val valueTitle: String,
                           minValue: Float, maxValue: Float, startValue: Float, step: Float,
                           private val numberFmt: NumberFormat? = NumberFormat.getInstance(),
-                          private val action: (MenuButton, value: Float, oldValue: Float) -> Unit) :
+                          private val action: (ValueMenuButton, value: Float, oldValue: Float) -> Unit) :
             MenuButton(skin, fontStyle) {
 
         private val min = step * round(minValue / step)
@@ -134,6 +134,7 @@ abstract class ActionBarTest : CardGameTest() {
         var value = step * round(startValue / step)
             set(value) {
                 val oldValue = field
+                if (value == oldValue) return
                 field = value
                 if (field < min) field = max
                 if (field > max) field = min
