@@ -19,8 +19,6 @@ package com.maltaisn.cardgame.tests.core
 
 object TestRes {
 
-    const val ATLAS = "test.atlas"
-
     const val LOREM_IPSUM_MARKDOWN = "lorem-ipsum"
 
     const val SETTINGS = "settings.json"

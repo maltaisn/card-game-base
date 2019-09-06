@@ -40,7 +40,7 @@ class MainMenuTest : ActionBarTest() {
                 MenuItem(3, "New game", skin.getDrawable(CoreIcons.CARDS), MainMenu.ITEM_POS_RIGHT),
                 MenuItem(4, "Continue", skin.getDrawable(CoreIcons.ARROW_RIGHT), MainMenu.ITEM_POS_RIGHT))
 
-        menu.logo = skin.getDrawable("logo")
+        menu.title = "La Dame de Pique"
 
         menu.cards = listOf(PCard("Q♥"), PCard("K♥"),
                 PCard("A♥"), PCard("J♥"), PCard("10♥"))

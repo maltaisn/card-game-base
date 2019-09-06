@@ -3,13 +3,13 @@
     colorPrimary: { hex: #a3a3a3 }
     colorPrimaryDisabled: { hex: #747474 }
     colorAccent: { hex: #38a047 }
-    black: { hex: #000000ff }
-    white: { hex: #ffffffff }
-    textColorBlack: { hex: #1b1b1bff }
-    textColorLightGray: { hex: #abababff }
-    textColorGray: { hex: #797979ff }
-    textColorDarkGray: { hex: #3b3b3bff }
-    textColorWhite: { hex: #e3e3e3ff }
+    black: { hex: #000000 }
+    white: { hex: #ffffff }
+    textColorBlack: { hex: #1b1b1b }
+    textColorLightGray: { hex: #ababab }
+    textColorGray: { hex: #797979 }
+    textColorDarkGray: { hex: #3b3b3b }
+    textColorWhite: { hex: #e3e3e3 }
   }
   com.maltaisn.msdfgdx.FontStyle: {
     normal: {
@@ -156,6 +156,7 @@
         weight: 0.1
         size: 44
         color: { hex: #0000007f }
+        shadowClipped: true
         shadowColor: { hex: #ffffff7f }
         shadowOffset: {
           x: 1,
@@ -185,6 +186,12 @@
       itemFontStyle: menuItem
       importantItemFontStyle: importantMenuItem
       itemIconSize: 80
+      titleFontStyle: {
+        weight: 0.07
+        color: { hex: #0000003f }
+        innerShadowColor: { hex: #0000007f }
+        innerShadowRange: 0.2
+      }
     }
   }
   com.maltaisn.cardgame.widget.menu.SubMenu$SubMenuStyle: {
