@@ -64,6 +64,7 @@ class Markdown(content: CharSequence) {
             text = text.trimStart()
                     .replace(LINE_BREAK_REGEX, "\n")
                     .replace(WHITESPACE_REGEX, " ")
+                    .replace(TRAILING_WHITESPACE_REGEX, "")
 
             // Paragraph break
             if (text.isEmpty() && currentText != null) {
@@ -182,6 +183,7 @@ class Markdown(content: CharSequence) {
         private val LINE_BREAK_REGEX = """\h*(?:\h{2}|\\)$""".toRegex()
         private val PARAGRAPH_BREAK_REGEX = """\n{2,}""".toRegex()
         private val WHITESPACE_REGEX = """\h{2,}""".toRegex()
+        private val TRAILING_WHITESPACE_REGEX = """\h+$""".toRegex()
         private val INDENT_REGEX = """^\h*""".toRegex()
         private val HEADER_REGEX = """^(#{1,2})\h*(?:\h|$)(?:!\[.*?]\((.+?)\))?\h*(.*?)\h*\1?$""".toRegex()  // https://regex101.com/r/4NREZt/4
         private val LIST_REGEX = """^(?:\d+\.|[-+*])\h+(.*)$""".toRegex()  // https://regex101.com/r/VyGXFB/3

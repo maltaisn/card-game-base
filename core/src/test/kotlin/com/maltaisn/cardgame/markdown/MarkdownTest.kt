@@ -185,6 +185,15 @@ internal class MarkdownTest {
     }
 
     @Test
+    fun line_trim() {
+        assertMarkdownHas("""
+            |line 1${" "}
+            |line 2
+        """.trimMargin(),
+                MdElement.Text("line 1 line 2"))
+    }
+
+    @Test
     fun list_number_markers() {
         val level0 = MdElement.List(MdElement.List.Type.NUMBER, 0, null)
         assertEquals("1", level0.getItemMarker(1))
