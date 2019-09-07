@@ -159,8 +159,8 @@
         shadowClipped: true
         shadowColor: { hex: #ffffff7f }
         shadowOffset: {
-          x: 1,
-          y: 1
+          x: 0.5
+          y: 0.5
         }
       }
       scoreFontStyle: {
