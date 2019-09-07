@@ -35,10 +35,11 @@ import ktx.style.get
 /**
  * A button for a menu, with an optional title and icon.
  */
-open class MenuButton(skin: Skin,
-                      private val fontStyle: FontStyle,
-                      title: CharSequence? = null, icon: Drawable? = null,
-                      private val style: MenuButtonStyle = skin.get()) : CheckableWidget() {
+open class MenuButton(skin: Skin, fontStyle: FontStyle,
+                      title: CharSequence? = null, icon: Drawable? = null) : CheckableWidget() {
+
+    private val style: MenuButtonStyle = skin.get()
+    private val fontStyle = FontStyle(fontStyle)
 
     /** The button title, or `null` for none. */
     var title: CharSequence?
@@ -102,8 +103,8 @@ open class MenuButton(skin: Skin,
         set(value) {
             super.enabled = value
 
-            val color = if (value) fontStyle.color else style.disabledColor
-            titleLabel.color.set(color)
+            val color = if (value) originalColor else style.disabledColor
+            fontStyle.color.set(color)
             iconImage.color.set(color)
         }
 
@@ -117,13 +118,14 @@ open class MenuButton(skin: Skin,
         get() = super.pressAlpha
         set(value) {
             super.pressAlpha = value
-            val color = interpolateColors(fontStyle.color, style.selectedColor, value)
-            titleLabel.color.set(color)
+            val color = interpolateColors(originalColor, style.selectedColor, value)
+            fontStyle.color.set(color)
             iconImage.color.set(color)
         }
 
 
     private val tempColor = Color()
+    private val originalColor = fontStyle.color.cpy()
 
     private val backgroundDrawable: Drawable
         get() = when (anchorSide) {
@@ -137,11 +139,11 @@ open class MenuButton(skin: Skin,
     init {
         addListener(SelectionListener())
 
-        titleLabel = MsdfLabel(null, skin, fontStyle)
-        iconImage = ShadowImage().apply {
-            setScaling(Scaling.fit)
-            shadowColor = fontStyle.shadowColor
-        }
+        titleLabel = MsdfLabel(null, skin, this.fontStyle)
+
+        iconImage = ShadowImage()
+        iconImage.setScaling(Scaling.fit)
+        iconImage.shadowColor = this.fontStyle.shadowColor
 
         pad(20f)
         updateLayout()
@@ -150,13 +152,6 @@ open class MenuButton(skin: Skin,
         this.icon = icon
         touchable = Touchable.enabled
     }
-
-    /**
-     * Create a menu button with only an [icon].
-     */
-    constructor(skin: Skin, iconColor: Color, icon: Drawable,
-                style: MenuButtonStyle = skin.get()) :
-            this(skin, FontStyle().apply { color = iconColor }, null, icon, style)
 
 
     /**
