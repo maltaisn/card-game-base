@@ -41,7 +41,9 @@ import com.maltaisn.cardgame.stats.StatsLoader
 import com.maltaisn.msdfgdx.MsdfFontLoader
 import com.maltaisn.msdfgdx.MsdfFontLoader.MsdfFontParameter
 import com.maltaisn.msdfgdx.MsdfShader
-import ktx.assets.*
+import ktx.assets.file
+import ktx.assets.loadOnDemand
+import ktx.assets.setLoader
 import java.util.*
 
 
@@ -87,8 +89,8 @@ open class CardGameScreen(val locale: Locale = Locale.getDefault()) :
         // Load core skin and strings
         skin = assetManager.loadOnDemand(CoreRes.SKIN,
                 SkinLoader.SkinParameter(CoreRes.SKIN_ATLAS)).asset
-        skin.add(CoreRes.CORE_STRINGS_NAME, assetManager
-                .loadOnDemand<I18NBundle>(CoreRes.CORE_STRINGS_FILE).asset)
+        skin.add(CoreRes.CORE_STRINGS_NAME, assetManager.loadOnDemand<I18NBundle>(
+                CoreRes.CORE_STRINGS_FILE, I18NBundleParameter(locale)).asset)
 
         // Add font and shader immediately.
         skin.add("default", MsdfShader())
@@ -115,16 +117,12 @@ open class CardGameScreen(val locale: Locale = Locale.getDefault()) :
      * Called when the game is created.
      * Good place to load the resources asynchronously with the asset manager.
      */
-    open fun load() {
-        assetManager.load(CoreRes.CORE_STRINGS_FILE, I18NBundleParameter(locale))
-    }
+    open fun load() = Unit
 
     /**
      * Called when the asset manager is done loading.
      */
-    open fun start() {
-        skin.add(CoreRes.CORE_STRINGS_NAME, assetManager.getAsset<I18NBundle>(CoreRes.CORE_STRINGS_FILE))
-    }
+    open fun start() = Unit
 
     /**
      * Add the styles and regions of a skin to the core skin.
