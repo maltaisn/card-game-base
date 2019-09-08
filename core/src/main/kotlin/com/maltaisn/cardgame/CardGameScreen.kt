@@ -23,6 +23,7 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.I18NBundleLoader.I18NBundleParameter
 import com.badlogic.gdx.assets.loaders.SkinLoader
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
+import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
@@ -42,6 +43,7 @@ import com.maltaisn.msdfgdx.MsdfFontLoader
 import com.maltaisn.msdfgdx.MsdfFontLoader.MsdfFontParameter
 import com.maltaisn.msdfgdx.MsdfShader
 import ktx.assets.file
+import ktx.assets.load
 import ktx.assets.loadOnDemand
 import ktx.assets.setLoader
 import java.util.*
@@ -117,12 +119,22 @@ open class CardGameScreen(val locale: Locale = Locale.getDefault()) :
      * Called when the game is created.
      * Good place to load the resources asynchronously with the asset manager.
      */
-    open fun load() = Unit
+    open fun load() {
+        // Load sounds
+        for (file in CoreRes.SOUNDS.values) {
+            assetManager.load<Sound>(file)
+        }
+    }
 
     /**
      * Called when the asset manager is done loading.
      */
-    open fun start() = Unit
+    open fun start() {
+        // Add sounds to skin
+        for ((sound, file) in CoreRes.SOUNDS) {
+            skin.add(sound, assetManager.get<Sound>(file), Sound::class.java)
+        }
+    }
 
     /**
      * Add the styles and regions of a skin to the core skin.
@@ -138,6 +150,7 @@ open class CardGameScreen(val locale: Locale = Locale.getDefault()) :
             skin.load(file(skinFile))
         }
     }
+
 
     override fun show() {
         Gdx.input.inputProcessor = this

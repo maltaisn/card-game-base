@@ -42,10 +42,10 @@ class NCardTest : CardGameTest() {
     }
 
     override fun start() {
+        super.start()
+
         addSkin(TestRes.NCARD_SKIN, TestRes.NCARD_ATLAS)
         ncardStyle = skin["ncard"]
-
-        super.start()
     }
 
     override fun layout(layout: CardGameLayout) {

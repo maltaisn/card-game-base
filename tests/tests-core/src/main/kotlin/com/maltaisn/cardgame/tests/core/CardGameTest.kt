@@ -38,6 +38,8 @@ abstract class CardGameTest : CardGameScreen() {
     }
 
     override fun start() {
+        super.start()
+
         addSkin(PCardRes.SKIN, PCardRes.SKIN_ATLAS)
         pcardStyle = skin.get()
 
