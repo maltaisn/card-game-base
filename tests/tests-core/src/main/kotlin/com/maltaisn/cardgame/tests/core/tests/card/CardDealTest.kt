@@ -52,6 +52,8 @@ class CardDealTest : ActionBarTest() {
         var replaceDst = false
         var fromLast = true
         var toLast = true
+        var delay = CardAnimationGroup.DEFAULT_UPDATE_DURATION
+        var duration = delay
 
         addActionBtn("Deal") {
             if (animGroup.animationRunning) {
@@ -74,13 +76,21 @@ class CardDealTest : ActionBarTest() {
             } else {
                 emptyList()
             }
-            animGroup.deal(src, dst, src.size, replaceSrc, replaceDst, fromLast, toLast)
+            animGroup.deal(src, dst, src.size,
+                    replaceSrc, replaceDst, fromLast, toLast,
+                    delay, duration)
             dealToTop = !dealToTop
         }
         addToggleBtn("Replace src", startState = replaceSrc) { _, state -> replaceSrc = state }
         addToggleBtn("Replace dst", startState = replaceDst) { _, state -> replaceDst = state }
         addToggleBtn("Src from last", startState = fromLast) { _, state -> fromLast = state }
         addToggleBtn("Dst to last", startState = toLast) { _, state -> toLast = state }
+        addValueBtn("Delay", 0f, 1f, delay, 0.1f) { _, value, _ ->
+            delay = value
+        }
+        addValueBtn("Duration", 0f, 1f, duration, 0.1f) { _, value, _ ->
+            duration = value
+        }
 
         // Do the layout
         layout.centerTable.apply {

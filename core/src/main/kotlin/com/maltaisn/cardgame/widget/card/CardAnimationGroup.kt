@@ -33,6 +33,11 @@ import ktx.math.times
 import ktx.math.vec2
 
 
+/**
+ * The group in which the card actors of [CardContainer] go when they
+ * are animated. Animation can happen within a container (eg: sorting) or
+ * between two containers.
+ */
 class CardAnimationGroup : Group() {
 
     /**
@@ -47,6 +52,7 @@ class CardAnimationGroup : Group() {
 
     private var cardsMoved = false
     private var animationPending = false
+    private var animationDuration = 0f
     private var animationTimeLeft = 0f
 
     var animationRunning = false
@@ -90,6 +96,11 @@ class CardAnimationGroup : Group() {
                 completeAnimation()
             }
         }
+
+        if (delayedCardMoves.isNotEmpty()) {
+            // If any moves are delayed, must keep rendering so act() is called.
+            Gdx.graphics.requestRendering()
+        }
     }
 
     /**
@@ -129,7 +140,10 @@ class CardAnimationGroup : Group() {
 
     /**
      * Move a card after a [delay] in seconds.
-     * The indexes are the ones at the moment of the move, not at the moment of this call.
+     * @param srcIndex Index of the card in the [src] container at the moment of the call.
+     * If the position cards in the container change, the correct card will still be moved.
+     * @param dstIndex Index in the [dst] container at which to insert the card. This is the
+     * index at the moment of the move, not at the moment this method is called unline [srcIndex].
      * @param callback Called when the card is moved.
      * @see moveCard
      */
@@ -138,48 +152,42 @@ class CardAnimationGroup : Group() {
                         delay: Float, callback: (() -> Unit)? = null) {
         val move = DelayedCardMove(src, dst, srcIndex, dstIndex,
                 replaceSrc, replaceDst, delay, callback)
-        if (delay <= 0f) {
-            // No delay, call immediately.
-            move.doMove(this)
-        } else {
-            delayedCardMoves += move
-        }
+        delayedCardMoves += move
     }
 
     /**
      * Animate the dealing of [count] cards from a source container to a destination container.
-     * @param callback Called after each card is passed.
      * @param replaceSrc If true, cards removed from source will be replaced with null.
      * @param replaceDst If true, cards will replace null cards in destination.
      * @param fromLast If true, cards will be taken from the last indexes of [src]. If false,
      * they will be taken from the first indexes.
      * @param toLast Same as [fromLast] for the [dst] container.
+     * @param callback Called after each card is passed.
+     * @param delay The delay between each card deal.
+     * @param updateDuration The duration of the animation for each card. If duration is smaller than
+     * [delay], each card animation will end before next one begins, otherwise animations are merged.
      */
     fun deal(src: CardContainer, dst: CardContainer, count: Int,
              replaceSrc: Boolean = false, replaceDst: Boolean = false,
              fromLast: Boolean = true, toLast: Boolean = true,
+             delay: Float = DEFAULT_UPDATE_DURATION,
+             updateDuration: Float = delay,
              callback: (() -> Unit)? = null) {
         require(src.size >= count) {
             "Not enough cards in source container to perform deal."
         }
 
-        val srcStartSize = src.size
-        val dstStartSize = dst.size
         for (i in 0 until count) {
-            val srcIndex = if (replaceSrc) {
-                if (fromLast) srcStartSize - i - 1 else i
-            } else {
-                if (fromLast) srcStartSize - i - 1 else 0
-            }
+            val srcIndex = if (fromLast) src.size - i - 1 else i
             val dstIndex = if (replaceDst) {
-                if (toLast) dstStartSize - i - 1 else i
+                if (toLast) dst.size - i - 1 else i
             } else {
-                if (toLast) dstStartSize + i else 0
+                if (toLast) dst.size + i else 0
             }
             moveCardDelayed(src, dst, srcIndex, dstIndex,
-                    replaceSrc, replaceDst, i * DEAL_DELAY) {
+                    replaceSrc, replaceDst, i * delay) {
                 callback?.invoke()
-                update()
+                update(updateDuration)
             }
         }
     }
@@ -243,9 +251,11 @@ class CardAnimationGroup : Group() {
      * An update can be dispatched before last update ends, both animations will be merged.
      * A card container is changed when any of card was added, moved or removed since last update.
      * To also update a container that wasn't changed call [CardContainer.requestUpdate] before.
+     * The update will finish after a [duration].
      */
-    fun update() {
+    fun update(duration: Float = DEFAULT_UPDATE_DURATION) {
         // Add pending animation for next frame.
+        animationDuration = duration
         animationPending = true
         cardsMoved = false
     }
@@ -335,7 +345,7 @@ class CardAnimationGroup : Group() {
                     actor.isVisible = true
                 }
 
-                var duration = UPDATE_DURATION
+                var duration = animationDuration
 
                 // If actor was already moving and its animation still has some time left,
                 // recycle the action by assigning a new duration.
@@ -347,7 +357,7 @@ class CardAnimationGroup : Group() {
                     if (oldDistance != 0f && newDistance != 0f && remaining > 0.1f) {
                         // Extrapolate new duration from new to old distance ratio
                         duration = (newDistance / oldDistance * remaining)
-                                .coerceIn(0.2f, UPDATE_DURATION)
+                                .coerceIn(animationDuration / 2, animationDuration)
                     }
                 }
 
@@ -520,15 +530,19 @@ class CardAnimationGroup : Group() {
     private class DelayedCardMove(
             private val src: CardContainer,
             private val dst: CardContainer,
-            private val srcIndex: Int,
+            srcIndex: Int,
             private val dstIndex: Int,
             private val replaceSrc: Boolean = false,
             private val replaceDst: Boolean = false,
             var timeLeft: Float,
             private val callback: (() -> Unit)?) {
 
+        private val srcActor = src.actors[srcIndex]
+
         fun doMove(cardAnimationGroup: CardAnimationGroup) {
-            cardAnimationGroup.moveCard(src, dst, srcIndex, dstIndex, replaceSrc, replaceDst)
+            val index = src.actors.indexOf(srcActor)
+            check(index >= 0) { "Delayed card move can't be done, card isn't in source container." }
+            cardAnimationGroup.moveCard(src, dst, index, dstIndex, replaceSrc, replaceDst)
             callback?.invoke()
         }
     }
@@ -661,11 +675,8 @@ class CardAnimationGroup : Group() {
     }
 
     companion object {
-        /** The duration of the update  */
-        const val UPDATE_DURATION = 0.4f
-
-        /** The duration between each card dealt. Values less than the update duration look worse. */
-        const val DEAL_DELAY: Float = 0.45f
+        /** The default duration of the update  */
+        const val DEFAULT_UPDATE_DURATION = 0.4f
     }
 
 }
