@@ -330,6 +330,7 @@ class CardAnimationGroup : Group() {
             for (i in newActors.indices) {
                 val actor = newActors[i] ?: continue
                 actor.dst = container
+                actor.enabled = container.enabled
 
                 val containerEndPos = endPositions[i]
                 val stageEndPos = container.localToActorCoordinates(this, containerEndPos.cpy())

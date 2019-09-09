@@ -97,6 +97,9 @@ abstract class CardContainer(val cardStyle: CardActor.CardStyle) : FboWidgetGrou
         set(value) {
             field = value
             touchable = if (enabled) Touchable.enabled else Touchable.disabled
+            for (actor in actors) {
+                actor?.enabled = enabled
+            }
         }
 
     /** The size of the card actors in the container. */
@@ -187,6 +190,7 @@ abstract class CardContainer(val cardStyle: CardActor.CardStyle) : FboWidgetGrou
         for (actor in actors) {
             if (actor != null) {
                 actor.size = cardSize
+                actor.enabled = enabled
                 if (visibility == Visibility.ALL) {
                     actor.shown = true
                 } else if (visibility == Visibility.NONE) {
@@ -567,7 +571,7 @@ abstract class CardContainer(val cardStyle: CardActor.CardStyle) : FboWidgetGrou
             }
         }
 
-        // Apply this container visibility to the new actors
+        // Apply this container visibility and enabled state to the new actors
         for (actor in actors) {
             actor ?: continue
             if (visibility == Visibility.ALL) {
@@ -575,6 +579,7 @@ abstract class CardContainer(val cardStyle: CardActor.CardStyle) : FboWidgetGrou
             } else if (visibility == Visibility.NONE) {
                 actor.shown = false
             }
+            actor.enabled = enabled
         }
     }
 
