@@ -60,7 +60,7 @@ class Markdown(content: CharSequence) {
         for (line in lines) {
             // Whitespace trimming and line breaks
             var text = line.replace("\t", "    ")
-            var indentSize = INDENT_REGEX.find(text)!!.value.length
+            var indentSize = INDENT_REGEX.find(text)?.value?.length ?: 0
             text = text.trimStart()
                     .replace(LINE_BREAK_REGEX, "\n")
                     .replace(WHITESPACE_REGEX, " ")
@@ -180,14 +180,14 @@ class Markdown(content: CharSequence) {
         private const val INDENT_SIZE = 4
         private const val LIST_INDENT_SIZE = 2
 
-        private val LINE_BREAK_REGEX = """\h*(?:\h{2}|\\)$""".toRegex()
+        private val LINE_BREAK_REGEX = """(?: {2}|\\)$""".toRegex()
         private val PARAGRAPH_BREAK_REGEX = """\n{2,}""".toRegex()
-        private val WHITESPACE_REGEX = """\h{2,}""".toRegex()
-        private val TRAILING_WHITESPACE_REGEX = """\h+$""".toRegex()
-        private val INDENT_REGEX = """^\h*""".toRegex()
-        private val HEADER_REGEX = """^(#{1,2})\h*(?:\h|$)(?:!\[.*?]\((.+?)\))?\h*(.*?)\h*\1?$""".toRegex()  // https://regex101.com/r/4NREZt/4
-        private val LIST_REGEX = """^(?:\d+\.|[-+*])\h+(.*)$""".toRegex()  // https://regex101.com/r/VyGXFB/3
-        private val HLINE_REGEX = """^([-_*])\h*(?:\1\h*){2,}$""".toRegex()  // https://regex101.com/r/np52ep/1
+        private val WHITESPACE_REGEX = """[^\S\n]{2,}""".toRegex()
+        private val TRAILING_WHITESPACE_REGEX = """ +$""".toRegex()
+        private val INDENT_REGEX = """^ *""".toRegex()
+        private val HEADER_REGEX = """^(#{1,2}) *(?: |$)(?:!\[.*?]\((.+?)\))? *(.*?) *\1?$""".toRegex()  // https://regex101.com/r/4NREZt/4
+        private val LIST_REGEX = """^(?:\d+\.|[-+*]) +(.*)$""".toRegex()  // https://regex101.com/r/VyGXFB/3
+        private val HLINE_REGEX = """^([-_*]) *(?:\1 *){2,}$""".toRegex()  // https://regex101.com/r/np52ep/1
     }
 
 }
