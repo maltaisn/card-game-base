@@ -76,7 +76,6 @@ open class CardGameScreen(val locale: Locale = Locale.getDefault()) :
 
 
     init {
-        updateOffscreenFrameBuffer()
         actionsRequestRendering = true
 
         // Register asset loaders
@@ -195,10 +194,21 @@ open class CardGameScreen(val locale: Locale = Locale.getDefault()) :
     }
 
     private fun updateOffscreenFrameBuffer() {
+        val width = Gdx.graphics.width
+        val height = Gdx.graphics.height
+
+        // Width and height will be 0 on desktop when minimizing the window.
+        if (Gdx.graphics.width == 0) return
+
         if (::offscreenFbo.isInitialized) {
             offscreenFbo.dispose()
         }
-        offscreenFbo = FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.width, Gdx.graphics.height, false)
+        offscreenFbo = try {
+            FrameBuffer(Pixmap.Format.RGBA8888, width, height, false)
+        } catch (e: Exception) {
+            FrameBuffer(Pixmap.Format.RGBA4444, width, height, false)
+        }
+
         offscreenFboRegion = TextureRegion(offscreenFbo.colorBufferTexture)
         offscreenFboRegion.flip(false, true)
     }
