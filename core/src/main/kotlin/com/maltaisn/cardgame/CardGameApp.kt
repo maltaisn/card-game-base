@@ -17,15 +17,12 @@
 package com.maltaisn.cardgame
 
 import com.badlogic.gdx.Game
-import com.badlogic.gdx.Gdx
 
 
 abstract class CardGameApp : Game() {
 
     override fun create() {
-        // Disable continuous rendering
-        Gdx.graphics.isContinuousRendering = false
-        Gdx.graphics.requestRendering()
+        // Nothing to do.
     }
 
     override fun dispose() {

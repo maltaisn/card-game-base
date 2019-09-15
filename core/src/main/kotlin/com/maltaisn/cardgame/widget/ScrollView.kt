@@ -16,10 +16,8 @@
 
 package com.maltaisn.cardgame.widget
 
-import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
-import com.maltaisn.cardgame.widget.action.ActionDelegate
 
 
 /**
@@ -35,36 +33,10 @@ open class ScrollView(actor: Actor? = null, style: ScrollPaneStyle? = null) :
      */
     var scrollListener: ((scrollView: ScrollView, x: Float, y: Float,
                           dx: Float, dy: Float) -> Unit)? = null
-        set(value) {
-            if (field != null) {
-                // Remove old listener action
-                scrollListenerAction = null
-            }
-            field = value
-            if (value != null) {
-                // Add new listener action
-                scrollListenerAction = object : Action() {
-                    private var lastScrollX = 0f
-                    private var lastScrollY = 0f
 
-                    override fun act(delta: Float): Boolean {
-                        // FIXME never ending action might prevent non-continuous rendering?
-                        val view = this@ScrollView
-                        val scrollX = view.scrollX
-                        val scrollY = view.scrollY
-                        if (scrollX != lastScrollX || scrollY != lastScrollY) {
-                            // Scroll changed
-                            value(view, scrollX, scrollY, lastScrollX - scrollX, lastScrollY - scrollY)
-                            lastScrollX = scrollX
-                            lastScrollY = scrollY
-                        }
-                        return false
-                    }
-                }
-            }
-        }
+    private var lastScrollX = 0f
+    private var lastScrollY = 0f
 
-    private var scrollListenerAction by ActionDelegate<Action>()
 
     init {
         setScrollingDisabled(true, false)
@@ -73,10 +45,20 @@ open class ScrollView(actor: Actor? = null, style: ScrollPaneStyle? = null) :
     }
 
 
-    override fun clearActions() {
-        super.clearActions()
-        if (scrollListenerAction != null) {
-            addAction(scrollListenerAction)
+    override fun act(delta: Float) {
+        super.act(delta)
+
+        if (scrollListener != null) {
+            val view = this@ScrollView
+            val scrollX = view.scrollX
+            val scrollY = view.scrollY
+            if (scrollX != lastScrollX || scrollY != lastScrollY) {
+                // Scroll changed
+                scrollListener?.invoke(view, scrollX, scrollY,
+                        lastScrollX - scrollX, lastScrollY - scrollY)
+                lastScrollX = scrollX
+                lastScrollY = scrollY
+            }
         }
     }
 

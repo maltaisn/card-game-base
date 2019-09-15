@@ -77,6 +77,7 @@ open class CardGameScreen(val locale: Locale = Locale.getDefault()) :
 
     init {
         actionsRequestRendering = true
+        Gdx.graphics.isContinuousRendering = false
 
         // Register asset loaders
         val fileResolver = InternalFileHandleResolver()
