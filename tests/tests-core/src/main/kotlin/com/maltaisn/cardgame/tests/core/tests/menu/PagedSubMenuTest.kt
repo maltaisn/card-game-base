@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.tests.core.TestRes
@@ -39,7 +40,7 @@ import ktx.log.info
 /**
  * Test [PagedSubMenu] layout options and behavior with dummy content and items.
  */
-class PagedSubMenuTest : ActionBarTest() {
+class PagedSubMenuTest(listener: CardGameListener) : ActionBarTest(listener) {
 
     override fun load() {
         super.load()

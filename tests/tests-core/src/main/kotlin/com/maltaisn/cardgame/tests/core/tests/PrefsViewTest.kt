@@ -18,6 +18,7 @@ package com.maltaisn.cardgame.tests.core.tests
 
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.prefs.GamePref
 import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.PrefEntry
@@ -35,7 +36,7 @@ import ktx.log.info
 /**
  * Test for preference group and views, preference parsing and inflating.
  */
-class PrefsViewTest : SubmenuContentTest() {
+class PrefsViewTest(listener: CardGameListener) : SubmenuContentTest(listener) {
 
     private lateinit var prefs: GamePrefs
 

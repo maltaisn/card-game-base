@@ -17,6 +17,7 @@
 package com.maltaisn.cardgame.tests.core.tests
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.stats.Statistics
 import com.maltaisn.cardgame.tests.core.SubmenuContentTest
 import com.maltaisn.cardgame.tests.core.TestRes
@@ -30,7 +31,7 @@ import kotlin.random.Random
 /**
  * Test for statistics views, parsing and inflating.
  */
-class StatsViewTest : SubmenuContentTest() {
+class StatsViewTest(listener: CardGameListener) : SubmenuContentTest(listener) {
 
     override fun load() {
         super.load()

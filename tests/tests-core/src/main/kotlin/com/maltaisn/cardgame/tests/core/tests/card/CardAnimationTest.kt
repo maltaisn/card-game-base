@@ -19,6 +19,7 @@ package com.maltaisn.cardgame.tests.core.tests.card
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.game.drawTop
 import com.maltaisn.cardgame.pcard.PCard
 import com.maltaisn.cardgame.tests.core.SingleActionTest
@@ -30,7 +31,7 @@ import com.maltaisn.cardgame.widget.card.*
  * Test [CardAnimationGroup] animations between card containers,
  * test play listeners and dragging, etc.
  */
-class CardAnimationTest : SingleActionTest() {
+class CardAnimationTest(listener: CardGameListener) : SingleActionTest(listener) {
 
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)

@@ -19,15 +19,18 @@ package com.maltaisn.cardgame.tests.core
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.CardGameScreen
 import com.maltaisn.cardgame.pcard.PCardRes
 import com.maltaisn.cardgame.pcard.PCardStyle
 import com.maltaisn.cardgame.widget.CardGameLayout
 import ktx.assets.load
 import ktx.style.get
+import java.util.*
 
 
-abstract class CardGameTest : CardGameScreen() {
+abstract class CardGameTest(listener: CardGameListener) :
+        CardGameScreen<CardGameListener>(Locale.getDefault(), listener) {
 
     protected lateinit var pcardStyle: PCardStyle
 

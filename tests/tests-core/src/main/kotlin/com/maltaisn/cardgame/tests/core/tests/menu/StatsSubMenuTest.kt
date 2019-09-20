@@ -16,6 +16,7 @@
 
 package com.maltaisn.cardgame.tests.core.tests.menu
 
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.stats.Statistics
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.tests.core.TestRes
@@ -26,7 +27,7 @@ import ktx.log.info
 import kotlin.random.Random
 
 
-class StatsSubMenuTest : ActionBarTest() {
+class StatsSubMenuTest(listener: CardGameListener) : ActionBarTest(listener) {
 
     override fun load() {
         super.load()

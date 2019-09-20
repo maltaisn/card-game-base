@@ -16,6 +16,7 @@
 
 package com.maltaisn.cardgame.tests.core.tests
 
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.tests.core.TestRes
@@ -29,7 +30,7 @@ import ktx.assets.load
 import ktx.log.info
 
 
-class DialogTest : ActionBarTest() {
+class DialogTest(listener: CardGameListener) : ActionBarTest(listener) {
 
     override fun load() {
         super.load()

@@ -17,6 +17,7 @@
 package com.maltaisn.cardgame.tests.core.tests
 
 import com.badlogic.gdx.utils.Align
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.tests.core.SingleActionTest
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.PlayerLabel
@@ -26,7 +27,7 @@ import com.maltaisn.cardgame.widget.PlayerLabel
  * Test [PlayerLabel] layout and style.
  * The layout shows what could be used for most 4 players games.
  */
-class PlayerLabelTest : SingleActionTest() {
+class PlayerLabelTest(listener: CardGameListener) : SingleActionTest(listener) {
 
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)

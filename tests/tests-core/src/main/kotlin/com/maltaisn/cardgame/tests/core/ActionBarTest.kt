@@ -22,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.menu.MenuButton
 import com.maltaisn.msdfgdx.FontStyle
@@ -33,7 +34,7 @@ import kotlin.math.round
 /**
  * Base class for a test with a top toolbar with buttons to provide test actions.
  */
-abstract class ActionBarTest : CardGameTest() {
+abstract class ActionBarTest(listener: CardGameListener) : CardGameTest(listener) {
 
     protected val btnTable = Table()
 

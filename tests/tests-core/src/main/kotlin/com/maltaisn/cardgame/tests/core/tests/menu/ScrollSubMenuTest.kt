@@ -16,6 +16,7 @@
 
 package com.maltaisn.cardgame.tests.core.tests.menu
 
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.tests.core.TestRes
@@ -32,7 +33,7 @@ import ktx.log.info
 /**
  * Test [ScrollSubMenu] layout options and behavior with dummy content and items.
  */
-class ScrollSubMenuTest : ActionBarTest() {
+class ScrollSubMenuTest(listener: CardGameListener) : ActionBarTest(listener) {
 
     override fun load() {
         super.load()

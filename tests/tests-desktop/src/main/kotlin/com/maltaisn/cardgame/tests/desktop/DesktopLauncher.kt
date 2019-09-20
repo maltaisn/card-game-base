@@ -19,6 +19,7 @@ package com.maltaisn.cardgame.tests.desktop
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration
 import com.maltaisn.cardgame.CardGameApp
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.tests.core.CardGameTests
 import java.awt.BorderLayout
 import java.awt.Dimension
@@ -31,9 +32,12 @@ import javax.swing.*
 import javax.swing.border.EmptyBorder
 
 
-object DesktopLauncher {
+object DesktopLauncher : CardGameListener {
 
     private val prefs = Preferences.userNodeForPackage(DesktopLauncher::class.java)
+
+    override val isTextInputDelegated = false
+
 
     @JvmStatic
     fun main(args: Array<String>) {
@@ -92,9 +96,9 @@ object DesktopLauncher {
 
     private fun runTest(testName: String) {
         prefs.put("lastTest", testName)
-        Lwjgl3Application(object : CardGameApp() {
+        Lwjgl3Application(object : CardGameApp<CardGameListener>(this) {
             override fun create() {
-                setScreen(CardGameTests.newTest(testName))
+                setScreen(CardGameTests.newTest<CardGameListener>(testName, this@DesktopLauncher))
             }
         }, Lwjgl3ApplicationConfiguration().apply {
             setTitle("Cards")

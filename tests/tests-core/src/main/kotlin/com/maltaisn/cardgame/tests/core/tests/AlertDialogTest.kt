@@ -17,6 +17,7 @@
 package com.maltaisn.cardgame.tests.core.tests
 
 import com.badlogic.gdx.utils.Align
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.tests.core.TestRes
@@ -27,7 +28,7 @@ import ktx.assets.load
 import ktx.log.info
 
 
-class AlertDialogTest : ActionBarTest() {
+class AlertDialogTest(listener: CardGameListener) : ActionBarTest(listener) {
 
     override fun load() {
         super.load()

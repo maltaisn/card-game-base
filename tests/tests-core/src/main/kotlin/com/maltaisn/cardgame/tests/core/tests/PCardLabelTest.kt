@@ -17,6 +17,7 @@
 package com.maltaisn.cardgame.tests.core.tests
 
 import com.badlogic.gdx.graphics.Color
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.pcard.PCard
 import com.maltaisn.cardgame.pcard.PCardLabel
 import com.maltaisn.cardgame.tests.core.ActionBarTest
@@ -24,7 +25,7 @@ import com.maltaisn.cardgame.tests.core.fontStyle
 import com.maltaisn.cardgame.widget.CardGameLayout
 
 
-class PCardLabelTest : ActionBarTest() {
+class PCardLabelTest(listener: CardGameListener) : ActionBarTest(listener) {
 
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)

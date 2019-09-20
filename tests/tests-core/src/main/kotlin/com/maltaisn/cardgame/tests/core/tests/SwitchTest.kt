@@ -17,13 +17,14 @@
 package com.maltaisn.cardgame.tests.core.tests
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.tests.core.SubmenuContentTest
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.Switch
 import ktx.log.info
 
 
-class SwitchTest : SubmenuContentTest() {
+class SwitchTest(listener: CardGameListener) : SubmenuContentTest(listener) {
 
     override fun layoutContent(layout: CardGameLayout, content: Table) {
         val topSwitch = Switch(skin)

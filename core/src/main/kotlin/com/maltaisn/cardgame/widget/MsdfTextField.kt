@@ -23,6 +23,8 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.TextField
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.OnscreenKeyboard
+import com.maltaisn.cardgame.CardGameScreen
 import com.maltaisn.msdfgdx.FontStyle
 import com.maltaisn.msdfgdx.MsdfFont
 import com.maltaisn.msdfgdx.MsdfShader
@@ -49,6 +51,12 @@ class MsdfTextField(skin: Skin,
     private val font: MsdfFont = skin[fontStyle.fontName]
     private val messageFont: MsdfFont? = messageFontStyle?.let { skin[it.fontName] }
 
+    /**
+     * Text to use as input window title if needed.
+     * Can be `null` for no title.
+     */
+    var inputTitle: CharSequence? = null
+
 
     constructor(skin: Skin, fontStyle: FontStyle,
                 messageFontStyle: FontStyle? = null, text: String? = null) :
@@ -62,6 +70,12 @@ class MsdfTextField(skin: Skin,
                 Gdx.input.setOnscreenKeyboardVisible(false)
                 setKeyboardFocus(false)
                 event.stop()
+            }
+        }
+
+        onscreenKeyboard = OnscreenKeyboard { visible ->
+            if (visible) {
+                (stage as? CardGameScreen<*>)?.onTextInput(this@MsdfTextField)
             }
         }
     }

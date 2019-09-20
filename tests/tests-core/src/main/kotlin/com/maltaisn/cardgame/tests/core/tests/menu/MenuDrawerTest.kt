@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Value
 import com.badlogic.gdx.utils.Align
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.tests.core.fontStyle
 import com.maltaisn.cardgame.widget.CardGameLayout
@@ -37,7 +38,7 @@ import kotlin.math.min
  * Test for [MenuDrawer]: title, drawer width, dismissal and content.
  * Also tests [MenuDrawerList] widget and its selection listener.
  */
-class MenuDrawerTest : ActionBarTest() {
+class MenuDrawerTest(listener: CardGameListener) : ActionBarTest(listener) {
 
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)

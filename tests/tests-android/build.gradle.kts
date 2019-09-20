@@ -4,12 +4,12 @@ plugins {
 }
 
 android {
-    buildToolsVersion("28.0.3")
-    compileSdkVersion(28)
+    buildToolsVersion("29.0.2")
+    compileSdkVersion(29)
     defaultConfig {
         applicationId = "com.maltaisn.cardgame.tests.android"
-        minSdkVersion(14)
-        targetSdkVersion(28)
+        minSdkVersion(16)
+        targetSdkVersion(29)
         versionCode = 1
         versionName = "0.0.1"
     }

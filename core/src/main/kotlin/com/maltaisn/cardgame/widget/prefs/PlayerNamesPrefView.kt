@@ -49,6 +49,7 @@ class PlayerNamesPrefView(skin: Skin, pref: PlayerNamesPref) :
         textFields = Array(pref.size) { playerPos ->
             val textField = MsdfTextField(skin, skin.get<TextField.TextFieldStyle>(),
                     style.fieldFontStyle, text = pref.getPlayerName(playerPos))
+            textField.inputTitle = pref.inputTitle
             textField.maxLength = pref.maxLength
             textField.onKeyboardFocus { focused ->
                 if (!focused) {

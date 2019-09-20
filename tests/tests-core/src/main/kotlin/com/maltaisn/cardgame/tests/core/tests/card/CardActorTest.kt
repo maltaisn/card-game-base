@@ -17,6 +17,7 @@
 package com.maltaisn.cardgame.tests.core.tests.card
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.game.drawTop
 import com.maltaisn.cardgame.pcard.PCard
 import com.maltaisn.cardgame.tests.core.ActionBarTest
@@ -28,7 +29,7 @@ import ktx.log.info
 /**
  * Test for [CardActor] options and layout.
  */
-class CardActorTest : ActionBarTest() {
+class CardActorTest(listener: CardGameListener) : ActionBarTest(listener) {
 
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)

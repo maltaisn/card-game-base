@@ -18,6 +18,7 @@ package com.maltaisn.cardgame.tests.core.tests.card
 
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Align
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.game.drawTop
 import com.maltaisn.cardgame.pcard.PCard
 import com.maltaisn.cardgame.tests.core.CardGameTest
@@ -33,7 +34,7 @@ import com.maltaisn.cardgame.widget.card.CardHand
  * Cards of multiple vertical card hands can be moved to other hands or dragged in hand.
  * Also to test drag and play animations and listeners in [CardHand].
  */
-class SolitaireTest : CardGameTest() {
+class SolitaireTest(listener: CardGameListener) : CardGameTest(listener) {
 
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)

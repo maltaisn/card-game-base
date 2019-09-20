@@ -19,6 +19,7 @@ package com.maltaisn.cardgame.tests.core.tests
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.tests.core.SubmenuContentTest
 import com.maltaisn.cardgame.tests.core.fontStyle
 import com.maltaisn.cardgame.widget.CardGameLayout
@@ -27,7 +28,7 @@ import com.maltaisn.msdfgdx.widget.MsdfLabel
 import kotlin.random.Random
 
 
-class SliderTest : SubmenuContentTest() {
+class SliderTest(listener: CardGameListener) : SubmenuContentTest(listener) {
 
     override fun layoutContent(layout: CardGameLayout, content: Table) {
         val sliders = mutableListOf<Slider>()

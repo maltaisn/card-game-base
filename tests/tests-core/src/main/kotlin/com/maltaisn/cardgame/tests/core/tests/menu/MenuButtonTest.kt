@@ -18,6 +18,7 @@ package com.maltaisn.cardgame.tests.core.tests.menu
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.utils.Align
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.tests.core.fontStyle
 import com.maltaisn.cardgame.utils.defaultSize
@@ -32,7 +33,7 @@ import ktx.log.info
 /**
  * Test [MenuButton] options and layout.
  */
-class MenuButtonTest : ActionBarTest() {
+class MenuButtonTest(listener: CardGameListener) : ActionBarTest(listener) {
 
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)

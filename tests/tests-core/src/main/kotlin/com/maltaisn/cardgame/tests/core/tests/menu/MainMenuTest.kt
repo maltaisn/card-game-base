@@ -16,6 +16,7 @@
 
 package com.maltaisn.cardgame.tests.core.tests.menu
 
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.pcard.PCard
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.widget.CardGameLayout
@@ -28,7 +29,7 @@ import ktx.log.info
 /**
  * Test [MainMenu] layout options and behavior with dummy content and items.
  */
-class MainMenuTest : ActionBarTest() {
+class MainMenuTest(listener: CardGameListener) : ActionBarTest(listener) {
 
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)

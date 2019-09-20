@@ -17,6 +17,7 @@
 package com.maltaisn.cardgame.tests.core.tests
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.tests.core.SubmenuContentTest
 import com.maltaisn.cardgame.widget.AboutView
 import com.maltaisn.cardgame.widget.CardGameLayout
@@ -25,7 +26,7 @@ import ktx.actors.onClick
 import ktx.log.info
 
 
-class AboutViewTest : SubmenuContentTest() {
+class AboutViewTest(listener: CardGameListener) : SubmenuContentTest(listener) {
 
     override fun layoutContent(layout: CardGameLayout, content: Table) {
         val aboutView = AboutView(skin, "Hearts", "1.0.0", "Chuck Norris")

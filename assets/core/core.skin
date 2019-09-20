@@ -1,5 +1,5 @@
 {
-  Color: {
+  com.badlogic.gdx.graphics.Color: {
     colorPrimary: { hex: #a3a3a3 }
     colorPrimaryDisabled: { hex: #747474 }
     colorAccent: { hex: #38a047 }
@@ -141,7 +141,7 @@
       thumbSize: 96
     }
   }
-  TextFieldStyle: {
+  com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
     default: {
       background: text-field-background
       focusedBackground: text-field-background-focused

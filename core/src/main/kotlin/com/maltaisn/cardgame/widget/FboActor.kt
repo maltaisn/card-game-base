@@ -45,7 +45,7 @@ interface FboActor {
 
     fun drawFboActor(batch: Batch, parentAlpha: Float) {
         if (renderToFrameBuffer) {
-            val stage = getStage() as CardGameScreen
+            val stage = getStage() as CardGameScreen<*>
             val fbo = stage.offscreenFbo
 
             batch.end()

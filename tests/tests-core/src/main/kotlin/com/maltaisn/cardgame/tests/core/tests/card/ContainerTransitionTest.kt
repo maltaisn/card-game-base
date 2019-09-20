@@ -16,6 +16,7 @@
 
 package com.maltaisn.cardgame.tests.core.tests.card
 
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.game.drawTop
 import com.maltaisn.cardgame.pcard.PCard
 import com.maltaisn.cardgame.tests.core.ActionBarTest
@@ -27,7 +28,7 @@ import com.maltaisn.cardgame.widget.card.CardHand
 /**
  * Test for all of [CardContainer] show and hide transitions.
  */
-class ContainerTransitionTest : ActionBarTest() {
+class ContainerTransitionTest(listener: CardGameListener) : ActionBarTest(listener) {
 
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)

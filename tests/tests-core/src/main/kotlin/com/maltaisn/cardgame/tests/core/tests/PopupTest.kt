@@ -18,6 +18,7 @@ package com.maltaisn.cardgame.tests.core.tests
 
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.widget.Button
 import com.maltaisn.cardgame.widget.CardGameLayout
@@ -28,7 +29,7 @@ import ktx.actors.onClick
 /**
  * Test for [Popup] anchor actor and side, show and hide animations, background rendering, etc.
  */
-class PopupTest : ActionBarTest() {
+class PopupTest(listener: CardGameListener) : ActionBarTest(listener) {
 
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)

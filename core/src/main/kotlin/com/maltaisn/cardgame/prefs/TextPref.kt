@@ -39,6 +39,9 @@ class TextPref : GamePref<String>() {
     /** The field default text. */
     var defaultValue = ""
 
+    /** The title for the input window if input is delegated. */
+    var inputTitle: String? = null
+
     /** The maximum number of characters that can be entered, or [NO_MAX_LENGTH] for no maximum. */
     var maxLength = NO_MAX_LENGTH
 

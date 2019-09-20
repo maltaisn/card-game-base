@@ -16,18 +16,24 @@
 
 package com.maltaisn.cardgame
 
-import com.badlogic.gdx.Game
 
+/**
+ * Listener to be implemented for each backend to provide backend dependent behavior
+ */
+interface CardGameListener {
 
-abstract class CardGameApp<T : CardGameListener>(val listener: T) : Game() {
+    /**
+     * Whether to delegate text input to [onTextInput] or use default input method.
+     */
+    val isTextInputDelegated: Boolean
 
-    override fun create() {
-        // Nothing to do.
-    }
-
-    override fun dispose() {
-        super.dispose()
-        screen.dispose()
-    }
+    /**
+     * Prompt user for text input.
+     * @param text Current text, null for none.
+     * @param title Input title/hint, null for none.
+     * @param onTextEntered Callback to call when text has been entered.
+     */
+    fun onTextInput(text: CharSequence?, title: CharSequence?,
+                    onTextEntered: ((String) -> Unit)) = Unit
 
 }

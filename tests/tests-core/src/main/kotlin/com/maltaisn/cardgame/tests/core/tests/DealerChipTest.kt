@@ -19,6 +19,7 @@ package com.maltaisn.cardgame.tests.core.tests
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.DealerChip
@@ -27,7 +28,7 @@ import com.maltaisn.cardgame.widget.DealerChip
 /**
  * Test for [DealerChip] anchor actor and side, show/hide/move animations.
  */
-class DealerChipTest : ActionBarTest() {
+class DealerChipTest(listener: CardGameListener) : ActionBarTest(listener) {
 
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)

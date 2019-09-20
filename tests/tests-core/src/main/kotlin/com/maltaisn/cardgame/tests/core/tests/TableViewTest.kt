@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.tests.core.SubmenuContentTest
 import com.maltaisn.cardgame.tests.core.fontStyle
 import com.maltaisn.cardgame.widget.CardGameLayout
@@ -32,7 +33,7 @@ import java.util.*
 import kotlin.random.Random
 
 
-class TableViewTest : SubmenuContentTest() {
+class TableViewTest(listener: CardGameListener) : SubmenuContentTest(listener) {
 
     private lateinit var tableView: TableView
     private var selectedColumn = -1

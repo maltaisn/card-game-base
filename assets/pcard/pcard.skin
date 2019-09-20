@@ -19,7 +19,7 @@
       slot: pcard-slot
     }
   }
-  Color: {
+  com.badlogic.gdx.graphics.Color: {
     pcardRed: { hex: #d40000 }
     pcardBlack: { hex: #000000 }
   }

@@ -17,6 +17,7 @@
 package com.maltaisn.cardgame.tests.core.tests.card
 
 import com.badlogic.gdx.math.Vector2
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.game.drawTop
 import com.maltaisn.cardgame.pcard.PCard
 import com.maltaisn.cardgame.tests.core.ActionBarTest
@@ -35,7 +36,7 @@ import kotlin.random.Random
 /**
  * Test all the [CardTrick] container options.
  */
-class CardTrickTest : ActionBarTest() {
+class CardTrickTest(listener: CardGameListener) : ActionBarTest(listener) {
 
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)

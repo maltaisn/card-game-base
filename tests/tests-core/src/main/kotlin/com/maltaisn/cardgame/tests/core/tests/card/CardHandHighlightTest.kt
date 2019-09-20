@@ -17,6 +17,7 @@
 package com.maltaisn.cardgame.tests.core.tests.card
 
 import com.badlogic.gdx.utils.Align
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.game.Card
 import com.maltaisn.cardgame.game.drawTop
 import com.maltaisn.cardgame.pcard.PCard
@@ -29,7 +30,7 @@ import kotlin.random.Random
 /**
  * Test card highlighting methods of [CardHand].
  */
-class CardHandHighlightTest : ActionBarTest() {
+class CardHandHighlightTest(listener: CardGameListener) : ActionBarTest(listener) {
 
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)

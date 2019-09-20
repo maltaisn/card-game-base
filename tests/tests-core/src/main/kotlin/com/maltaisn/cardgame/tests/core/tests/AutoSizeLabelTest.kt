@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.tests.core.SubmenuContentTest
 import com.maltaisn.cardgame.tests.core.fontStyle
 import com.maltaisn.cardgame.widget.AutoSizeLabel
@@ -28,7 +29,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 
-class AutoSizeLabelTest : SubmenuContentTest() {
+class AutoSizeLabelTest(listener: CardGameListener) : SubmenuContentTest(listener) {
 
     override fun layoutContent(layout: CardGameLayout, content: Table) {
         val label = AutoSizeLabel("The quick brown fox\njumped over the lazy dog",

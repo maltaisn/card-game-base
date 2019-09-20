@@ -16,6 +16,7 @@
 
 package com.maltaisn.cardgame.tests.core.tests
 
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.FadeTable
@@ -26,7 +27,7 @@ import kotlin.random.Random
 /**
  * Test fade transition for [PlayerLabel]
  */
-class PlayerLabelFadeTest : ActionBarTest() {
+class PlayerLabelFadeTest(listener: CardGameListener) : ActionBarTest(listener) {
 
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)

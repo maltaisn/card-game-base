@@ -19,6 +19,7 @@ package com.maltaisn.cardgame.tests.core.tests
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.tests.core.SubmenuContentTest
 import com.maltaisn.cardgame.tests.core.fontStyle
 import com.maltaisn.cardgame.widget.CardGameLayout
@@ -28,7 +29,7 @@ import ktx.log.info
 import java.util.*
 
 
-class ScrollViewTest : SubmenuContentTest() {
+class ScrollViewTest(listener: CardGameListener) : SubmenuContentTest(listener) {
 
     override fun layoutContent(layout: CardGameLayout, content: Table) {
         // Do the layout

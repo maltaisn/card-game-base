@@ -17,6 +17,7 @@
 package com.maltaisn.cardgame.tests.core.tests
 
 import com.badlogic.gdx.math.Interpolation
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.pcard.PCard
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.widget.CardGameLayout
@@ -31,7 +32,7 @@ import kotlin.math.min
 /**
  * Test time action and its global speed modifier.
  */
-class TimeActionTest : ActionBarTest() {
+class TimeActionTest(listener: CardGameListener) : ActionBarTest(listener) {
 
     private var fadeAction: TimeAction? = null
 

@@ -19,6 +19,7 @@ package com.maltaisn.cardgame.tests.core
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.widget.CardGameLayout
 
 
@@ -26,7 +27,7 @@ import com.maltaisn.cardgame.widget.CardGameLayout
  * Base class for a test with a single action that can be
  * triggered on space or volume down keypress.
  */
-abstract class SingleActionTest : CardGameTest() {
+abstract class SingleActionTest(listener: CardGameListener) : CardGameTest(listener) {
 
     protected var action: (() -> Unit)? = null
 

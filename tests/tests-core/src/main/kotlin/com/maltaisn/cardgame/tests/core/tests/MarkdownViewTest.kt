@@ -18,6 +18,7 @@ package com.maltaisn.cardgame.tests.core.tests
 
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.tests.core.SubmenuContentTest
 import com.maltaisn.cardgame.tests.core.TestRes
@@ -30,7 +31,7 @@ import ktx.assets.load
 /**
  * Test for markdown views, parsing and inflating.
  */
-class MarkdownViewTest : SubmenuContentTest() {
+class MarkdownViewTest(listener: CardGameListener) : SubmenuContentTest(listener) {
 
     override fun load() {
         super.load()

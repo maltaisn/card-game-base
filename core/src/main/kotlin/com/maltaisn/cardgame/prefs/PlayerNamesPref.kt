@@ -47,6 +47,9 @@ class PlayerNamesPref : GamePref<Array<String>>() {
     /** The default player names array. */
     lateinit var defaultValue: Array<String>
 
+    /** The title for the input window if input is delegated. */
+    var inputTitle: String? = null
+
     /** The maximum number of characters in a name, or [NO_MAX_LENGTH] for no maximum. */
     var maxLength = NO_MAX_LENGTH
 

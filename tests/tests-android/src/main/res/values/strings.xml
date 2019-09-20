@@ -2,4 +2,7 @@
 <resources>
     <string name="app_name">Card Game Tests</string>
     <string name="run_test">Run test</string>
+
+    <string name="action_ok">OK</string>
+    <string name="action_cancel">Cancel</string>
 </resources>

@@ -39,6 +39,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.maltaisn.cardgame.markdown.MdLoader
 import com.maltaisn.cardgame.prefs.GamePrefsLoader
 import com.maltaisn.cardgame.stats.StatsLoader
+import com.maltaisn.cardgame.widget.MsdfTextField
 import com.maltaisn.msdfgdx.MsdfFontLoader
 import com.maltaisn.msdfgdx.MsdfFontLoader.MsdfFontParameter
 import com.maltaisn.msdfgdx.MsdfShader
@@ -53,7 +54,7 @@ import java.util.*
  * The stage and screen for a card game.
  * @property locale The game locale, used to load the core strings.
  */
-open class CardGameScreen(val locale: Locale = Locale.getDefault()) :
+open class CardGameScreen<T : CardGameListener>(val locale: Locale, val listener: T) :
         Stage(ExtendViewport(1920f, 1080f)), Screen {
 
     val assetManager = AssetManager()
@@ -70,7 +71,6 @@ open class CardGameScreen(val locale: Locale = Locale.getDefault()) :
         private set
     lateinit var offscreenFboRegion: TextureRegion
         private set
-
 
     protected var started = false
 
@@ -192,6 +192,21 @@ open class CardGameScreen(val locale: Locale = Locale.getDefault()) :
         super.dispose()
         assetManager.dispose()
         offscreenFbo.dispose()
+    }
+
+    /**
+     * Called when a [MsdfTextField] is focused.
+     * Backend-dependent behavior is delegated to game listener.
+     */
+    fun onTextInput(textField: MsdfTextField) {
+        if (listener.isTextInputDelegated) {
+            keyboardFocus = null
+            listener.onTextInput(textField.text, textField.inputTitle) { text ->
+                // Filter the text and set it on text field.
+                textField.text = text
+                Gdx.graphics.requestRendering()
+            }
+        }
     }
 
     private fun updateOffscreenFrameBuffer() {

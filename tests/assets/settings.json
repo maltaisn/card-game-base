@@ -25,6 +25,7 @@
         game_name: {
           type: "text"
           title: "Game name"
+          inputTitle: "Enter game name"
           help: "I don't know why but you can choose the game name."
           defaultValue: "Card game"
           dependency: "fullscreen"
@@ -32,6 +33,7 @@
         player_names: {
           type: "player-names"
           title: "Player names"
+          inputTitle: "Enter player name"
           maxLength: 20
           defaultValue: [
             "North",
@@ -144,6 +146,7 @@
         rg_text: {
           type: "text"
           title: "Text preference"
+          inputTitle: "Enter text"
           defaultValue: "Text"
           confirmChanges: true
         }
@@ -161,6 +164,7 @@
         rg_player_names: {
           type: "player-names"
           title: "Player names preference"
+          inputTitle: "Enter player name"
           maxLength: 20
           defaultValue: [
             "Player 1",

@@ -17,6 +17,7 @@
 package com.maltaisn.cardgame.tests.core.tests.card
 
 import com.badlogic.gdx.math.Vector2
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.game.drawTop
 import com.maltaisn.cardgame.pcard.PCard
 import com.maltaisn.cardgame.tests.core.CardGameTest
@@ -29,7 +30,7 @@ import com.maltaisn.cardgame.widget.card.CardStack
 /**
  * Test for [CardStack] drag and play animations and slot drawing.
  */
-class CardStackTest : CardGameTest() {
+class CardStackTest(listener: CardGameListener) : CardGameTest(listener) {
 
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)

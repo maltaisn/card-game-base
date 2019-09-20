@@ -18,6 +18,7 @@ package com.maltaisn.cardgame.tests.core.tests.menu
 
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.scenes.scene2d.ui.Container
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.pcard.PCard
 import com.maltaisn.cardgame.prefs.GamePrefs
@@ -41,7 +42,7 @@ import kotlin.random.Random
  * Test [DefaultGameMenu] with settings and rules.
  * Test [GamePrefs.save] on pause.
  */
-class DefaultGameMenuTest : CardGameTest() {
+class DefaultGameMenuTest(listener: CardGameListener) : CardGameTest(listener) {
 
     private lateinit var menu: DefaultGameMenu
 

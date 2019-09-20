@@ -17,6 +17,7 @@
 package com.maltaisn.cardgame.tests.core
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.utils.findScrollFocus
 import com.maltaisn.cardgame.widget.CardGameLayout
 
@@ -25,7 +26,7 @@ import com.maltaisn.cardgame.widget.CardGameLayout
  * An action bar test with a predefined content group with the same background
  * as the submenu content group. This allows to test components on the right background.
  */
-abstract class SubmenuContentTest : ActionBarTest() {
+abstract class SubmenuContentTest(listener: CardGameListener) : ActionBarTest(listener) {
 
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)

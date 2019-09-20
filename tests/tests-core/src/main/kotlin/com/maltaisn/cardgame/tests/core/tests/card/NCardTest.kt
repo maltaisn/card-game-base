@@ -17,6 +17,7 @@
 package com.maltaisn.cardgame.tests.core.tests.card
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.game.Card
 import com.maltaisn.cardgame.game.drawTop
 import com.maltaisn.cardgame.tests.core.CardGameTest
@@ -31,7 +32,7 @@ import ktx.style.get
 /**
  * A test to demonstrate a custom [Card] class being used.
  */
-class NCardTest : CardGameTest() {
+class NCardTest(listener: CardGameListener) : CardGameTest(listener) {
 
     private lateinit var ncardStyle: CardActor.CardStyle
 

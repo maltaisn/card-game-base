@@ -16,6 +16,7 @@
 
 package com.maltaisn.cardgame.tests.core.tests.menu
 
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.tests.core.SingleActionTest
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.CoreIcons
@@ -27,7 +28,7 @@ import ktx.log.info
 /**
  * Test [InGameMenu] layout and animation.
  */
-class InGameMenuTest : SingleActionTest() {
+class InGameMenuTest(listener: CardGameListener) : SingleActionTest(listener) {
 
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)

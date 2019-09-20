@@ -41,7 +41,6 @@ open class ScrollView(actor: Actor? = null, style: ScrollPaneStyle? = null) :
     init {
         setScrollingDisabled(true, false)
         setOverscroll(false, false)
-        setCancelTouchFocus(false)
     }
 
 

@@ -16,6 +16,7 @@
 
 package com.maltaisn.cardgame.tests.core
 
+import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.tests.core.tests.*
 import com.maltaisn.cardgame.tests.core.tests.card.*
 import com.maltaisn.cardgame.tests.core.tests.menu.*
@@ -67,6 +68,7 @@ object CardGameTests {
 
     val TESTS_MAP = TESTS.associateBy { it.simpleName }.toSortedMap()
 
-    fun newTest(name: String) = TESTS_MAP[name]?.getConstructor()?.newInstance() as CardGameTest
+    inline fun <reified T : CardGameListener> newTest(name: String, listener: T) =
+            TESTS_MAP[name]?.getConstructor(T::class.java)?.newInstance(listener) as CardGameTest
 
 }

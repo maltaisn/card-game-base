@@ -42,13 +42,15 @@ class TextPrefView(skin: Skin, pref: TextPref) :
         val style: TextPrefViewStyle = skin.get()
 
         textField = MsdfTextField(skin, skin.get<TextField.TextFieldStyle>(),
-                style.fieldFontStyle, text = pref.value)
-        textField.maxLength = pref.maxLength
-        textField.setTextFieldFilter { _, c -> pref.filter == null || c in pref.filter!! }
-        textField.onKeyboardFocus { focused ->
-            if (!focused && textField.text != pref.value) {
-                changePreferenceValue(textField.text) {
-                    textField.text = pref.value
+                style.fieldFontStyle, text = pref.value).apply {
+            inputTitle = pref.inputTitle
+            maxLength = pref.maxLength
+            setTextFieldFilter { _, c -> pref.filter == null || c in pref.filter!! }
+            onKeyboardFocus { focused ->
+                if (!focused && text != pref.value) {
+                    changePreferenceValue(text) {
+                        text = pref.value
+                    }
                 }
             }
         }
