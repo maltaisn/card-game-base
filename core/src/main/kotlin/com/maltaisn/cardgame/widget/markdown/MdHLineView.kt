@@ -19,6 +19,7 @@ package com.maltaisn.cardgame.widget.markdown
 import com.badlogic.gdx.scenes.scene2d.ui.Container
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.maltaisn.cardgame.utils.padV
 import com.maltaisn.cardgame.widget.Separator
 
 
@@ -26,7 +27,7 @@ class MdHLineView(skin: Skin) : Container<Image>() {
 
     init {
         actor = Separator(skin)
-        fillX().pad(30f, 0f, 30f, 0f)
+        fillX().padV(30f)
     }
 
 }

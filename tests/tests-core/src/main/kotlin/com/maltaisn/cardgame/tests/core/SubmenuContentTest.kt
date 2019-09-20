@@ -19,6 +19,7 @@ package com.maltaisn.cardgame.tests.core
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.utils.findScrollFocus
+import com.maltaisn.cardgame.utils.padH
 import com.maltaisn.cardgame.widget.CardGameLayout
 
 
@@ -33,8 +34,7 @@ abstract class SubmenuContentTest(listener: CardGameListener) : ActionBarTest(li
 
         val content = Table()
         content.background = skin.getDrawable("submenu-content-background")
-        layout.centerTable.add(content).grow()
-                .pad(0f, 80f, 0f, 80f)
+        layout.centerTable.add(content).grow().padH(80f)
         layoutContent(layout, content)
         content.findScrollFocus()
     }

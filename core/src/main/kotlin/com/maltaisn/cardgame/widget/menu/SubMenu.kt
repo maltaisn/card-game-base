@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Value
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.utils.findScrollFocus
+import com.maltaisn.cardgame.utils.padV
 import com.maltaisn.cardgame.widget.action.TimeAction
 import com.maltaisn.cardgame.widget.action.applyBounded
 import com.maltaisn.msdfgdx.FontStyle
@@ -166,7 +167,7 @@ open class SubMenu(skin: Skin) : MenuTable(skin) {
 
         if (item.shown) {
             val iconPadding = if (item.icon == null) btn.iconSize + 30f else 0f
-            menuTable.add(btn).growX().pad(5f, 0f, 5f, 0f).prefHeight(140f)
+            menuTable.add(btn).growX().padV(5f).prefHeight(140f)
             if (menuPosition == MenuPosition.LEFT) {
                 btn.pad(20f, 20f + iconPadding, 20f, 40f)
             } else {

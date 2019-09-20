@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.TextField
 import com.maltaisn.cardgame.prefs.GamePref
 import com.maltaisn.cardgame.prefs.TextPref
+import com.maltaisn.cardgame.utils.padV
 import com.maltaisn.cardgame.widget.MsdfTextField
 import com.maltaisn.msdfgdx.FontStyle
 import ktx.actors.onKeyboardFocus
@@ -57,7 +58,7 @@ class TextPrefView(skin: Skin, pref: TextPref) :
 
         pad(10f, 20f, 10f, 40f)
         add(titleLabel).growX().pad(10f, 0f, 20f, 0f).row()
-        add(textField).growX().pad(10f, 0f, 10f, 0f)
+        add(textField).growX().padV(10f)
 
         this.enabled = enabled
     }

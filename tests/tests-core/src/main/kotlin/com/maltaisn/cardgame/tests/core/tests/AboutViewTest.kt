@@ -19,6 +19,7 @@ package com.maltaisn.cardgame.tests.core.tests
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.tests.core.SubmenuContentTest
+import com.maltaisn.cardgame.utils.padH
 import com.maltaisn.cardgame.widget.AboutView
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.CoreIcons
@@ -42,7 +43,7 @@ class AboutViewTest(listener: CardGameListener) : SubmenuContentTest(listener) {
         aboutView.addButton("Donate", skin.getDrawable(CoreIcons.COIN))
                 .onClick { info { "Please" } }
 
-        content.add(aboutView).growX().pad(0f, 300f, 0f, 300f)
+        content.add(aboutView).growX().padH(300f)
 
         // Action buttons
         addToggleBtn("Debug") { _, debug ->

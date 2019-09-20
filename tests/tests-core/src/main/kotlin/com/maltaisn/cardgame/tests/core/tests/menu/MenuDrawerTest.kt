@@ -24,6 +24,7 @@ import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.tests.core.fontStyle
+import com.maltaisn.cardgame.utils.padH
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.CoreIcons
 import com.maltaisn.cardgame.widget.menu.MenuDrawer
@@ -64,7 +65,7 @@ class MenuDrawerTest(listener: CardGameListener) : ActionBarTest(listener) {
         """.trimIndent().replace('\n', ' '),
                 skin, fontStyle(size = 44f, color = Color.BLACK))
         text.setWrap(true)
-        val textContent = Container(text).pad(0f, 60f, 0f, 60f).align(Align.top).fillX()
+        val textContent = Container(text).padH(60f).align(Align.top).fillX()
 
         val listContent = MenuDrawerList(skin).apply {
             items = (1..10).map { "Item $it" }

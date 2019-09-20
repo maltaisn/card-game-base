@@ -22,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.prefs.GamePref
 import com.maltaisn.cardgame.prefs.SliderPref
+import com.maltaisn.cardgame.utils.padV
 import com.maltaisn.cardgame.widget.Slider
 import com.maltaisn.msdfgdx.FontStyle
 import com.maltaisn.msdfgdx.widget.MsdfLabel
@@ -72,10 +73,10 @@ class SliderPrefView(skin: Skin, pref: SliderPref) :
             })
         }
 
-        pad(10f, 0f, 10f, 0f)
+        padV(10f)
         add(titleLabel).growX().pad(10f, 20f, 10f, 20f)
         add(valueLabel).pad(10f, 10f, 10f, 40f).row()
-        add(slider).growX().colspan(2).pad(10f, 0f, 10f, 0f)
+        add(slider).growX().colspan(2).padV(10f)
 
         this.enabled = enabled
     }

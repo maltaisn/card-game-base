@@ -25,6 +25,7 @@ import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.tests.core.TestRes
 import com.maltaisn.cardgame.tests.core.fontStyle
+import com.maltaisn.cardgame.utils.padH
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.CoreIcons
 import com.maltaisn.cardgame.widget.ScrollView
@@ -55,8 +56,7 @@ class PagedSubMenuTest(listener: CardGameListener) : ActionBarTest(listener) {
         continueItem.checkable = false
 
         val rules: Markdown = assetManager[TestRes.LOREM_IPSUM_MARKDOWN]
-        val rulesView = ScrollView(MarkdownView(skin, rules)
-                .pad(0f, 40f, 0f, 40f))
+        val rulesView = ScrollView(MarkdownView(skin, rules).padH(40f))
         val rulesPage = TestPage(0, "Rules",
                 skin.getDrawable(CoreIcons.BOOK), SubMenu.ITEM_POS_TOP, rulesView)
 

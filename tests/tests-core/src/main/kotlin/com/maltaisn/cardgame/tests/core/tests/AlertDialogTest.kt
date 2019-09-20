@@ -21,6 +21,7 @@ import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.tests.core.TestRes
+import com.maltaisn.cardgame.utils.padH
 import com.maltaisn.cardgame.widget.*
 import com.maltaisn.cardgame.widget.markdown.MarkdownView
 import ktx.actors.onClick
@@ -70,8 +71,8 @@ class AlertDialogTest(listener: CardGameListener) : ActionBarTest(listener) {
             contentShown = shown
             if (shown) {
                 dialog.alertContent.apply {
-                    add(mdView).grow().pad(0f, 30f, 0f, 30f).row()
-                    add(btnSeparator).growX().pad(0f, 60f, 0f, 60f)
+                    add(mdView).grow().padH(30f).row()
+                    add(btnSeparator).growX().padH(60f)
                 }
             } else {
                 dialog.alertContent.clearChildren()

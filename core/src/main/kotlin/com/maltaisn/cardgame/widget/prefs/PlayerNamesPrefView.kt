@@ -76,7 +76,7 @@ class PlayerNamesPrefView(skin: Skin, pref: PlayerNamesPref) :
             }
             textField.setTextFieldFilter { _, c -> c.isLetterOrDigit() || c == ' ' }
 
-            add(textField).growX().pad(20f, 20f, 20f, 20f)
+            add(textField).growX().pad(20f)
             if (playerPos % 2 == 1) {
                 row()
             }

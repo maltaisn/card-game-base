@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.game.Card
+import com.maltaisn.cardgame.utils.padV
 import com.maltaisn.cardgame.widget.AutoSizeLabel
 import com.maltaisn.cardgame.widget.action.TimeAction
 import com.maltaisn.cardgame.widget.card.CardActor
@@ -115,12 +116,10 @@ class MainMenu(skin: Skin, cardStyle: CardActor.CardStyle) : MenuTable(skin) {
         }
 
         // Do the layout
-        add(leftSide).width(MENU_COL_WIDTH).growY()
-                .pad(40f, 0f, 40f, 0f)
+        add(leftSide).width(MENU_COL_WIDTH).growY().padV(40f)
         add(titleLabel).growX().align(Align.bottom).height(420f)
                 .pad(0f, 100f, 400f, 100f)
-        add(rightSide).width(MENU_COL_WIDTH).growY()
-                .pad(40f, 0f, 40f, 0f)
+        add(rightSide).width(MENU_COL_WIDTH).growY().padV(40f)
         addActor(cardTrick)
     }
 
@@ -156,7 +155,7 @@ class MainMenu(skin: Skin, cardStyle: CardActor.CardStyle) : MenuTable(skin) {
 
             if (item.shown) {
                 (if (onLeftSide) leftSide else rightSide).add(btn)
-                        .grow().pad(20f, 0f, 20f, 0f).row()
+                        .grow().padV(20f).row()
             }
         }
     }

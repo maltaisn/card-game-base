@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.maltaisn.cardgame.CardGameListener
+import com.maltaisn.cardgame.utils.padH
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.menu.MenuButton
 import com.maltaisn.msdfgdx.FontStyle
@@ -59,7 +60,7 @@ abstract class ActionBarTest(listener: CardGameListener) : CardGameTest(listener
                                       crossinline action: (MenuButton) -> Unit): MenuButton {
         val btn = MenuButton(skin, btnFontStyle, title, null)
         btn.onClick { action(btn) }
-        btnTable.add(btn).grow().pad(0f, 10f, 0f, 10f).expand()
+        btnTable.add(btn).grow().padH(10f).expand()
         return btn
     }
 
@@ -119,7 +120,7 @@ abstract class ActionBarTest(listener: CardGameListener) : CardGameTest(listener
                               action: (ValueMenuButton, Float, Float) -> Unit): ValueMenuButton {
         val btn = ValueMenuButton(skin, btnFontStyle, title, minValue, maxValue,
                 startValue, step, numberFmt, action)
-        btnTable.add(btn).grow().pad(0f, 10f, 0f, 10f).expand()
+        btnTable.add(btn).grow().padH(10f).expand()
         return btn
     }
 

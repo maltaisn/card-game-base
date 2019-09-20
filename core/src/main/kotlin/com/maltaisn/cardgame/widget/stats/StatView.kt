@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.stats.Statistic
+import com.maltaisn.cardgame.utils.padV
 import com.maltaisn.msdfgdx.FontStyle
 import com.maltaisn.msdfgdx.widget.MsdfLabel
 import ktx.style.get
@@ -49,7 +50,7 @@ abstract class StatView<S : Statistic<*>>(skin: Skin, val stat: S) : Table(skin)
         }
         valueLabel = MsdfLabel(null, skin, style.valueFontStyle)
 
-        pad(20f, 0f, 20f, 0f)
+        padV(20f)
         add(titleLabel).growX().pad(10f, 20f, 10f, 20f)
         add(valueLabel).pad(10f, 10f, 10f, 40f).row()
 

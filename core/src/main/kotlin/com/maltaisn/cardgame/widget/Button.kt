@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Button
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
+import com.maltaisn.cardgame.utils.padH
 import com.maltaisn.msdfgdx.FontStyle
 import com.maltaisn.msdfgdx.widget.MsdfLabel
 import ktx.actors.alpha
@@ -51,7 +52,7 @@ class Button(skin: Skin, val style: ButtonStyle, text: String? = null) : Selecta
         // Add the button label
         label = MsdfLabel(text, skin, style.fontStyle)
         label.touchable = Touchable.disabled
-        add(label).expand().pad(0f, 30f, 0f, 30f)
+        add(label).expand().padH(30f)
 
         addListener(SelectionListener())
     }

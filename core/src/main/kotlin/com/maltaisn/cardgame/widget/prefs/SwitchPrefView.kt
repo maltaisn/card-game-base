@@ -19,6 +19,8 @@ package com.maltaisn.cardgame.widget.prefs
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.maltaisn.cardgame.prefs.GamePref
 import com.maltaisn.cardgame.prefs.SwitchPref
+import com.maltaisn.cardgame.utils.padH
+import com.maltaisn.cardgame.utils.padV
 import com.maltaisn.cardgame.widget.Switch
 
 
@@ -42,9 +44,9 @@ class SwitchPrefView(skin: Skin, pref: SwitchPref) :
             }
         }
 
-        pad(20f, 0f, 20f, 0f)
-        add(titleLabel).growX().pad(0f, 20f, 0f, 20f)
-        add(switch).growY().pad(0f, 20f, 0f, 20f)
+        padV(20f)
+        add(titleLabel).growX().padH(20f)
+        add(switch).growY().padH(20f)
 
         this.enabled = enabled
     }

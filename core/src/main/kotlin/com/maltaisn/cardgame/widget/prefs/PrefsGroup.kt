@@ -23,6 +23,7 @@ import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.prefs.GamePref
 import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.ListPref
+import com.maltaisn.cardgame.utils.padH
 import com.maltaisn.cardgame.widget.Separator
 import com.maltaisn.cardgame.widget.menu.MenuDrawer
 import com.maltaisn.cardgame.widget.menu.MenuDrawerList
@@ -94,7 +95,7 @@ class PrefsGroup(skin: Skin,
     internal fun showHelpText(pref: GamePref<*>) {
         menuDrawer.apply {
             content.actor = prefsHelpLabel
-            content.pad(0f, 60f, 0f, 60f)
+            content.padH(60f)
             drawerWidth = Value.percentWidth(0.5f, menuDrawer)
             title = pref.shortTitle ?: pref.title
             shown = true
@@ -111,7 +112,7 @@ class PrefsGroup(skin: Skin,
         val pref = prefView.pref
         menuDrawer.apply {
             content.actor = prefsDrawerList
-            content.pad(0f, 0f, 0f, 0f)
+            content.pad(0f)
             drawerWidth = Value.percentWidth(0.4f, menuDrawer)
             title = pref.shortTitle ?: pref.title
             shown = true

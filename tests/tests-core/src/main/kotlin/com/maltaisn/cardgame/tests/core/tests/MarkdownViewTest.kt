@@ -22,6 +22,7 @@ import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.tests.core.SubmenuContentTest
 import com.maltaisn.cardgame.tests.core.TestRes
+import com.maltaisn.cardgame.utils.padH
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.ScrollView
 import com.maltaisn.cardgame.widget.markdown.MarkdownView
@@ -44,7 +45,7 @@ class MarkdownViewTest(listener: CardGameListener) : SubmenuContentTest(listener
 
         // Do the layout
         val mdContainer = Container(mdView)
-        mdContainer.fill().pad(0f, 40f, 0f, 40f)
+        mdContainer.fill().padH(40f)
 
         content.add(ScrollView(mdContainer)).grow()
 

@@ -24,6 +24,7 @@ import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.PrefEntry
 import com.maltaisn.cardgame.tests.core.SubmenuContentTest
 import com.maltaisn.cardgame.tests.core.TestRes
+import com.maltaisn.cardgame.utils.padH
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.ScrollView
 import com.maltaisn.cardgame.widget.menu.MenuDrawer
@@ -70,7 +71,7 @@ class PrefsViewTest(listener: CardGameListener) : SubmenuContentTest(listener) {
 
         // Do the layout
         val prefsContainer = Container(prefsGroup)
-        prefsContainer.fill().pad(0f, 40f, 0f, 40f)
+        prefsContainer.fill().padH(40f)
 
         content.add(ScrollView(prefsContainer)).grow()
 

@@ -25,6 +25,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Scaling
 import com.maltaisn.cardgame.prefs.GamePref
 import com.maltaisn.cardgame.prefs.ListPref
+import com.maltaisn.cardgame.utils.padH
+import com.maltaisn.cardgame.utils.padV
 import com.maltaisn.msdfgdx.FontStyle
 import com.maltaisn.msdfgdx.widget.MsdfLabel
 import ktx.actors.alpha
@@ -68,9 +70,9 @@ class ListPrefView(skin: Skin, pref: ListPref) :
             }
         }
 
-        pad(10f, 0f, 10f, 0f)
+        padV(10f)
         add(titleLabel).growX().pad(20f, 20f, 20f, 30f)
-        add(valueBtn).growY().pad(0f, 10f, 0f, 10f)
+        add(valueBtn).growY().padH(10f)
     }
 
 

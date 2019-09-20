@@ -20,6 +20,7 @@ import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.tests.core.TestRes
+import com.maltaisn.cardgame.utils.padH
 import com.maltaisn.cardgame.widget.Button
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.Dialog
@@ -57,7 +58,7 @@ class DialogTest(listener: CardGameListener) : ActionBarTest(listener) {
         }
 
         dialog.content.apply {
-            add(ScrollView(mdView)).grow().pad(0f, 50f, 0f, 50f).row()
+            add(ScrollView(mdView)).grow().padH(50f).row()
             add(closeBtn).growX().pad(50f)
         }
 

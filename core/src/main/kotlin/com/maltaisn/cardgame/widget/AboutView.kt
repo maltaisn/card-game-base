@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
+import com.maltaisn.cardgame.utils.padV
 import com.maltaisn.msdfgdx.FontStyle
 import com.maltaisn.msdfgdx.widget.MsdfLabel
 import ktx.style.get
@@ -44,8 +45,8 @@ class AboutView(private val skin: Skin,
         content.apply {
             pad(100f, 50f, 100f, 50f)
             add(appNameLabel).pad(0f, 0f, 5f, 0f).expandX().row()
-            add(versionLabel).pad(5f, 0f, 5f, 0f).expandX().row()
-            add(authorLabel).pad(20f, 0f, 20f, 0f).expandX().row()
+            add(versionLabel).padV(5f).expandX().row()
+            add(authorLabel).padV(20f).expandX().row()
             add(separator).pad(40f, 100f, 40f, 100f).growX().row()
         }
     }
