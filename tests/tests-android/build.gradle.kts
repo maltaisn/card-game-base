@@ -40,7 +40,7 @@ dependencies {
     implementation(kotlin("stdlib"))
 
     implementation("com.badlogicgames.gdx:gdx-backend-android:$gdxVersion")
-    implementation("androidx.appcompat:appcompat:1.0.2")
+    implementation("androidx.appcompat:appcompat:1.1.0")
     implementation("androidx.recyclerview:recyclerview:1.0.0")
 
     natives("com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi")

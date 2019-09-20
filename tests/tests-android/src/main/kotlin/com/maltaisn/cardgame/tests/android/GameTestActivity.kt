@@ -52,7 +52,6 @@ class GameTestActivity : AndroidApplication(), CardGameListener {
         }
         inputDialog = AlertDialog.Builder(this).apply {
             setView(view)
-            setTitle("")
             setPositiveButton(R.string.action_ok, null)
             setNegativeButton(R.string.action_cancel, null)
         }.create()
