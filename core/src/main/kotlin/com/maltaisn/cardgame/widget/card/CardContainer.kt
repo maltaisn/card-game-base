@@ -445,8 +445,7 @@ abstract class CardContainer(val cardStyle: CardActor.CardStyle) : FboWidgetGrou
             _isVisible = true
             renderToFrameBuffer = true
             alpha = if (shown) 0f else 1f
-            translate.x = 0f
-            translate.y = 0f
+            translate.setZero()
         }
 
         override fun update(progress: Float) {
@@ -471,9 +470,10 @@ abstract class CardContainer(val cardStyle: CardActor.CardStyle) : FboWidgetGrou
         fun start(direction: Direction) {
             elapsed = 0f
 
-            _isVisible = true
+            _isVisible = false
             renderToFrameBuffer = false
             alpha = 1f
+            translate.setZero()
 
             startOffset.setZero()
             endOffset.setZero()
@@ -487,6 +487,7 @@ abstract class CardContainer(val cardStyle: CardActor.CardStyle) : FboWidgetGrou
         }
 
         override fun update(progress: Float) {
+            _isVisible = true
             translate.x = startOffset.x + (endOffset.x - startOffset.x) * progress
             translate.y = startOffset.y + (endOffset.y - startOffset.y) * progress
         }

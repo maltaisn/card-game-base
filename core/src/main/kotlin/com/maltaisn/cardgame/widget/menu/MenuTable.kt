@@ -121,6 +121,9 @@ abstract class MenuTable(skin: Skin) : FboTable(skin) {
     }
 
     protected fun onItemBtnClicked(item: MenuItem) {
+        // If in transition, ignore any click since this can lead to UI bugs.
+        if (transitionAction != null) return
+
         if (checkable && item.checkable) {
             checkItem(item)
         } else {
