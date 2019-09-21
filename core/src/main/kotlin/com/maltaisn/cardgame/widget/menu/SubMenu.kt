@@ -89,7 +89,11 @@ open class SubMenu(skin: Skin) : MenuTable(skin) {
         val backBtn = MenuButton(skin, style.titleStyle, null, style.backArrowIcon).apply {
             pad(30f)
             iconSize = this@SubMenu.style.backArrowSize
-            onClick { backArrowClickListener?.invoke() }
+            onClick {
+                if (transitionAction == null && isVisible) {
+                    backArrowClickListener?.invoke()
+                }
+            }
         }
 
         headerTable.pad(50f, 50f, 0f, 50f)
@@ -219,6 +223,7 @@ open class SubMenu(skin: Skin) : MenuTable(skin) {
             }
         }
     }
+
 
     class SubMenuStyle : MenuTableStyle() {
         lateinit var titleStyle: FontStyle

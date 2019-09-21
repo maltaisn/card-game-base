@@ -122,7 +122,9 @@ abstract class MenuTable(skin: Skin) : FboTable(skin) {
 
     protected fun onItemBtnClicked(item: MenuItem) {
         // If in transition, ignore any click since this can lead to UI bugs.
-        if (transitionAction != null) return
+        // Also when hiding animation ends, actor is made invisible but clicks are still dispatched
+        // on that instant so even though animation has ended, clicks shouldn't go through.
+        if (transitionAction != null || !isVisible) return
 
         if (checkable && item.checkable) {
             checkItem(item)

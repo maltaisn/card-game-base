@@ -28,7 +28,7 @@ import java.util.*
 
 
 /**
- * A game menu that manages the animation between different menus.
+ * A game menu that manages the animation between different menu tables.
  * It also sets the back arrow action on sub menus and handles the back key press.
  */
 open class GameMenu(skin: Skin) : Stack() {
