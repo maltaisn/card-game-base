@@ -32,6 +32,8 @@ class AboutViewTest(listener: CardGameListener) : SubmenuContentTest(listener) {
     override fun layoutContent(layout: CardGameLayout, content: Table) {
         val aboutView = AboutView(skin, "Hearts", "1.0.0", "Chuck Norris")
 
+        aboutView.appIcon = skin.getDrawable("icon")
+
         aboutView.addButton("Rate app", skin.getDrawable(CoreIcons.STAR))
                 .onClick { info { "Rate app" } }
         aboutView.addButton("Send feedback", skin.getDrawable(CoreIcons.ALERT))

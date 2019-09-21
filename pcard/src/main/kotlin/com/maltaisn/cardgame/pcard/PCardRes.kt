@@ -24,6 +24,6 @@ package com.maltaisn.cardgame.pcard
 object PCardRes {
 
     const val SKIN = "pcard/pcard.skin"
-    const val SKIN_ATLAS = "pcard/pcard.atlas"
+    const val ATLAS = "pcard/pcard.atlas"
 
 }

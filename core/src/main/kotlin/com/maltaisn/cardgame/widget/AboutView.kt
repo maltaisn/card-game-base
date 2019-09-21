@@ -32,7 +32,17 @@ class AboutView(private val skin: Skin,
 
     private val style: AboutViewStyle = skin.get()
 
+    /** The app icon drawable displayed in the menu. */
+    var appIcon: Drawable
+        get() = iconImage.drawable
+        set(value) {
+            iconImage.drawable = value
+        }
+
+
     private val content = Table()
+    private val iconImage = Image()
+
 
     init {
         val appNameLabel = MsdfLabel(appName, skin, style.appNameFontStyle)
@@ -44,12 +54,14 @@ class AboutView(private val skin: Skin,
         actor = content
         content.apply {
             pad(100f, 50f, 100f, 50f)
-            add(appNameLabel).pad(0f, 0f, 5f, 0f).expandX().row()
+            add(iconImage).pad(10f).size(200f).row()
+            add(appNameLabel).pad(10f, 0f, 5f, 0f).expandX().row()
             add(versionLabel).padV(5f).expandX().row()
             add(authorLabel).padV(20f).expandX().row()
             add(separator).pad(40f, 100f, 40f, 100f).growX().row()
         }
     }
+
 
     /**
      * Add a new button with a [title] and an [icon].

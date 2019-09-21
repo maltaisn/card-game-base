@@ -37,14 +37,17 @@ abstract class CardGameTest(listener: CardGameListener) :
 
     override fun load() {
         super.load()
-        assetManager.load<TextureAtlas>(PCardRes.SKIN_ATLAS)
+        assetManager.load<TextureAtlas>(PCardRes.ATLAS)
+        assetManager.load<TextureAtlas>(TestRes.ATLAS)
     }
 
     override fun start() {
         super.start()
 
-        addSkin(PCardRes.SKIN, PCardRes.SKIN_ATLAS)
+        addSkin(PCardRes.SKIN, PCardRes.ATLAS)
         pcardStyle = skin.get()
+
+        addSkin(atlasFile = TestRes.ATLAS)
 
         val gameLayout = CardGameLayout(skin)
         addActor(gameLayout)

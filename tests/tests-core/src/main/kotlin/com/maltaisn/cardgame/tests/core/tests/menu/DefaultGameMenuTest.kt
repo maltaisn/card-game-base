@@ -125,6 +125,7 @@ class DefaultGameMenuTest(listener: CardGameListener) : CardGameTest(listener) {
 
         // About
         val aboutView = AboutView(skin, "App name", "1.0.0", "Author name").apply {
+            appIcon = skin.getDrawable("icon")
             addButton("Rate app", skin.getDrawable(CoreIcons.STAR))
             addButton("View changelog", skin.getDrawable(CoreIcons.LIST))
         }
