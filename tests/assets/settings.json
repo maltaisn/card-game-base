@@ -1,16 +1,31 @@
 {
   name: "com.maltaisn.cardgametest.settings"
   prefs: {
-    interface_category: {
+    debug_category: {
       type: "category"
-      title: "@string/pref_interface"
-      icon: "icon-pencil"
+      title: "Debug"
+      icon: "icon-settings"
       prefs: {
         debug: {
           type: "switch"
           title: "Enable debug mode"
           defaultValue: false
         }
+        anim_speed: {
+          type: "slider"
+          title: "Animation speed multiplier"
+          defaultValue: 1
+          minValue: 0.1
+          maxValue: 3
+          step: 0.1
+        }
+      }
+    }
+    interface_category: {
+      type: "category"
+      title: "@string/pref_interface"
+      icon: "icon-pencil"
+      prefs: {
         enable_continue: {
           type: "switch"
           title: "Enable continue menu item"

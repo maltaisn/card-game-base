@@ -22,6 +22,7 @@ import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.pcard.PCard
 import com.maltaisn.cardgame.prefs.GamePrefs
+import com.maltaisn.cardgame.prefs.SliderPref
 import com.maltaisn.cardgame.prefs.SwitchPref
 import com.maltaisn.cardgame.stats.Statistics
 import com.maltaisn.cardgame.tests.core.CardGameTest
@@ -29,6 +30,7 @@ import com.maltaisn.cardgame.tests.core.TestRes
 import com.maltaisn.cardgame.widget.AboutView
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.CoreIcons
+import com.maltaisn.cardgame.widget.action.TimeAction
 import com.maltaisn.cardgame.widget.menu.*
 import com.maltaisn.cardgame.widget.prefs.ResetGameDialog
 import com.maltaisn.cardgame.widget.table.ScoresTable
@@ -177,6 +179,10 @@ class DefaultGameMenuTest(listener: CardGameListener) : CardGameTest(listener) {
         debugPref.valueListeners += { _, value -> isDebugAll = value }
         isDebugAll = debugPref.value
 
+        // Animation speed
+        val animSpeedPref = settingsPrefs[PREF_ANIM_SPEED] as SliderPref
+        animSpeedPref.valueListeners += { _, value -> TimeAction.SPEED_MULTIPLIER = value }
+
         // Back key listener
         layout.onKeyDownEvent(true) { event, _, key ->
             if (!event.isHandled && (key == Input.Keys.BACK || key == Input.Keys.ESCAPE)) {
@@ -195,6 +201,7 @@ class DefaultGameMenuTest(listener: CardGameListener) : CardGameTest(listener) {
     companion object {
         private const val PREF_CONTINUE = "enable_continue"
         private const val PREF_DEBUG = "debug"
+        private const val PREF_ANIM_SPEED = "anim_speed"
     }
 
 }
