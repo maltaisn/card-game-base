@@ -39,10 +39,10 @@ class InGameMenuTest(listener: CardGameListener) : SingleActionTest(listener) {
                     MenuItem(3, "Cheats", this@InGameMenuTest.skin.getDrawable(CoreIcons.BOOK), InGameMenu.ITEM_POS_RIGHT),
                     MenuItem(2, null, this@InGameMenuTest.skin.getDrawable(CoreIcons.CHART), InGameMenu.ITEM_POS_RIGHT))
 
-            itemClickListener = {
-                info { "Menu item clicked: $it" }
+            itemClickListener = { item ->
+                info { "Menu item clicked: $item" }
 
-                if (it.id == 0) {
+                if (item.id == 0) {
                     shown = false
                 }
             }

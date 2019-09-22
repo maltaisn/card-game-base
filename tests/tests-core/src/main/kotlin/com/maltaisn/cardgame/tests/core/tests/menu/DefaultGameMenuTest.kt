@@ -97,11 +97,9 @@ class DefaultGameMenuTest(listener: CardGameListener) : CardGameTest(listener) {
 
         val confirmDialog = ResetGameDialog(skin)
         menu.confirmCallback = { pref, callback ->
-            confirmDialog.let {
-                it.pref = pref
-                it.callback = callback
-                it.show(this@DefaultGameMenuTest)
-            }
+            confirmDialog.pref = pref
+            confirmDialog.callback = callback
+            confirmDialog.show(this@DefaultGameMenuTest)
         }
 
         // Main menu
@@ -168,8 +166,8 @@ class DefaultGameMenuTest(listener: CardGameListener) : CardGameTest(listener) {
         menu.scoreboardMenu.apply {
             addItems(scoresPage, continueItem)
             checkItem(scoresPage)
-            itemClickListener = {
-                if (it === continueItem) {
+            itemClickListener = { item ->
+                if (item === continueItem) {
                     menu.goBack()
                 }
             }

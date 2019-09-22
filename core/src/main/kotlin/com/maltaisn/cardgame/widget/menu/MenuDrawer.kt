@@ -130,8 +130,8 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
     init {
         isVisible = false
 
-        onKeyDown(true) {
-            if (it == Input.Keys.BACK || it == Input.Keys.ESCAPE) {
+        onKeyDown(true) { key ->
+            if (key == Input.Keys.BACK || key == Input.Keys.ESCAPE) {
                 // Close drawer on back press.
                 shown = false
             }
@@ -194,9 +194,9 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
         val dw = drawerWidth.get() + style.drawerBackground.leftWidth
         drawerTable.setBounds(width - dw, 0f, dw, height)
 
-        transitionAction?.let {
-            it.drawerStartX = drawerTable.x
-            it.act(0f)
+        transitionAction?.let { transition ->
+            transition.drawerStartX = drawerTable.x
+            transition.act(0f)
         }
     }
 

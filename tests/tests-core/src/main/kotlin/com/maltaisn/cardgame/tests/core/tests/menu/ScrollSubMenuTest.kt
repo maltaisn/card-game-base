@@ -71,9 +71,9 @@ class ScrollSubMenuTest(listener: CardGameListener) : ActionBarTest(listener) {
         menu.shown = true
 
         // Action buttons
-        val showBtn = addActionBtn("Hide") {
+        val showBtn = addActionBtn("Hide") { btn ->
             menu.shown = !menu.shown
-            it.title = if (menu.shown) "Hide" else "Show"
+            btn.title = if (menu.shown) "Hide" else "Show"
         }
         menu.backArrowClickListener = {
             menu.shown = false
@@ -90,7 +90,7 @@ class ScrollSubMenuTest(listener: CardGameListener) : ActionBarTest(listener) {
         }
 
         var option = 0
-        addActionBtn("Right side") {
+        addActionBtn("Right side") { btn ->
             option = (option + 1) % 3
             when (option) {
                 0 -> {
@@ -98,15 +98,15 @@ class ScrollSubMenuTest(listener: CardGameListener) : ActionBarTest(listener) {
                         menu.addItem(item)
                     }
                     menu.menuPosition = SubMenu.MenuPosition.LEFT
-                    it.title = "Right side"
+                    btn.title = "Right side"
                 }
                 1 -> {
                     menu.menuPosition = SubMenu.MenuPosition.RIGHT
-                    it.title = "No items"
+                    btn.title = "No items"
                 }
                 2 -> {
                     menu.clearItems()
-                    it.title = "Left side"
+                    btn.title = "Left side"
                 }
             }
         }

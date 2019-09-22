@@ -58,12 +58,12 @@ class StatsSubMenu(skin: Skin) : SubMenu(skin) {
     override var itemClickListener: ((MenuItem) -> Unit)?
         get() = super.itemClickListener
         set(value) {
-            super.itemClickListener = {
-                if (it.id == ITEM_ID_RESET) {
+            super.itemClickListener = { item ->
+                if (item.id == ITEM_ID_RESET) {
                     resetDialog.show(stage!!)
                 }
 
-                value?.invoke(it)
+                value?.invoke(item)
             }
         }
 

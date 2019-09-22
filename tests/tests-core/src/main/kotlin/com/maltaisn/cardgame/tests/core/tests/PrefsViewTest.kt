@@ -58,11 +58,9 @@ class PrefsViewTest(listener: CardGameListener) : SubmenuContentTest(listener) {
         val confirmDialog = ResetGameDialog(skin)
         prefsGroup.confirmCallback = { pref, callback ->
             if (confirmChanges) {
-                confirmDialog.let {
-                    it.pref = pref
-                    it.callback = callback
-                    it.show(this@PrefsViewTest)
-                }
+                confirmDialog.pref = pref
+                confirmDialog.callback = callback
+                confirmDialog.show(this@PrefsViewTest)
             }
         }
 

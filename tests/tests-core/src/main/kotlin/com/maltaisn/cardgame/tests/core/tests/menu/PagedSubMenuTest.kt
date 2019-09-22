@@ -80,9 +80,9 @@ class PagedSubMenuTest(listener: CardGameListener) : ActionBarTest(listener) {
         menu.shown = true
 
         // Action buttons
-        val showBtn = addActionBtn("Hide") {
+        val showBtn = addActionBtn("Hide") { btn ->
             menu.shown = !menu.shown
-            it.title = if (menu.shown) "Hide" else "Show"
+            btn.title = if (menu.shown) "Hide" else "Show"
         }
         menu.backArrowClickListener = {
             menu.shown = false

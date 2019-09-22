@@ -39,36 +39,26 @@ class CardStackTest(listener: CardGameListener) : CardGameTest(listener) {
 
         val animGroup = layout.cardAnimationGroup
 
-        val leftStack = CardStack(pcardStyle).apply {
-            cards = deck.drawTop(3)
-            dragListener = { animGroup.dragCards(it) }
-            drawSlot = true
-            playListener = object : CardContainer.PlayListener {
-                override fun canCardsBePlayed(actors: List<CardActor>, src: CardContainer, pos: Vector2) = true
+        val stacks = List(3) {
+            CardStack(pcardStyle).apply {
+                cards = deck.drawTop(3)
+                dragListener = { animGroup.dragCards(it) }
+                drawSlot = true
+                playListener = object : CardContainer.PlayListener {
+                    override fun canCardsBePlayed(actors: List<CardActor>, src: CardContainer, pos: Vector2) = true
 
-                override fun onCardsPlayed(actors: List<CardActor>, src: CardContainer, pos: Vector2) {
-                    animGroup.moveCard(src, this@apply, src.size - 1, this@apply.size)
+                    override fun onCardsPlayed(actors: List<CardActor>, src: CardContainer, pos: Vector2) {
+                        animGroup.moveCard(src, this@apply, src.size - 1, this@apply.size)
+                    }
                 }
             }
         }
 
-        val rightStack = CardStack(pcardStyle).apply {
-            cards = deck.drawTop(3)
-            dragListener = { animGroup.dragCards(it) }
-            playListener = object : CardContainer.PlayListener {
-                override fun canCardsBePlayed(actors: List<CardActor>, src: CardContainer, pos: Vector2) = true
-
-                override fun onCardsPlayed(actors: List<CardActor>, src: CardContainer, pos: Vector2) {
-                    animGroup.moveCard(src, this@apply, src.size - 1, this@apply.size)
-                }
-            }
-        }
-
-        animGroup.register(leftStack, rightStack)
+        animGroup.register(stacks[0], stacks[1])
 
         layout.centerTable.apply {
-            add(leftStack).grow()
-            add(rightStack).grow()
+            add(stacks[0]).grow()
+            add(stacks[1]).grow()
         }
     }
 

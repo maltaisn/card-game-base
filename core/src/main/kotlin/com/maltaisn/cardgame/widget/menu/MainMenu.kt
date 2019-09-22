@@ -130,10 +130,10 @@ class MainMenu(skin: Skin, cardStyle: CardActor.CardStyle) : MenuTable(skin) {
         cardTrick.setPosition((width - cardTrick.width) / 2,
                 -cardTrick.height + CARD_TRICK_HEIGHT)
 
-        (transitionAction as TransitionAction?)?.let {
-            it.leftStartX = leftSide.x
-            it.rightStartX = rightSide.x
-            it.trickStartY = cardTrick.y
+        (transitionAction as TransitionAction?)?.let { transition ->
+            transition.leftStartX = leftSide.x
+            transition.rightStartX = rightSide.x
+            transition.trickStartY = cardTrick.y
         }
     }
 

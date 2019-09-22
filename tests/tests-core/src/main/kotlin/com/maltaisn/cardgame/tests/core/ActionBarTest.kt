@@ -72,10 +72,10 @@ abstract class ActionBarTest(listener: CardGameListener) : CardGameTest(listener
     protected inline fun addTwoStateActionBtn(titleOn: String, titleOff: String,
                                               crossinline action: (MenuButton, Boolean) -> Unit): MenuButton {
         var state = true
-        return addActionBtn(titleOn) {
+        return addActionBtn(titleOn) { btn ->
             state = !state
-            it.title = if (state) titleOn else titleOff
-            action(it, state)
+            btn.title = if (state) titleOn else titleOff
+            action(btn, state)
         }
     }
 
@@ -85,10 +85,10 @@ abstract class ActionBarTest(listener: CardGameListener) : CardGameTest(listener
     protected inline fun addToggleBtn(title: String, startState: Boolean = false,
                                       crossinline action: (MenuButton, state: Boolean) -> Unit): MenuButton {
         var state = startState
-        val btn = addActionBtn(title) {
+        val btn = addActionBtn(title) { btn ->
             state = !state
-            it.checked = state
-            action(it, state)
+            btn.checked = state
+            action(btn, state)
         }
         btn.checked = state
         return btn

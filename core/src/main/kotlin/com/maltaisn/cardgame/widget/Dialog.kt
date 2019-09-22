@@ -97,8 +97,8 @@ open class Dialog(skin: Skin) : FboTable(skin) {
         contentCell = add(content).minWidth(800f).pad(60f)
         setFillParent(true)
 
-        onKeyDown(true) {
-            if (it == Input.Keys.BACK || it == Input.Keys.ESCAPE) {
+        onKeyDown(true) { key ->
+            if (key == Input.Keys.BACK || key == Input.Keys.ESCAPE) {
                 // Dismiss dialog on back press.
                 dismiss()
             }

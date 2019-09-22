@@ -106,9 +106,9 @@ open class GameMenu(skin: Skin) : Stack() {
             if (menu is SubMenu && menu.backArrowClickListener == null) {
                 menu.backArrowClickListener = ::goBack
             }
-            (shownMenu as? SubMenu)?.let {
-                if (it.backArrowClickListener === ::goBack) {
-                    it.backArrowClickListener = null
+            (shownMenu as? SubMenu)?.let { submenu ->
+                if (submenu.backArrowClickListener === ::goBack) {
+                    submenu.backArrowClickListener = null
                 }
             }
 
