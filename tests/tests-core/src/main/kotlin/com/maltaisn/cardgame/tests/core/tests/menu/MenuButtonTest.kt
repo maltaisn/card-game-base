@@ -21,11 +21,10 @@ import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.tests.core.fontStyle
-import com.maltaisn.cardgame.utils.defaultSize
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.CoreIcons
 import com.maltaisn.cardgame.widget.menu.MenuButton
-import com.maltaisn.cardgame.widget.menu.MenuButton.Side
+import com.maltaisn.cardgame.widget.menu.MenuButton.AnchorSide
 import ktx.actors.onClick
 import ktx.log.info
 
@@ -44,10 +43,13 @@ class MenuButtonTest(listener: CardGameListener) : ActionBarTest(listener) {
                 color = Color.WHITE,
                 shadowColor = Color.BLACK)
 
-        val btn = MenuButton(skin, fontStyle)
-        btn.onClick {
-            info { "Menu button clicked" }
+        val btn = MenuButton(skin, fontStyle,
+                "Menu button", skin.getDrawable(CoreIcons.COIN)).apply {
+            add(iconImage).size(64f).padBottom(10f).row()
+            add(titleLabel).row()
+            onClick { info { "Menu button clicked" } }
         }
+
         val btnCell = layout.centerTable.add(btn).expand()
 
         // Action buttons
@@ -55,47 +57,19 @@ class MenuButtonTest(listener: CardGameListener) : ActionBarTest(listener) {
         addTwoStateActionBtn("Disable", "Enable") { _, enabled ->
             btn.enabled = enabled
         }
-        addToggleBtn("Title shown") { _, shown ->
-            btn.title = if (shown) "Menu button" else null
-        }
-        addToggleBtn("Icon shown") { _, shown ->
-            btn.icon = if (shown) skin.getDrawable(CoreIcons.CARDS) else null
-        }
-        addEnumBtn("Anchor side", Side.values().toList()) { _, value ->
+        addEnumBtn("Anchor side", AnchorSide.values().toList()) { _, value ->
             btn.anchorSide = value
             btnCell.align(when (value) {
-                Side.NONE -> Align.center
-                Side.TOP -> Align.top
-                Side.LEFT -> Align.left
-                Side.BOTTOM -> Align.bottom
-                Side.RIGHT -> Align.right
+                AnchorSide.NONE -> Align.center
+                AnchorSide.TOP -> Align.top
+                AnchorSide.LEFT -> Align.left
+                AnchorSide.BOTTOM -> Align.bottom
+                AnchorSide.RIGHT -> Align.right
             })
-        }
-        addEnumBtn("Icon side", Side.values().toList()) { _, value ->
-            btn.iconSide = value
-        }
-        addValueBtn("Icon size", 32f, 128f, btn.iconSize, 8f) { _, size, _ ->
-            btn.iconSize = size
-        }
-        addEnumBtn("Title align", listOf(Align.center, Align.top, Align.left, Align.bottom, Align.right),
-                listOf("CENTER", "TOP", "LEFT", "BOTTOM", "RIGHT")) { _, align ->
-            btn.titleAlign = align
-        }
-        addToggleBtn("Constrained size", startState = true) { _, constrained ->
-            if (constrained) {
-                btnCell.fill(0f, 0f).defaultSize()
-            } else {
-                btnCell.size(500f, 300f).fill()
-            }
-            btn.invalidateHierarchy()
         }
         addToggleBtn("Debug") { _, debug ->
             btn.setDebug(debug, true)
         }
-    }
-
-    companion object {
-        private val BTN_SIDES = listOf(Side.NONE, Side.TOP, Side.LEFT, Side.BOTTOM, Side.RIGHT)
     }
 
 }

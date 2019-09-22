@@ -38,7 +38,7 @@ class MainMenuTest(listener: CardGameListener) : ActionBarTest(listener) {
         menu.addItems(MenuItem(0, "Settings", skin.getDrawable(CoreIcons.SETTINGS), MainMenu.ITEM_POS_LEFT),
                 MenuItem(1, "Rules", skin.getDrawable(CoreIcons.BOOK), MainMenu.ITEM_POS_LEFT),
                 MenuItem(2, "Stats", skin.getDrawable(CoreIcons.LIST), MainMenu.ITEM_POS_LEFT),
-                MenuItem(3, "New game", skin.getDrawable(CoreIcons.CARDS), MainMenu.ITEM_POS_RIGHT),
+                MenuItem(3, "New game and please enjoy it", skin.getDrawable(CoreIcons.CARDS), MainMenu.ITEM_POS_RIGHT),
                 MenuItem(4, "Continue", skin.getDrawable(CoreIcons.ARROW_RIGHT), MainMenu.ITEM_POS_RIGHT))
 
         menu.title = "La Dame de Pique"

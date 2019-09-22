@@ -144,11 +144,13 @@ class MainMenu(skin: Skin, cardStyle: CardActor.CardStyle) : MenuTable(skin) {
         for (item in items) {
             val onLeftSide = (item.position == ITEM_POS_LEFT)
             val fontStyle = if (item.important) style.importantItemFontStyle else style.itemFontStyle
-            val btn = MenuButton(skin, fontStyle, item.title, item.icon).apply {
+            val btn = MenuButton(skin, fontStyle, item.title, item.icon,
+                    if (onLeftSide) MenuButton.AnchorSide.LEFT else MenuButton.AnchorSide.RIGHT).apply {
                 onClick { onItemBtnClicked(item) }
-                anchorSide = if (onLeftSide) MenuButton.Side.LEFT else MenuButton.Side.RIGHT
-                iconSide = MenuButton.Side.TOP
-                iconSize = this@MainMenu.style.itemIconSize
+                add(iconImage).size(style.itemIconSize).row()
+                add(titleLabel).growX().padTop(30f)
+                titleLabel.setWrap(true)
+                titleLabel.setAlignment(Align.center)
                 enabled = item.enabled
             }
             item.button = btn

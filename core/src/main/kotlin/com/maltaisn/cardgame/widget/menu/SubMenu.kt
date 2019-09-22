@@ -17,11 +17,11 @@
 package com.maltaisn.cardgame.widget.menu
 
 import com.badlogic.gdx.math.Interpolation
+import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.ui.Value
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
-import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.utils.findScrollFocus
 import com.maltaisn.cardgame.utils.padV
 import com.maltaisn.cardgame.widget.action.TimeAction
@@ -88,7 +88,7 @@ open class SubMenu(skin: Skin) : MenuTable(skin) {
 
         val backBtn = MenuButton(skin, style.titleStyle, null, style.backArrowIcon).apply {
             pad(30f)
-            iconSize = this@SubMenu.style.backArrowSize
+            add(iconImage).size(style.backArrowSize)
             onClick {
                 if (transitionAction == null && isVisible) {
                     backArrowClickListener?.invoke()
@@ -125,17 +125,17 @@ open class SubMenu(skin: Skin) : MenuTable(skin) {
             }
             menuPosition == MenuPosition.LEFT -> {
                 // Menu pane on the left
-                menuTable.pad(40f, 50f, 50f, 0f)
-                add(menuTable).width(Value.percentWidth(0.3f, this)).growY()
+                add(menuTable).width(Value.percentWidth(0.3f, this))
+                        .pad(40f, 50f, 50f, 0f).growY()
                 add(content).pad(-style.contentBackground.topHeight,
                         -style.contentBackground.leftWidth, 0f, 20f).grow()
             }
             else -> {
                 // Menu pane on the right
-                menuTable.pad(70f, 0f, 50f, 50f)
                 add(content).pad(-style.contentBackground.topHeight + 30f, 20f,
                         0f, -style.contentBackground.rightWidth).grow()
-                add(menuTable).width(Value.percentWidth(0.3f, this)).growY()
+                add(menuTable).width(Value.percentWidth(0.3f, this))
+                        .pad(70f, 0f, 50f, 50f).growY()
             }
         }
 
@@ -158,24 +158,32 @@ open class SubMenu(skin: Skin) : MenuTable(skin) {
 
     private fun addButtonToMenuTable(item: MenuItem) {
         val fontStyle = if (item.important) style.importantItemFontStyle else style.itemFontStyle
-        val btn = MenuButton(skin, fontStyle, item.title, item.icon).apply {
+        val btn = MenuButton(skin, fontStyle, item.title, item.icon,
+                if (menuPosition == MenuPosition.LEFT) MenuButton.AnchorSide.RIGHT else MenuButton.AnchorSide.LEFT).apply {
             onClick { onItemBtnClicked(item) }
-            anchorSide = if (menuPosition == MenuPosition.LEFT) MenuButton.Side.RIGHT else MenuButton.Side.LEFT
-            iconSide = MenuButton.Side.LEFT
-            iconSize = this@SubMenu.style.itemIconSize
-            titleAlign = Align.left
+
+            add(iconImage).size(style.itemIconSize)
+            add(titleLabel).growX().padLeft(30f).width(object : Value() {
+                override fun get(context: Actor?): Float {
+                    // This is the only way to make ellipsis work. Otherwise the button just resizes...
+                    // 90f is button padding (20f + 40f) + middle padding (30f)
+                    return this@apply.width - iconImage.width - 90f
+                }
+            })
+            titleLabel.setEllipsis(true)
+
             enabled = item.enabled
             checked = item.checked
         }
         item.button = btn
 
         if (item.shown) {
-            val iconPadding = if (item.icon == null) btn.iconSize + 30f else 0f
-            menuTable.add(btn).growX().padV(5f).prefHeight(140f)
+            menuTable.add(btn).padV(5f).prefHeight(140f)
+                    .width(Value.percentWidth(1f, menuTable))
             if (menuPosition == MenuPosition.LEFT) {
-                btn.pad(20f, 20f + iconPadding, 20f, 40f)
+                btn.pad(20f, 20f, 20f, 40f)
             } else {
-                btn.pad(20f, 40f + iconPadding, 20f, 20f)
+                btn.pad(20f, 40f, 20f, 20f)
             }
             menuTable.row()
         }

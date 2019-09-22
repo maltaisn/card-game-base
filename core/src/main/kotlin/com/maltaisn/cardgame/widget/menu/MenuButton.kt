@@ -21,9 +21,7 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
-import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Scaling
-import com.maltaisn.cardgame.utils.post
 import com.maltaisn.cardgame.widget.CheckableWidget
 import com.maltaisn.cardgame.widget.ShadowImage
 import com.maltaisn.msdfgdx.FontStyle
@@ -33,10 +31,14 @@ import ktx.style.get
 
 
 /**
- * A button for a menu, with an optional title and icon.
+ * Base class for a menu button with a title and an icon.
+ *
+ * @property anchorSide The side on which this button is "anchored".
+ * There will be no rounded corners on this side.
  */
 open class MenuButton(skin: Skin, fontStyle: FontStyle,
-                      title: CharSequence? = null, icon: Drawable? = null) : CheckableWidget() {
+                      title: CharSequence? = null, icon: Drawable? = null,
+                      var anchorSide: AnchorSide = AnchorSide.NONE) : CheckableWidget() {
 
     private val style: MenuButtonStyle = skin.get()
     private val fontStyle = FontStyle(fontStyle)
@@ -45,9 +47,6 @@ open class MenuButton(skin: Skin, fontStyle: FontStyle,
     var title: CharSequence?
         get() = titleLabel.text
         set(value) {
-            if (!value.isNullOrBlank() != !titleLabel.text.isBlank()) {
-                invalidateLayout()
-            }
             titleLabel.txt = value
         }
 
@@ -55,48 +54,9 @@ open class MenuButton(skin: Skin, fontStyle: FontStyle,
     var icon: Drawable?
         get() = iconImage.drawable
         set(value) {
-            if ((value == null) != (iconImage.drawable == null)) {
-                invalidateLayout()
-            }
             iconImage.drawable = value
         }
 
-    /** The icon width in pixels. */
-    var iconSize = 64f
-        set(value) {
-            field = value
-            updateIconSize()
-        }
-
-    /** The side on which this button is anchored. There will be no rounded corners on this side. */
-    var anchorSide = Side.NONE
-        set(value) {
-            if (field == value) return
-            field = value
-            invalidateLayout()
-        }
-
-    /**
-     * The side on which the icon is, relative to the label.
-     * If value is [Side.NONE], the icon will be on the same side as the button is anchored.
-     * And if the button isn't anchored, the icon will be shown on top of the label.
-     */
-    var iconSide = Side.NONE
-        set(value) {
-            if (field == value) return
-            field = value
-            invalidateLayout()
-        }
-
-    /**
-     * The alignment of the title label.
-     */
-    var titleAlign = Align.center
-        set(value) {
-            if (field == value) return
-            field = value
-            invalidateLayout()
-        }
 
     override var enabled
         get() = super.enabled
@@ -109,10 +69,9 @@ open class MenuButton(skin: Skin, fontStyle: FontStyle,
         }
 
 
-    val titleLabel: MsdfLabel
-    val iconImage: ShadowImage
+    val titleLabel = MsdfLabel(title, skin, this.fontStyle)
+    val iconImage = ShadowImage(icon, Scaling.fit, fontStyle.shadowColor)
 
-    private var invalidLayout = false
 
     override var pressAlpha
         get() = super.pressAlpha
@@ -129,88 +88,19 @@ open class MenuButton(skin: Skin, fontStyle: FontStyle,
 
     private val backgroundDrawable: Drawable
         get() = when (anchorSide) {
-            Side.NONE -> style.backgroundCenter
-            Side.TOP -> style.backgroundTop
-            Side.BOTTOM -> style.backgroundBottom
-            Side.LEFT -> style.backgroundLeft
-            Side.RIGHT -> style.backgroundRight
+            AnchorSide.NONE -> style.backgroundCenter
+            AnchorSide.TOP -> style.backgroundTop
+            AnchorSide.BOTTOM -> style.backgroundBottom
+            AnchorSide.LEFT -> style.backgroundLeft
+            AnchorSide.RIGHT -> style.backgroundRight
         }
 
     init {
         addListener(SelectionListener())
-
-        titleLabel = MsdfLabel(null, skin, this.fontStyle)
-
-        iconImage = ShadowImage()
-        iconImage.setScaling(Scaling.fit)
-        iconImage.shadowColor = this.fontStyle.shadowColor
-
-        pad(20f)
-        updateLayout()
-
-        this.title = title
-        this.icon = icon
         touchable = Touchable.enabled
+        pad(20f)
     }
 
-
-    /**
-     * Clear the children and redo the correct label and icon layout.
-     * If title or icon are not set, their widget won't  be added to the layout.
-     */
-    private fun updateLayout() {
-        clearChildren()
-
-        when {
-            !title.isNullOrBlank() && icon == null -> {
-                add(titleLabel).expand().align(titleAlign)
-            }
-            icon != null && title.isNullOrBlank() -> {
-                add(iconImage).expand()
-            }
-            else -> {
-                when (if (iconSide == Side.NONE) anchorSide else iconSide) {
-                    Side.NONE, Side.TOP -> {
-                        add(iconImage).expandX().padBottom(30f).row()
-                        add(titleLabel).expand(true, !Align.isCenterVertical(titleAlign)).align(titleAlign)
-                    }
-                    Side.BOTTOM -> {
-                        add(titleLabel).expand(true, !Align.isCenterVertical(titleAlign)).align(titleAlign)
-                        row()
-                        add(iconImage).padTop(30f).expandX()
-                    }
-                    Side.LEFT -> {
-                        add(iconImage).padRight(30f).expandY()
-                        add(titleLabel).expand(!Align.isCenterHorizontal(titleAlign), true).align(titleAlign)
-                    }
-                    Side.RIGHT -> {
-                        add(titleLabel).expand(!Align.isCenterHorizontal(titleAlign), true).align(titleAlign)
-                        add(iconImage).padLeft(30f).expandY()
-                    }
-                }
-            }
-        }
-        updateIconSize()
-
-        invalidLayout = false
-    }
-
-    /** Request layout update. */
-    private fun invalidateLayout() {
-        if (!invalidLayout) {
-            invalidLayout = true
-            post {
-                updateLayout()
-            }
-        }
-    }
-
-    private fun updateIconSize() {
-        icon?.let {
-            getCell(iconImage).size(iconSize, it.minHeight / it.minWidth * iconSize)
-            invalidateHierarchy()
-        }
-    }
 
     override fun drawChildren(batch: Batch, parentAlpha: Float) {
         // Draw background
@@ -224,6 +114,7 @@ open class MenuButton(skin: Skin, fontStyle: FontStyle,
         super.drawChildren(batch, parentAlpha * if (enabled) 1f else 0.5f)
     }
 
+
     private fun interpolateColors(start: Color, end: Color, percent: Float): Color {
         if (percent <= 0f) return start
         if (percent >= 1f) return end
@@ -234,6 +125,7 @@ open class MenuButton(skin: Skin, fontStyle: FontStyle,
         val a = start.a + (end.a - start.a) * percent
         return tempColor.set(r, g, b, a)
     }
+
 
     class MenuButtonStyle {
         lateinit var backgroundCenter: Drawable
@@ -246,7 +138,7 @@ open class MenuButton(skin: Skin, fontStyle: FontStyle,
         lateinit var disabledColor: Color
     }
 
-    enum class Side {
+    enum class AnchorSide {
         NONE, TOP, BOTTOM, LEFT, RIGHT
     }
 

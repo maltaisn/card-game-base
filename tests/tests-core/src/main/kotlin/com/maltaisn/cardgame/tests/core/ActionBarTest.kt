@@ -58,8 +58,10 @@ abstract class ActionBarTest(listener: CardGameListener) : CardGameTest(listener
      */
     protected inline fun addActionBtn(title: String,
                                       crossinline action: (MenuButton) -> Unit): MenuButton {
-        val btn = MenuButton(skin, btnFontStyle, title, null)
-        btn.onClick { action(btn) }
+        val btn = MenuButton(skin, btnFontStyle, title, null).apply {
+            add(titleLabel)
+            onClick { action(this) }
+        }
         btnTable.add(btn).grow().padH(10f).expand()
         return btn
     }
@@ -145,6 +147,7 @@ abstract class ActionBarTest(listener: CardGameListener) : CardGameTest(listener
             }
 
         init {
+            add(titleLabel)
             addListener(object : ClickListener(Input.Buttons.LEFT) {
                 override fun clicked(event: InputEvent, x: Float, y: Float) {
                     value = step * round((value + step) / step)

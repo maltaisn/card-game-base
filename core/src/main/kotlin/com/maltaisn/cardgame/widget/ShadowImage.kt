@@ -20,7 +20,9 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.ui.Image
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
+import com.badlogic.gdx.utils.Scaling
 import ktx.actors.alpha
 import ktx.math.vec2
 
@@ -28,16 +30,15 @@ import ktx.math.vec2
 /**
  * A simple wrapper around [Image] that draws its drawable twice to create a shadow effect.
  */
-class ShadowImage : Image() {
+class ShadowImage(drawable: Drawable? = null,
+                  scaling: Scaling = Scaling.stretch,
+                  var shadowColor: Color = Color.BLACK) : Image(drawable, scaling) {
 
     /**
      * The offset in pixels at which the shadow is drawn.
      * Y positive down coordinate system.
      */
     var shadowOffset = vec2(4f, 4f)
-
-    /** The tint of this icon. */
-    var shadowColor = Color()
 
 
     override fun draw(batch: Batch, parentAlpha: Float) {
@@ -50,16 +51,16 @@ class ShadowImage : Image() {
     }
 
     private fun drawIcon(batch: Batch, offset: Vector2, color: Color, parentAlpha: Float) {
-        val icon = drawable ?: return
+        val drawable = drawable ?: return
 
         batch.setColor(color.r, color.g, color.b, alpha * parentAlpha)
 
-        if (icon is TransformDrawable && (scaleX != 1f || scaleY != 1f || rotation != 0f)) {
-            icon.draw(batch, x + imageX + offset.x, y + imageY - offset.y,
+        if (drawable is TransformDrawable && (scaleX != 1f || scaleY != 1f || rotation != 0f)) {
+            drawable.draw(batch, x + imageX + offset.x, y + imageY - offset.y,
                     originX - imageX, originY - imageY,
                     imageWidth, imageHeight, scaleX, scaleY, rotation)
         } else {
-            icon.draw(batch, x + imageX + offset.x, y + imageY - offset.y,
+            drawable.draw(batch, x + imageX + offset.x, y + imageY - offset.y,
                     imageWidth * scaleX, imageHeight * scaleY)
         }
     }

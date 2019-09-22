@@ -18,6 +18,7 @@ package com.maltaisn.cardgame.pcard
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.utils.Scaling
 import com.maltaisn.cardgame.widget.ShadowImage
 import com.maltaisn.msdfgdx.FontStyle
 import com.maltaisn.msdfgdx.widget.MsdfLabel
@@ -64,7 +65,7 @@ class PCardLabel(skin: Skin, card: PCard, fontStyle: FontStyle) : Table(skin) {
 
 
     private val rankLabel = MsdfLabel(null, skin, fontStyle)
-    private val suitIcon = ShadowImage()
+    private val suitIcon = ShadowImage(scaling = Scaling.fit)
 
 
     init {

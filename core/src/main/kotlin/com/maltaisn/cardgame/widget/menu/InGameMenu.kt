@@ -68,10 +68,11 @@ class InGameMenu(skin: Skin) : MenuTable(skin) {
             val fontStyle = if (item.important) style.importantItemFontStyle else style.itemFontStyle
             val btn = MenuButton(skin, fontStyle, item.title, item.icon).apply {
                 pad(30f)
+                add(iconImage).size(style.itemIconSize)
+                if (!title.isNullOrBlank()) {
+                    add(titleLabel).padLeft(30f)
+                }
                 onClick { onItemBtnClicked(item) }
-                anchorSide = MenuButton.Side.NONE
-                iconSide = MenuButton.Side.LEFT
-                iconSize = this@InGameMenu.style.itemIconSize
             }
             item.button = btn
             (if (item.position == ITEM_POS_LEFT) leftGroup else rightGroup).addActor(btn)

@@ -45,7 +45,7 @@ class ScrollSubMenuTest(listener: CardGameListener) : ActionBarTest(listener) {
 
         val menuItems = listOf(MenuItem(0, "First item", skin.getDrawable(CoreIcons.BOOK), SubMenu.ITEM_POS_TOP),
                 MenuItem(1, "No icon", null, SubMenu.ITEM_POS_TOP),
-                MenuItem(2, "Bottom aligned", skin.getDrawable(CoreIcons.CHEVRON_RIGHT), SubMenu.ITEM_POS_BOTTOM))
+                MenuItem(2, "Bottom aligned and long title", skin.getDrawable(CoreIcons.CHEVRON_RIGHT), SubMenu.ITEM_POS_BOTTOM))
         menuItems[2].checkable = false
 
         val markdown: Markdown = assetManager[TestRes.LOREM_IPSUM_MARKDOWN]
