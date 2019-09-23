@@ -62,6 +62,10 @@ class ResetGameDialog(skin: Skin) : AlertDialog(skin) {
     override fun onHide() {
         pref = null
         callback = null
+
+        // Remove keyboard focus because if a text field was being edited, dialog was shown during
+        // keyboard focus change and dialog set it back to text field when hiding instead of removing it.
+        stage?.keyboardFocus = null
     }
 
     override fun onDismiss() {

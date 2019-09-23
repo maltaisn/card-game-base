@@ -163,14 +163,14 @@ open class Dialog(skin: Skin) : FboTable(skin) {
         if (!shown) return
         shown = false
 
-        onHide()
-
         stage?.keyboardFocus = oldKeyboardFocus
         stage?.scrollFocus = oldScrollFocus
 
         if (transitionAction == null) {
             transitionAction = TransitionAction()
         }
+
+        onHide()
     }
 
     /**

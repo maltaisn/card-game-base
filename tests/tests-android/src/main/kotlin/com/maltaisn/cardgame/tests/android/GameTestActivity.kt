@@ -19,7 +19,7 @@ package com.maltaisn.cardgame.tests.android
 import android.os.Bundle
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
-import android.widget.TextView
+import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import com.badlogic.gdx.backends.android.AndroidApplication
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration
@@ -31,7 +31,7 @@ import com.maltaisn.cardgame.tests.core.CardGameTests
 class GameTestActivity : AndroidApplication(), CardGameListener {
 
     private lateinit var inputDialog: AlertDialog
-    private lateinit var inputField: TextView
+    private lateinit var inputField: EditText
 
     override val isTextInputDelegated = true
 
@@ -71,9 +71,12 @@ class GameTestActivity : AndroidApplication(), CardGameListener {
     override fun onTextInput(text: CharSequence?, title: CharSequence?,
                              onTextEntered: (String) -> Unit) {
         runOnUiThread {
-            inputField.text = text
-            inputField.requestFocus()
-            inputDialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+            inputField.apply {
+                setText(text)
+                requestFocus()
+                setSelection(text?.length ?: 0)
+            }
+            inputDialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
 
             inputDialog.apply {
                 setTitle(title)
@@ -82,6 +85,10 @@ class GameTestActivity : AndroidApplication(), CardGameListener {
                         inputDialog.dismiss()
                         onTextEntered(inputField.text.toString())
                     }
+                    getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener { cancel() }
+                }
+                setOnCancelListener {
+                    onTextEntered(text.toString())
                 }
                 show()
             }

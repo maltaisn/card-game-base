@@ -200,10 +200,10 @@ open class CardGameScreen<T : CardGameListener>(val locale: Locale, val listener
      */
     fun onTextInput(textField: MsdfTextField) {
         if (listener.isTextInputDelegated) {
-            keyboardFocus = null
             listener.onTextInput(textField.text, textField.inputTitle) { text ->
                 // Filter the text and set it on text field.
                 textField.text = text
+                keyboardFocus = null
                 Gdx.graphics.requestRendering()
             }
         }
