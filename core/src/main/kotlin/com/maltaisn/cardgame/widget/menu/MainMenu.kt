@@ -167,7 +167,7 @@ class MainMenu(skin: Skin, cardStyle: CardActor.CardStyle) : MenuTable(skin) {
 
 
     private inner class TransitionAction :
-            TimeAction(0.3f, Interpolation.smooth, reversed = !shown) {
+            TimeAction(TRANSITION_DURATION, Interpolation.smooth, reversed = !shown) {
 
         var leftStartX = leftSide.x
         var rightStartX = rightSide.x
@@ -210,6 +210,8 @@ class MainMenu(skin: Skin, cardStyle: CardActor.CardStyle) : MenuTable(skin) {
     companion object {
         const val ITEM_POS_LEFT = 0
         const val ITEM_POS_RIGHT = 1
+
+        const val TRANSITION_DURATION = 0.3f
 
         private const val MENU_COL_WIDTH = 400f
         private const val CARD_TRICK_HEIGHT = 360f

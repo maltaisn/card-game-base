@@ -249,7 +249,7 @@ open class SubMenu(skin: Skin) : MenuTable(skin) {
         const val ITEM_POS_BOTTOM = 1
 
         /** The duration of the overall transition. */
-        private const val TRANSITION_DURATION = 0.5f
+        const val TRANSITION_DURATION = 0.5f
 
         /** The duration of each menu item slide. */
         private const val ITEM_TRANSITION_DURATION = 0.35f

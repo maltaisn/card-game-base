@@ -81,7 +81,7 @@ class InGameMenu(skin: Skin) : MenuTable(skin) {
 
 
     internal inner class TransitionAction :
-            TimeAction(0.3f, Interpolation.smooth, reversed = !shown) {
+            TimeAction(TRANSITION_DURATION, Interpolation.smooth, reversed = !shown) {
 
         init {
             isVisible = true
@@ -106,6 +106,8 @@ class InGameMenu(skin: Skin) : MenuTable(skin) {
     companion object {
         const val ITEM_POS_LEFT = 0
         const val ITEM_POS_RIGHT = 1
+
+        const val TRANSITION_DURATION = 0.3f
     }
 
 }
