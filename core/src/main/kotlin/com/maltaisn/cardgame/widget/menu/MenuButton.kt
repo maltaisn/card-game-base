@@ -44,14 +44,14 @@ open class MenuButton(skin: Skin, fontStyle: FontStyle,
     private val fontStyle = FontStyle(fontStyle)
 
     /** The button title, or `null` for none. */
-    var title: CharSequence?
+    open var title: CharSequence?
         get() = titleLabel.text
         set(value) {
             titleLabel.txt = value
         }
 
     /** The button icon, or `null` for none. */
-    var icon: Drawable?
+    open var icon: Drawable?
         get() = iconImage.drawable
         set(value) {
             iconImage.drawable = value

@@ -92,6 +92,9 @@ class MainMenu(skin: Skin, cardStyle: CardActor.CardStyle) : MenuTable(skin) {
             super.shown = value
 
             if (transitionAction == null) {
+                // Fixes weird bug were main menu collapses horizontally...
+                invalidate()
+
                 transitionAction = TransitionAction()
             }
         }
