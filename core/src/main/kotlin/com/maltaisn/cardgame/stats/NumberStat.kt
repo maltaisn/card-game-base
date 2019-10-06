@@ -23,14 +23,17 @@ import ktx.log.error
 
 
 /**
- * A statistic for a single number.
+ * A statistic with a number value.
  */
-class NumberStat : Statistic<Float>() {
+class NumberStat(
+        key: String,
+        title: String,
+        precision: Int,
+        internal: Boolean,
+        val defaultValue: Float)
+    : Statistic<Float>(key, title, precision, internal) {
 
-    private lateinit var value: FloatArray
-
-    /** The value used to reset the statistic. */
-    var defaultValue = 0f
+    private var value = FloatArray(0)
 
 
     override fun get(variant: Int) = value[variant]
@@ -51,11 +54,11 @@ class NumberStat : Statistic<Float>() {
         value = FloatArray(variants)
     }
 
-    override fun loadValue(prefs: Preferences) {
-        for (i in 0 until value.size) {
+    override fun loadValue(handle: Preferences) {
+        for (i in value.indices) {
             val variantKey = "${key}_$i"
             value[i] = try {
-                prefs.getFloat(variantKey, defaultValue)
+                handle.getFloat(variantKey, defaultValue)
             } catch (e: Exception) {
                 error { "Wrong saved type for statistic '$variantKey', resetting." }
                 defaultValue
@@ -65,12 +68,25 @@ class NumberStat : Statistic<Float>() {
 
 
     @Suppress("LibGDXMissingFlush")
-    override fun saveValue(prefs: Preferences) {
-        for (variant in 0 until value.size) {
-            prefs.putFloat("${key}_$variant", value[variant])
+    override fun saveValue(handle: Preferences) {
+        for (variant in value.indices) {
+            handle.putFloat("${key}_$variant", value[variant])
         }
     }
 
     override fun createView(skin: Skin) = NumberStatView(skin, this)
+
+
+    class Builder(key: String) : Statistic.Builder(key) {
+        var defaultValue = 0f
+
+        fun build() = NumberStat(key, title, precision, internal, defaultValue)
+    }
+
+
+    override fun toString() = "NumberStat[" +
+            "value: ${value.contentToString()}, " +
+            "defaultValue: $defaultValue, " +
+            super.toString().substringAfter("[")
 
 }

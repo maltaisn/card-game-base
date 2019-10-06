@@ -18,139 +18,124 @@ package com.maltaisn.cardgame.stats
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Preferences
-import com.badlogic.gdx.files.FileHandle
-import com.badlogic.gdx.utils.I18NBundle
-import com.badlogic.gdx.utils.JsonReader
-import com.maltaisn.cardgame.utils.StringRefJson
-import ktx.json.addClassTag
-import ktx.json.readValue
 
 
 /**
- * Game statistics that can be loaded from JSON and inflated to a table of stat views.
+ * Game statistics that can be created with a DSL and inflated to a table of stat views.
  * Manages loading, saving and clearing values.
+ *
+ * @property name The name under which the statistics are stored.
+ * Variants are stored with a `_<index>` suffix.
+ * @property variants The names of the variants for this statistic object.
+ * @property stats The map of statistics by key.
  */
-class Statistics {
-
-    /**
-     * The names of the variants for this statistic object.
-     * `null` if there are no variants.
-     */
-    val variants: List<String>?
-
-    /**
-     * The name under which the statistics are stored.
-     * Variants are stored with a `_<index>` suffix.
-     */
-    val name: String
-
-    /**
-     * The map of statistics by key.
-     */
-    val stats: Map<String, Statistic<*>>
-        get() = _stats
-
-    private val _stats = mutableMapOf<String, Statistic<*>>()
+class Statistics(
+        val name: String,
+        val variants: List<String>,
+        val stats: Map<String, Statistic<*>>) {
 
     /**
      * The preferences where the stats values get stored for each variant.
      */
-    private val preferences: Preferences
+    private val handle: Preferences = Gdx.app.getPreferences(name)
 
 
-    constructor(name: String, variants: List<String>? = null) {
-        this.variants = variants
-        this.name = name
-        preferences = Gdx.app.getPreferences(name)
+    init {
+        require(variants.isNotEmpty()) { "There must be at least one variant." }
+
+        // Initialize statistic objects
+        for (stat in stats.values) {
+            stat.initialize(variants.size)
+            if (stat is CompositeStat<*>) {
+                stat.setOtherStats(this)
+            }
+        }
+
+        // Load saved values from handle.
+        load()
     }
+
 
     /**
-     * Create a statistics object from a [file] and
-     * using a [bundle] for resolving the string references.
+     * Get a statistic by [key].
      */
-    constructor(file: FileHandle, bundle: I18NBundle) {
-        // Create JSON parser
-        val json = StringRefJson(bundle).apply {
-            setTypeName("type")
-            setUsePrototypes(false)
-
-            // Add class tags
-            addClassTag<NumberStat>("number")
-            addClassTag<AverageStat>("average")
-            addClassTag<PercentStat>("percent")
-        }
-
-        val data = JsonReader().parse(file)
-
-        // Get name and create the preferences handles
-        variants = json.readValue(data, "variants")
-        name = checkNotNull(json.readValue<String>(data, "name")) {
-            "JSON statistics file must specify a name attribute."
-        }
-        preferences = Gdx.app.getPreferences(name)
-
-        // Create statistics entries for all variants
-        val statsJson = data["stats"]
-        if (statsJson != null) {
-            // Parse statistics entries, and set the keys.
-            // Then clone the statistics for all variants.
-            _stats += json.readValue<LinkedHashMap<String, Statistic<*>>>(statsJson)
-            for ((key, stat) in stats) {
-                this[key] = stat
-            }
-
-            // Load stats values
-            load()
-        }
-    }
-
-    /** Get a statistic by [key]. */
     operator fun get(key: String) = stats[key]
 
-    /** Set the statistic at [key] to a [stat]. */
-    operator fun set(key: String, stat: Statistic<*>) {
-        stat.key = key
-        stat.initialize(variants?.size ?: 1)
-        if (stat is CompositeStat<*>) {
-            stat.setOtherStats(this)
-        }
-        _stats[key] = stat
-    }
-
-    /** Remove a statistic by [key]. */
-    fun remove(key: String) = _stats.remove(key)
 
     fun getNumber(key: String) = checkNotNull(this[key] as? NumberStat) {
         "Invalid number statistic key: '$key'."
     }
 
     /**
-     * Reset the value of all statistics.
+     * Reset the value of all statistics and save it to handle.
      */
     fun reset() {
         for (stat in stats.values) {
             stat.reset()
         }
+        save()
     }
 
-
     /**
-     * Load values for all stats from the preferences file.
+     * Load values for all stats from the preferences handle.
      */
     fun load() {
         for (stat in stats.values) {
-            stat.loadValue(preferences)
+            stat.loadValue(handle)
         }
     }
 
     /**
-     * Save values for all stats to the preferences files.
+     * Save values for all stats to the preferences handle.
      */
     fun save() {
         for (stat in stats.values) {
-            stat.saveValue(preferences)
+            stat.saveValue(handle)
         }
-        preferences.flush()
+        handle.flush()
     }
+
+    class Builder(val name: String) {
+        val stats = mutableMapOf<String, Statistic<*>>()
+        var variants: List<String> = listOf("default")
+
+        inline fun number(key: String, build: NumberStat.Builder.() -> Unit) {
+            val builder = NumberStat.Builder(key)
+            build(builder)
+            stats[key] = builder.build()
+        }
+
+        inline fun percent(key: String, build: PercentStat.Builder.() -> Unit) {
+            val builder = PercentStat.Builder(key)
+            build(builder)
+            stats[key] = builder.build()
+        }
+
+        inline fun average(key: String, build: AverageStat.Builder.() -> Unit) {
+            val builder = AverageStat.Builder(key)
+            build(builder)
+            stats[key] = builder.build()
+        }
+
+        fun build() = Statistics(name, variants, stats)
+    }
+
+
+    companion object {
+        /**
+         * Utility function to create new game statistics using DSL builder syntax.
+         */
+        inline operator fun invoke(name: String, build: Builder.() -> Unit = {}): Statistics {
+            val builder = Builder(name)
+            build(builder)
+            return builder.build()
+        }
+    }
+
+
+    override fun toString() = "Statistics[" +
+            "name: '$name', " +
+            "variants: $variants, " +
+            "${stats.size} stats]"
 
 }

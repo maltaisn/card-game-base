@@ -23,7 +23,7 @@ import com.maltaisn.cardgame.prefs.GamePref
 import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.PrefEntry
 import com.maltaisn.cardgame.tests.core.SubmenuContentTest
-import com.maltaisn.cardgame.tests.core.builders.testSettings
+import com.maltaisn.cardgame.tests.core.builders.buildTestSettings
 import com.maltaisn.cardgame.utils.padH
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.ScrollView
@@ -46,7 +46,7 @@ class PrefsViewTest(listener: CardGameListener) : SubmenuContentTest(listener) {
         drawer.backBtnText = "Back"
         layout.addActor(drawer)
 
-        prefs = testSettings(skin.get())
+        prefs = buildTestSettings(skin.get())
         val prefsGroup = PrefsGroup(skin, prefs, drawer)
 
         var confirmChanges = true

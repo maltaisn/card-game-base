@@ -28,8 +28,9 @@ import com.maltaisn.cardgame.prefs.SwitchPref
 import com.maltaisn.cardgame.stats.Statistics
 import com.maltaisn.cardgame.tests.core.CardGameTest
 import com.maltaisn.cardgame.tests.core.TestRes
-import com.maltaisn.cardgame.tests.core.builders.testNewGameOptions
-import com.maltaisn.cardgame.tests.core.builders.testSettings
+import com.maltaisn.cardgame.tests.core.builders.buildTestNewGameOptions
+import com.maltaisn.cardgame.tests.core.builders.buildTestSettings
+import com.maltaisn.cardgame.tests.core.builders.buildTestStats
 import com.maltaisn.cardgame.widget.AboutView
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.CoreIcons
@@ -111,17 +112,17 @@ class DefaultGameMenuTest(listener: CardGameListener) : CardGameTest(listener) {
                 PCard("Q♠"), PCard("J♥"), PCard("Q♥"))
 
         // New game
-        menu.newGameOptions = testNewGameOptions(bundle)
+        menu.newGameOptions = buildTestNewGameOptions(bundle)
 
         // Settings
-        val settingsPrefs = testSettings(bundle)
+        val settingsPrefs = buildTestSettings(bundle)
         menu.settings = settingsPrefs
 
         // Rules
         menu.rules = assetManager[TestRes.LOREM_IPSUM_MARKDOWN]
 
         // Stats
-        menu.stats = assetManager[TestRes.STATS]
+        menu.stats = buildTestStats(skin.get())
 
         // About
         val aboutView = AboutView(skin, "App name", "1.0.0", "Author name").apply {

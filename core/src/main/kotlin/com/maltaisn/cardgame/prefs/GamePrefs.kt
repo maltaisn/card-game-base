@@ -26,7 +26,7 @@ import ktx.log.error
  * A class for storing a hierarchy of [PrefEntry] preferences by key.
  * The class provides a builder utility for creating preferences.
  *
- * @property name The name under which the preferences are stored, can be `null` if not saveable.
+ * @property name The name under which the preferences are stored.
  * @property prefs The map of preferences by key.
  */
 class GamePrefs(val name: String,
@@ -53,7 +53,7 @@ class GamePrefs(val name: String,
             }
         }
 
-        // Load values from handle.
+        // Load saved values from handle.
         load()
     }
 
@@ -245,7 +245,6 @@ class GamePrefs(val name: String,
 
 
     companion object {
-
         /**
          * Utility function to create new game preferences using DSL builder syntax.
          */

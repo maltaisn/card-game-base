@@ -22,28 +22,25 @@ import com.maltaisn.cardgame.widget.stats.StatView
 import java.text.NumberFormat
 
 
-abstract class Statistic<T> {
-
-    /** The key under which the statistic value is put in maps and saved. */
-    lateinit var key: String
-
-    /** The statistic title. */
-    var title = ""
-
-    /** The maximum number of fraction digits of the number shown by this statistic. */
-    var precision = 0
-
-    /**
-     * Whether the statistic is for internal use or not.
-     * Internal stats are not shown to the user.
-     */
-    var internal = false
+/**
+ * Base class for a game statistic.
+ *
+ * @property key The key under which the statistic value is put in maps and saved.
+ * @property title The statistic title.
+ * @property precision The maximum number of fraction digits of the number shown by this statistic.
+ * @property internal Whether the statistic is for internal use or not.
+ * Internal stats are not shown to the user.
+ */
+abstract class Statistic<T>(
+        val key: String,
+        val title: String,
+        val precision: Int,
+        val internal: Boolean) {
 
     /** A number format to be used to format this statistic value. */
-    val numberFmt: NumberFormat
-        get() = NumberFormat.getNumberInstance().apply {
-            maximumFractionDigits = precision
-        }
+    val numberFmt = NumberFormat.getNumberInstance().apply {
+        maximumFractionDigits = precision
+    }
 
     /**
      * Get the value of this statistic for a [variant].
@@ -61,20 +58,33 @@ abstract class Statistic<T> {
     internal abstract fun initialize(variants: Int)
 
     /**
-     * Load the value of this statistic from [prefs].
+     * Load the value of this statistic from [handle].
      * If no value is found, the value is initialized to the default value.
      */
-    internal abstract fun loadValue(prefs: Preferences)
+    internal abstract fun loadValue(handle: Preferences)
 
     /**
-     * Save the value of this statistic to [prefs], if it's not null.
+     * Save the value of this statistic to [handle], if it's not null.
      * Doesn't flush the preferences, must be done afterwards.
      */
-    internal abstract fun saveValue(prefs: Preferences)
+    internal abstract fun saveValue(handle: Preferences)
 
     /**
      * Create a view for this statistic.
      */
     abstract fun createView(skin: Skin): StatView<*>
+
+
+    abstract class Builder(val key: String) {
+        var title = ""
+        var precision = 0
+        var internal = false
+    }
+
+    override fun toString() = "Statistic[" +
+            "key: '$key', " +
+            "title: '$title', " +
+            "precision: $precision, " +
+            "internal: $internal]"
 
 }

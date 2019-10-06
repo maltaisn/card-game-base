@@ -20,7 +20,7 @@ import com.badlogic.gdx.utils.I18NBundle
 import com.maltaisn.cardgame.prefs.GamePrefs
 
 
-fun testSettings(strings: I18NBundle) =
+fun buildTestSettings(strings: I18NBundle) =
         GamePrefs("com.maltaisn.cardgametest.settings") {
             category("debug_category") {
                 title = "Debug"

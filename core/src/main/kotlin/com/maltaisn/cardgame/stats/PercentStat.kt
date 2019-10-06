@@ -22,26 +22,37 @@ import java.text.NumberFormat
 
 
 /**
- * A statistic for a single number.
+ * A statistic for a single percentage value.
+ * Percentage calculation is `(frac / total) * 100%`.
+ *
+ * @property fracStatKey The statistic key for the fractional part use to calculate the percentage.
+ * @property totalStatKey The statistic key for the total part use to calculate the percentage.
+ * @property showFrac Whether to show both the percentage and the fractional part in the view.
+ * @property percentPrecision The maximum number of fraction digits of the percentage shown.
  */
-class PercentStat : CompositeStat<Float>() {
+class PercentStat(
+        key: String,
+        title: String,
+        precision: Int,
+        internal: Boolean,
+        val fracStatKey: String,
+        val totalStatKey: String,
+        val showFrac: Boolean,
+        val percentPrecision: Int)
+    : CompositeStat<Float>(key, title, precision, internal) {
 
-    lateinit var fracStatKey: String
     lateinit var fracStat: NumberStat
-
-    lateinit var totalStatKey: String
+        private set
     lateinit var totalStat: NumberStat
+        private set
 
     /**
-     * Whether to show both the percentage and the fractional part in the view.
+     * A number format to be used to format this statistic percent value.
      */
-    var showFrac = false
+    val percentFmt = NumberFormat.getPercentInstance().apply {
+        maximumFractionDigits = percentPrecision
+    }
 
-    /** A number format to be used to format this statistic percent value. */
-    val percentFmt: NumberFormat
-        get() = NumberFormat.getPercentInstance().apply {
-            maximumFractionDigits = precision
-        }
 
     /**
      * The percentage calculated with the two other stats.
@@ -51,8 +62,8 @@ class PercentStat : CompositeStat<Float>() {
 
 
     override fun setOtherStats(stats: Statistics) {
-        fracStat = stats[fracStatKey] as NumberStat
-        totalStat = stats[totalStatKey] as NumberStat
+        fracStat = getOtherStat(stats, fracStatKey)
+        totalStat = getOtherStat(stats, totalStatKey)
     }
 
     override fun reset() {
@@ -61,5 +72,24 @@ class PercentStat : CompositeStat<Float>() {
     }
 
     override fun createView(skin: Skin) = PercentStatView(skin, this)
+
+
+    class Builder(key: String) : Statistic.Builder(key) {
+        var fracStatKey = ""
+        var totalStatKey = ""
+        var showFrac = false
+        var percentPrecision = 0
+
+        fun build() = PercentStat(key, title, precision, internal,
+                fracStatKey, totalStatKey, showFrac, percentPrecision)
+    }
+
+
+    override fun toString() = "PercentStat[" +
+            "fracStatKey: $fracStatKey, " +
+            "totalStatKey: $totalStatKey, " +
+            "showFrac: $showFrac, " +
+            "percentPrecision: $percentPrecision, " +
+            super.toString().substringAfter("[")
 
 }

@@ -17,12 +17,15 @@
 package com.maltaisn.cardgame.prefs
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Preferences
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers.anyBoolean
+import org.mockito.ArgumentMatchers.anyFloat
 import org.mockito.junit.MockitoJUnitRunner
 import kotlin.test.*
 
@@ -33,7 +36,13 @@ internal class GamePrefsTest {
     @Before
     fun mockGdx() {
         Gdx.app = mock()
-        whenever(Gdx.app.getPreferences(any())).thenReturn(mock())
+        val prefs: Preferences = mock()
+        whenever(Gdx.app.getPreferences(any())).thenReturn(prefs)
+
+        // Return default arguments when trying to read preferences
+        whenever(prefs.getString(any(), any())).thenAnswer { it.arguments[1] }
+        whenever(prefs.getFloat(any(), anyFloat())).thenAnswer { it.arguments[1] }
+        whenever(prefs.getBoolean(any(), anyBoolean())).thenAnswer { it.arguments[1] }
     }
 
     @Test
@@ -41,6 +50,37 @@ internal class GamePrefsTest {
         val prefs = GamePrefs("test")
         assertEquals("test", prefs.name)
         assertEquals(0, prefs.prefs.size)
+    }
+
+    @Test
+    fun shouldBuildGamePrefs_all_types() {
+        val prefs = GamePrefs("test") {
+            category("category") {
+                switch("switch") {
+                    title = "Switch"
+                }
+                slider("slider") {
+                    minValue = -100f
+                    maxValue = 100f
+                }
+                text("text") {
+                    inputTitle = "Enter text"
+                }
+                list("list") {
+                    entries["item"] = "Item 1"
+                }
+                playerNames("playerNames") {
+                    defaultValue = arrayOf("p1", "p2")
+                }
+            }
+        }
+
+        assertTrue { prefs["category"] is PrefCategory }
+        assertTrue { prefs["switch"] is SwitchPref }
+        assertTrue { prefs["slider"] is SliderPref }
+        assertTrue { prefs["text"] is TextPref }
+        assertTrue { prefs["list"] is ListPref }
+        assertTrue { prefs["playerNames"] is PlayerNamesPref }
     }
 
     @Test
@@ -68,7 +108,7 @@ internal class GamePrefsTest {
     fun shouldGetPref_level1() {
         val pref = SwitchPref.Builder("pref").build()
         val prefs = GamePrefs("test", mapOf("pref" to pref))
-        assertEquals(pref, prefs["pref"])
+        assertSame(pref, prefs["pref"])
     }
 
     @Test
@@ -78,7 +118,7 @@ internal class GamePrefsTest {
             prefs["pref"] = pref
         }.build()
         val prefs = GamePrefs("test", mapOf("catg" to category))
-        assertEquals(pref, prefs["pref"])
+        assertSame(pref, prefs["pref"])
     }
 
     @Test

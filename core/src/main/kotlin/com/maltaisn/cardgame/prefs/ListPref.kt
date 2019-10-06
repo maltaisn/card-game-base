@@ -54,15 +54,15 @@ class ListPref(
         get() = checkNotNull(entries[value]) { "Unknown list preference item key '$value'." }
 
 
-    override fun loadValue(prefs: Preferences): String {
-        val value = prefs.getString(key, defaultValue)
+    override fun loadValue(handle: Preferences): String {
+        val value = handle.getString(key, defaultValue)
         return if (value !in keys) defaultValue else value
     }
 
     @Suppress("LibGDXMissingFlush")
-    override fun saveValue(prefs: Preferences) {
+    override fun saveValue(handle: Preferences) {
         if (entries.containsKey(value)) {
-            prefs.putString(key, value)
+            handle.putString(key, value)
         }
     }
 
@@ -75,6 +75,8 @@ class ListPref(
         val entries = mutableMapOf<String, String>()
 
         fun build(): ListPref {
+            require(entries.isNotEmpty()) { "List preference must have at least one entry." }
+
             if (defaultValue == NO_VALUE) {
                 defaultValue = entries.keys.first()
             }

@@ -22,7 +22,12 @@ import com.badlogic.gdx.Preferences
 /**
  * A statistic that relies other statistics to calculate its value.
  */
-abstract class CompositeStat<T> : Statistic<T>() {
+abstract class CompositeStat<T>(
+        key: String,
+        title: String,
+        precision: Int,
+        internal: Boolean)
+    : Statistic<T>(key, title, precision, internal) {
 
     /**
      * Set the references to the other stats with a [stats] object.
@@ -31,8 +36,16 @@ abstract class CompositeStat<T> : Statistic<T>() {
 
     override fun initialize(variants: Int) = Unit
 
-    override fun loadValue(prefs: Preferences) = Unit
+    override fun loadValue(handle: Preferences) = Unit
 
-    override fun saveValue(prefs: Preferences) = Unit
+    override fun saveValue(handle: Preferences) = Unit
+
+
+    protected inline fun <reified T : Statistic<*>> getOtherStat(stats: Statistics, key: String): T {
+        val stat = stats[key]
+        checkNotNull(stat) { "Referenced stat doesn't exist." }
+        check(stat is T) { "Referenced stat has wrong type." }
+        return stat
+    }
 
 }

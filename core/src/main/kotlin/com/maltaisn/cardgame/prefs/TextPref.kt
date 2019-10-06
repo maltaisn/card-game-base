@@ -50,11 +50,11 @@ class TextPref(
         }
 
 
-    override fun loadValue(prefs: Preferences) = prefs.getString(key, defaultValue)
+    override fun loadValue(handle: Preferences) = handle.getString(key, defaultValue)
 
     @Suppress("LibGDXMissingFlush")
-    override fun saveValue(prefs: Preferences) {
-        prefs.putString(key, value)
+    override fun saveValue(handle: Preferences) {
+        handle.putString(key, value)
     }
 
 
@@ -73,9 +73,9 @@ class TextPref(
 
 
     override fun toString() = "TextPref[" +
-            "inputTitle: $inputTitle" +
-            "maxLength: $maxLength" +
-            "filter: $filter" +
+            "inputTitle: $inputTitle, " +
+            "maxLength: $maxLength, " +
+            "filter: $filter, " +
             super.toString().substringAfter("[")
 
 

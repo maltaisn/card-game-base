@@ -45,11 +45,11 @@ class SwitchPref(
         }
 
 
-    override fun loadValue(prefs: Preferences) = prefs.getBoolean(key, defaultValue)
+    override fun loadValue(handle: Preferences) = handle.getBoolean(key, defaultValue)
 
     @Suppress("LibGDXMissingFlush")
-    override fun saveValue(prefs: Preferences) {
-        prefs.putBoolean(key, value)
+    override fun saveValue(handle: Preferences) {
+        handle.putBoolean(key, value)
     }
 
 

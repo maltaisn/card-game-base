@@ -18,14 +18,13 @@ package com.maltaisn.cardgame.tests.core.tests
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.maltaisn.cardgame.CardGameListener
-import com.maltaisn.cardgame.stats.Statistics
 import com.maltaisn.cardgame.tests.core.SubmenuContentTest
-import com.maltaisn.cardgame.tests.core.TestRes
+import com.maltaisn.cardgame.tests.core.builders.buildTestStats
+import com.maltaisn.cardgame.tests.core.builders.changeAllTestStatsValues
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.ScrollView
 import com.maltaisn.cardgame.widget.stats.StatsGroup
-import ktx.assets.load
-import kotlin.random.Random
+import ktx.style.get
 
 
 /**
@@ -33,13 +32,8 @@ import kotlin.random.Random
  */
 class StatsViewTest(listener: CardGameListener) : SubmenuContentTest(listener) {
 
-    override fun load() {
-        super.load()
-        assetManager.load<Statistics>(TestRes.STATS)
-    }
-
     override fun layoutContent(layout: CardGameLayout, content: Table) {
-        val stats: Statistics = assetManager[TestRes.STATS]
+        val stats = buildTestStats(skin.get())
 
         // Do the layout
         val statsGroup = StatsGroup(skin, stats)
@@ -47,21 +41,11 @@ class StatsViewTest(listener: CardGameListener) : SubmenuContentTest(listener) {
         content.add(ScrollView(statsGroup)).grow()
 
         // Action buttons
-        addEnumBtn("Variant", stats.variants!!.indices.toList(), stats.variants) { _, value ->
+        addEnumBtn("Variant", stats.variants.indices.toList(), stats.variants) { _, value ->
             statsGroup.shownVariant = value
         }
         addActionBtn("Change all values") {
-            stats.apply {
-                val v = statsGroup.shownVariant
-                getNumber("tricksTaken")[v] += Random.nextInt(8)
-                getNumber("roundsPlayed")[v]++
-                getNumber("gamesPlayed")[v] += Random.nextInt(1, 4)
-                getNumber("gamesWon")[v]++
-                getNumber("tradeCount_internal")[v] += Random.nextInt(2)
-                getNumber("totalPoints")[v] += Random.nextInt(10)
-                getNumber("minRoundsInGame")[v] = 3
-                save()
-            }
+            changeAllTestStatsValues(stats, statsGroup.shownVariant)
             statsGroup.refresh()
         }
         addActionBtn("Reset") {

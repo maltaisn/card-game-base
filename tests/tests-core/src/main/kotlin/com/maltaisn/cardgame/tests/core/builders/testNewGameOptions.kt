@@ -20,7 +20,7 @@ import com.badlogic.gdx.utils.I18NBundle
 import com.maltaisn.cardgame.prefs.GamePrefs
 
 
-fun testNewGameOptions(strings: I18NBundle) =
+fun buildTestNewGameOptions(strings: I18NBundle) =
         GamePrefs("com.maltaisn.cardgametest.newGameOptions") {
             slider("player_count") {
                 title = strings["pref_player_count"]

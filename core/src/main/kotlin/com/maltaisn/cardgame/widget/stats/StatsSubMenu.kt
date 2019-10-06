@@ -46,7 +46,7 @@ class StatsSubMenu(skin: Skin) : SubMenu(skin) {
             if (value) {
                 // Check first item and scroll to top.
                 scrollView?.scrollToTop()
-                if (stats?.variants != null) {
+                if (stats != null && stats!!.variants.size > 1) {
                     checkItem(items.first())
                 }
 
@@ -80,10 +80,10 @@ class StatsSubMenu(skin: Skin) : SubMenu(skin) {
 
             if (value != null) {
                 // Add items
-                value.variants?.let { variants ->
-                    // If there are variants, add a menu item for each of them.
+                if (value.variants.size > 1) {
+                    // If there are many variants, add a menu item for each of them.
                     val icon = skin.getDrawable(CoreIcons.CHEVRON_RIGHT)
-                    for ((i, variant) in variants.withIndex()) {
+                    for ((i, variant) in value.variants.withIndex()) {
                         addItem(MenuItem(i, variant, icon, ITEM_POS_TOP))
                     }
                     checkItem(items.first())

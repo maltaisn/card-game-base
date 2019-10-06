@@ -60,14 +60,14 @@ class PlayerNamesPref(
         get() = defaultValue.size
 
 
-    override fun loadValue(prefs: Preferences) = Array(size) {
-        prefs.getString(getPlayerNameKey(it), "")
+    override fun loadValue(handle: Preferences) = Array(size) {
+        handle.getString(getPlayerNameKey(it), "")
     }
 
     @Suppress("LibGDXMissingFlush")
-    override fun saveValue(prefs: Preferences) {
+    override fun saveValue(handle: Preferences) {
         for ((i, name) in value.withIndex()) {
-            prefs.putString(getPlayerNameKey(i), name)
+            handle.putString(getPlayerNameKey(i), name)
         }
     }
 
@@ -103,6 +103,8 @@ class PlayerNamesPref(
 
 
     override fun toString() = "PlayerNamesPref[" +
+            "value: ${value.contentToString()}, " +
+            "defaultValue: ${defaultValue.contentToString()}, " +
             "inputTitle: $inputTitle, " +
             "maxLength: $maxLength, " +
             super.toString().substringAfter("[")

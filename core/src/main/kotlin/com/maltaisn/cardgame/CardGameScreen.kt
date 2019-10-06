@@ -37,7 +37,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField
 import com.badlogic.gdx.utils.I18NBundle
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.maltaisn.cardgame.markdown.MdLoader
-import com.maltaisn.cardgame.stats.StatsLoader
 import com.maltaisn.cardgame.widget.MsdfTextField
 import com.maltaisn.msdfgdx.MsdfFontLoader
 import com.maltaisn.msdfgdx.MsdfFontLoader.MsdfFontParameter
@@ -82,7 +81,6 @@ open class CardGameScreen<T : CardGameListener>(val locale: Locale, val listener
         val fileResolver = InternalFileHandleResolver()
         assetManager.apply {
             setLoader(MdLoader(fileResolver))
-            setLoader(StatsLoader(fileResolver))
             setLoader(MsdfFontLoader(fileResolver))
         }
 

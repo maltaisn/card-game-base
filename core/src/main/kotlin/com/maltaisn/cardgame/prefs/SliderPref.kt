@@ -52,11 +52,17 @@ class SliderPref(
         }
 
 
-    override fun loadValue(prefs: Preferences) = prefs.getFloat(key, defaultValue)
+    init {
+        require(maxValue > minValue) { "Slider pref maximum value must be greater than minimum value." }
+        require(step > 0f) { "Slider pref step must be greater than zero." }
+    }
+
+
+    override fun loadValue(handle: Preferences) = handle.getFloat(key, defaultValue)
 
     @Suppress("LibGDXMissingFlush")
-    override fun saveValue(prefs: Preferences) {
-        prefs.putFloat(key, value)
+    override fun saveValue(handle: Preferences) {
+        handle.putFloat(key, value)
     }
 
 
@@ -76,10 +82,10 @@ class SliderPref(
 
 
     override fun toString() = "SliderPref[" +
-            "minValue: $minValue" +
-            "maxValue: $maxValue" +
-            "step: $step" +
-            "enumValues: $enumValues" +
+            "minValue: $minValue, " +
+            "maxValue: $maxValue, " +
+            "step: $step, " +
+            "enumValues: $enumValues, " +
             super.toString().substringAfter("[")
 
 }

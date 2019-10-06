@@ -17,27 +17,21 @@
 package com.maltaisn.cardgame.tests.core.tests.menu
 
 import com.maltaisn.cardgame.CardGameListener
-import com.maltaisn.cardgame.stats.Statistics
 import com.maltaisn.cardgame.tests.core.ActionBarTest
-import com.maltaisn.cardgame.tests.core.TestRes
+import com.maltaisn.cardgame.tests.core.builders.buildTestStats
+import com.maltaisn.cardgame.tests.core.builders.changeAllTestStatsValues
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.stats.StatsSubMenu
-import ktx.assets.load
 import ktx.log.info
-import kotlin.random.Random
+import ktx.style.get
 
 
 class StatsSubMenuTest(listener: CardGameListener) : ActionBarTest(listener) {
 
-    override fun load() {
-        super.load()
-        assetManager.load<Statistics>(TestRes.STATS)
-    }
-
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
-        val stats: Statistics = assetManager[TestRes.STATS]
+        val stats = buildTestStats(skin.get())
 
         val menu = StatsSubMenu(skin).apply {
             this.stats = stats
@@ -62,17 +56,7 @@ class StatsSubMenuTest(listener: CardGameListener) : ActionBarTest(listener) {
             info { "Back arrow clicked" }
         }
         addActionBtn("Change all values") {
-            stats.apply {
-                val v = menu.checkedItem?.id ?: return@addActionBtn
-                getNumber("tricksTaken")[v] += Random.nextInt(8)
-                getNumber("roundsPlayed")[v]++
-                getNumber("gamesPlayed")[v] += Random.nextInt(1, 4)
-                getNumber("gamesWon")[v]++
-                getNumber("tradeCount_internal")[v] += Random.nextInt(2)
-                getNumber("totalPoints")[v] += Random.nextInt(10)
-                getNumber("minRoundsInGame")[v] = 3
-                save()
-            }
+            changeAllTestStatsValues(stats, menu.checkedItem?.id ?: 0)
             menu.refresh()
         }
         addTwoStateActionBtn("Unset stats", "Set stats") { _, set ->

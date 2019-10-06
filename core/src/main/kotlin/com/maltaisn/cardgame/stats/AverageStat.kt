@@ -22,14 +22,24 @@ import com.maltaisn.cardgame.widget.stats.NumberStatView
 
 /**
  * A statistic for a single number.
+ * Average calculation is `total / count`.
+ *
+ * @property totalStatKey The statistic key for the fractional part use to calculate the percentage.
+ * @property countStatKey The statistic key for the total part use to calculate the percentage.
  */
-class AverageStat : CompositeStat<Float>() {
+class AverageStat(
+        key: String,
+        title: String,
+        precision: Int,
+        internal: Boolean,
+        val totalStatKey: String,
+        val countStatKey: String)
+    : CompositeStat<Float>(key, title, precision, internal) {
 
-    lateinit var totalStatKey: String
     lateinit var totalStat: NumberStat
-
-    lateinit var countStatKey: String
+        private set
     lateinit var countStat: NumberStat
+        private set
 
 
     /**
@@ -39,8 +49,8 @@ class AverageStat : CompositeStat<Float>() {
     override fun get(variant: Int) = totalStat[variant] / countStat[variant]
 
     override fun setOtherStats(stats: Statistics) {
-        totalStat = stats[totalStatKey] as NumberStat
-        countStat = stats[countStatKey] as NumberStat
+        totalStat = getOtherStat(stats, totalStatKey)
+        countStat = getOtherStat(stats, countStatKey)
     }
 
     override fun reset() {
@@ -49,5 +59,19 @@ class AverageStat : CompositeStat<Float>() {
     }
 
     override fun createView(skin: Skin) = NumberStatView(skin, this)
+
+
+    class Builder(key: String) : Statistic.Builder(key) {
+        var totalStatKey = ""
+        var countStatKey = ""
+
+        fun build() = AverageStat(key, title, precision, internal, totalStatKey, countStatKey)
+    }
+
+
+    override fun toString() = "AverageStat[" +
+            "totalStatKey: $totalStatKey, " +
+            "countStatKey: $totalStatKey, " +
+            super.toString().substringAfter("[")
 
 }

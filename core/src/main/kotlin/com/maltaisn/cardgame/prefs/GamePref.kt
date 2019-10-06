@@ -61,15 +61,15 @@ abstract class GamePref<T : Any>(
     }
 
     /**
-     * Load the value of this preference from [prefs].
+     * Load the value of this preference from [handle].
      */
-    internal abstract fun loadValue(prefs: Preferences): T
+    internal abstract fun loadValue(handle: Preferences): T
 
     /**
-     * Save the value of this preference to [prefs], if it's not null.
+     * Save the value of this preference to [handle], if it's not null.
      * Doesn't flush the preferences, must be done afterwards.
      */
-    internal abstract fun saveValue(prefs: Preferences)
+    internal abstract fun saveValue(handle: Preferences)
 
 
     abstract override fun createView(skin: Skin): GamePrefView<out GamePref<T>, T>
