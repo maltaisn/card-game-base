@@ -46,7 +46,7 @@ class TextPrefView(skin: Skin, pref: TextPref) :
                 style.fieldFontStyle, text = pref.value).apply {
             inputTitle = pref.inputTitle
             maxLength = pref.maxLength
-            setTextFieldFilter { _, c -> pref.filter == null || c in pref.filter!! }
+            setTextFieldFilter { _, c -> pref.filter == null || c in pref.filter }
             onKeyboardFocus { focused ->
                 if (!focused && text != pref.value) {
                     changePreferenceValue(text) {

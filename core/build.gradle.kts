@@ -10,7 +10,6 @@ plugins {
 dependencies {
     val gdxVersion: String by project
     val ktxVersion: String by project
-    val junitVersion: String by project
     val msdfVersion: String by project
 
     api("com.maltaisn:msdfgdx:$msdfVersion")
@@ -29,8 +28,11 @@ dependencies {
 
     compileOnly("com.gmail.blueboxware:libgdxpluginannotations:1.16")
 
-    testImplementation("junit:junit:$junitVersion")
+    testImplementation(kotlin("test"))
+    testImplementation(kotlin("test-junit"))
+    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
 }
+
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_6

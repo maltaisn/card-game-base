@@ -18,21 +18,30 @@ package com.maltaisn.cardgame.prefs
 
 import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.maltaisn.cardgame.prefs.PlayerNamesPref.Companion.NO_MAX_LENGTH
 import com.maltaisn.cardgame.widget.prefs.PlayerNamesPrefView
-import ktx.log.error
 
 
 /**
- * A preference to enter the names of the players.
+ * A preference for entering player names.
  * Names are saved under the preference key suffixed with "_<playerPos>"
  * These keys can be obtained with [getPlayerNameKey].
+ *
+ * @property inputTitle The title for the input window if input is delegated.
+ * @property maxLength The maximum number of characters in a name, or [NO_MAX_LENGTH] for no maximum.
  */
-class PlayerNamesPref : GamePref<Array<String>>() {
+class PlayerNamesPref(
+        key: String,
+        title: String,
+        dependency: String?,
+        defaultValue: Array<String>,
+        shortTitle: String?,
+        help: String?,
+        confirmChanges: Boolean,
+        val inputTitle: String?,
+        val maxLength: Int)
+    : GamePref<Array<String>>(key, title, dependency, defaultValue, shortTitle, help, confirmChanges) {
 
-    /**
-     * The player names array.
-     * Should be set everytime the array is changed.
-     */
     override var value = emptyArray<String>()
         set(value) {
             field = value
@@ -44,34 +53,19 @@ class PlayerNamesPref : GamePref<Array<String>>() {
             notifyValueChanged()
         }
 
-    /** The default player names array. */
-    lateinit var defaultValue: Array<String>
-
-    /** The title for the input window if input is delegated. */
-    var inputTitle: String? = null
-
-    /** The maximum number of characters in a name, or [NO_MAX_LENGTH] for no maximum. */
-    var maxLength = NO_MAX_LENGTH
-
-    /** The number of players. */
+    /**
+     * The number of players.
+     */
     val size: Int
         get() = defaultValue.size
 
 
-    override fun loadValue(prefs: Preferences) {
-        value = Array(size) {
-            val playerKey = getPlayerNameKey(it)
-            try {
-                prefs.getString(playerKey, "")
-            } catch (e: Exception) {
-                error { "Wrong saved type for preference '$playerKey', using default value." }
-                ""
-            }
-        }
+    override fun loadValue(prefs: Preferences) = Array(size) {
+        prefs.getString(getPlayerNameKey(it), "")
     }
 
+    @Suppress("LibGDXMissingFlush")
     override fun saveValue(prefs: Preferences) {
-        @Suppress("LibGDXMissingFlush")
         for ((i, name) in value.withIndex()) {
             prefs.putString(getPlayerNameKey(i), name)
         }
@@ -98,8 +92,21 @@ class PlayerNamesPref : GamePref<Array<String>>() {
     override fun createView(skin: Skin) = PlayerNamesPrefView(skin, this)
 
 
-    override fun toString() = super.toString().dropLast(1) + ", value: ${value.contentToString()}, " +
-            "defaultValue: ${defaultValue.contentToString()}, maxLength: $maxLength]"
+    class Builder(key: String) : GamePref.Builder<Array<String>>(key) {
+        override var defaultValue: Array<String> = emptyArray()
+        var inputTitle: String? = null
+        var maxLength = NO_MAX_LENGTH
+
+        fun build() = PlayerNamesPref(key, title, dependency, defaultValue, shortTitle,
+                help, confirmChanges, inputTitle, maxLength)
+    }
+
+
+    override fun toString() = "PlayerNamesPref[" +
+            "inputTitle: $inputTitle, " +
+            "maxLength: $maxLength, " +
+            super.toString().substringAfter("[")
+
 
     companion object {
         const val NO_MAX_LENGTH = 0

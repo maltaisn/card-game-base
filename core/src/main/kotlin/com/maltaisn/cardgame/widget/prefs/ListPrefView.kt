@@ -35,7 +35,7 @@ import ktx.style.get
 
 
 class ListPrefView(skin: Skin, pref: ListPref) :
-        GamePrefView<ListPref, String?>(skin, pref) {
+        GamePrefView<ListPref, String>(skin, pref) {
 
     override var enabled
         get() = super.enabled
@@ -76,7 +76,7 @@ class ListPrefView(skin: Skin, pref: ListPref) :
     }
 
 
-    override fun onPreferenceValueChanged(pref: GamePref<String?>, value: String?) {
+    override fun onPreferenceValueChanged(pref: GamePref<String>, value: String) {
         valueLabel.txt = this.pref.displayValue
     }
 

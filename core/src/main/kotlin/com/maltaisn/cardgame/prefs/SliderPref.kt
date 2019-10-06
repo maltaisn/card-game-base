@@ -19,61 +19,67 @@ package com.maltaisn.cardgame.prefs
 import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.maltaisn.cardgame.widget.prefs.SliderPrefView
-import ktx.log.error
 
 
 /**
- * A float preference that shows a slider to the user.
+ * A slider preference for a single number value.
+ *
+ * @property minValue Slider minimum value.
+ * @property maxValue Slider maximum value.
+ * @property step Value by which the slider value is incremented.
+ * @property enumValues The list of text values to use for formatting instead of a number. The first
+ * item of the list is applied to the lowest slider value. Use `null` for the standard number display.
  */
-class SliderPref : GamePref<Float>() {
+class SliderPref(
+        key: String,
+        title: String,
+        dependency: String?,
+        defaultValue: Float,
+        shortTitle: String?,
+        help: String?,
+        confirmChanges: Boolean,
+        val minValue: Float,
+        val maxValue: Float,
+        val step: Float,
+        val enumValues: List<String>?)
+    : GamePref<Float>(key, title, dependency, defaultValue, shortTitle, help, confirmChanges) {
 
-    /** Slider minimum value. */
-    var minValue = 0f
-
-    /** Slider maximum value. */
-    var maxValue = 100f
-
-    /** Value by which the slider value is incremented. */
-    var step = 1f
-
-    /** The slider value. */
     override var value = 0f
         set(value) {
-            if (field != value) {
-                field = value
-                notifyValueChanged()
-            }
+            if (field == value) return
+            field = value
+            notifyValueChanged()
         }
 
-    /** The slider default value. */
-    var defaultValue = 0f
 
-    /**
-     * The array of text values to use for formatting instead of a number.
-     * The first item of the array is applied to the lowest slider value.
-     * Use `null` for the standard number display.
-     */
-    var enumValues: Array<String>? = null
+    override fun loadValue(prefs: Preferences) = prefs.getFloat(key, defaultValue)
 
-
-    override fun loadValue(prefs: Preferences) {
-        value = try {
-            prefs.getFloat(key, defaultValue)
-        } catch (e: Exception) {
-            error { "Wrong saved type for preference '$key', using default value." }
-            defaultValue
-        }
-    }
-
+    @Suppress("LibGDXMissingFlush")
     override fun saveValue(prefs: Preferences) {
-        @Suppress("LibGDXMissingFlush")
         prefs.putFloat(key, value)
     }
+
 
     override fun createView(skin: Skin) = SliderPrefView(skin, this)
 
 
-    override fun toString() = super.toString().dropLast(1) +
-            ", value: $value, defaultValue: $defaultValue, min: $minValue, max: $maxValue, step: $step]"
+    class Builder(key: String) : GamePref.Builder<Float>(key) {
+        override var defaultValue = 0f
+        var minValue = 0f
+        var maxValue = 100f
+        var step = 1f
+        var enumValues: List<String>? = null
+
+        fun build() = SliderPref(key, title, dependency, defaultValue, shortTitle,
+                help, confirmChanges, minValue, maxValue, step, enumValues)
+    }
+
+
+    override fun toString() = "SliderPref[" +
+            "minValue: $minValue" +
+            "maxValue: $maxValue" +
+            "step: $step" +
+            "enumValues: $enumValues" +
+            super.toString().substringAfter("[")
 
 }

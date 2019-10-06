@@ -22,27 +22,33 @@ import com.maltaisn.cardgame.widget.prefs.GamePrefView
 
 
 /**
- * The base class for a preference in [GamePrefs].
+ * The base class for a preference with a value.
+ *
+ * @property defaultValue The default value of this preference.
+ * @property shortTitle Optional shorter title to use in menu drawer, use `null` to use normal title.
+ * @property help Optional help message shown to the user, use `null` for no help message.
+ * @property confirmChanges Whether a confirmation dialog must be shown to the user
+ * before effectively changing the preference value.
  */
-abstract class GamePref<T : Any?> : PrefEntry() {
-
-    /** The preference value. */
-    abstract var value: T
-
-    /** Optional help message shown to the user, use `null` for no help message. */
-    var help: String? = null
-
-    /** Optional shorter title to use in menu drawer, use `null` to use normal title. */
-    var shortTitle: String? = null
-
-    /** Listeners called when the value of this preference is changed. */
-    val valueListeners = mutableListOf<(pref: GamePref<T>, value: T) -> Unit>()
+abstract class GamePref<T : Any>(
+        key: String,
+        title: String,
+        dependency: String?,
+        val defaultValue: T,
+        val shortTitle: String? = null,
+        val help: String? = null,
+        val confirmChanges: Boolean = false)
+    : PrefEntry(key, title, dependency) {
 
     /**
-     * Whether a confirmation dialog must be shown to the user
-     * before effectively changing the preference value.
+     * The preference value.
      */
-    var confirmChanges = false
+    abstract var value: T
+
+    /**
+     * Listeners called when the value of this preference is changed.
+     */
+    val valueListeners = mutableListOf<PrefValueListener<T>>()
 
 
     /**
@@ -57,7 +63,7 @@ abstract class GamePref<T : Any?> : PrefEntry() {
     /**
      * Load the value of this preference from [prefs].
      */
-    internal abstract fun loadValue(prefs: Preferences)
+    internal abstract fun loadValue(prefs: Preferences): T
 
     /**
      * Save the value of this preference to [prefs], if it's not null.
@@ -66,6 +72,24 @@ abstract class GamePref<T : Any?> : PrefEntry() {
     internal abstract fun saveValue(prefs: Preferences)
 
 
-    abstract override fun createView(skin: Skin): GamePrefView<*, T>
+    abstract override fun createView(skin: Skin): GamePrefView<out GamePref<T>, T>
+
+
+    abstract class Builder<T>(key: String) : PrefEntry.Builder(key) {
+        var shortTitle: String? = null
+        var help: String? = null
+        var confirmChanges = false
+        abstract var defaultValue: T
+    }
+
+    override fun toString() = "GamePref[" +
+            "value: $value, " +
+            "defaultValue: $defaultValue, " +
+            "shortTitle: $shortTitle, " +
+            "help: $help, " +
+            "confirmChanges: $confirmChanges, " +
+            super.toString().substringAfter("[")
 
 }
+
+typealias PrefValueListener<T> = (pref: GamePref<T>, value: T) -> Unit

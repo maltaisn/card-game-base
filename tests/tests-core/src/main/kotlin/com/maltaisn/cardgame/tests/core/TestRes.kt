@@ -19,12 +19,10 @@ package com.maltaisn.cardgame.tests.core
 
 object TestRes {
 
+    const val STRINGS = "strings"
     const val ATLAS = "test.atlas"
 
     const val LOREM_IPSUM_MARKDOWN = "lorem-ipsum"
-
-    const val SETTINGS = "settings.json"
-    const val NEW_GAME_OPTIONS = "new-game-options.json"
 
     const val STATS = "stats.json"
 

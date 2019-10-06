@@ -27,7 +27,7 @@ import ktx.style.get
 /**
  * The view for a preference with a value (a [GamePref]).
  */
-abstract class GamePrefView<P : GamePref<T>, T : Any?>(skin: Skin, pref: P) : PrefEntryView<P>(skin, pref) {
+abstract class GamePrefView<P : GamePref<T>, T : Any>(skin: Skin, pref: P) : PrefEntryView<P>(skin, pref) {
 
     override var enabled
         get() = super.enabled

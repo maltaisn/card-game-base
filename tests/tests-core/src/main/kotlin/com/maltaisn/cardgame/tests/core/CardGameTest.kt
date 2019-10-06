@@ -19,6 +19,7 @@ package com.maltaisn.cardgame.tests.core
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
+import com.badlogic.gdx.utils.I18NBundle
 import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.CardGameScreen
 import com.maltaisn.cardgame.pcard.PCardRes
@@ -39,6 +40,7 @@ abstract class CardGameTest(listener: CardGameListener) :
         super.load()
         assetManager.load<TextureAtlas>(PCardRes.ATLAS)
         assetManager.load<TextureAtlas>(TestRes.ATLAS)
+        assetManager.load<I18NBundle>(TestRes.STRINGS)
     }
 
     override fun start() {
@@ -48,6 +50,8 @@ abstract class CardGameTest(listener: CardGameListener) :
         pcardStyle = skin.get()
 
         addSkin(atlasFile = TestRes.ATLAS)
+
+        skin.add("default", assetManager.get<I18NBundle>(TestRes.STRINGS))
 
         val gameLayout = CardGameLayout(skin)
         addActor(gameLayout)

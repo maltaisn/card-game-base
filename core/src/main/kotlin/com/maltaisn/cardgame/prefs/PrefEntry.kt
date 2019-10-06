@@ -21,44 +21,51 @@ import com.maltaisn.cardgame.widget.prefs.PrefEntryView
 
 
 /**
- * An entry in a [GamePrefs] object.
- * Can be either a preference or a category.
+ * The base class for a preference in [GamePrefs].
+ *
+ * @property key The preference key, should be unique in its [GamePrefs] hierarchy.
+ * @property title The preference title
+ * @property dependency The key of the preference of which this preference
+ * depends to be enabled. Must be a key of a [SwitchPref].
  */
-abstract class PrefEntry {
-
-    /** Key under which the preference value is put in maps and saved. */
-    lateinit var key: String
+abstract class PrefEntry(
+        val key: String,
+        val title: String,
+        val dependency: String? = null) {
 
     /**
-     * Whether the preference is enabled or not.
-     * A preference can be enabled in a disabled category.
+     * Whether the preference entry is enabled or not.
      */
-    open var enabled = true
+    var enabled = true
         set(value) {
+            if (field == value) return
             field = value
             for (listener in enabledListeners) {
                 listener(this, enabled)
             }
         }
 
-    /** The preference entry title. */
-    var title = ""
-
-    /** Optional dependency, the key of a switch preference. */
-    var dependency: String? = null
-
-    /** Listeners called when the enabled state of this preference is changed. */
-    val enabledListeners = mutableListOf<GamePrefEnabledListener>()
+    /**
+     * Listeners called when the enabled state of this preference is changed.
+     */
+    val enabledListeners = mutableListOf<PrefEnabledListener>()
 
 
-    /** Create a view for this preference. */
     abstract fun createView(skin: Skin): PrefEntryView<*>
 
 
-    override fun toString() = "[key: \"$key\", title: \"$title\"" +
-            (if (dependency != null) ", dependency: \"$dependency\"" else "") +
-            (if (!enabled) ", disabled" else "") + "]"
+    abstract class Builder(val key: String) {
+        var title = ""
+        var dependency: String? = null
+        var enabled = true
+    }
+
+    override fun toString() = "PrefEntry[" +
+            "key: '$key', " +
+            "title: '$title', " +
+            "dependency: $dependency, " +
+            "enabled: $enabled]"
 
 }
 
-typealias GamePrefEnabledListener = (pref: PrefEntry, enabled: Boolean) -> Unit
+typealias PrefEnabledListener = (pref: PrefEntry, enabled: Boolean) -> Unit

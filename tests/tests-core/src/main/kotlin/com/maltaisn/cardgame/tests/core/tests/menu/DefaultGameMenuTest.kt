@@ -18,6 +18,7 @@ package com.maltaisn.cardgame.tests.core.tests.menu
 
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.scenes.scene2d.ui.Container
+import com.badlogic.gdx.utils.I18NBundle
 import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.pcard.PCard
@@ -27,6 +28,8 @@ import com.maltaisn.cardgame.prefs.SwitchPref
 import com.maltaisn.cardgame.stats.Statistics
 import com.maltaisn.cardgame.tests.core.CardGameTest
 import com.maltaisn.cardgame.tests.core.TestRes
+import com.maltaisn.cardgame.tests.core.builders.testNewGameOptions
+import com.maltaisn.cardgame.tests.core.builders.testSettings
 import com.maltaisn.cardgame.widget.AboutView
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.CoreIcons
@@ -37,6 +40,7 @@ import com.maltaisn.cardgame.widget.table.ScoresTable
 import ktx.actors.onKeyDownEvent
 import ktx.assets.load
 import ktx.log.info
+import ktx.style.get
 import kotlin.random.Random
 
 
@@ -51,15 +55,14 @@ class DefaultGameMenuTest(listener: CardGameListener) : CardGameTest(listener) {
 
     override fun load() {
         super.load()
-
-        assetManager.load<GamePrefs>(TestRes.NEW_GAME_OPTIONS)
-        assetManager.load<GamePrefs>(TestRes.SETTINGS)
         assetManager.load<Markdown>(TestRes.LOREM_IPSUM_MARKDOWN)
         assetManager.load<Statistics>(TestRes.STATS)
     }
 
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
+
+        val bundle: I18NBundle = skin.get()
 
         menu = DefaultGameMenu(skin, pcardStyle)
         layout.addActor(menu)
@@ -108,11 +111,10 @@ class DefaultGameMenuTest(listener: CardGameListener) : CardGameTest(listener) {
                 PCard("Q♠"), PCard("J♥"), PCard("Q♥"))
 
         // New game
-        val newGamePrefs: GamePrefs = assetManager[TestRes.NEW_GAME_OPTIONS]
-        menu.newGameOptions = newGamePrefs
+        menu.newGameOptions = testNewGameOptions(bundle)
 
         // Settings
-        val settingsPrefs: GamePrefs = assetManager[TestRes.SETTINGS]
+        val settingsPrefs = testSettings(bundle)
         menu.settings = settingsPrefs
 
         // Rules

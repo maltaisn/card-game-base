@@ -18,56 +18,65 @@ package com.maltaisn.cardgame.prefs
 
 import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.maltaisn.cardgame.prefs.TextPref.Companion.NO_MAX_LENGTH
 import com.maltaisn.cardgame.widget.prefs.TextPrefView
-import ktx.log.error
 
 
 /**
- * A string preference that shows a text field to the user.
+ * A switch preference for a single boolean value.
+ *
+ * @property inputTitle The title for the input window if input is delegated.
+ * @property maxLength The maximum number of characters that can be entered, or [NO_MAX_LENGTH] for no maximum.
+ * @property filter A string of accepted input characters, or `null` for no filter.
  */
-class TextPref : GamePref<String>() {
+class TextPref(
+        key: String,
+        title: String,
+        dependency: String?,
+        defaultValue: String,
+        shortTitle: String?,
+        help: String?,
+        confirmChanges: Boolean,
+        val inputTitle: String?,
+        val maxLength: Int,
+        val filter: String?)
+    : GamePref<String>(key, title, dependency, defaultValue, shortTitle, help, confirmChanges) {
 
-    /** The field text. */
     override var value = ""
         set(value) {
-            if (field != value) {
-                field = value
-                notifyValueChanged()
-            }
+            if (field == value) return
+            field = value
+            notifyValueChanged()
         }
 
-    /** The field default text. */
-    var defaultValue = ""
 
-    /** The title for the input window if input is delegated. */
-    var inputTitle: String? = null
+    override fun loadValue(prefs: Preferences) = prefs.getString(key, defaultValue)
 
-    /** The maximum number of characters that can be entered, or [NO_MAX_LENGTH] for no maximum. */
-    var maxLength = NO_MAX_LENGTH
-
-    /** A string of accepted input characters, or `null` for no filter. */
-    var filter: String? = null
-
-
-    override fun loadValue(prefs: Preferences) {
-        value = try {
-            prefs.getString(key, defaultValue)
-        } catch (e: Exception) {
-            error { "Wrong saved type for preference '$key', using default value." }
-            defaultValue
-        }
-    }
-
+    @Suppress("LibGDXMissingFlush")
     override fun saveValue(prefs: Preferences) {
-        @Suppress("LibGDXMissingFlush")
         prefs.putString(key, value)
     }
+
 
     override fun createView(skin: Skin) = TextPrefView(skin, this)
 
 
-    override fun toString() = super.toString().dropLast(1) +
-            ", value: $value, defaultValue: $defaultValue, maxLength: $maxLength]"
+    class Builder(key: String) : GamePref.Builder<String>(key) {
+        override var defaultValue = ""
+        var inputTitle: String? = null
+        var maxLength = NO_MAX_LENGTH
+        var filter: String? = null
+
+        fun build() = TextPref(key, title, dependency, defaultValue, shortTitle,
+                help, confirmChanges, inputTitle, maxLength, filter)
+    }
+
+
+    override fun toString() = "TextPref[" +
+            "inputTitle: $inputTitle" +
+            "maxLength: $maxLength" +
+            "filter: $filter" +
+            super.toString().substringAfter("[")
 
 
     companion object {

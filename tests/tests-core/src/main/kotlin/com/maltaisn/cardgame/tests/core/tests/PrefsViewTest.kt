@@ -23,15 +23,15 @@ import com.maltaisn.cardgame.prefs.GamePref
 import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.PrefEntry
 import com.maltaisn.cardgame.tests.core.SubmenuContentTest
-import com.maltaisn.cardgame.tests.core.TestRes
+import com.maltaisn.cardgame.tests.core.builders.testSettings
 import com.maltaisn.cardgame.utils.padH
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.ScrollView
 import com.maltaisn.cardgame.widget.menu.MenuDrawer
 import com.maltaisn.cardgame.widget.prefs.PrefsGroup
 import com.maltaisn.cardgame.widget.prefs.ResetGameDialog
-import ktx.assets.load
 import ktx.log.info
+import ktx.style.get
 
 
 /**
@@ -41,17 +41,12 @@ class PrefsViewTest(listener: CardGameListener) : SubmenuContentTest(listener) {
 
     private lateinit var prefs: GamePrefs
 
-    override fun load() {
-        super.load()
-        assetManager.load<GamePrefs>(TestRes.SETTINGS)
-    }
-
     override fun layoutContent(layout: CardGameLayout, content: Table) {
         val drawer = MenuDrawer(skin)
         drawer.backBtnText = "Back"
         layout.addActor(drawer)
 
-        prefs = assetManager[TestRes.SETTINGS]
+        prefs = testSettings(skin.get())
         val prefsGroup = PrefsGroup(skin, prefs, drawer)
 
         var confirmChanges = true
@@ -87,7 +82,7 @@ class PrefsViewTest(listener: CardGameListener) : SubmenuContentTest(listener) {
         prefs.save()
     }
 
-    private fun <T : Any?> onPrefValueChanged(pref: GamePref<T>, value: T) {
+    private fun <T : Any> onPrefValueChanged(pref: GamePref<T>, value: T) {
         info { "Preference '${pref.key}' value changed." }
     }
 

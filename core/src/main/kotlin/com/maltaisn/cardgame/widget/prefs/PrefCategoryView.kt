@@ -33,6 +33,13 @@ class PrefCategoryView(skin: Skin, category: PrefCategory) :
         set(value) {
             super.enabled = value
             titleLabel.isDisabled = !enabled
+
+            // Enable or disable children views too
+            for (child in children) {
+                if (child is GamePrefView<*, *>) {
+                    child.enabled = enabled && child.pref.enabled
+                }
+            }
         }
 
     private var titleLabel: MsdfLabel

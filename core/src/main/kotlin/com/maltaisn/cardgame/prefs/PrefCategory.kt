@@ -21,31 +21,35 @@ import com.maltaisn.cardgame.widget.prefs.PrefCategoryView
 
 
 /**
- * A preference category for [GamePrefs], used to group preferences.
+ * A preference category for grouping multiple [GamePref] under a section.
+ *
+ * @property prefs The map of preferences in the category by key.
+ * @property icon The category icon name, a drawable in the core skin, or `null` to use the default icon.
  */
-class PrefCategory : PrefEntry() {
-
-    /** The map of preferences in the category. */
-    var prefs = linkedMapOf<String, GamePref<*>>()
-
-    /** The category icon name, a drawable in the core skin, or `null` to use the default icon. */
-    var icon: String? = null
-
-
-    override var enabled: Boolean
-        get() = super.enabled
-        set(value) {
-            super.enabled = value
-
-            // Change the enabled state for children too.
-            for (pref in prefs.values) {
-                pref.enabled = value
-            }
-        }
+class PrefCategory(
+        key: String,
+        title: String,
+        dependency: String?,
+        val prefs: Map<String, GamePref<*>>,
+        val icon: String?)
+    : PrefEntry(key, title, dependency) {
 
 
     override fun createView(skin: Skin) = PrefCategoryView(skin, this)
 
-    override fun toString() = super.toString().dropLast(1) + ", ${prefs.size} preferences]"
+
+    class Builder(val key: String) : GamePrefs.CategoryBuilder() {
+
+        var title = ""
+        var dependency: String? = null
+        var icon: String? = null
+
+        @Suppress("UNCHECKED_CAST")
+        fun build() = PrefCategory(key, title, dependency,
+                prefs as Map<String, GamePref<*>>, icon)
+    }
+
+    override fun toString() = "PrefCategory[${prefs.size} prefs, icon: $icon, " +
+            super.toString().substringAfter("[")
 
 }

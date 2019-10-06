@@ -19,48 +19,54 @@ package com.maltaisn.cardgame.prefs
 import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.maltaisn.cardgame.widget.prefs.SwitchPrefView
-import ktx.log.error
 
 
 /**
- * A boolean preference that shows a switch to the user.
+ * A switch preference for a single boolean value.
+ *
+ * @property disableDependentsState The checked state of the switch on which dependents are disabled.
  */
-class SwitchPref : GamePref<Boolean>() {
+class SwitchPref(
+        key: String,
+        title: String,
+        dependency: String?,
+        defaultValue: Boolean,
+        shortTitle: String?,
+        help: String?,
+        confirmChanges: Boolean,
+        val disableDependentsState: Boolean)
+    : GamePref<Boolean>(key, title, dependency, defaultValue, shortTitle, help, confirmChanges) {
 
-    /** The switch value. */
     override var value = false
         set(value) {
-            if (field != value) {
-                field = value
-                notifyValueChanged()
-            }
+            if (field == value) return
+            field = value
+            notifyValueChanged()
         }
 
-    /** The switch default value. */
-    var defaultValue = false
 
-    /** The checked state of the switch on which dependents are disabled. */
-    var disableDependentsState = false
+    override fun loadValue(prefs: Preferences) = prefs.getBoolean(key, defaultValue)
 
-
-    override fun loadValue(prefs: Preferences) {
-        value = try {
-            prefs.getBoolean(key, defaultValue)
-        } catch (e: Exception) {
-            error { "Wrong saved type for preference '$key', using default value." }
-            defaultValue
-        }
-    }
-
+    @Suppress("LibGDXMissingFlush")
     override fun saveValue(prefs: Preferences) {
-        @Suppress("LibGDXMissingFlush")
         prefs.putBoolean(key, value)
     }
+
 
     override fun createView(skin: Skin) = SwitchPrefView(skin, this)
 
 
-    override fun toString() = super.toString().dropLast(1) +
-            ", value: $value, defaultValue: $defaultValue]"
+    class Builder(key: String) : GamePref.Builder<Boolean>(key) {
+        override var defaultValue = false
+        var disableDependentsState = false
+
+        fun build() = SwitchPref(key, title, dependency, defaultValue, shortTitle,
+                help, confirmChanges, disableDependentsState)
+    }
+
+
+    override fun toString() = "SwitchPref[" +
+            "disableDependentsState: $disableDependentsState, " +
+            super.toString().substringAfter("[")
 
 }

@@ -89,7 +89,7 @@ class SliderPrefView(skin: Skin, pref: SliderPref) :
         NUMBER_FORMAT.format(progress)
     } else {
         val index = ((progress - pref.minValue) / pref.step).toInt()
-        pref.enumValues!!.getOrElse(index) { NUMBER_FORMAT.format(progress) }
+        pref.enumValues.getOrElse(index) { NUMBER_FORMAT.format(progress) }
     }
 
     class SliderPrefViewStyle {

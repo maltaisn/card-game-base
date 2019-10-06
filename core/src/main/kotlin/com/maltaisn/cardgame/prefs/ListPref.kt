@@ -19,54 +19,44 @@ package com.maltaisn.cardgame.prefs
 import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.maltaisn.cardgame.widget.prefs.ListPrefView
-import ktx.log.error
 
 
 /**
- * A preference that shows a list to the user.
- * Each list item have a key, used to save them, and a value displayed.
+ * A list preference for an enum value from a list of strings.
+ *
+ * @property entries The map of item values by keys.
  */
-class ListPref : GamePref<String?>() {
+class ListPref(
+        key: String,
+        title: String,
+        dependency: String?,
+        defaultValue: String,
+        shortTitle: String?,
+        help: String?,
+        confirmChanges: Boolean,
+        val entries: Map<String, String>)
+    : GamePref<String>(key, title, dependency, defaultValue, shortTitle, help, confirmChanges) {
 
-    /** The selected item key. */
-    override var value: String? = null
+    override var value = NO_VALUE
         set(value) {
-            if (field != value) {
-                field = value
-                notifyValueChanged()
-            }
+            if (field == value) return
+            field = value
+            notifyValueChanged()
         }
-
-    /** The default selected item key. */
-    var defaultValue: String? = null
-
-    /** The map of item values by keys. */
-    lateinit var entries: LinkedHashMap<String, String>
 
     val keys by lazy { entries.keys.toList() }
     val values by lazy { entries.values.toList() }
 
-    /** The display text for the selected item. */
+    /**
+     * The display text for the selected item.
+     */
     val displayValue: String
         get() = checkNotNull(entries[value]) { "Unknown list preference item key '$value'." }
 
 
-    override fun loadValue(prefs: Preferences) {
-        if (defaultValue == null) {
-            defaultValue = keys.first()
-        }
-
-        value = try {
-            prefs.getString(key, defaultValue)
-        } catch (e: Exception) {
-            error { "Wrong saved type for preference '$key', using default value." }
-            defaultValue
-        }
-
-        // Check if saved value is a valid key
-        if (value !in keys) {
-            value = defaultValue
-        }
+    override fun loadValue(prefs: Preferences): String {
+        val value = prefs.getString(key, defaultValue)
+        return if (value !in keys) defaultValue else value
     }
 
     @Suppress("LibGDXMissingFlush")
@@ -76,9 +66,33 @@ class ListPref : GamePref<String?>() {
         }
     }
 
+
     override fun createView(skin: Skin) = ListPrefView(skin, this)
 
-    override fun toString() = super.toString().dropLast(1) +
-            ", value: $value, defaultValue: $defaultValue, ${entries.size} items]"
+
+    class Builder(key: String) : GamePref.Builder<String>(key) {
+        override var defaultValue = NO_VALUE
+        val entries = mutableMapOf<String, String>()
+
+        fun build(): ListPref {
+            if (defaultValue == NO_VALUE) {
+                defaultValue = entries.keys.first()
+            }
+            return ListPref(key, title, dependency, defaultValue, shortTitle,
+                    help, confirmChanges, entries)
+        }
+    }
+
+
+    override fun toString() = "ListPref[entries: $entries, " +
+            super.toString().substringAfter("[")
+
+
+    companion object {
+        /**
+         * Placeholder value to indicate that there's no value selected in list preference.
+         */
+        const val NO_VALUE = ""
+    }
 
 }
