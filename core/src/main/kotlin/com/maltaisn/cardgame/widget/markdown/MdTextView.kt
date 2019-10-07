@@ -33,8 +33,6 @@ class MdTextView(skin: Skin, element: MdElement.Text) : Container<MsdfLabel>() {
         fill().pad(10f, 0f, 20f, 0f)
     }
 
-    class MdTextViewStyle {
-        lateinit var fontStyle: FontStyle
-    }
+    class MdTextViewStyle(val fontStyle: FontStyle)
 
 }

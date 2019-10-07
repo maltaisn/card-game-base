@@ -43,9 +43,9 @@ class MdHeaderView(skin: Skin, header: MdElement.Header) : Table(), ScrollSubMen
         }
     }
 
-    class MdHeaderViewStyle {
-        /** Array of header font styles, from big to small. */
-        lateinit var fontStyles: Array<FontStyle>
-    }
+    /**
+     * @property fontStyles Array of header font styles, from big to small.
+     */
+    class MdHeaderViewStyle(val fontStyles: List<FontStyle>)
 
 }

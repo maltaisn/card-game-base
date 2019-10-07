@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.prefs.GamePref
+import com.maltaisn.msdfgdx.FontStyle
 import ktx.style.get
 
 
@@ -99,8 +100,9 @@ abstract class GamePrefView<P : GamePref<T>, T : Any>(skin: Skin, pref: P) : Pre
     }
 
 
-    class GamePrefViewStyle : PrefEntryView.PrefEntryViewStyle() {
-        lateinit var helpIcon: Drawable
-    }
+    class GamePrefViewStyle(
+            titleFontStyle: FontStyle,
+            val helpIcon: Drawable)
+        : PrefEntryView.PrefEntryViewStyle(titleFontStyle)
 
 }

@@ -188,22 +188,24 @@ class CardActor(private val style: CardStyle,
     /**
      * The style for cards drawn with a [CardActor], must match the [card] type.
      */
-    open class CardStyle {
-        /** Array of card drawables indexed by card value. */
-        lateinit var cards: Array<Drawable>
-        /** Drawable for the back face of a card. */
-        lateinit var back: Drawable
+    open class CardStyle(
+            /** Array of card drawables indexed by card value. */
+            val cards: List<Drawable>,
+            /** Drawable for the back face of a card. */
+            val back: Drawable,
+            /** Drawable for the card background, including shadow. */
+            val background: Drawable,
+            /** Drawable drawn on top of the card when hovered. */
+            val hover: Drawable,
+            /** Drawable drawn on top of the card when pressed. */
+            val selection: Drawable,
+            /** Drawable than can be drawn around a [CardStack] */
+            val slot: Drawable,
+            /** Width of a card, excluding shadow. */
+            val cardWidth: Float,
+            /** Height of a card, excluding shadow */
+            val cardHeight: Float)
 
-        lateinit var background: Drawable
-        lateinit var hover: Drawable
-        lateinit var selection: Drawable
-        lateinit var slot: Drawable
-
-        /** Width of a card, excluding shadow. */
-        var cardWidth = 0f
-        /** Height of a card, excluding shadow */
-        var cardHeight = 0f
-    }
 
     companion object {
         // Card sizes presets

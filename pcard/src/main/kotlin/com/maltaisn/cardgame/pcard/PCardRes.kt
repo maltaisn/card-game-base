@@ -16,6 +16,8 @@
 
 package com.maltaisn.cardgame.pcard
 
+import com.maltaisn.cardgame.CardGameScreen
+
 
 /**
  * Stores the paths of PCard resources.
@@ -23,7 +25,10 @@ package com.maltaisn.cardgame.pcard
  */
 object PCardRes {
 
-    const val SKIN = "pcard/pcard.skin"
+    /**
+     * Atlas file containing the card textures.
+     * This atlas should be loaded to asset manager in [CardGameScreen.load].
+     */
     const val ATLAS = "pcard/pcard.atlas"
 
 }

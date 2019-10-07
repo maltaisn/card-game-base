@@ -25,7 +25,6 @@ import com.maltaisn.cardgame.pcard.PCard
 import com.maltaisn.cardgame.prefs.GamePrefs
 import com.maltaisn.cardgame.prefs.SliderPref
 import com.maltaisn.cardgame.prefs.SwitchPref
-import com.maltaisn.cardgame.stats.Statistics
 import com.maltaisn.cardgame.tests.core.CardGameTest
 import com.maltaisn.cardgame.tests.core.TestRes
 import com.maltaisn.cardgame.tests.core.builders.buildTestNewGameOptions
@@ -57,7 +56,6 @@ class DefaultGameMenuTest(listener: CardGameListener) : CardGameTest(listener) {
     override fun load() {
         super.load()
         assetManager.load<Markdown>(TestRes.LOREM_IPSUM_MARKDOWN)
-        assetManager.load<Statistics>(TestRes.STATS)
     }
 
     override fun layout(layout: CardGameLayout) {

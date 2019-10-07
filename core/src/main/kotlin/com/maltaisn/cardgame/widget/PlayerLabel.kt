@@ -91,10 +91,9 @@ class PlayerLabel(skin: Skin, name: CharSequence? = null) : Table() {
         }
     }
 
-    class PlayerLabelStyle {
-        lateinit var arrowDrawable: Drawable
-        lateinit var nameFontStyle: FontStyle
-        lateinit var scoreFontStyle: FontStyle
-    }
+    class PlayerLabelStyle(
+            val arrowDrawable: Drawable,
+            val nameFontStyle: FontStyle,
+            val scoreFontStyle: FontStyle)
 
 }

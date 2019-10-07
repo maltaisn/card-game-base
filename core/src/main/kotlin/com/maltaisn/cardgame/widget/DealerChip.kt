@@ -183,9 +183,8 @@ class DealerChip(skin: Skin) : Image(skin.get<DealerChipStyle>().drawable, Scali
     }
 
 
-    class DealerChipStyle {
-        lateinit var drawable: Drawable
-    }
+    class DealerChipStyle(val drawable: Drawable)
+
 
     companion object {
         const val FADE_DURATION = 0.3f

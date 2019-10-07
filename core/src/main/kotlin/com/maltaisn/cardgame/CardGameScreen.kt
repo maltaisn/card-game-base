@@ -21,7 +21,6 @@ import com.badlogic.gdx.Input
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.assets.loaders.I18NBundleLoader.I18NBundleParameter
-import com.badlogic.gdx.assets.loaders.SkinLoader
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.GL20
@@ -41,10 +40,10 @@ import com.maltaisn.cardgame.widget.MsdfTextField
 import com.maltaisn.msdfgdx.MsdfFontLoader
 import com.maltaisn.msdfgdx.MsdfFontLoader.MsdfFontParameter
 import com.maltaisn.msdfgdx.MsdfShader
-import ktx.assets.file
 import ktx.assets.load
 import ktx.assets.loadOnDemand
 import ktx.assets.setLoader
+import ktx.style.add
 import java.util.*
 
 
@@ -85,14 +84,13 @@ open class CardGameScreen<T : CardGameListener>(val locale: Locale, val listener
         }
 
         // Load core skin and strings
-        skin = assetManager.loadOnDemand(CoreRes.SKIN,
-                SkinLoader.SkinParameter(CoreRes.SKIN_ATLAS)).asset
+        skin = buildCoreSkin(assetManager.loadOnDemand<TextureAtlas>(CoreRes.SKIN_ATLAS).asset)
         skin.add(CoreRes.CORE_STRINGS_NAME, assetManager.loadOnDemand<I18NBundle>(
                 CoreRes.CORE_STRINGS_FILE, I18NBundleParameter(locale)).asset)
 
         // Add font and shader immediately.
-        skin.add("default", MsdfShader())
-        skin.add("default", assetManager.loadOnDemand(CoreRes.FONT,
+        skin.add(MsdfShader())
+        skin.add(assetManager.loadOnDemand(CoreRes.FONT,
                 MsdfFontParameter(32f, 5f)).asset)
 
         // Load other assets
@@ -131,22 +129,6 @@ open class CardGameScreen<T : CardGameListener>(val locale: Locale, val listener
             skin.add(sound, assetManager.get<Sound>(file), Sound::class.java)
         }
     }
-
-    /**
-     * Add the styles and regions of a skin to the core skin.
-     * This must be called during [start] and `assetManager.load<TextureAtlas>(atlasFile)`
-     * must have been called before hand if the skin has an atlas.
-     */
-    protected fun addSkin(skinFile: String? = null, atlasFile: String? = null) {
-        if (atlasFile != null) {
-            val atlas: TextureAtlas = assetManager[atlasFile]
-            skin.addRegions(atlas)
-        }
-        if (skinFile != null) {
-            skin.load(file(skinFile))
-        }
-    }
-
 
     override fun show() {
         Gdx.input.inputProcessor = this

@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
+@file:Suppress("FunctionName")
+
 package com.maltaisn.cardgame.utils
 
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.maltaisn.cardgame.widget.action.TimeAction
+import com.maltaisn.msdfgdx.FontStyle
 import ktx.actors.setScrollFocus
 
 
@@ -79,3 +83,21 @@ fun Group.findScrollFocus() {
         }
     }
 }
+
+/**
+ * Convert a [hex] string color to a [Color] object.
+ * The method accepts both `#rrggbb` and `#rrggbbaa` formats
+ */
+fun Color(hex: String): Color {
+    assert(hex.startsWith("#"))
+    val r = hex.substring(1, 3).toInt(16) / 255f
+    val g = hex.substring(3, 5).toInt(16) / 255f
+    val b = hex.substring(5, 7).toInt(16) / 255f
+    val a = if (hex.length == 9) hex.substring(7, 9).toInt(16) / 255f else 1f
+    return Color(r, g, b, a)
+}
+
+/**
+ * Create a font style.
+ */
+inline fun FontStyle(init: FontStyle.() -> Unit = {}) = FontStyle().apply(init)

@@ -122,9 +122,7 @@ class PrefsGroup(skin: Skin,
     }
 
 
-    class PrefsGroupStyle {
-        lateinit var prefsHelpFontStyle: FontStyle
-    }
+    class PrefsGroupStyle(val prefsHelpFontStyle: FontStyle)
 
 }
 

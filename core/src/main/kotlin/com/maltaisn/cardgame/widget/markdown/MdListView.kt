@@ -56,9 +56,8 @@ class MdListView(skin: Skin, list: MdElement.List) : Table() {
     }
 
 
-    class MdListViewStyle {
-        lateinit var numberFontStyle: FontStyle
-        lateinit var bulletDrawables: Array<Drawable>
-    }
+    class MdListViewStyle(
+            val numberFontStyle: FontStyle,
+            val bulletDrawables: List<Drawable>)
 
 }

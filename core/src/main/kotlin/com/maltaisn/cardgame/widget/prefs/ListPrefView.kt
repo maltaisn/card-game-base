@@ -81,10 +81,9 @@ class ListPrefView(skin: Skin, pref: ListPref) :
     }
 
 
-    class ListPrefViewStyle {
-        lateinit var valueFontStyle: FontStyle
-        lateinit var arrowIcon: Drawable
-        lateinit var arrowIconColor: Color
-    }
+    class ListPrefViewStyle(
+            val valueFontStyle: FontStyle,
+            val arrowIcon: Drawable,
+            val arrowIconColor: Color)
 
 }

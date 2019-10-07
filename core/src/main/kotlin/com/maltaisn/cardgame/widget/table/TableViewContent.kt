@@ -42,9 +42,8 @@ class TableViewContent(skin: Skin) : Table(skin) {
         style.foreground.draw(batch, x, y, width, height)
     }
 
-    class TableContentGroupStyle {
-        lateinit var background: Drawable
-        lateinit var foreground: Drawable
-    }
+    class TableContentGroupStyle(
+            val background: Drawable,
+            val foreground: Drawable)
 
 }

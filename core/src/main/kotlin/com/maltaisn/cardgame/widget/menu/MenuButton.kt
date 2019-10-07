@@ -127,16 +127,14 @@ open class MenuButton(skin: Skin, fontStyle: FontStyle,
     }
 
 
-    class MenuButtonStyle {
-        lateinit var backgroundCenter: Drawable
-        lateinit var backgroundTop: Drawable
-        lateinit var backgroundBottom: Drawable
-        lateinit var backgroundLeft: Drawable
-        lateinit var backgroundRight: Drawable
-
-        lateinit var selectedColor: Color
-        lateinit var disabledColor: Color
-    }
+    class MenuButtonStyle(
+            val backgroundCenter: Drawable,
+            val backgroundTop: Drawable,
+            val backgroundBottom: Drawable,
+            val backgroundLeft: Drawable,
+            val backgroundRight: Drawable,
+            val selectedColor: Color,
+            val disabledColor: Color)
 
     enum class AnchorSide {
         NONE, TOP, BOTTOM, LEFT, RIGHT

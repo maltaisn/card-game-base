@@ -131,9 +131,8 @@ class TricksTable(skin: Skin, private val cardStyle: CardActor.CardStyle, player
 
     class TrickCard(val card: Card, val checked: Boolean)
 
-    class TricksTableStyle {
-        lateinit var headerFontStyle: FontStyle
-        lateinit var checkIcon: Drawable
-    }
+    class TricksTableStyle(
+            val headerFontStyle: FontStyle,
+            val checkIcon: Drawable)
 
 }

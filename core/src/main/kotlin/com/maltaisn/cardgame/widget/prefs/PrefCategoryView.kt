@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.prefs.PrefCategory
 import com.maltaisn.cardgame.widget.Separator
 import com.maltaisn.cardgame.widget.menu.ScrollSubMenu
+import com.maltaisn.msdfgdx.FontStyle
 import com.maltaisn.msdfgdx.widget.MsdfLabel
 import ktx.style.get
 
@@ -68,6 +69,7 @@ class PrefCategoryView(skin: Skin, category: PrefCategory) :
     }
 
 
-    class PrefCategoryViewStyle : PrefEntryView.PrefEntryViewStyle()
+    class PrefCategoryViewStyle(titleFontStyle: FontStyle)
+        : PrefEntryView.PrefEntryViewStyle(titleFontStyle)
 
 }

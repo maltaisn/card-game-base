@@ -202,9 +202,12 @@ class MainMenu(skin: Skin, cardStyle: CardActor.CardStyle) : MenuTable(skin) {
     }
 
 
-    class MainMenuStyle : MenuTableStyle() {
-        lateinit var titleFontStyle: FontStyle
-    }
+    class MainMenuStyle(
+            itemFontStyle: FontStyle,
+            importantItemFontStyle: FontStyle,
+            itemIconSize: Float,
+            val titleFontStyle: FontStyle)
+        : MenuTableStyle(itemFontStyle, importantItemFontStyle, itemIconSize)
 
 
     companion object {

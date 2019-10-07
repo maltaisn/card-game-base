@@ -68,8 +68,6 @@ class TextPrefView(skin: Skin, pref: TextPref) :
     }
 
 
-    class TextPrefViewStyle {
-        lateinit var fieldFontStyle: FontStyle
-    }
+    class TextPrefViewStyle(val fieldFontStyle: FontStyle)
 
 }

@@ -25,8 +25,6 @@ import ktx.style.get
 
 class Separator(skin: Skin) : Image(skin.get<SeparatorStyle>().drawable, Scaling.stretchX) {
 
-    class SeparatorStyle {
-        lateinit var drawable: Drawable
-    }
+    class SeparatorStyle(val drawable: Drawable)
 
 }

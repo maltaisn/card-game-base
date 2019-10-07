@@ -299,21 +299,18 @@ open class DefaultGameMenu(private val skin: Skin,
     }
 
 
-    class DefaultGameMenuStyle {
-        lateinit var defaultIcon: Drawable
+    class DefaultGameMenuStyle(
+            val defaultIcon: Drawable,
+            val newGameIcon: Drawable,
+            val continueIcon: Drawable,
+            val settingsIcon: Drawable,
+            val rulesIcon: Drawable,
+            val statsIcon: Drawable,
+            val aboutIcon: Drawable,
+            val startGameIcon: Drawable,
+            val backBtnIcon: Drawable,
+            val scoreboardBtnIcon: Drawable)
 
-        lateinit var newGameIcon: Drawable
-        lateinit var continueIcon: Drawable
-        lateinit var settingsIcon: Drawable
-        lateinit var rulesIcon: Drawable
-        lateinit var statsIcon: Drawable
-        lateinit var aboutIcon: Drawable
-
-        lateinit var startGameIcon: Drawable
-        lateinit var backBtnIcon: Drawable
-
-        lateinit var scoreboardBtnIcon: Drawable
-    }
 
     companion object {
         private const val ITEM_ID_NEW_GAME = 1000

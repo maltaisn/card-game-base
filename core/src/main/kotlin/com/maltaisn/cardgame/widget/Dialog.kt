@@ -232,9 +232,8 @@ open class Dialog(skin: Skin) : FboTable(skin) {
         STATIC
     }
 
-    class DialogStyle {
-        lateinit var shadow: Drawable
-        lateinit var background: Drawable
-    }
+    class DialogStyle(
+            val shadow: Drawable,
+            val background: Drawable)
 
 }

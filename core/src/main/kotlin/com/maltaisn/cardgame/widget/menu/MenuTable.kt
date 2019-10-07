@@ -148,10 +148,9 @@ abstract class MenuTable(skin: Skin) : FboTable(skin) {
     protected abstract fun doMenuLayout()
 
 
-    abstract class MenuTableStyle {
-        lateinit var itemFontStyle: FontStyle
-        lateinit var importantItemFontStyle: FontStyle
-        var itemIconSize = 0f
-    }
+    abstract class MenuTableStyle(
+            val itemFontStyle: FontStyle,
+            val importantItemFontStyle: FontStyle,
+            val itemIconSize: Float)
 
 }

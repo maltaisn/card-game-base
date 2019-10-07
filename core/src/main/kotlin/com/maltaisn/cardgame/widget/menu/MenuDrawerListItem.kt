@@ -85,8 +85,7 @@ class MenuDrawerListItem(skin: Skin) : CheckableWidget(), Pool.Poolable {
     }
 
 
-    class DrawerListItemStyle {
-        lateinit var fontStyle: FontStyle
-        lateinit var selectionOverlay: Drawable
-    }
+    class DrawerListItemStyle(
+            val fontStyle: FontStyle,
+            val selectionOverlay: Drawable)
 }

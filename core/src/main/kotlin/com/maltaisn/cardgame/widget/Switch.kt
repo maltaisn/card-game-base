@@ -163,15 +163,15 @@ class Switch(skin: Skin) : CheckableWidget() {
     override fun getPrefHeight() = style.background.minHeight
 
 
-    class SwitchStyle {
-        lateinit var background: Drawable
-        lateinit var backgroundColor: Color
-        lateinit var checkedColor: Color
-        lateinit var checkedDisabledColor: Color
-        lateinit var thumb: Drawable
-        lateinit var thumbOverlay: Drawable
-        var thumbSize = 0f
-    }
+    class SwitchStyle(
+            val background: Drawable,
+            val backgroundColor: Color,
+            val checkedColor: Color,
+            val checkedDisabledColor: Color,
+            val thumb: Drawable,
+            val thumbOverlay: Drawable,
+            val thumbSize: Float)
+
 
     companion object {
         /** The minimum drag distance in pixels to enable drag mode. */

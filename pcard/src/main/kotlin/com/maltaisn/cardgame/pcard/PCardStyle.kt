@@ -20,8 +20,18 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.maltaisn.cardgame.widget.card.CardActor
 
 
-class PCardStyle : CardActor.CardStyle() {
-
-    lateinit var suitIcons: Array<Drawable>
-
-}
+/**
+ * Style for a [PCard] in a [CardActor].
+ */
+class PCardStyle(
+        cards: List<Drawable>,
+        back: Drawable,
+        background: Drawable,
+        hover: Drawable,
+        selection: Drawable,
+        slot: Drawable,
+        cardWidth: Float,
+        cardHeight: Float,
+        val suitIcons: List<Drawable>
+) : CardActor.CardStyle(cards, back, background, hover,
+        selection, slot, cardWidth, cardHeight)

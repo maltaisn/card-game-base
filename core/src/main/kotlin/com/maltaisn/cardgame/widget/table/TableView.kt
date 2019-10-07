@@ -286,11 +286,11 @@ open class TableView(skin: Skin, columnWidths: List<Float>) : Table(skin) {
     }
 
 
-    class TableViewStyle {
-        lateinit var separator: Drawable
-        lateinit var evenRowBackground: Drawable
-        lateinit var oddRowBackground: Drawable
-    }
+    class TableViewStyle(
+            val separator: Drawable,
+            val evenRowBackground: Drawable,
+            val oddRowBackground: Drawable)
+
 
     companion object {
         const val POSITION_NONE = -1

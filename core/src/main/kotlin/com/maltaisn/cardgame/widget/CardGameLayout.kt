@@ -117,9 +117,8 @@ open class CardGameLayout(val skin: Skin) : Stack() {
         super.drawChildren(batch, parentAlpha)
     }
 
-    class CardGameLayoutStyle {
-        lateinit var background: Drawable
-        lateinit var border: Drawable
-    }
+    class CardGameLayoutStyle(
+            val background: Drawable,
+            val border: Drawable)
 
 }

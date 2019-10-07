@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Align
 import com.maltaisn.cardgame.widget.action.TimeAction
+import com.maltaisn.msdfgdx.FontStyle
 import ktx.actors.alpha
 import ktx.actors.onClick
 import ktx.style.get
@@ -101,7 +102,11 @@ class InGameMenu(skin: Skin) : MenuTable(skin) {
         }
     }
 
-    class InGameMenuStyle : MenuTableStyle()
+    class InGameMenuStyle(
+            itemFontStyle: FontStyle,
+            importantItemFontStyle: FontStyle,
+            itemIconSize: Float)
+        : MenuTableStyle(itemFontStyle, importantItemFontStyle, itemIconSize)
 
     companion object {
         const val ITEM_POS_LEFT = 0

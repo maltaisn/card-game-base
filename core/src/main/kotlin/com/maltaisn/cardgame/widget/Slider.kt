@@ -273,15 +273,15 @@ class Slider(skin: Skin) : SelectableWidget() {
     }
 
 
-    class SliderStyle {
-        lateinit var track: Drawable
-        lateinit var trackEmptyColor: Color
-        lateinit var trackFilledColor: Color
-        lateinit var trackFilledDisabledColor: Color
-        lateinit var thumb: Drawable
-        lateinit var thumbOverlay: Drawable
-        var thumbSize = 0f
-    }
+    class SliderStyle(
+            val track: Drawable,
+            val trackEmptyColor: Color,
+            val trackFilledColor: Color,
+            val trackFilledDisabledColor: Color,
+            val thumb: Drawable,
+            val thumbOverlay: Drawable,
+            val thumbSize: Float)
+
 
     companion object {
         /** Maximum distance that touch can be dragged to allow slide when clicking on track. */

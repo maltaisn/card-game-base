@@ -63,10 +63,11 @@ abstract class StatView<S : Statistic<*>>(skin: Skin, val stat: S) : Table(skin)
      */
     abstract fun refresh()
 
-    class StatViewStyle {
-        lateinit var titleFontStyle: FontStyle
-        lateinit var valueFontStyle: FontStyle
-    }
+
+    class StatViewStyle(
+            val titleFontStyle: FontStyle,
+            val valueFontStyle: FontStyle)
+
 
     companion object {
         const val INVALID_PLACEHOLDER = "--"

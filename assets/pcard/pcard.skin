@@ -1,7 +1,7 @@
 {
   com.maltaisn.cardgame.pcard.PCardStyle: {
     default: {
-      cardWidth: 240
+      cardWidth: 
       cardHeight: 336
       cards: [
         pcard_0, pcard_1, pcard_2, pcard_3, pcard_4, pcard_5, pcard_6, pcard_7, pcard_8, pcard_9,
@@ -11,12 +11,14 @@
         pcard_37, pcard_38, pcard_39, pcard_40, pcard_41, pcard_42, pcard_43, pcard_44, pcard_45,
         pcard_46, pcard_47, pcard_48, pcard_49, pcard_50, pcard_51, pcard_52, pcard_53
       ]
-      suitIcons: [pcard-suit-heart, pcard-suit-spade, pcard-suit-diamond, pcard-suit-club]
-      back: pcard-back
-      background: pcard-background
-      selection: pcard-selection
-      hover: pcard-hover
-      slot: pcard-slot
+      suitIcons: [
+      ,,,
+      ]
+      back:
+      background:
+      selection:
+      hover:
+      slot: 
     }
   }
   com.badlogic.gdx.graphics.Color: {

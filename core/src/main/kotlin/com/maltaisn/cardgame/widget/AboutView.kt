@@ -83,12 +83,11 @@ class AboutView(private val skin: Skin,
         return btn
     }
 
-    class AboutViewStyle {
-        lateinit var appNameFontStyle: FontStyle
-        lateinit var authorFontStyle: FontStyle
-        lateinit var versionFontStyle: FontStyle
-        lateinit var buttonStyle: Button.ButtonStyle
-        lateinit var buttonIconColor: Color
-    }
+    class AboutViewStyle(
+            val appNameFontStyle: FontStyle,
+            val authorFontStyle: FontStyle,
+            val versionFontStyle: FontStyle,
+            val buttonStyle: Button.ButtonStyle,
+            val buttonIconColor: Color)
 
 }

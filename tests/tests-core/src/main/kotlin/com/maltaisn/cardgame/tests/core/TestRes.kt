@@ -24,9 +24,6 @@ object TestRes {
 
     const val LOREM_IPSUM_MARKDOWN = "lorem-ipsum"
 
-    const val STATS = "stats.json"
-
-    const val NCARD_SKIN = "ncard/ncard.skin"
     const val NCARD_ATLAS = "ncard/ncard.atlas"
 
 }

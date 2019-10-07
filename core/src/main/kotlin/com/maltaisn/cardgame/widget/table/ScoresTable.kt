@@ -167,13 +167,12 @@ class ScoresTable(skin: Skin, playerCount: Int) : TableView(skin, List(playerCou
         }
     }
 
-    class ScoresTableStyle {
-        lateinit var headerTitleFontStyle: FontStyle
-        lateinit var headerSubtitleFontStyle: FontStyle
-        lateinit var scoreFontStyle: FontStyle
-        lateinit var scoreFontStyleHighlighted: FontStyle
-        lateinit var scoreHighlightPositive: Drawable
-        lateinit var scoreHighlightNegative: Drawable
-    }
+    class ScoresTableStyle(
+            val headerTitleFontStyle: FontStyle,
+            val headerSubtitleFontStyle: FontStyle,
+            val scoreFontStyle: FontStyle,
+            val scoreFontStyleHighlighted: FontStyle,
+            val scoreHighlightPositive: Drawable,
+            val scoreHighlightNegative: Drawable)
 
 }

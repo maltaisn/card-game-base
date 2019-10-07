@@ -24,8 +24,10 @@ import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.CardGameScreen
 import com.maltaisn.cardgame.pcard.PCardRes
 import com.maltaisn.cardgame.pcard.PCardStyle
+import com.maltaisn.cardgame.pcard.loadPCardSkin
 import com.maltaisn.cardgame.widget.CardGameLayout
 import ktx.assets.load
+import ktx.style.add
 import ktx.style.get
 import java.util.*
 
@@ -46,12 +48,15 @@ abstract class CardGameTest(listener: CardGameListener) :
     override fun start() {
         super.start()
 
-        addSkin(PCardRes.SKIN, PCardRes.ATLAS)
+        // Load PCard skin
+        loadPCardSkin(assetManager, skin)
         pcardStyle = skin.get()
 
-        addSkin(atlasFile = TestRes.ATLAS)
+        // Load test atlas
+        skin.addRegions(assetManager[TestRes.ATLAS])
 
-        skin.add("default", assetManager.get<I18NBundle>(TestRes.STRINGS))
+        // Load test strings
+        skin.add(assetManager.get<I18NBundle>(TestRes.STRINGS))
 
         val gameLayout = CardGameLayout(skin)
         addActor(gameLayout)

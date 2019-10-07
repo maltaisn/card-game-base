@@ -48,8 +48,6 @@ abstract class PrefEntryView<T : PrefEntry>(skin: Skin, val pref: T) : Table(ski
         this.enabled = categoryEnabled && enabled
     }
 
-    abstract class PrefEntryViewStyle {
-        lateinit var titleFontStyle: FontStyle
-    }
+    abstract class PrefEntryViewStyle(val titleFontStyle: FontStyle)
 
 }

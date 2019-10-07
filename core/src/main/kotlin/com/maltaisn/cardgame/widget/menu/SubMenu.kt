@@ -233,12 +233,15 @@ open class SubMenu(skin: Skin) : MenuTable(skin) {
     }
 
 
-    class SubMenuStyle : MenuTableStyle() {
-        lateinit var titleStyle: FontStyle
-        lateinit var backArrowIcon: Drawable
-        var backArrowSize = 0f
-        lateinit var contentBackground: Drawable
-    }
+    class SubMenuStyle(
+            itemFontStyle: FontStyle,
+            importantItemFontStyle: FontStyle,
+            itemIconSize: Float,
+            val titleStyle: FontStyle,
+            val backArrowIcon: Drawable,
+            val backArrowSize: Float,
+            val contentBackground: Drawable)
+        : MenuTableStyle(itemFontStyle, importantItemFontStyle, itemIconSize)
 
     enum class MenuPosition {
         LEFT, RIGHT

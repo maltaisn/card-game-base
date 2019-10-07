@@ -259,31 +259,28 @@ class Popup(skin: Skin) : FboTable() {
      * The style for a [Popup] widget. A popup is made of a stretchable body with
      * an optional tip pointing at the actor it is attached to, in any four directions.
      */
-    class PopupStyle {
-        lateinit var body: Drawable
+    class PopupStyle(
+            val body: Drawable,
 
-        // The offset of the center position of the body drawable
-        var bodyOffsetX = 0f
-        var bodyOffsetY = 0f
+            // The offset of the center position of the body drawable
+            val bodyOffsetX: Float,
+            val bodyOffsetY: Float,
 
-        lateinit var topTip: Drawable
-        lateinit var bottomTip: Drawable
-        lateinit var leftTip: Drawable
-        lateinit var rightTip: Drawable
+            val topTip: Drawable,
+            val bottomTip: Drawable,
+            val leftTip: Drawable,
+            val rightTip: Drawable,
 
-        var tipSize = 0f
-
-        // The offset are relative to the coordinates of the center of the side of the popup
-        // image, taking body offset values into account.
-        var bottomTipOffsetX = 0f
-        var bottomTipOffsetY = 0f
-        var topTipOffsetX = 0f
-        var topTipOffsetY = 0f
-        var leftTipOffsetX = 0f
-        var leftTipOffsetY = 0f
-        var rightTipOffsetX = 0f
-        var rightTipOffsetY = 0f
-    }
+            // The offset values are relative to the coordinates of the center of
+            // the side of the popup image, taking body offset values into account.
+            val bottomTipOffsetX: Float,
+            val bottomTipOffsetY: Float,
+            val topTipOffsetX: Float,
+            val topTipOffsetY: Float,
+            val leftTipOffsetX: Float,
+            val leftTipOffsetY: Float,
+            val rightTipOffsetX: Float,
+            val rightTipOffsetY: Float)
 
     companion object {
         /** The distance in pixels the popup is translated up when shown and down when hidden. */

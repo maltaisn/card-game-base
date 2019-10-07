@@ -92,9 +92,9 @@ class SliderPrefView(skin: Skin, pref: SliderPref) :
         pref.enumValues.getOrElse(index) { NUMBER_FORMAT.format(progress) }
     }
 
-    class SliderPrefViewStyle {
-        lateinit var valueFontStyle: FontStyle
-    }
+
+    class SliderPrefViewStyle(val valueFontStyle: FontStyle)
+
 
     companion object {
         private val NUMBER_FORMAT = NumberFormat.getInstance()

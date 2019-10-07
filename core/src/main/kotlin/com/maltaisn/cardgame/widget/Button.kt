@@ -25,6 +25,7 @@ import com.maltaisn.cardgame.utils.padH
 import com.maltaisn.msdfgdx.FontStyle
 import com.maltaisn.msdfgdx.widget.MsdfLabel
 import ktx.actors.alpha
+import ktx.style.defaultStyle
 import ktx.style.get
 
 
@@ -58,7 +59,7 @@ class Button(skin: Skin, val style: ButtonStyle, text: String? = null) : Selecta
     }
 
 
-    constructor(skin: Skin, text: String? = null, styleName: String = "default") :
+    constructor(skin: Skin, text: String? = null, styleName: String = defaultStyle) :
             this(skin, skin[styleName], text)
 
 
@@ -80,15 +81,13 @@ class Button(skin: Skin, val style: ButtonStyle, text: String? = null) : Selecta
     override fun getMinWidth() = style.background?.minWidth ?: 0f
 
 
-    class ButtonStyle {
-        var background: Drawable? = null
-        lateinit var selectionOverlay: Drawable
-        lateinit var fontStyle: FontStyle
-
-        var disabledAlpha = 0f
-        var hoverOverlayAlpha = 0f
-        var pressOverlayAlpha = 0f
-        var disabledOverlayAlpha = 0f
-    }
+    class ButtonStyle(
+            val background: Drawable?,
+            val selectionOverlay: Drawable,
+            val fontStyle: FontStyle,
+            val disabledAlpha: Float,
+            val hoverOverlayAlpha: Float,
+            val pressOverlayAlpha: Float,
+            val disabledOverlayAlpha: Float)
 
 }

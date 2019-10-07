@@ -94,8 +94,6 @@ class PlayerNamesPrefView(skin: Skin, pref: PlayerNamesPref) :
     }
 
 
-    class PlayerNamesPrefViewStyle {
-        lateinit var fieldFontStyle: FontStyle
-    }
+    class PlayerNamesPrefViewStyle(val fieldFontStyle: FontStyle)
 
 }

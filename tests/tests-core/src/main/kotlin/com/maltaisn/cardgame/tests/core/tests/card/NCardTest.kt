@@ -17,6 +17,7 @@
 package com.maltaisn.cardgame.tests.core.tests.card
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.game.Card
 import com.maltaisn.cardgame.game.drawTop
@@ -45,8 +46,17 @@ class NCardTest(listener: CardGameListener) : CardGameTest(listener) {
     override fun start() {
         super.start()
 
-        addSkin(TestRes.NCARD_SKIN, TestRes.NCARD_ATLAS)
-        ncardStyle = skin["ncard"]
+        // Create NCard style
+        skin.addRegions(assetManager[TestRes.NCARD_ATLAS])
+        ncardStyle = CardActor.CardStyle(
+                cards = List(13) { skin.get<Drawable>("ncard_$it") },
+                back = skin["ncard-back"],
+                background = skin["ncard-background"],
+                hover = skin["ncard-hover"],
+                selection = skin["ncard-selection"],
+                slot = skin["ncard-slot"],
+                cardWidth = 240f,
+                cardHeight = 336f)
     }
 
     override fun layout(layout: CardGameLayout) {

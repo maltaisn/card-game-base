@@ -115,9 +115,8 @@ open class AlertDialog(skin: Skin) : Dialog(skin) {
         buttonBar.pad(0f)
     }
 
-    class AlertDialogStyle {
-        lateinit var titleFontStyle: FontStyle
-        lateinit var messageFontStyle: FontStyle
-    }
+    class AlertDialogStyle(
+            val titleFontStyle: FontStyle,
+            val messageFontStyle: FontStyle)
 
 }

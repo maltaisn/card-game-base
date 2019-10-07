@@ -236,13 +236,12 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
         }
     }
 
-    class MenuDrawerStyle {
-        lateinit var background: Drawable
-        lateinit var drawerBackground: Drawable
-        lateinit var backBtnFontStyle: FontStyle
-        lateinit var backBtnIcon: Drawable
-        lateinit var backBtnIconColor: Color
-        lateinit var titleFontStyle: FontStyle
-    }
+    class MenuDrawerStyle(
+            val background: Drawable,
+            val drawerBackground: Drawable,
+            val backBtnFontStyle: FontStyle,
+            val backBtnIcon: Drawable,
+            val backBtnIconColor: Color,
+            val titleFontStyle: FontStyle)
 
 }
