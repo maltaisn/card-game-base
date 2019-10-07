@@ -99,22 +99,16 @@ class Statistics(
         val stats = mutableMapOf<String, Statistic<*>>()
         var variants: List<String> = listOf("default")
 
-        inline fun number(key: String, build: NumberStat.Builder.() -> Unit) {
-            val builder = NumberStat.Builder(key)
-            build(builder)
-            stats[key] = builder.build()
+        inline fun number(key: String, init: (@StatsDsl NumberStat.Builder).() -> Unit) {
+            stats[key] = NumberStat.Builder(key).apply(init).build()
         }
 
-        inline fun percent(key: String, build: PercentStat.Builder.() -> Unit) {
-            val builder = PercentStat.Builder(key)
-            build(builder)
-            stats[key] = builder.build()
+        inline fun percent(key: String, init: (@StatsDsl PercentStat.Builder).() -> Unit) {
+            stats[key] = PercentStat.Builder(key).apply(init).build()
         }
 
-        inline fun average(key: String, build: AverageStat.Builder.() -> Unit) {
-            val builder = AverageStat.Builder(key)
-            build(builder)
-            stats[key] = builder.build()
+        inline fun average(key: String, init: (@StatsDsl AverageStat.Builder).() -> Unit) {
+            stats[key] = AverageStat.Builder(key).apply(init).build()
         }
 
         fun build() = Statistics(name, variants, stats)
@@ -125,11 +119,8 @@ class Statistics(
         /**
          * Utility function to create new game statistics using DSL builder syntax.
          */
-        inline operator fun invoke(name: String, build: Builder.() -> Unit = {}): Statistics {
-            val builder = Builder(name)
-            build(builder)
-            return builder.build()
-        }
+        inline operator fun invoke(name: String, init: (@StatsDsl Builder).() -> Unit = {}) =
+                Builder(name).apply(init).build()
     }
 
 

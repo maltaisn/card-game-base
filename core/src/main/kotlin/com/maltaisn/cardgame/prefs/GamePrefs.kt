@@ -193,10 +193,8 @@ class GamePrefs(val name: String,
      */
     class Builder(val name: String) : CategoryBuilder() {
 
-        inline fun category(key: String, build: PrefCategory.Builder.() -> Unit) {
-            val builder = PrefCategory.Builder(key)
-            build(builder)
-            prefs[key] = builder.build()
+        inline fun category(key: String, init: (@PrefsDsl PrefCategory.Builder).() -> Unit) {
+            prefs[key] = PrefCategory.Builder(key).apply(init).build()
         }
 
         fun build() = GamePrefs(name, prefs)
@@ -209,34 +207,24 @@ class GamePrefs(val name: String,
 
         val prefs = mutableMapOf<String, PrefEntry>()
 
-        inline fun switch(key: String, build: SwitchPref.Builder.() -> Unit) {
-            val builder = SwitchPref.Builder(key)
-            build(builder)
-            prefs[key] = builder.build()
+        inline fun switch(key: String, init: (@PrefsDsl SwitchPref.Builder).() -> Unit) {
+            prefs[key] = SwitchPref.Builder(key).apply(init).build()
         }
 
-        inline fun slider(key: String, build: SliderPref.Builder.() -> Unit) {
-            val builder = SliderPref.Builder(key)
-            build(builder)
-            prefs[key] = builder.build()
+        inline fun slider(key: String, init: (@PrefsDsl SliderPref.Builder).() -> Unit) {
+            prefs[key] = SliderPref.Builder(key).apply(init).build()
         }
 
-        inline fun text(key: String, build: TextPref.Builder.() -> Unit) {
-            val builder = TextPref.Builder(key)
-            build(builder)
-            prefs[key] = builder.build()
+        inline fun text(key: String, init: (@PrefsDsl TextPref.Builder).() -> Unit) {
+            prefs[key] = TextPref.Builder(key).apply(init).build()
         }
 
-        inline fun list(key: String, build: ListPref.Builder.() -> Unit) {
-            val builder = ListPref.Builder(key)
-            build(builder)
-            prefs[key] = builder.build()
+        inline fun list(key: String, init: (@PrefsDsl ListPref.Builder).() -> Unit) {
+            prefs[key] = ListPref.Builder(key).apply(init).build()
         }
 
-        inline fun playerNames(key: String, build: PlayerNamesPref.Builder.() -> Unit) {
-            val builder = PlayerNamesPref.Builder(key)
-            build(builder)
-            prefs[key] = builder.build()
+        inline fun playerNames(key: String, init: (@PrefsDsl PlayerNamesPref.Builder).() -> Unit) {
+            prefs[key] = PlayerNamesPref.Builder(key).apply(init).build()
         }
     }
 
@@ -248,11 +236,8 @@ class GamePrefs(val name: String,
         /**
          * Utility function to create new game preferences using DSL builder syntax.
          */
-        inline operator fun invoke(name: String, build: Builder.() -> Unit = {}): GamePrefs {
-            val builder = Builder(name)
-            build(builder)
-            return builder.build()
-        }
+        inline operator fun invoke(name: String, init: (@PrefsDsl Builder).() -> Unit = {}) =
+                Builder(name).apply(init).build()
     }
 
 }
