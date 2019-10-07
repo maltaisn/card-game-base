@@ -18,8 +18,8 @@ package com.maltaisn.cardgame.pcard
 
 import com.maltaisn.cardgame.game.drawBottom
 import com.maltaisn.cardgame.game.drawTop
-import org.junit.Assert.assertEquals
 import org.junit.Test
+import kotlin.test.assertEquals
 
 
 internal class DeckTest {

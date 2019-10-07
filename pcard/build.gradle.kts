@@ -27,7 +27,8 @@ dependencies {
 
     compileOnly("com.gmail.blueboxware:libgdxpluginannotations:1.16")
 
-    testImplementation("junit:junit:$junitVersion")
+    testImplementation(kotlin("test"))
+    testImplementation(kotlin("test-junit"))
 }
 
 java {

@@ -17,8 +17,10 @@
 package com.maltaisn.cardgame.pcard
 
 import com.maltaisn.cardgame.game.sortWith
-import org.junit.Assert.*
 import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 internal class PCardTest {
 
