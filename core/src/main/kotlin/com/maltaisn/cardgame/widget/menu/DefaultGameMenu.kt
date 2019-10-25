@@ -38,7 +38,7 @@ import ktx.style.get
 /**
  * The default implementation of the [GameMenu], with 6 items in main menu:
  * new game, continue, settings, rules, statistics and about.
- * The in game menu has a back button and a scoreboard button.
+ * The in game menu has a back button and a game summary button.
  */
 open class DefaultGameMenu(private val skin: Skin,
                            cardStyle: CardActor.CardStyle) : GameMenu(skin) {
@@ -115,8 +115,8 @@ open class DefaultGameMenu(private val skin: Skin,
     /** The menu shown in game. */
     val inGameMenu = InGameMenu(skin)
 
-    /** The menu used as the scoreboard. */
-    val scoreboardMenu = PagedSubMenu(skin)
+    /** The menu used as to show the game summary. */
+    val gameSummaryMenu = PagedSubMenu(skin)
 
     // The submenus
     val newGameMenu = ScrollSubMenu(skin)
@@ -217,22 +217,22 @@ open class DefaultGameMenu(private val skin: Skin,
         inGameMenu.apply {
             val icons = this@DefaultGameMenu.style
             addItems(MenuItem(ITEM_ID_BACK, null, icons.backBtnIcon, InGameMenu.ITEM_POS_LEFT),
-                    MenuItem(ITEM_ID_SCOREBOARD, null, icons.scoreboardBtnIcon, InGameMenu.ITEM_POS_RIGHT))
+                    MenuItem(ITEM_ID_GAME_SUMMARY, null, icons.gameSummaryBtnIcon, InGameMenu.ITEM_POS_RIGHT))
 
             itemClickListener = {
                 when (it.id) {
                     ITEM_ID_BACK -> callback?.onExitGameClicked()
-                    ITEM_ID_SCOREBOARD -> callback?.onScoreboardOpenClicked()
+                    ITEM_ID_GAME_SUMMARY -> callback?.onGameSummaryOpenClicked()
                     else -> callback?.onInGameMenuItemClicked(it)
                 }
             }
         }
         addMenu(inGameMenu)
 
-        // Scoreboard
-        scoreboardMenu.title = strings["scoreboard"]
-        scoreboardMenu.backArrowClickListener = { callback?.onScoreboardCloseClicked() }
-        addMenu(scoreboardMenu)
+        // Game summary
+        gameSummaryMenu.title = strings["game_summary"]
+        gameSummaryMenu.backArrowClickListener = { callback?.onGameSummaryCloseClicked() }
+        addMenu(gameSummaryMenu)
 
         // Show main menu at first
         showMenu(mainMenu)
@@ -288,13 +288,13 @@ open class DefaultGameMenu(private val skin: Skin,
         /** Called when the back button is clicked in the in-game menu. */
         fun onExitGameClicked() = Unit
 
-        /** Called when the scoreboard is opened. */
-        fun onScoreboardOpenClicked() = Unit
+        /** Called when the game summary is opened. */
+        fun onGameSummaryOpenClicked() = Unit
 
-        /** Called when the scoreboard is closed. */
-        fun onScoreboardCloseClicked() = Unit
+        /** Called when the game summary is closed. */
+        fun onGameSummaryCloseClicked() = Unit
 
-        /** Called when an item is clicked in the in game menu, except back and scoreboard items. */
+        /** Called when an item is clicked in the in game menu, except back and game summary items. */
         fun onInGameMenuItemClicked(item: MenuItem) = Unit
     }
 
@@ -309,7 +309,7 @@ open class DefaultGameMenu(private val skin: Skin,
             val aboutIcon: Drawable,
             val startGameIcon: Drawable,
             val backBtnIcon: Drawable,
-            val scoreboardBtnIcon: Drawable)
+            val gameSummaryBtnIcon: Drawable)
 
 
     companion object {
@@ -321,7 +321,7 @@ open class DefaultGameMenu(private val skin: Skin,
         private const val ITEM_ID_ABOUT = 1005
 
         private const val ITEM_ID_BACK = 1000
-        private const val ITEM_ID_SCOREBOARD = 1001
+        private const val ITEM_ID_GAME_SUMMARY = 1001
     }
 
 }

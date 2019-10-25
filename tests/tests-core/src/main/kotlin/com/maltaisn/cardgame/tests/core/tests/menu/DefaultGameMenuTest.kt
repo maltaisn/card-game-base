@@ -86,14 +86,14 @@ class DefaultGameMenuTest(listener: CardGameListener) : CardGameTest(listener) {
                 info { "Exit game clicked" }
             }
 
-            override fun onScoreboardOpenClicked() {
-                menu.showMenu(menu.scoreboardMenu)
-                info { "Scoreboard opened" }
+            override fun onGameSummaryOpenClicked() {
+                menu.showMenu(menu.gameSummaryMenu)
+                info { "Game summary opened" }
             }
 
-            override fun onScoreboardCloseClicked() {
+            override fun onGameSummaryCloseClicked() {
                 menu.goBack()
-                info { "Scoreboard closed" }
+                info { "Game summary closed" }
             }
         }
 
@@ -142,7 +142,7 @@ class DefaultGameMenuTest(listener: CardGameListener) : CardGameTest(listener) {
         menu.inGameMenu.addItem(MenuItem(0, null,
                 skin.getDrawable(CoreIcons.CARDS), InGameMenu.ITEM_POS_LEFT))
 
-        // Scoreboard
+        // Game summary
         val scoresTable = ScoresTable(skin, 4)
         scoresTable.headers = listOf(
                 ScoresTable.Header("South", null),
@@ -164,7 +164,7 @@ class DefaultGameMenuTest(listener: CardGameListener) : CardGameTest(listener) {
                 skin.getDrawable(CoreIcons.ARROW_RIGHT), SubMenu.ITEM_POS_BOTTOM, true)
         continueItem.checkable = false
 
-        menu.scoreboardMenu.apply {
+        menu.gameSummaryMenu.apply {
             addItems(scoresPage, continueItem)
             checkItem(scoresPage)
             itemClickListener = { item ->

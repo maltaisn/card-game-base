@@ -253,7 +253,7 @@ internal fun buildCoreSkin(atlas: TextureAtlas) = skin(atlas) {
             selectionOverlay = get("menu-drawer-item-selection")
     ))
 
-    // Scoreboard styles
+    // Game summary styles
     add(ScoresTable.ScoresTableStyle(
             headerTitleFontStyle = get("normalBold"),
             headerSubtitleFontStyle = FontStyle {
@@ -334,7 +334,7 @@ internal fun buildCoreSkin(atlas: TextureAtlas) = skin(atlas) {
             aboutIcon = get("icon-info"),
             startGameIcon = get("icon-arrow-right"),
             backBtnIcon = get("icon-chevron-left"),
-            scoreboardBtnIcon = get("icon-chart")
+            gameSummaryBtnIcon = get("icon-chart")
     ))
     add(AboutView.AboutViewStyle(
             appNameFontStyle = FontStyle {
