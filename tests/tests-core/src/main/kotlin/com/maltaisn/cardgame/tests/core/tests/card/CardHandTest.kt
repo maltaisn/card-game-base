@@ -16,53 +16,51 @@
 
 package com.maltaisn.cardgame.tests.core.tests.card
 
-import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.maltaisn.cardgame.CardGameListener
 import com.maltaisn.cardgame.game.drawTop
 import com.maltaisn.cardgame.pcard.PCard
 import com.maltaisn.cardgame.tests.core.ActionBarTest
 import com.maltaisn.cardgame.widget.CardGameLayout
-import com.maltaisn.cardgame.widget.card.CardActor
+import com.maltaisn.cardgame.widget.card.CardContainer
+import com.maltaisn.cardgame.widget.card.CardHand
 import ktx.log.info
 
 
-/**
- * Test for [CardActor] options and layout.
- */
-class CardActorTest(listener: CardGameListener) : ActionBarTest(listener) {
+class CardHandTest(listener: CardGameListener) : ActionBarTest(listener) {
 
     override fun layout(layout: CardGameLayout) {
         super.layout(layout)
 
         val deck = PCard.fullDecks(shuffled = true)
 
-        val cardTable = Table()
-        layout.centerTable.add(cardTable).grow()
-
-        val cardActors = List(4) {
-            val actor = CardActor(pcardStyle, deck.drawTop())
-            actor.clickListener = { info { "Card ${actor.card} clicked." } }
-            if (it >= 2) {
-                actor.longClickListener = { info { "Card ${actor.card} long clicked." } }
-            }
-            actor.size = it * 40f + 160f
-            cardTable.add(actor).expand()
-            actor
+        val hand = CardHand(pcardStyle).apply {
+            cards = deck.drawTop(6)
+            visibility = CardContainer.Visibility.MIXED
         }
+        layout.centerTable.add(hand).pad(30f).grow()
 
         // Action buttons
         addTwoStateActionBtn("Disable", "Enable") { _, enabled ->
-            for (actor in cardActors) {
-                actor.enabled = enabled
-            }
+            hand.enabled = enabled
         }
-        addTwoStateActionBtn("Hide", "Show") { _, shown ->
-            for (actor in cardActors) {
-                actor.shown = shown
-            }
+        addTwoStateActionBtn("Vertical", "Horizontal") { _, isHorizontal ->
+            hand.horizontal = isHorizontal
+            hand.invalidateHierarchy()
         }
-        addToggleBtn("Debug") { _, debug ->
-            layout.centerTable.setDebug(debug, true)
+        addToggleBtn("Enable click listener") { _, enabled ->
+            hand.clickListener = if (enabled) {
+                { actor, index ->
+                    info { "Card ${actor.card} at index $index was clicked." }
+                    actor.shown = !actor.shown
+                }
+            } else null
+        }
+        addToggleBtn("Enable long click listener") { _, enabled ->
+            hand.longClickListener = if (enabled) {
+                { actor, index ->
+                    info { "Card ${actor.card} at index $index was long clicked." }
+                }
+            } else null
         }
     }
 }

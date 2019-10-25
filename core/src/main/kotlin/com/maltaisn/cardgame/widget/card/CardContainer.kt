@@ -119,6 +119,16 @@ abstract class CardContainer(val cardStyle: CardActor.CardStyle) : FboWidgetGrou
 
     /** Listener called when a card at an index is long clicked, or `null` for none. */
     var longClickListener: ((actor: CardActor, index: Int) -> Unit)? = null
+        set(value) {
+            if (field == null || value == null) {
+                // Set or remove container listener. This is necessary since long click may
+                // block normal click so if container's long click is set to null, card actor's should be too.
+                for (actor in actors) {
+                    actor?.longClickListener = if (value == null) null else ::onCardLongClicked
+                }
+            }
+            field = value
+        }
 
     /**
      * Listener called when a card is dragged, or `null` for if not draggable.
@@ -202,21 +212,20 @@ abstract class CardContainer(val cardStyle: CardActor.CardStyle) : FboWidgetGrou
     }
 
     ////////// LISTENERS //////////
-    /** The click listener set on all actors. */
-    protected open val cardClickListener = { actor: CardActor ->
+    protected open fun onCardClicked(actor: CardActor) {
         if (clickListener != null) {
             val index = actors.indexOf(actor)
-            clickListener!!(actor, index)
+            clickListener?.invoke(actor, index)
         }
     }
 
-    /** The long click listener set on all actors. */
-    protected open val cardLongClickListener = { actor: CardActor ->
+    protected open fun onCardLongClicked(actor: CardActor) {
         if (longClickListener != null) {
             val index = actors.indexOf(actor)
-            longClickListener!!(actor, index)
+            longClickListener?.invoke(actor, index)
         }
     }
+
 
     /** The input listener set on all actors. */
     private val cardInputListener = object : InputListener() {
@@ -295,9 +304,7 @@ abstract class CardContainer(val cardStyle: CardActor.CardStyle) : FboWidgetGrou
 
         // Remove listeners from unused old actors.
         for (actor in oldActors) {
-            actor.clickListener = null
-            actor.longClickListener = null
-            if (dragListener != null) actor.listeners.removeValue(cardInputListener, true)
+            removeCardActorListeners(actor)
         }
 
         // Add new actors if there aren't enough.
@@ -305,9 +312,7 @@ abstract class CardContainer(val cardStyle: CardActor.CardStyle) : FboWidgetGrou
             val card = newCards[actors.size]
             if (card != null) {
                 val actor = CardActor(cardStyle, card)
-                actor.clickListener = cardClickListener
-                actor.longClickListener = cardLongClickListener
-                if (dragListener != null) actor.listeners.add(cardInputListener)
+                addCardActorListeners(actor)
                 _actors += actor
             } else {
                 _actors.add(null)
@@ -317,6 +322,18 @@ abstract class CardContainer(val cardStyle: CardActor.CardStyle) : FboWidgetGrou
         update()
 
         invalidateHierarchy()
+    }
+
+    private fun addCardActorListeners(actor: CardActor) {
+        actor.clickListener = ::onCardClicked
+        actor.longClickListener = if (longClickListener == null) null else ::onCardLongClicked
+        if (dragListener != null) actor.listeners.add(cardInputListener)
+    }
+
+    private fun removeCardActorListeners(actor: CardActor) {
+        actor.clickListener = null
+        actor.longClickListener = null
+        if (dragListener != null) actor.listeners.removeValue(cardInputListener, true)
     }
 
     enum class Visibility {
@@ -563,12 +580,10 @@ abstract class CardContainer(val cardStyle: CardActor.CardStyle) : FboWidgetGrou
 
         // Reset old actors
         for (actor in oldActors!!) {
-            actor?.apply {
-                clickListener = null
-                longClickListener = null
-                listeners.removeValue(cardInputListener, true)
-                enabled = true
-                highlightable = true
+            actor?.let {
+                removeCardActorListeners(it)
+                it.enabled = true
+                it.highlightable = true
             }
         }
 
@@ -587,9 +602,7 @@ abstract class CardContainer(val cardStyle: CardActor.CardStyle) : FboWidgetGrou
     internal open fun onAnimationEnd() {
         for (actor in actors) {
             if (actor != null) {
-                actor.clickListener = cardClickListener
-                actor.longClickListener = cardLongClickListener
-                if (dragListener != null) actor.listeners.add(cardInputListener)
+                addCardActorListeners(actor)
             }
         }
     }

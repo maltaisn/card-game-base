@@ -34,6 +34,7 @@ object CardGameTests {
             CardDealTest::class.java,
             CardHandClipTest::class.java,
             CardHandHighlightTest::class.java,
+            CardHandTest::class.java,
             CardStackTest::class.java,
             CardTrickTest::class.java,
             ContainerTransitionTest::class.java,

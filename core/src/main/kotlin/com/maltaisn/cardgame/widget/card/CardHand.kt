@@ -116,8 +116,8 @@ class CardHand(cardStyle: CardActor.CardStyle) : CardContainer(cardStyle) {
         }
     }
 
-    override val cardClickListener: (CardActor) -> Unit = { actor: CardActor ->
-        super.cardClickListener(actor)
+    override fun onCardClicked(actor: CardActor) {
+        super.onCardClicked(actor)
 
         // Toggle card highlight if highlightable
         if (highlightable) {

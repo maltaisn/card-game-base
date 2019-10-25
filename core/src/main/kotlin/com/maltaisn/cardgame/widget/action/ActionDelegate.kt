@@ -32,12 +32,14 @@ class ActionDelegate<T : Action>(private var action: T? = null) : ReadWritePrope
 
     override fun setValue(thisRef: Actor, property: KProperty<*>, value: T?) {
         if (action != null) {
+            // Remove previous action from actor if one was set.
             thisRef.removeAction(action)
         }
 
         action = value
 
-        if (value != null) {
+        if (value != null && value !in thisRef.actions) {
+            // Add new action to actor if not added already.
             thisRef.addAction(value)
         }
     }

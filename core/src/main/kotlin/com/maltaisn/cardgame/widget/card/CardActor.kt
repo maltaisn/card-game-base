@@ -23,10 +23,13 @@ import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.scenes.scene2d.utils.TransformDrawable
 import com.maltaisn.cardgame.game.Card
+import com.maltaisn.cardgame.utils.postDelayed
 import com.maltaisn.cardgame.utils.withinBounds
 import com.maltaisn.cardgame.widget.SelectableWidget
 import com.maltaisn.cardgame.widget.action.ActionDelegate
+import com.maltaisn.cardgame.widget.action.TimeAction
 import ktx.actors.alpha
+import ktx.math.vec2
 
 
 /**
@@ -74,8 +77,7 @@ class CardActor(private val style: CardStyle,
      * The listener is not called when the actor is disabled or animated.
      */
     var longClickListener: ((CardActor) -> Unit)? = null
-    private var lastTouchDownTime = 0L
-    private var longClicked = false
+    private var longClickAction by ActionDelegate<TimeAction>()
 
     /**
      * Internal flag used by the animation group to indicate when a card is being animated.
@@ -98,37 +100,41 @@ class CardActor(private val style: CardStyle,
         addListener(SelectionListener())
 
         addListener(object : InputListener() {
+            private val lastPos = vec2()
+            private var longClicked = false
+
             override fun touchDown(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int): Boolean {
-                if (enabled && button == Input.Buttons.LEFT) {
-                    lastTouchDownTime = System.currentTimeMillis()
+                if (isTouchValid(x, y, button) && longClickListener != null) {
+                    // Trigger long click after a delay if touch still valid.
+                    lastPos.set(x, y)
                     longClicked = false
+                    longClickAction = postDelayed(LONG_CLICK_DELAY) {
+                        if (isTouchValid(lastPos.x, lastPos.y, button) && longClickListener != null) {
+                            longClickListener?.invoke(this@CardActor)
+                            longClicked = true
+                        }
+                    }
                 }
                 return true
             }
 
-            override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
-                if (enabled && button == Input.Buttons.LEFT) {
-                    lastTouchDownTime = 0
-
-                    if (clickListener != null && !animated && !longClicked && withinBounds(x, y)) {
-                        // Click ended in actor, call listener.
-                        clickListener!!(this@CardActor)
-                    }
+            override fun touchDragged(event: InputEvent, x: Float, y: Float, pointer: Int) {
+                if (pointer == Input.Buttons.LEFT) {
+                    lastPos.set(x, y)
                 }
             }
+
+            override fun touchUp(event: InputEvent, x: Float, y: Float, pointer: Int, button: Int) {
+                if (isTouchValid(x, y, button) && !longClicked) {
+                    clickListener?.invoke(this@CardActor)
+                }
+                longClicked = false
+                longClickAction = null
+            }
+
+            private fun isTouchValid(x: Float, y: Float, button: Int) =
+                    enabled && !animated && button == Input.Buttons.LEFT && withinBounds(x, y)
         })
-    }
-
-    override fun act(delta: Float) {
-        super.act(delta)
-
-        // Trigger long click if held long enough
-        val heldDuration = (System.currentTimeMillis() - lastTouchDownTime) / 1000f
-        if (longClickListener != null && lastTouchDownTime != 0L
-                && heldDuration > LONG_CLICK_DELAY && enabled && !animated && !longClicked) {
-            longClicked = true
-            longClickListener!!(this@CardActor)
-        }
     }
 
 
