@@ -12,7 +12,7 @@ dependencies {
     val ktxVersion: String by project
     val msdfVersion: String by project
 
-    api("com.maltaisn:msdfgdx:$msdfVersion")
+    api("com.maltaisn:msdf-gdx:$msdfVersion")
 
     implementation(kotlin("stdlib"))
 
