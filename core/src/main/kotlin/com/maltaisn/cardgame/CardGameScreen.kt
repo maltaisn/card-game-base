@@ -37,8 +37,8 @@ import com.badlogic.gdx.utils.I18NBundle
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.maltaisn.cardgame.markdown.MdLoader
 import com.maltaisn.cardgame.widget.MsdfTextField
+import com.maltaisn.msdfgdx.MsdfFont
 import com.maltaisn.msdfgdx.MsdfFontLoader
-import com.maltaisn.msdfgdx.MsdfFontLoader.MsdfFontParameter
 import com.maltaisn.msdfgdx.MsdfShader
 import ktx.assets.load
 import ktx.assets.loadOnDemand
@@ -90,8 +90,7 @@ open class CardGameScreen<T : CardGameListener>(val locale: Locale, val listener
 
         // Add font and shader immediately.
         skin.add(MsdfShader())
-        skin.add(assetManager.loadOnDemand(CoreRes.FONT,
-                MsdfFontParameter(32f, 5f)).asset)
+        skin.add(assetManager.loadOnDemand<MsdfFont>(CoreRes.FONT).asset)
 
         // Load other assets
         load()

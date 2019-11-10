@@ -13,12 +13,6 @@ android {
         versionCode = 1
         versionName = "0.0.1"
     }
-    buildTypes {
-        named("release") {
-            isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
-        }
-    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_6
         targetCompatibility = JavaVersion.VERSION_1_6
@@ -75,7 +69,7 @@ tasks.whenTaskAdded {
 }
 
 // Tasks to copy the tests assets to the android module assets dir
-val assetsPath = android.sourceSets.named("main").get().assets.srcDirs.last().path
+val assetsPath: String = android.sourceSets.named("main").get().assets.srcDirs.last().path
 
 tasks.register("copyTestAssets") {
     file(assetsPath).mkdirs()
