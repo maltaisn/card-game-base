@@ -19,6 +19,7 @@ package com.maltaisn.cardgame.pcard
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
 import com.maltaisn.cardgame.game.Card
+import com.maltaisn.cardgame.game.sortWith
 import com.maltaisn.cardgame.utils.BitField
 
 
@@ -310,3 +311,9 @@ class PCard private constructor(val rank: Int, val suit: Int, value: Int) : Card
     }
 
 }
+
+/**
+ * Returns a string representation of a [PCard] collection sorted with [PCard.DEFAULT_SORTER].
+ */
+fun Collection<PCard>.toSortedString() =
+        toMutableList().apply { sortWith(PCard.DEFAULT_SORTER) }.toString()
