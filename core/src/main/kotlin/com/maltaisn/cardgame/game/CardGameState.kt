@@ -39,7 +39,7 @@ abstract class CardGameState<P : CardPlayer> : Cloneable, Json.Serializable {
      * The result of the game for each player, indexed by their position.
      * If the game is not done, this is `null`.
      */
-    var result: List<Float>? = null
+    open var result: List<Float>? = null
         protected set
 
     /**
@@ -86,7 +86,7 @@ abstract class CardGameState<P : CardPlayer> : Cloneable, Json.Serializable {
      * The list should be empty when game is done, otherwise must contain at least one move.
      * The state must not be modified from this function: two subsequent calls must return the same moves.
      */
-    abstract fun getMoves(): MutableList<CardGameEvent.Move>
+    abstract fun getMoves(): MutableList<out CardGameEvent.Move>
 
     /**
      * Get a random legal move, or `null` if there is none possible.
@@ -114,6 +114,13 @@ abstract class CardGameState<P : CardPlayer> : Cloneable, Json.Serializable {
         s.result = result?.toList()
     }
 
+    override fun equals(other: Any?) = other === this || other is CardGameState<*> &&
+            other.players == players && other.posToMove == posToMove && other.result == result
+
+    override fun hashCode() = arrayOf(players, posToMove, result).contentHashCode()
+
+    override fun toString() = "[${players.size} players, posToMove: $posToMove]"
+
 
     override fun read(json: Json, jsonData: JsonValue) {
         result = jsonData["result"]?.asFloatArray()?.toList()
@@ -121,9 +128,8 @@ abstract class CardGameState<P : CardPlayer> : Cloneable, Json.Serializable {
     }
 
     /**
-     * Write the game state to [json].
-     * The players are not written, the [CardGame] must save them
-     * and set them back when loading its game state.
+     * Write the game state to [json]. The players and settings are not written, the [CardGame] must save
+     * them and set them back when loading its game state. This is to avoid duplication in JSON game save.
      */
     override fun write(json: Json) {
         if (result != null) {
