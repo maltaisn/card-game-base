@@ -20,7 +20,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable
 import com.badlogic.gdx.utils.I18NBundle
-import com.gmail.blueboxware.libgdxplugin.annotations.GDXAssets
 import com.maltaisn.cardgame.CoreRes
 import com.maltaisn.cardgame.markdown.Markdown
 import com.maltaisn.cardgame.markdown.MdElement
@@ -134,7 +133,6 @@ open class DefaultGameMenu(private val skin: Skin,
 
 
     init {
-        @GDXAssets(propertiesFiles = ["assets/core/strings.properties"])
         val strings: I18NBundle = skin[CoreRes.CORE_STRINGS_NAME]
 
         drawer.backBtnText = strings["menu_drawer_back"]

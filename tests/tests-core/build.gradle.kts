@@ -21,8 +21,6 @@ dependencies {
     implementation("io.github.libktx:ktx-log:$ktxVersion")
     implementation("io.github.libktx:ktx-style:$ktxVersion")
 
-    compileOnly("com.gmail.blueboxware:libgdxpluginannotations:1.16")
-
     testImplementation("junit:junit:$junitVersion")
 }
 

@@ -18,7 +18,6 @@ package com.maltaisn.cardgame.widget.stats
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.I18NBundle
-import com.gmail.blueboxware.libgdxplugin.annotations.GDXAssets
 import com.maltaisn.cardgame.CoreRes
 import com.maltaisn.cardgame.stats.Statistics
 import com.maltaisn.cardgame.widget.AlertDialog
@@ -107,7 +106,6 @@ class StatsSubMenu(skin: Skin) : SubMenu(skin) {
     init {
         itemClickListener = null
 
-        @GDXAssets(propertiesFiles = ["assets/core/strings.properties"])
         val strings: I18NBundle = skin[CoreRes.CORE_STRINGS_NAME]
 
         title = strings["menu_stats"]
