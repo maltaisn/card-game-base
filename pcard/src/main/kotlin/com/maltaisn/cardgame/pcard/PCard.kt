@@ -20,7 +20,6 @@ import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
 import com.maltaisn.cardgame.game.Card
 import com.maltaisn.cardgame.game.sortWith
-import com.maltaisn.cardgame.utils.BitField
 
 
 /**
@@ -224,14 +223,13 @@ class PCard private constructor(val rank: Int, val suit: Int, value: Int) : Card
                 // Colors need to be separated so suit order might change.
                 val suitsList = suitOrder.toMutableList()
 
-                var suitsFound = BitField()
+                var suitsFound = 0
                 for (item in list) {
-                    suitsFound += selector(item).suit
+                    suitsFound = suitsFound or (1 shl selector(item).suit)
                 }
-                suitsFound -= RED
-                suitsFound -= BLACK
+                suitsFound = suitsFound and ((1 shl RED) or (1 shl BLACK)).inv()
 
-                if (suitsFound.count == 3) {
+                if (Integer.bitCount(suitsFound) == 3) {
                     // There are 3 suits in the cards, colors may need to be separated.
                     // If there were 2 suits of the same color, nothing could be done.
 
@@ -239,7 +237,7 @@ class PCard private constructor(val rank: Int, val suit: Int, value: Int) : Card
                     // two suits of the same color
                     var missingSuit = -1
                     for (suit in SUITS) {
-                        if (suit !in suitsFound) {
+                        if (suitsFound and (1 shl suit) == 0) {
                             missingSuit = suit
                             break
                         }
@@ -250,7 +248,7 @@ class PCard private constructor(val rank: Int, val suit: Int, value: Int) : Card
                     var inserted = false
                     for (i in suitsList.indices.reversed()) {
                         val suit = suitsList[i]
-                        if (suit in suitsFound) {
+                        if (suitsFound and (1 shl suit) != 0) {
                             if (suit == separatingSuit) {
                                 suitsList.removeAt(i)
                             } else if (!inserted) {
