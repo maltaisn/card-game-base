@@ -11,6 +11,7 @@ dependencies {
     val gdxVersion: String by project
     val ktxVersion: String by project
     val msdfVersion: String by project
+    val mockitoKotlinVersion: String by project
 
     api("com.maltaisn:msdf-gdx:$msdfVersion")
 
@@ -26,11 +27,9 @@ dependencies {
     implementation("io.github.libktx:ktx-math:$ktxVersion")
     implementation("io.github.libktx:ktx-style:$ktxVersion")
 
-    compileOnly("com.gmail.blueboxware:libgdxpluginannotations:1.16")
-
     testImplementation(kotlin("test"))
     testImplementation(kotlin("test-junit"))
-    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
+    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:$mockitoKotlinVersion")
 }
 
 
