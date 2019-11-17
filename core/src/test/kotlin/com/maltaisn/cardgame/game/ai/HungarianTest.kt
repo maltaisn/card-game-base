@@ -23,21 +23,22 @@ import org.junit.Test
 import java.text.NumberFormat
 import kotlin.random.Random
 import kotlin.system.measureNanoTime
+import kotlin.test.assertNotEquals
 
 
 internal class HungarianTest {
 
     @Test
     fun `Simple matrix 1, n=3`() = validateAssignment(arrayOf(
-            intArrayOf(250, 400, 350),
-            intArrayOf(400, 600, 350),
-            intArrayOf(200, 400, 250)))
+            floatArrayOf(250f, 400f, 350f),
+            floatArrayOf(400f, 600f, 350f),
+            floatArrayOf(200f, 400f, 250f)))
 
     @Test
     fun `Simple matrix 2, n=3`() = validateAssignment(arrayOf(
-            intArrayOf(1, 2, 3),
-            intArrayOf(2, 4, 6),
-            intArrayOf(3, 6, 9)))
+            floatArrayOf(1f, 2f, 3f),
+            floatArrayOf(2f, 4f, 6f),
+            floatArrayOf(3f, 6f, 9f)))
 
     @Test
     fun `Random matrices, n=3`() {
@@ -50,6 +51,22 @@ internal class HungarianTest {
     fun `Random matrices, n=2-128`() {
         for (n in 2..128) {
             validateAssignment(randomMatrix(n))
+            println(n)
+        }
+    }
+
+    @Test
+    fun `Random matrices with disallowed, n=2-128`() {
+        for (n in 2..128) {
+            // Build a cost matrix with only disallowed then add an unique assignment.
+            val costMatrix = Array(n) { FloatArray(n) { Hungarian.DISALLOWED } }
+            val jobs = (0 until n).toMutableList()
+            for (i in 0 until n) {
+                val j = jobs.removeAt(jobs.indices.random())
+                costMatrix[i][j] = Random.nextFloat()
+            }
+
+            validateAssignment(costMatrix)
             println(n)
         }
     }
@@ -79,10 +96,10 @@ internal class HungarianTest {
     }
 
 
-    private fun validateAssignment(costMatrix: Array<IntArray>) {
+    private fun validateAssignment(costMatrix: Array<FloatArray>) {
         val matrixCopy = Array(costMatrix.size) { costMatrix[it].clone() }
 
-        val assignment = Hungarian(costMatrix).execute()
+        val assignment = Hungarian(costMatrix).execute()!!
 
         val message = "Wrong assignment for matrix: ${matrixCopy.contentDeepToString()}," +
                 "assignment = ${assignment.contentToString()}"
@@ -91,10 +108,19 @@ internal class HungarianTest {
         val assignmentSet = assignment.toSet()
         assertEquals(message, costMatrix.size, assignmentSet.size)
         assertFalse(message, -1 in assignmentSet)
+
+        // Check if disallowed assignments weren't assigned.
+        for ((x, y) in assignment.withIndex()) {
+            assertNotEquals(Hungarian.DISALLOWED, costMatrix[x][y])
+        }
     }
 
-    private fun randomMatrix(n: Int) = Array(n) { IntArray(n) { Random.nextInt(1024) } }
+    private fun randomMatrix(n: Int) = Array(n) {
+        FloatArray(n) { Random.nextFloat() }
+    }
 
-    private fun worstCaseMatrix(n: Int) = Array(n) { row -> IntArray(n) { col -> (row + 1) * (col + 1) } }
+    private fun worstCaseMatrix(n: Int) = Array(n) { row ->
+        FloatArray(n) { col -> (row + 1).toFloat() * (col + 1) }
+    }
 
 }

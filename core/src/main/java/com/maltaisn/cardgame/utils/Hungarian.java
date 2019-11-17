@@ -46,29 +46,29 @@ import java.util.Arrays;
  * This version of the Hungarian algorithm runs in time O(n^3), where n is the
  * maximum among the number of workers and the number of jobs.
  * <p>
- * Original implementation: https://github.com/KevinStern/software-and-algorithms/blob/master/src/main/java/blogspot/software_and_algorithms/stern_library/optimization/HungarianAlgorithm.java
- * Doubles were replaced with ints, matrix copy was removed.
+ * Original implementation: https://github.com/KevinStern/software-and-algorithms/blob/e51260ec39b37b6cfd754426a683af0841a68ad7/src/main/java/blogspot/software_and_algorithms/stern_library/optimization/HungarianAlgorithm.java
+ * Matrix copy was removed in constructor and doubles were replaced by floats
  *
  * @author Kevin L. Stern
  */
-public class Hungarian {
+public final class Hungarian {
 
     /**
-     * Constant value for the cost an assignment than isn't allowed.
-     * May not work if cost matrix is very big or has very big costs.
+     * Arbitratly large number representing an assignment that isn't valid.
+     * Must be larger than the smallest assignment sum so don't use too big values.
+     * Alternatively, use negative values.
      */
-    public static final int DISALLOWED = Integer.MAX_VALUE;
+    public static final float DISALLOWED = (float) 1e32;
 
 
-    private final int[][] costMatrix;
+    private final float[][] costMatrix;
     private final int rows, cols, dim;
-    private final int[] labelByWorker, labelByJob;
+    private final float[] labelByWorker, labelByJob;
     private final int[] minSlackWorkerByJob;
-    private final int[] minSlackValueByJob;
+    private final float[] minSlackValueByJob;
     private final int[] matchJobByWorker, matchWorkerByJob;
     private final int[] parentWorkerByCommittedJob;
     private final boolean[] committedWorkers;
-
 
     /**
      * Construct an instance of the algorithm.
@@ -78,15 +78,15 @@ public class Hungarian {
      *                   irregular in the sense that all rows must be the same length; in
      *                   addition, all entries must be non-infinite numbers.
      */
-    public Hungarian(int[][] costMatrix) {
+    public Hungarian(float[][] costMatrix) {
         this.dim = Math.max(costMatrix.length, costMatrix[0].length);
         this.rows = costMatrix.length;
         this.cols = costMatrix[0].length;
         this.costMatrix = costMatrix;
-        labelByWorker = new int[this.dim];
-        labelByJob = new int[this.dim];
+        labelByWorker = new float[this.dim];
+        labelByJob = new float[this.dim];
         minSlackWorkerByJob = new int[this.dim];
-        minSlackValueByJob = new int[this.dim];
+        minSlackValueByJob = new float[this.dim];
         committedWorkers = new boolean[this.dim];
         parentWorkerByCommittedJob = new int[this.dim];
         matchJobByWorker = new int[this.dim];
@@ -102,7 +102,7 @@ public class Hungarian {
      */
     private void computeInitialFeasibleSolution() {
         for (int j = 0; j < dim; j++) {
-            labelByJob[j] = Integer.MAX_VALUE;
+            labelByJob[j] = Float.POSITIVE_INFINITY;
         }
         for (int w = 0; w < dim; w++) {
             for (int j = 0; j < dim; j++) {
@@ -166,7 +166,7 @@ public class Hungarian {
     private void executePhase() {
         while (true) {
             int minSlackWorker = -1, minSlackJob = -1;
-            int minSlackValue = Integer.MAX_VALUE;
+            float minSlackValue = Float.POSITIVE_INFINITY;
             for (int j = 0; j < dim; j++) {
                 if (parentWorkerByCommittedJob[j] == -1) {
                     if (minSlackValueByJob[j] < minSlackValue) {
@@ -205,7 +205,8 @@ public class Hungarian {
                 committedWorkers[worker] = true;
                 for (int j = 0; j < dim; j++) {
                     if (parentWorkerByCommittedJob[j] == -1) {
-                        int slack = costMatrix[worker][j] - labelByWorker[worker] - labelByJob[j];
+                        float slack = costMatrix[worker][j] - labelByWorker[worker]
+                                - labelByJob[j];
                         if (minSlackValueByJob[j] > slack) {
                             minSlackValueByJob[j] = slack;
                             minSlackWorkerByJob[j] = worker;
@@ -278,7 +279,7 @@ public class Hungarian {
      */
     private void reduce() {
         for (int w = 0; w < dim; w++) {
-            int min = Integer.MAX_VALUE;
+            float min = Float.POSITIVE_INFINITY;
             for (int j = 0; j < dim; j++) {
                 if (costMatrix[w][j] < min) {
                     min = costMatrix[w][j];
@@ -288,9 +289,9 @@ public class Hungarian {
                 costMatrix[w][j] -= min;
             }
         }
-        int[] min = new int[dim];
+        float[] min = new float[dim];
         for (int j = 0; j < dim; j++) {
-            min[j] = Integer.MAX_VALUE;
+            min[j] = Float.POSITIVE_INFINITY;
         }
         for (int w = 0; w < dim; w++) {
             for (int j = 0; j < dim; j++) {
@@ -311,7 +312,7 @@ public class Hungarian {
      * committed workers and by subtracting the slack value for committed jobs. In
      * addition, update the minimum slack values appropriately.
      */
-    private void updateLabeling(int slack) {
+    private void updateLabeling(float slack) {
         for (int w = 0; w < dim; w++) {
             if (committedWorkers[w]) {
                 labelByWorker[w] += slack;
