@@ -18,86 +18,80 @@ package com.maltaisn.cardgame.game.ai
 
 import com.maltaisn.cardgame.game.CardGameEvent
 import com.maltaisn.cardgame.game.CardGameState
+import com.maltaisn.cardgame.game.player.CardMctsPlayer
 import kotlin.math.ln
 import kotlin.math.sqrt
 
 /**
  * Implementation of the Information Set Monte Carlo Tree Search (ISMCTS)
- * - Explanation of MCTS: [http://mcts.ai].
- * - Original ISMCTS implementation in Python: [https://gist.github.com/kjlubick/8ea239ede6a026a61f4d].
- * - ISMCTS algorithm: [https://ieeexplore.ieee.org/document/6203567].
+ * - Explanation: [http://www.aifactory.co.uk/newsletter/2013_01_reduce_burden.htm].
+ * - Paper: [https://ieeexplore.ieee.org/document/6203567].
+ * - Original Python implementation: [https://gist.github.com/kjlubick/8ea239ede6a026a61f4d].
  */
-object Mcts {
+class Mcts {
 
     /**
-     * Default theoretical best exploration param.
-     * Equal to `sqrt(2.0) / 2`.
+     * Exploration param balancing exploration and exploitation.
+     * Lower value = more exploitation, higher value = more exploration.
+     * Default and theoretical best exploration param is equal to `sqrt(2.0) / 2`.
      */
-    const val DEFAULT_EXPLORATION = 0.70710678f
+    var explorationParam = 0.70710678f
 
 
     /**
      * Find and returns the move with the best outcome from moves
      * available in [rootState] in [iter] simulations.
-     *
-     * @param explorationParam Exploration param balancing exploration and exploitation.
-     * Lower value = more exploitation, higher value = more exploration.
      */
-    fun run(rootState: CardGameState<*>, iter: Int,
-            explorationParam: Float = DEFAULT_EXPLORATION): CardGameEvent.Move {
+    fun run(rootState: CardGameState<*>, iter: Int): CardGameEvent.Move {
+        val rootNode = Node(null, null, rootState.posToMove)
 
-        val rootNode = Node(null, null, rootState.posToMove, explorationParam)
+        check(rootState.playerToMove is CardMctsPlayer) { "Player to move must be a MCTS player." }
+
+        var moves = rootState.getMoves()
+        if (moves.size == 0) {
+            error("Cannot run MCTS on state with no available moves.")
+        } else if (moves.size == 1) {
+            // Root state has only 1 possible move, no choice to make.
+            return moves.first()
+        }
 
         repeat(iter) {
             var node = rootNode
-
             val state = rootState.clone()
-            state.playerToMove.randomizeGameState(state)
+            val playerToMove = state.playerToMove as CardMctsPlayer
+
+            // Determinization
+            playerToMove.randomizeGameState(state)
 
             // Select
-            var moves = state.getMoves()
-            if (moves.size == 0) {
-                error("Cannot run MCTS on state with no available moves.")
-            } else if (moves.size == 1) {
-                // Root state has only 1 possible move, no choice to make.
-                return moves.first()
-            }
-
+            moves = state.getMoves()
             var untriedMoves = node.getUntriedMoves(moves)
             while (node.childNodes.isNotEmpty() && untriedMoves.isEmpty()) {
                 node = node.selectUCBChild(moves) ?: break
                 state.doMove(node.move!!)
-                moves = state.getMoves()
-                untriedMoves = node.getUntriedMoves(moves)
+                untriedMoves = node.getUntriedMoves(state.getMoves())
             }
 
             // Expand
             if (untriedMoves.isNotEmpty()) {
                 val move = untriedMoves.random()
-                val player = state.posToMove
+                val playerPos = state.posToMove
                 state.doMove(move)
-                moves = state.getMoves()
-                node = node.addChild(move, player)
+                node = node.addChild(move, playerPos)
             }
 
             // Simulate
-            if (moves.isNotEmpty()) {
-                var randomMove: CardGameEvent.Move? = moves.random()
-                while (randomMove != null) {
-                    state.doMove(randomMove)
-                    randomMove = state.getRandomMove()
-                }
+            while (true) {
+                state.doMove(state.getRandomMove() ?: break)
             }
 
             // Backpropagate
-            var parent: Node? = node
-            val result = checkNotNull(state.result) {
-                "Game result should be set since no moves are available."
+            val results = state.players.map {
+                val result = it.getStateResult(state)
+                assert(result in 0f..1f) { "Game state result must be between 0 and 1." }
+                result
             }
-            while (parent != null) {
-                parent.update(result)
-                parent = parent.parent
-            }
+            node.update(results)
         }
 
         return rootNode.childNodes.maxBy { it.visits }!!.move!!
@@ -109,62 +103,53 @@ object Mcts {
      * This is the same as the "Simulate" step of [run].
      */
     fun simulate(rootState: CardGameState<*>, move: CardGameEvent.Move, iter: Int): Float {
-        var score = 0f
-        val player = rootState.posToMove
+        check(rootState.playerToMove is CardMctsPlayer) { "Player to move must be a MCTS player." }
+
+        var totalResult = 0f
         repeat(iter) {
             val state = rootState.clone()
-            state.playerToMove.randomizeGameState(state)
+            val playerToMove = state.playerToMove
 
+            (playerToMove as CardMctsPlayer).randomizeGameState(state)
             state.doMove(move)
 
             // Simulate
-            var randomMove = state.getRandomMove()
-            while (randomMove != null) {
-                state.doMove(randomMove)
-                randomMove = state.getRandomMove()
+            while (true) {
+                state.doMove(state.getRandomMove() ?: break)
             }
 
-            val result = checkNotNull(state.result) {
-                "Game result should be set since no moves are available."
-            }
-            score += result[player]
+            totalResult += playerToMove.getStateResult(state)
         }
-        return score / iter
+        return totalResult / iter
     }
 
 
-    private class Node(val move: CardGameEvent.Move?, val parent: Node?, val playerThatMoved: Int,
-                       val explorationParam: Float) {
+    private inner class Node(val move: CardGameEvent.Move?,
+                             val parent: Node?,
+                             val posThatMoved: Int) {
 
         val childNodes = mutableListOf<Node>()
 
-        // Number of times this node lead to a win
-        var wins = 0.0
+        /** Number of times this node lead to a win. */
+        var wins = 0f
 
-        // Number of times this node has been visited
+        /** Number of times this node has been visited */
         var visits = 0
 
+        /** Number of times this node was available for selection */
         var avails = 0
 
         /**
-         * Filter moves for which this node has no children, from a list of moves
-         * Note that it is not possible to optimize this operation by creating a list of untried
-         * moves when node is created and removing them at the same time as children nodes are
-         * added, because the list of possible moves is rarely always the same, eg: there may be
-         * one move to draw a card that results in many moves depending on the card
+         * Filter moves for which this node has no children, from a list of [moves].
          */
-        fun getUntriedMoves(moves: List<CardGameEvent.Move>): List<CardGameEvent.Move> {
-            val tried = List(childNodes.size) { childNodes[it].move }
-            return moves.filter { move -> tried.find { it == move } == null }
-        }
+        fun getUntriedMoves(moves: List<CardGameEvent.Move>) =
+                moves.filter { move -> childNodes.none { it.move == move } }
 
         /**
-         * Select the child node that has a move in [moves] that maximizes the [computeUCB] formula
-         * All child nodes are not necessarily selectable because there might be more children
-         * in total than those available from a particular state (see example above)
+         * Select the child node that has a move in [moves] that maximizes the UCB formula.
          */
         fun selectUCBChild(moves: List<CardGameEvent.Move>): Node? {
-            val selectable = childNodes.filter { child -> moves.find { it == child.move } != null }
+            val selectable = childNodes.filter { child -> moves.any { it == child.move } }
             for (node in selectable) {
                 node.avails++
             }
@@ -172,24 +157,29 @@ object Mcts {
         }
 
         /**
-         * Compute the UCB formula for this node.
-         * Cannot be done for the root node.
+         * Compute the UCB formula for this node. Cannot be done for the root node.
          * See [https://en.wikipedia.org/wiki/Monte_Carlo_tree_search#Exploration_and_exploitation].
          */
         fun computeUCB() = wins / visits + explorationParam * sqrt(ln(avails.toFloat()) / visits)
 
-        fun addChild(move: CardGameEvent.Move, playerThatMoved: Int): Node {
-            val node = Node(move, this, playerThatMoved, explorationParam)
+        fun addChild(move: CardGameEvent.Move, posThatMoved: Int): Node {
+            val node = Node(move, this, posThatMoved)
             childNodes += node
             return node
         }
 
         /**
-         * Update the node visits and wins from a state [results].
+         * Update the node visits and wins from player [results].
+         * Result is backpropagated to parent node.
+         *
+         * I think that we use the result from the player that moved rather than the result
+         * from the player that has to play in root state to emulate stronger opposing play.
+         * This wasn't explained anywhere in the ISMCTS paper or in the implementation.
          */
         fun update(results: List<Float>) {
             visits++
-            wins += results[playerThatMoved]
+            wins += results[posThatMoved]
+            parent?.update(results)
         }
 
         override fun toString(): String = if (move == null) {

@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package com.maltaisn.cardgame.game
+package com.maltaisn.cardgame.game.player
 
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
+import com.maltaisn.cardgame.game.CardGameState
 
 /**
  * Base class for a player in a game state.
@@ -27,11 +28,15 @@ abstract class CardPlayer : Cloneable, Json.Serializable {
     /** Player position, set by the game state. */
     var position = NO_POSITION
 
+
     /**
-     * Called to randomize the cloned game [state] to reflect the point of view
-     * of this player, randomizing any unknown information. This is only used by the MCTS.
+     * Get the result indicating the outcome of the given game [state] from the point
+     * of view of this player. When called [CardGameState.isGameDone] is always `true`.
+     * Result must be normalized i.e. between 0 and 1, a value of 1 indicating a better outcome.
+     * This must be implemented by all players, not just MCTS players.
      */
-    open fun randomizeGameState(state: CardGameState<*>) = Unit
+    abstract fun getStateResult(state: CardGameState<*>): Float
+
 
     /**
      * Create a deep copy of this player.

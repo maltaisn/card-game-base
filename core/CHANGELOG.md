@@ -1,6 +1,12 @@
-### v1.0.3
-- Added `open` qualifier to `GameState.result` for mocking.
+### v1.1.0
+- MCTS changes and optimizations.
+- Game result is now given by individual players, not state.
+- Added `CardMctsPlayer` interface for MCTS players.
+- Added `open` qualifier to `GameState` and some of its methods for mocking.
 - Updated to kotlin 1.3.60.
+- Replaced ints by floats in Hungarian algorithm implementation and
+changed `DISALLOWED` value which was too large.
+- Removed `BitField` inline class.
 
 ### v1.0.2
 - Updated msdf-gdx and ktx versions.

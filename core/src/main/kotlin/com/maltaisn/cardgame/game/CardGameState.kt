@@ -18,6 +18,7 @@ package com.maltaisn.cardgame.game
 
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
+import com.maltaisn.cardgame.game.player.CardPlayer
 import com.maltaisn.cardgame.prefs.GamePrefs
 
 /**
@@ -36,17 +37,11 @@ abstract class CardGameState<P : CardPlayer> : Cloneable, Json.Serializable {
     lateinit var players: List<P>
 
     /**
-     * The result of the game for each player, indexed by their position.
-     * If the game is not done, this is `null`.
+     * Whether the game is done or not.
+     * When game is done, [getMoves] should return an empty list.
      */
-    open var result: List<Float>? = null
+    var isGameDone = false
         protected set
-
-    /**
-     * Returns whether the game is done, i.e when [getMoves] is an empty list.
-     */
-    val isGameDone: Boolean
-        get() = result != null
 
     /**
      * The position of the next player to move.
@@ -64,7 +59,7 @@ abstract class CardGameState<P : CardPlayer> : Cloneable, Json.Serializable {
     /**
      * Initialize the game state, needed before making moves.
      */
-    open fun initialize(settings: GamePrefs, players: List<P>, posToMove: Int) {
+    protected open fun initialize(settings: GamePrefs, players: List<P>, posToMove: Int) {
         this.settings = settings
         this.players = players
         this.posToMove = posToMove
@@ -111,19 +106,17 @@ abstract class CardGameState<P : CardPlayer> : Cloneable, Json.Serializable {
         s.settings = settings
         s.players = players.map { it.clone() as P }
         s.posToMove = posToMove
-        s.result = result?.toList()
     }
 
     override fun equals(other: Any?) = other === this || other is CardGameState<*> &&
-            other.players == players && other.posToMove == posToMove && other.result == result
+            other.players == players && other.posToMove == posToMove
 
-    override fun hashCode() = arrayOf(players, posToMove, result).contentHashCode()
+    override fun hashCode() = arrayOf(players, posToMove).contentHashCode()
 
     override fun toString() = "[${players.size} players, posToMove: $posToMove]"
 
 
     override fun read(json: Json, jsonData: JsonValue) {
-        result = jsonData["result"]?.asFloatArray()?.toList()
         posToMove = jsonData.getInt("posToMove")
     }
 
@@ -132,9 +125,6 @@ abstract class CardGameState<P : CardPlayer> : Cloneable, Json.Serializable {
      * them and set them back when loading its game state. This is to avoid duplication in JSON game save.
      */
     override fun write(json: Json) {
-        if (result != null) {
-            json.writeValue("result", result)
-        }
         json.writeValue("posToMove", posToMove)
     }
 
