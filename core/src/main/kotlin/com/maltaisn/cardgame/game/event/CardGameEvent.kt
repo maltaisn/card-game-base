@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.maltaisn.cardgame.game
+package com.maltaisn.cardgame.game.event
 
 
 /**
@@ -22,18 +22,4 @@ package com.maltaisn.cardgame.game
  * Represents any event that can happen in a game.
  * All events should be immutable.
  */
-interface CardGameEvent {
-
-    /**
-     * Marker interface for a move event.
-     * All subclasses must implement [equals] for [Mcts] to work.
-     */
-    interface Move {
-
-        override fun equals(other: Any?): Boolean
-
-        override fun hashCode(): Int
-
-    }
-
-}
+interface CardGameEvent

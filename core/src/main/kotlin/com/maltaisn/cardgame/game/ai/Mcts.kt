@@ -16,8 +16,8 @@
 
 package com.maltaisn.cardgame.game.ai
 
-import com.maltaisn.cardgame.game.CardGameEvent
 import com.maltaisn.cardgame.game.CardGameState
+import com.maltaisn.cardgame.game.event.CardGameMove
 import com.maltaisn.cardgame.game.player.CardMctsPlayer
 import kotlin.math.ln
 import kotlin.math.sqrt
@@ -39,10 +39,16 @@ class Mcts {
 
 
     /**
+     * Like [run] but immediately returns the most visited child node.
+     */
+    fun findMove(rootState: CardGameState<*>, iter: Int) =
+            run(rootState, iter).childNodes.maxBy { it.visits }!!.move!!
+
+    /**
      * Find and returns the move with the best outcome from moves
      * available in [rootState] in [iter] simulations.
      */
-    fun run(rootState: CardGameState<*>, iter: Int): CardGameEvent.Move {
+    fun run(rootState: CardGameState<*>, iter: Int): Node {
         val rootNode = Node(null, null, rootState.posToMove)
 
         check(rootState.playerToMove is CardMctsPlayer) { "Player to move must be a MCTS player." }
@@ -52,7 +58,8 @@ class Mcts {
             error("Cannot run MCTS on state with no available moves.")
         } else if (moves.size == 1) {
             // Root state has only 1 possible move, no choice to make.
-            return moves.first()
+            rootNode.addChild(moves.first(), rootState.posToMove)
+            return rootNode
         }
 
         repeat(iter) {
@@ -94,7 +101,7 @@ class Mcts {
             node.update(results)
         }
 
-        return rootNode.childNodes.maxBy { it.visits }!!.move!!
+        return rootNode
     }
 
 
@@ -102,7 +109,7 @@ class Mcts {
      * Compute the average result of [iter] simulations of [rootState] doing a [move].
      * This is the same as the "Simulate" step of [run].
      */
-    fun simulate(rootState: CardGameState<*>, move: CardGameEvent.Move, iter: Int): Float {
+    fun simulate(rootState: CardGameState<*>, move: CardGameMove, iter: Int): Float {
         check(rootState.playerToMove is CardMctsPlayer) { "Player to move must be a MCTS player." }
 
         var totalResult = 0f
@@ -123,10 +130,9 @@ class Mcts {
         return totalResult / iter
     }
 
-
-    private inner class Node(val move: CardGameEvent.Move?,
-                             val parent: Node?,
-                             val posThatMoved: Int) {
+    inner class Node(val move: CardGameMove?,
+                     val parent: Node?,
+                     val posThatMoved: Int) {
 
         val childNodes = mutableListOf<Node>()
 
@@ -142,13 +148,13 @@ class Mcts {
         /**
          * Filter moves for which this node has no children, from a list of [moves].
          */
-        fun getUntriedMoves(moves: List<CardGameEvent.Move>) =
+        fun getUntriedMoves(moves: List<CardGameMove>) =
                 moves.filter { move -> childNodes.none { it.move == move } }
 
         /**
          * Select the child node that has a move in [moves] that maximizes the UCB formula.
          */
-        fun selectUCBChild(moves: List<CardGameEvent.Move>): Node? {
+        fun selectUCBChild(moves: List<CardGameMove>): Node? {
             val selectable = childNodes.filter { child -> moves.any { it == child.move } }
             for (node in selectable) {
                 node.avails++
@@ -162,7 +168,7 @@ class Mcts {
          */
         fun computeUCB() = wins / visits + explorationParam * sqrt(ln(avails.toFloat()) / visits)
 
-        fun addChild(move: CardGameEvent.Move, posThatMoved: Int): Node {
+        fun addChild(move: CardGameMove, posThatMoved: Int): Node {
             val node = Node(move, this, posThatMoved)
             childNodes += node
             return node

@@ -18,6 +18,7 @@ package com.maltaisn.cardgame.game
 
 import com.badlogic.gdx.utils.Json
 import com.badlogic.gdx.utils.JsonValue
+import com.maltaisn.cardgame.game.event.CardGameMove
 import com.maltaisn.cardgame.game.player.CardPlayer
 import com.maltaisn.cardgame.prefs.GamePrefs
 
@@ -74,14 +75,14 @@ abstract class CardGameState<P : CardPlayer> : Cloneable, Json.Serializable {
     /**
      * Update the state of the game by doing a [move].
      */
-    abstract fun doMove(move: CardGameEvent.Move)
+    abstract fun doMove(move: CardGameMove)
 
     /**
      * Get the list of legal moves that can be made by [posToMove] at the current state of the game.
      * The list should be empty when game is done, otherwise must contain at least one move.
      * The state must not be modified from this function: two subsequent calls must return the same moves.
      */
-    abstract fun getMoves(): MutableList<out CardGameEvent.Move>
+    abstract fun getMoves(): MutableList<out CardGameMove>
 
     /**
      * Get a random legal move, or `null` if there is none possible.
@@ -89,7 +90,7 @@ abstract class CardGameState<P : CardPlayer> : Cloneable, Json.Serializable {
      * In some cases this can be overriden to prevent the instantiation of a lot of move objects.
      * However, it must always provide all the same possible moves as [getMoves] and with the same probability.
      */
-    open fun getRandomMove(): CardGameEvent.Move? {
+    open fun getRandomMove(): CardGameMove? {
         val moves = getMoves()
         if (moves.size == 0) return null
         return moves.random()
