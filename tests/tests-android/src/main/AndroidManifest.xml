@@ -12,6 +12,7 @@
         android:isGame="true"
         android:appCategory="game"
         android:label="@string/app_name"
+        android:icon="@mipmap/ic_launcher"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning,UnusedAttribute">
         <activity
             android:name="com.maltaisn.cardgame.tests.android.AndroidLauncher"
