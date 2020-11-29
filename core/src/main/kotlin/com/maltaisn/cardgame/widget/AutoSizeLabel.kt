@@ -65,7 +65,6 @@ class AutoSizeLabel(text: CharSequence?, skin: Skin, fontStyle: FontStyle) :
         }
 
 
-    private var wrap = false
     private var ellipsis: String? = null
 
     private var textSizes: FloatArray? = null
@@ -87,12 +86,6 @@ class AutoSizeLabel(text: CharSequence?, skin: Skin, fontStyle: FontStyle) :
         }
 
         super.layout()
-    }
-
-    override fun setWrap(wrap: Boolean) {
-        super.setWrap(wrap)
-        this.wrap = wrap
-        invalidate()
     }
 
     override fun setEllipsis(ellipsis: Boolean) {

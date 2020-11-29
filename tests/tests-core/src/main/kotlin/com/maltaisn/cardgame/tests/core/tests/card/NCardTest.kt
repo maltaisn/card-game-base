@@ -44,19 +44,19 @@ class NCardTest(listener: CardGameListener) : CardGameTest(listener) {
     }
 
     override fun start() {
-        super.start()
-
         // Create NCard style
         skin.addRegions(assetManager[TestRes.NCARD_ATLAS])
         ncardStyle = CardActor.CardStyle(
-                cards = List(13) { skin.get<Drawable>("ncard_$it") },
-                back = skin["ncard-back"],
-                background = skin["ncard-background"],
-                hover = skin["ncard-hover"],
-                selection = skin["ncard-selection"],
-                slot = skin["ncard-slot"],
-                cardWidth = 240f,
-                cardHeight = 336f)
+            cards = List(13) { skin.get<Drawable>("ncard_$it") },
+            back = skin["ncard-back"],
+            background = skin["ncard-background"],
+            hover = skin["ncard-hover"],
+            selection = skin["ncard-selection"],
+            slot = skin["ncard-slot"],
+            cardWidth = 240f,
+            cardHeight = 336f)
+
+        super.start()
     }
 
     override fun layout(layout: CardGameLayout) {

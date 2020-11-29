@@ -42,7 +42,7 @@ class Mcts {
      * Like [run] but immediately returns the most visited child node.
      */
     fun findMove(rootState: CardGameState<*>, iter: Int) =
-            run(rootState, iter).childNodes.maxBy { it.visits }!!.move!!
+            run(rootState, iter).childNodes.maxByOrNull { it.visits }!!.move!!
 
     /**
      * Find and returns the move with the best outcome from moves
@@ -160,7 +160,7 @@ class Mcts {
             for (node in selectable) {
                 node.avails++
             }
-            return selectable.maxBy { it.computeUCB() }
+            return selectable.maxByOrNull { it.computeUCB() }
         }
 
         /**

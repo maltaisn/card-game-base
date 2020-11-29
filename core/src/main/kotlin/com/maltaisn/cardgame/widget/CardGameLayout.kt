@@ -86,7 +86,7 @@ open class CardGameLayout(val skin: Skin) : Stack() {
         addActor(cardAnimationGroup)
         addActor(popupGroup)
 
-        onKeyboardFocusEvent { event, _ ->
+        onKeyboardFocusEvent { event ->
             if (!event.isFocused && event.relatedActor == null) {
                 // When the keyboard focus is set to null, set it to the layout
                 // This is useful for an eventual back key handling.

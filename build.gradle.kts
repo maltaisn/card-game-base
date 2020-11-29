@@ -1,11 +1,12 @@
 buildscript {
     val kotlinVersion: String by project
+    val androidGradlePluginVersion: String by project
     repositories {
         gradlePluginPortal()
         google()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:3.5.2")
+        classpath("com.android.tools.build:gradle:$androidGradlePluginVersion")
         classpath(kotlin("gradle-plugin", kotlinVersion))
         classpath("org.jetbrains.dokka:dokka-gradle-plugin:0.10.0")
     }
@@ -15,7 +16,7 @@ plugins {
     base
 }
 
-tasks.named("clean") {
+tasks.clean {
     delete(rootProject.buildDir)
 }
 

@@ -29,8 +29,7 @@ import com.maltaisn.cardgame.widget.CardGameLayout
 import ktx.assets.load
 import ktx.style.add
 import ktx.style.get
-import java.util.*
-
+import java.util.Locale
 
 abstract class CardGameTest(listener: CardGameListener) :
         CardGameScreen<CardGameListener>(Locale.getDefault(), listener) {

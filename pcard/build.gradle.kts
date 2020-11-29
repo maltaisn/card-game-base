@@ -9,7 +9,6 @@ plugins {
 dependencies {
     val gdxVersion: String by project
     val ktxVersion: String by project
-    val junitVersion: String by project
 
     implementation(project(":core"))
 

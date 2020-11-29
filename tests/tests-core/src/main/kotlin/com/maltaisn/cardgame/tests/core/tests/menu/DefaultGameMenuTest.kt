@@ -34,7 +34,11 @@ import com.maltaisn.cardgame.widget.AboutView
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.CoreIcons
 import com.maltaisn.cardgame.widget.action.TimeAction
-import com.maltaisn.cardgame.widget.menu.*
+import com.maltaisn.cardgame.widget.menu.DefaultGameMenu
+import com.maltaisn.cardgame.widget.menu.InGameMenu
+import com.maltaisn.cardgame.widget.menu.MenuItem
+import com.maltaisn.cardgame.widget.menu.PagedSubMenu
+import com.maltaisn.cardgame.widget.menu.SubMenu
 import com.maltaisn.cardgame.widget.prefs.ResetGameDialog
 import com.maltaisn.cardgame.widget.table.ScoresTable
 import ktx.actors.onKeyDownEvent
@@ -42,7 +46,6 @@ import ktx.assets.load
 import ktx.log.info
 import ktx.style.get
 import kotlin.random.Random
-
 
 /**
  * Test [DefaultGameMenu] with settings and rules.
@@ -184,7 +187,7 @@ class DefaultGameMenuTest(listener: CardGameListener) : CardGameTest(listener) {
         animSpeedPref.valueListeners += { _, value -> TimeAction.SPEED_MULTIPLIER = value }
 
         // Back key listener
-        layout.onKeyDownEvent(true) { event, _, key ->
+        layout.onKeyDownEvent(true) { event, key ->
             if (!event.isHandled && (key == Input.Keys.BACK || key == Input.Keys.ESCAPE)) {
                 menu.goBack()
             }

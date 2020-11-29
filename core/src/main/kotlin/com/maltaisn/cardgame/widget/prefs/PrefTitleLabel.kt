@@ -42,7 +42,7 @@ class PrefTitleLabel(text: CharSequence?, skin: Skin, fontStyle: FontStyle,
 
 
     init {
-        onClickEvent { _, _, x, y ->
+        onClickEvent { _, x, y ->
             if (!isDisabled && helpIcon != null && iconRect.contains(x, y)) {
                 iconClickListener?.invoke()
             }

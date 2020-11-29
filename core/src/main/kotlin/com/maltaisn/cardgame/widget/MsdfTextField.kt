@@ -64,7 +64,7 @@ class MsdfTextField(skin: Skin,
 
 
     init {
-        onKeyDownEvent { event, _, keycode ->
+        onKeyDownEvent { event, keycode ->
             if (keycode == Input.Keys.BACK || keycode == Input.Keys.ESCAPE || keycode == Input.Keys.ENTER) {
                 // Unfocus and hide the keyboard
                 Gdx.input.setOnscreenKeyboardVisible(false)

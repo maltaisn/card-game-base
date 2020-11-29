@@ -4,12 +4,12 @@ plugins {
 }
 
 android {
-    buildToolsVersion("29.0.2")
-    compileSdkVersion(29)
+    buildToolsVersion("29.0.3")
+    compileSdkVersion(30)
     defaultConfig {
         applicationId = "com.maltaisn.cardgame.tests.android"
         minSdkVersion(16)
-        targetSdkVersion(29)
+        targetSdkVersion(30)
         versionCode = 1
         versionName = "0.0.1"
     }
@@ -34,8 +34,8 @@ dependencies {
     implementation(kotlin("stdlib"))
 
     implementation("com.badlogicgames.gdx:gdx-backend-android:$gdxVersion")
-    implementation("androidx.appcompat:appcompat:1.1.0")
-    implementation("androidx.recyclerview:recyclerview:1.0.0")
+    implementation("androidx.appcompat:appcompat:1.2.0")
+    implementation("androidx.recyclerview:recyclerview:1.1.0")
 
     natives("com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi")
     natives("com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a")
