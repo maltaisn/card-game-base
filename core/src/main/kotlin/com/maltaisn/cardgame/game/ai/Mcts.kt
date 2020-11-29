@@ -74,9 +74,10 @@ class Mcts {
             moves = state.getMoves()
             var untriedMoves = node.getUntriedMoves(moves)
             while (node.childNodes.isNotEmpty() && untriedMoves.isEmpty()) {
-                node = node.selectUCBChild(moves) ?: break
+                node = node.selectUCBChild(moves)!!
                 state.doMove(node.move!!)
-                untriedMoves = node.getUntriedMoves(state.getMoves())
+                moves = state.getMoves()
+                untriedMoves = node.getUntriedMoves(moves)
             }
 
             // Expand

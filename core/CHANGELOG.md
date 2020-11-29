@@ -1,4 +1,7 @@
-### v1.1.0
+### v1.1.1
+- MCTS fix in selection phase
+
+## v1.1.0
 - MCTS changes and optimizations.
 - Game result is now given by individual players, not state.
 - Added `CardMctsPlayer` interface for MCTS players.
