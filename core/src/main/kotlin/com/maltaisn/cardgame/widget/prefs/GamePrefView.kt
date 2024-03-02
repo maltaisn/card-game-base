@@ -103,6 +103,6 @@ abstract class GamePrefView<P : GamePref<T>, T : Any>(skin: Skin, pref: P) : Pre
     class GamePrefViewStyle(
             titleFontStyle: FontStyle,
             val helpIcon: Drawable)
-        : PrefEntryView.PrefEntryViewStyle(titleFontStyle)
+        : PrefEntryViewStyle(titleFontStyle)
 
 }

@@ -47,7 +47,7 @@ class SwitchPref(
 
     override fun loadValue(handle: Preferences) = handle.getBoolean(key, defaultValue)
 
-    @Suppress("LibGDXMissingFlush")
+    @Suppress("GDXKotlinMissingFlush")
     override fun saveValue(handle: Preferences) {
         handle.putBoolean(key, value)
     }

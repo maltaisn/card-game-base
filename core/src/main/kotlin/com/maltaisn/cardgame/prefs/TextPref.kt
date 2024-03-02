@@ -52,7 +52,7 @@ class TextPref(
 
     override fun loadValue(handle: Preferences) = handle.getString(key, defaultValue)
 
-    @Suppress("LibGDXMissingFlush")
+    @Suppress("GDXKotlinMissingFlush")
     override fun saveValue(handle: Preferences) {
         handle.putString(key, value)
     }

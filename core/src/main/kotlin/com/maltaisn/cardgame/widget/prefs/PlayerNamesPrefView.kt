@@ -54,10 +54,8 @@ class PlayerNamesPrefView(skin: Skin, pref: PlayerNamesPref) :
             textField.onKeyboardFocus { focused ->
                 if (!focused) {
                     val oldValue = pref.getPlayerName(playerPos)
-                    val newValue = (if (textField.text.isBlank()) {
+                    val newValue = (textField.text.ifBlank {
                         pref.defaultValue[playerPos]
-                    } else {
-                        textField.text
                     }).trim()
 
                     if (newValue != oldValue) {

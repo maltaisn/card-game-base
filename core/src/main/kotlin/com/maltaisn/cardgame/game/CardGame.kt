@@ -36,7 +36,7 @@ abstract class CardGame : Disposable, Json.Serializable {
     }
 
     companion object {
-        val VERSION = 1
+        const val VERSION = 1
     }
 
 }

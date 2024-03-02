@@ -50,7 +50,7 @@ class MenuDrawer(skin: Skin) : WidgetGroup() {
     var title: CharSequence?
         get() = titleLabel.text
         set(value) {
-            val titleShown = (value != null && value.isNotEmpty())
+            val titleShown = !value.isNullOrEmpty()
             titleLabel.isVisible = titleShown
             titleLabel.txt = value
 

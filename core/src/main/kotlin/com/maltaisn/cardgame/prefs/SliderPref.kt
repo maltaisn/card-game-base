@@ -60,7 +60,7 @@ class SliderPref(
 
     override fun loadValue(handle: Preferences) = handle.getFloat(key, defaultValue)
 
-    @Suppress("LibGDXMissingFlush")
+    @Suppress("GDXKotlinMissingFlush")
     override fun saveValue(handle: Preferences) {
         handle.putFloat(key, value)
     }

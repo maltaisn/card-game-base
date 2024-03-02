@@ -15,7 +15,6 @@
         tools:ignore="AllowBackup,GoogleAppIndexingWarning,UnusedAttribute">
         <activity
             android:name="com.maltaisn.cardgame.tests.android.AndroidLauncher"
-            android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat"
             android:screenOrientation="portrait"
             android:exported="true">
@@ -26,7 +25,6 @@
         </activity>
         <activity
             android:name="com.maltaisn.cardgame.tests.android.GameTestActivity"
-            android:label="@string/app_name"
             android:theme="@style/GdxTheme"
             android:screenOrientation="sensorLandscape"
             android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout">

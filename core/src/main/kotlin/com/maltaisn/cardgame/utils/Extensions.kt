@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@file:Suppress("FunctionName")
-
 package com.maltaisn.cardgame.utils
 
 import com.badlogic.gdx.graphics.Color

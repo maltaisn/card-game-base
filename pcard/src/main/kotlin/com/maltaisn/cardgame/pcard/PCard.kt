@@ -196,7 +196,7 @@ class PCard private constructor(val rank: Int, val suit: Int, value: Int) : Card
     /**
      * A specialized comparator for sorting decks of [PCard].
      *
-     * @property order The primary sort field, [Sorter.BY_RANK] or [BSorter.Y_SUIT].
+     * @property order The primary sort field, [Sorter.BY_RANK] or [Sorter.BY_SUIT].
      * @property rankOrder The rank order, [Sorter.ASCENDING] or [Sorter.DESCENDING].
      * @property aceHigh Whether the ace is considered bigger than king or not.
      * @property suitOrder The suit order, should be an int array of length 6, containing:
@@ -262,9 +262,9 @@ class PCard private constructor(val rank: Int, val suit: Int, value: Int) : Card
                 suitOrder = suitsList.toIntArray()
             }
 
-            list.sortWith(Comparator { o1, o2 ->
+            list.sortWith { o1, o2 ->
                 compare(suitOrder, selector(o1), selector(o2))
-            })
+            }
         }
 
         private fun compare(suitOrder: IntArray, card1: PCard, card2: PCard): Int {

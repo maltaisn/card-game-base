@@ -64,7 +64,7 @@ class MenuDrawerListItem(skin: Skin) : CheckableWidget(), Pool.Poolable {
     override fun reset() {
         text = null
         enabled = true
-        check(false, false)
+        check(checked = false, animate = false)
         hoverAction = null
         hoverAlpha = 0f
         pressAction = null

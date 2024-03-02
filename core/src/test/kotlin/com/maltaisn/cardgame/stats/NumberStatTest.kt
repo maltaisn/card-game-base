@@ -78,7 +78,7 @@ internal class NumberStatTest {
     }
 
     @Test
-    @Suppress("LibGDXMissingFlush")
+    @Suppress("GDXKotlinMissingFlush")
     fun saveValue() {
         val stat = NumberStat("stat", "", 0, false, 0f)
         stat.initialize(3)

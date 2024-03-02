@@ -67,7 +67,7 @@ class NumberStat(
     }
 
 
-    @Suppress("LibGDXMissingFlush")
+    @Suppress("GDXKotlinMissingFlush")
     override fun saveValue(handle: Preferences) {
         for (variant in value.indices) {
             handle.putFloat("${key}_$variant", value[variant])

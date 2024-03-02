@@ -34,11 +34,7 @@ import com.maltaisn.cardgame.widget.AboutView
 import com.maltaisn.cardgame.widget.CardGameLayout
 import com.maltaisn.cardgame.widget.CoreIcons
 import com.maltaisn.cardgame.widget.action.TimeAction
-import com.maltaisn.cardgame.widget.menu.DefaultGameMenu
-import com.maltaisn.cardgame.widget.menu.InGameMenu
-import com.maltaisn.cardgame.widget.menu.MenuItem
-import com.maltaisn.cardgame.widget.menu.PagedSubMenu
-import com.maltaisn.cardgame.widget.menu.SubMenu
+import com.maltaisn.cardgame.widget.menu.*
 import com.maltaisn.cardgame.widget.prefs.ResetGameDialog
 import com.maltaisn.cardgame.widget.table.ScoresTable
 import ktx.actors.onKeyDownEvent
@@ -156,7 +152,7 @@ class DefaultGameMenuTest(listener: CardGameListener) : CardGameTest(listener) {
             scoresTable.scores += List(4) { ScoresTable.Score(Random.nextInt(30).toString()) }
         }
         scoresTable.footerScores = List(4) { column ->
-            ScoresTable.Score(scoresTable.scores.map { it[column].value.toInt() }.sum().toString())
+            ScoresTable.Score(scoresTable.scores.sumOf { it[column].value.toInt() }.toString())
         }
 
         val scoresView = Container(scoresTable).pad(60f, 30f, 60f, 30f).fill()

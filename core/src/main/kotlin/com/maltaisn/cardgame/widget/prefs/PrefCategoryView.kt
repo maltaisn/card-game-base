@@ -70,6 +70,6 @@ class PrefCategoryView(skin: Skin, category: PrefCategory) :
 
 
     class PrefCategoryViewStyle(titleFontStyle: FontStyle)
-        : PrefEntryView.PrefEntryViewStyle(titleFontStyle)
+        : PrefEntryViewStyle(titleFontStyle)
 
 }

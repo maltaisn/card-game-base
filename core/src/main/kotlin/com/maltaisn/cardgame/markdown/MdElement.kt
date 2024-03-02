@@ -136,11 +136,10 @@ sealed class MdElement {
     }
 
     /** Horizontal line element. */
-    object HLine : MdElement() {
+    data object HLine : MdElement() {
 
         override fun createView(skin: Skin) = MdHLineView(skin)
 
-        override fun toString() = "HLine"
     }
 
 }

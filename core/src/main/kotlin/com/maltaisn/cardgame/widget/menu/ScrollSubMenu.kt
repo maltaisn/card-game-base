@@ -52,7 +52,7 @@ class ScrollSubMenu(skin: Skin) : SubMenu(skin) {
                     // Scrolled to top edge, check the item with ID 0
                     for (item in items) {
                         if (item.checkable && item.id == 0) {
-                            newId = item.id
+                            newId = 0
                             break
                         }
                     }

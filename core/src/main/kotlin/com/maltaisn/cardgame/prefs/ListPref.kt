@@ -59,7 +59,7 @@ class ListPref(
         return if (value !in keys) defaultValue else value
     }
 
-    @Suppress("LibGDXMissingFlush")
+    @Suppress("GDXKotlinMissingFlush")
     override fun saveValue(handle: Preferences) {
         if (entries.containsKey(value)) {
             handle.putString(key, value)

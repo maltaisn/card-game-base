@@ -42,7 +42,7 @@ class ScoresTableTest(listener: CardGameListener) : SubmenuContentTest(listener)
 
         fun updateTotalScores() {
             table.footerScores = if (footerShown) List(4) { column ->
-                Score(table.scores.map { it[column].value.toInt() }.sum().toString())
+                Score(table.scores.sumOf { it[column].value.toInt() }.toString())
             } else null
         }
 

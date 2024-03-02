@@ -64,7 +64,7 @@ class PlayerNamesPref(
         handle.getString(getPlayerNameKey(it), "")
     }
 
-    @Suppress("LibGDXMissingFlush")
+    @Suppress("GDXKotlinMissingFlush")
     override fun saveValue(handle: Preferences) {
         for ((i, name) in value.withIndex()) {
             handle.putString(getPlayerNameKey(i), name)
@@ -76,10 +76,8 @@ class PlayerNamesPref(
      */
     fun getPlayerName(player: Int): String {
         val name = value[player]
-        return if (name.isEmpty()) {
+        return name.ifEmpty {
             defaultValue[player]
-        } else {
-            name
         }
     }
 

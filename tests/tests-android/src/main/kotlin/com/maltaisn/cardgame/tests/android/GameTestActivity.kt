@@ -16,6 +16,7 @@
 
 package com.maltaisn.cardgame.tests.android
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
@@ -35,7 +36,7 @@ class GameTestActivity : AndroidApplication(), CardGameListener {
 
     override val isTextInputDelegated = true
 
-
+    @SuppressLint("InflateParams")
     override fun onCreate(state: Bundle?) {
         super.onCreate(state)
 
