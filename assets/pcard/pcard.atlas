@@ -1,461 +1,197 @@
-
 pcard.png
-size: 2048,2048
-format: RGBA8888
-filter: Linear,Linear
-repeat: none
+size:2048,2048
+filter:Linear,Linear
+repeat:none
 pcard
-  rotate: false
-  xy: 228, 1740
-  size: 227, 306
-  orig: 227, 306
-  offset: 0, 0
-  index: 51
+index:25
+bounds:228,1740,227,306
 pcard
-  rotate: false
-  xy: 457, 1740
-  size: 227, 306
-  orig: 227, 306
-  offset: 0, 0
-  index: 25
+index:51
+bounds:457,1740,227,306
 pcard
-  rotate: false
-  xy: 686, 1740
-  size: 226, 306
-  orig: 226, 306
-  offset: 0, 0
-  index: 38
+index:2
+bounds:686,1740,226,306
 pcard
-  rotate: false
-  xy: 914, 1740
-  size: 226, 306
-  orig: 226, 306
-  offset: 0, 0
-  index: 41
+index:15
+bounds:914,1740,226,306
 pcard
-  rotate: false
-  xy: 1142, 1740
-  size: 226, 306
-  orig: 226, 306
-  offset: 0, 0
-  index: 2
+index:28
+bounds:1142,1740,226,306
 pcard
-  rotate: false
-  xy: 1370, 1740
-  size: 226, 306
-  orig: 226, 306
-  offset: 0, 0
-  index: 7
+index:41
+bounds:1370,1740,226,306
 pcard
-  rotate: false
-  xy: 1598, 1740
-  size: 226, 306
-  orig: 226, 306
-  offset: 0, 0
-  index: 46
+index:20
+bounds:1598,1740,226,306
 pcard
-  rotate: false
-  xy: 2, 1418
-  size: 225, 306
-  orig: 225, 306
-  offset: 0, 0
-  index: 35
+index:44
+bounds:2,1418,224,306
 pcard
-  rotate: false
-  xy: 2, 1110
-  size: 225, 306
-  orig: 225, 306
-  offset: 0, 0
-  index: 39
+index:7
+bounds:228,1432,226,306
 pcard
-  rotate: false
-  xy: 2, 802
-  size: 225, 306
-  orig: 225, 306
-  offset: 0, 0
-  index: 42
+index:33
+bounds:456,1432,226,306
 pcard
-  rotate: false
-  xy: 2, 494
-  size: 225, 306
-  orig: 225, 306
-  offset: 0, 0
-  index: 43
+index:46
+bounds:684,1432,226,306
 pcard
-  rotate: false
-  xy: 2, 186
-  size: 225, 306
-  orig: 225, 306
-  offset: 0, 0
-  index: 45
+index:12
+bounds:912,1433,227,305
 pcard
-  rotate: false
-  xy: 229, 1432
-  size: 226, 306
-  orig: 226, 306
-  offset: 0, 0
-  index: 33
+index:38
+bounds:1141,1432,226,306
 pcard
-  rotate: false
-  xy: 457, 1433
-  size: 227, 305
-  orig: 227, 305
-  offset: 0, 0
-  index: 12
+index:10
+bounds:1369,1432,225,306
 pcard
-  rotate: false
-  xy: 229, 1124
-  size: 226, 306
-  orig: 226, 306
-  offset: 0, 0
-  index: 15
+index:23
+bounds:1596,1432,225,306
 pcard
-  rotate: false
-  xy: 457, 1125
-  size: 226, 306
-  orig: 226, 306
-  offset: 0, 0
-  index: 20
+index:1
+bounds:1823,1432,223,306
 pcard
-  rotate: false
-  xy: 229, 816
-  size: 226, 306
-  orig: 226, 306
-  offset: 0, 0
-  index: 28
+index:36
+bounds:2,1110,224,306
 pcard
-  rotate: false
-  xy: 457, 817
-  size: 225, 306
-  orig: 225, 306
-  offset: 0, 0
-  index: 4
+index:49
+bounds:228,1124,225,306
 pcard
-  rotate: false
-  xy: 229, 508
-  size: 225, 306
-  orig: 225, 306
-  offset: 0, 0
-  index: 49
+index:4
+bounds:455,1124,225,306
 pcard
-  rotate: false
-  xy: 229, 200
-  size: 225, 306
-  orig: 225, 306
-  offset: 0, 0
-  index: 6
+index:30
+bounds:682,1124,225,306
 pcard
-  rotate: false
-  xy: 686, 1432
-  size: 225, 306
-  orig: 225, 306
-  offset: 0, 0
-  index: 9
+index:17
+bounds:2,802,225,306
 pcard
-  rotate: false
-  xy: 913, 1432
-  size: 225, 306
-  orig: 225, 306
-  offset: 0, 0
-  index: 48
+index:43
+bounds:2,494,225,306
 pcard
-  rotate: false
-  xy: 1140, 1432
-  size: 225, 306
-  orig: 225, 306
-  offset: 0, 0
-  index: 50
+index:22
+bounds:2,186,225,306
 pcard
-  rotate: false
-  xy: 1367, 1432
-  size: 225, 306
-  orig: 225, 306
-  offset: 0, 0
-  index: 10
+index:9
+bounds:229,816,225,306
 pcard
-  rotate: false
-  xy: 1594, 1432
-  size: 225, 306
-  orig: 225, 306
-  offset: 0, 0
-  index: 3
+index:35
+bounds:229,508,225,306
 pcard
-  rotate: false
-  xy: 1821, 1432
-  size: 225, 306
-  orig: 225, 306
-  offset: 0, 0
-  index: 13
+index:48
+bounds:456,816,225,306
 pcard
-  rotate: false
-  xy: 685, 1124
-  size: 225, 306
-  orig: 225, 306
-  offset: 0, 0
-  index: 16
+index:6
+bounds:229,200,225,306
 pcard
-  rotate: false
-  xy: 912, 1124
-  size: 225, 306
-  orig: 225, 306
-  offset: 0, 0
-  index: 17
+index:19
+bounds:456,508,225,306
 pcard
-  rotate: false
-  xy: 1139, 1124
-  size: 225, 306
-  orig: 225, 306
-  offset: 0, 0
-  index: 19
+index:32
+bounds:456,200,225,306
 pcard
-  rotate: false
-  xy: 1366, 1124
-  size: 225, 306
-  orig: 225, 306
-  offset: 0, 0
-  index: 11
+index:40
+bounds:683,816,224,306
 pcard
-  rotate: false
-  xy: 1593, 1124
-  size: 225, 306
-  orig: 225, 306
-  offset: 0, 0
-  index: 0
+index:45
+bounds:683,508,225,306
 pcard
-  rotate: false
-  xy: 1820, 1124
-  size: 225, 306
-  orig: 225, 306
-  offset: 0, 0
-  index: 22
+index:11
+bounds:683,200,225,306
 pcard
-  rotate: false
-  xy: 684, 816
-  size: 225, 306
-  orig: 225, 306
-  offset: 0, 0
-  index: 23
+index:53
+bounds:1826,1745,205,301
 pcard
-  rotate: false
-  xy: 911, 816
-  size: 225, 306
-  orig: 225, 306
-  offset: 0, 0
-  index: 24
+index:14
+bounds:909,1124,223,306
 pcard
-  rotate: false
-  xy: 1138, 816
-  size: 225, 306
-  orig: 225, 306
-  offset: 0, 0
-  index: 26
+index:27
+bounds:909,816,223,306
 pcard
-  rotate: false
-  xy: 1365, 816
-  size: 225, 306
-  orig: 225, 306
-  offset: 0, 0
-  index: 29
+index:24
+bounds:910,508,225,306
 pcard
-  rotate: false
-  xy: 1592, 816
-  size: 225, 306
-  orig: 225, 306
-  offset: 0, 0
-  index: 30
+index:50
+bounds:910,200,225,306
 pcard
-  rotate: false
-  xy: 1819, 816
-  size: 225, 306
-  orig: 225, 306
-  offset: 0, 0
-  index: 32
+index:3
+bounds:1134,1124,225,306
 pcard
-  rotate: false
-  xy: 1826, 1745
-  size: 205, 301
-  orig: 205, 301
-  offset: 0, 0
-  index: 52
+index:16
+bounds:1134,816,225,306
 pcard
-  rotate: false
-  xy: 456, 508
-  size: 223, 306
-  orig: 223, 306
-  offset: 0, 0
-  index: 34
+index:42
+bounds:1361,1124,225,306
 pcard
-  rotate: false
-  xy: 456, 200
-  size: 224, 306
-  orig: 224, 306
-  offset: 0, 0
-  index: 36
+index:29
+bounds:1361,816,225,306
 pcard
-  rotate: false
-  xy: 681, 508
-  size: 224, 306
-  orig: 224, 306
-  offset: 0, 0
-  index: 37
+index:0
+bounds:1137,508,225,306
 pcard
-  rotate: false
-  xy: 907, 508
-  size: 224, 306
-  orig: 224, 306
-  offset: 0, 0
-  index: 5
+index:13
+bounds:1588,1124,225,306
 pcard
-  rotate: false
-  xy: 682, 200
-  size: 224, 306
-  orig: 224, 306
-  offset: 0, 0
-  index: 18
+index:26
+bounds:1137,200,225,306
 pcard
-  rotate: false
-  xy: 1133, 508
-  size: 224, 306
-  orig: 224, 306
-  offset: 0, 0
-  index: 40
+index:39
+bounds:1588,816,225,306
 pcard
-  rotate: false
-  xy: 908, 200
-  size: 224, 306
-  orig: 224, 306
-  offset: 0, 0
-  index: 44
+index:37
+bounds:1364,508,224,306
 pcard
-  rotate: false
-  xy: 1359, 508
-  size: 224, 306
-  orig: 224, 306
-  offset: 0, 0
-  index: 31
+index:5
+bounds:1815,1124,224,306
 pcard
-  rotate: false
-  xy: 1134, 200
-  size: 223, 306
-  orig: 223, 306
-  offset: 0, 0
-  index: 47
+index:31
+bounds:1364,200,224,306
 pcard
-  rotate: false
-  xy: 1585, 508
-  size: 223, 306
-  orig: 223, 306
-  offset: 0, 0
-  index: 8
+index:18
+bounds:1815,816,224,306
 pcard
-  rotate: false
-  xy: 1359, 200
-  size: 223, 306
-  orig: 223, 306
-  offset: 0, 0
-  index: 14
+index:21
+bounds:1590,508,223,306
 pcard
-  rotate: false
-  xy: 1810, 508
-  size: 223, 306
-  orig: 223, 306
-  offset: 0, 0
-  index: 1
+index:8
+bounds:1590,200,223,306
 pcard
-  rotate: false
-  xy: 1584, 200
-  size: 223, 306
-  orig: 223, 306
-  offset: 0, 0
-  index: 21
+index:34
+bounds:1815,508,223,306
 pcard
-  rotate: false
-  xy: 1809, 200
-  size: 223, 306
-  orig: 223, 306
-  offset: 0, 0
-  index: 27
+index:47
+bounds:1815,200,223,306
 pcard-back
-  rotate: false
-  xy: 2, 1726
-  size: 224, 320
-  orig: 224, 320
-  offset: 0, 0
-  index: -1
+bounds:2,1726,224,320
 pcard-background
-  rotate: false
-  xy: 2, 104
-  size: 80, 80
-  split: 39, 39, 39, 39
-  pad: 31, 31, 31, 31
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
+bounds:2,104,80,80
+split:39,39,39,39
+pad:31,31,31,31
 pcard-hover
-  rotate: false
-  xy: 2, 22
-  size: 80, 80
-  split: 39, 39, 39, 39
-  pad: 31, 31, 31, 31
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
+bounds:2,22,80,80
+split:39,39,39,39
+pad:31,31,31,31
 pcard-selection
-  rotate: false
-  xy: 2, 2
-  size: 18, 18
-  split: 8, 8, 8, 8
-  pad: 0, 0, 0, 0
-  orig: 18, 18
-  offset: 0, 0
-  index: -1
+bounds:2,2,18,18
+split:8,8,8,8
+pad:0,0,0,0
 pcard-slot
-  rotate: false
-  xy: 232, 166
-  size: 32, 32
-  split: 15, 15, 15, 15
-  pad: 0, 0, 0, 0
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
+bounds:232,166,32,32
+split:15,15,15,15
+pad:0,0,0,0
 pcard-suit-club
-  rotate: false
-  xy: 84, 112
-  size: 72, 72
-  orig: 72, 72
-  offset: 0, 0
-  index: -1
+bounds:158,112,72,72
 pcard-suit-diamond
-  rotate: false
-  xy: 158, 38
-  size: 72, 72
-  orig: 72, 72
-  offset: 0, 0
-  index: -1
+bounds:158,38,72,72
 pcard-suit-heart
-  rotate: false
-  xy: 158, 112
-  size: 72, 72
-  orig: 72, 72
-  offset: 0, 0
-  index: -1
+bounds:84,38,72,72
 pcard-suit-spade
-  rotate: false
-  xy: 84, 38
-  size: 72, 72
-  orig: 72, 72
-  offset: 0, 0
-  index: -1
+bounds:84,112,72,72
 
 pcard2.png
-size: 256,512
-format: RGBA8888
-filter: Linear,Linear
-repeat: none
+size:256,512
+filter:Linear,Linear
+repeat:none
 pcard
-  rotate: false
-  xy: 2, 2
-  size: 205, 301
-  orig: 205, 301
-  offset: 0, 0
-  index: 53
+index:52
+bounds:2,2,205,301

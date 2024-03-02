@@ -1,140 +1,61 @@
-
 ncard.png
-size: 2048,1024
-format: RGBA8888
-filter: Linear,Linear
-repeat: none
+size:2048,1024
+filter:Linear,Linear
+repeat:none
 ncard
-  rotate: false
-  xy: 228, 712
-  size: 240, 304
-  orig: 240, 304
-  offset: 0, 0
-  index: 0
+index:0
+bounds:2,712,240,304
 ncard
-  rotate: false
-  xy: 2, 390
-  size: 208, 304
-  orig: 208, 304
-  offset: 0, 0
-  index: 10
+index:9
+bounds:244,712,208,304
 ncard
-  rotate: false
-  xy: 470, 712
-  size: 208, 304
-  orig: 208, 304
-  offset: 0, 0
-  index: 11
+index:1
+bounds:2,84,208,304
 ncard
-  rotate: false
-  xy: 2, 84
-  size: 208, 304
-  orig: 208, 304
-  offset: 0, 0
-  index: 12
+index:6
+bounds:228,406,208,304
 ncard
-  rotate: false
-  xy: 680, 712
-  size: 208, 304
-  orig: 208, 304
-  offset: 0, 0
-  index: 1
+index:11
+bounds:454,712,208,304
 ncard
-  rotate: false
-  xy: 890, 712
-  size: 208, 304
-  orig: 208, 304
-  offset: 0, 0
-  index: 2
+index:3
+bounds:438,406,208,304
 ncard
-  rotate: false
-  xy: 1100, 712
-  size: 208, 304
-  orig: 208, 304
-  offset: 0, 0
-  index: 3
+index:8
+bounds:664,712,208,304
 ncard
-  rotate: false
-  xy: 1310, 712
-  size: 208, 304
-  orig: 208, 304
-  offset: 0, 0
-  index: 4
+index:5
+bounds:648,406,208,304
 ncard
-  rotate: false
-  xy: 1520, 712
-  size: 208, 304
-  orig: 208, 304
-  offset: 0, 0
-  index: 5
+index:10
+bounds:874,712,208,304
 ncard
-  rotate: false
-  xy: 1730, 712
-  size: 208, 304
-  orig: 208, 304
-  offset: 0, 0
-  index: 6
+index:2
+bounds:858,406,208,304
 ncard
-  rotate: false
-  xy: 212, 390
-  size: 208, 304
-  orig: 208, 304
-  offset: 0, 0
-  index: 7
+index:7
+bounds:1084,712,208,304
 ncard
-  rotate: false
-  xy: 212, 84
-  size: 208, 304
-  orig: 208, 304
-  offset: 0, 0
-  index: 8
+index:12
+bounds:1068,406,208,304
 ncard
-  rotate: false
-  xy: 422, 406
-  size: 208, 304
-  orig: 208, 304
-  offset: 0, 0
-  index: 9
+index:4
+bounds:1294,712,208,304
 ncard-back
-  rotate: false
-  xy: 2, 696
-  size: 224, 320
-  orig: 224, 320
-  offset: 0, 0
-  index: -1
+bounds:2,390,224,320
 ncard-background
-  rotate: false
-  xy: 2, 2
-  size: 80, 80
-  split: 39, 39, 39, 39
-  pad: 31, 31, 31, 31
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
+bounds:1278,630,80,80
+split:39,39,39,39
+pad:31,31,31,31
 ncard-hover
-  rotate: false
-  xy: 1940, 936
-  size: 80, 80
-  split: 39, 39, 39, 39
-  pad: 31, 31, 31, 31
-  orig: 80, 80
-  offset: 0, 0
-  index: -1
+bounds:2,2,80,80
+split:39,39,39,39
+pad:31,31,31,31
 ncard-selection
-  rotate: false
-  xy: 632, 692
-  size: 18, 18
-  split: 8, 8, 8, 8
-  pad: 0, 0, 0, 0
-  orig: 18, 18
-  offset: 0, 0
-  index: -1
+bounds:84,64,18,18
+split:8,8,8,8
+pad:0,0,0,0
 ncard-slot
-  rotate: false
-  xy: 422, 372
-  size: 32, 32
-  split: 15, 15, 15, 15
-  pad: 0, 0, 0, 0
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
+bounds:1504,984,32,32
+split:15,15,15,15
+pad:0,0,0,0
