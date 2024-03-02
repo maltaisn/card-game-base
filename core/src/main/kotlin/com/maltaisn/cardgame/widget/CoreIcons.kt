@@ -31,6 +31,7 @@ object CoreIcons {
     const val CHEVRON_LEFT = "icon-chevron-left"
     const val CHEVRON_RIGHT = "icon-chevron-right"
     const val COIN = "icon-coin"
+    const val GITHUB = "icon-github"
     const val INFO = "icon-info"
     const val LIST = "icon-list"
     const val PENCIL = "icon-pencil"

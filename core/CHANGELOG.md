@@ -1,6 +1,6 @@
 ### v1.1.2
-
 - Dependencies update.
+- Added Github icon.
 
 ### v1.1.1
 - MCTS fix in selection phase
