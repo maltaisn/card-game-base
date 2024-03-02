@@ -13,6 +13,7 @@
 *.iml
 .gradle/
 build/
+out/
 
 ## OS Specific
 .DS_Store

@@ -4,23 +4,28 @@ plugins {
 }
 
 android {
-    buildToolsVersion("29.0.3")
-    compileSdkVersion(30)
+    namespace = "com.maltaisn.cardgame.tests.android"
+
+    buildToolsVersion = "34.0.0"
+    compileSdk = 34
     defaultConfig {
         applicationId = "com.maltaisn.cardgame.tests.android"
-        minSdkVersion(16)
-        targetSdkVersion(30)
+        minSdk = 16
+        targetSdk = 34
         versionCode = 1
         versionName = "0.0.1"
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_6
-        targetCompatibility = JavaVersion.VERSION_1_6
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     sourceSets {
         named("main") {
             java.srcDir("src/main/kotlin")  // Not necessary but works better with IntelliJ
         }
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 }
 
@@ -31,13 +36,12 @@ dependencies {
 
     implementation(project(":tests:tests-core"))
 
-    implementation(kotlin("stdlib"))
+    implementation(kotlin("stdlib-jdk8"))
 
-    implementation("com.badlogicgames.gdx:gdx-backend-android:$gdxVersion")
-    implementation("androidx.appcompat:appcompat:1.2.0")
-    implementation("androidx.recyclerview:recyclerview:1.1.0")
+    api("com.badlogicgames.gdx:gdx-backend-android:$gdxVersion")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
 
-    natives("com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi")
     natives("com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a")
     natives("com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a")
     natives("com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86")

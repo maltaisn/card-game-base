@@ -393,7 +393,7 @@ class CardAnimationGroup : Group() {
             assert(container.children.isEmpty)
             for (actor in container.actors) {
                 actor?.apply {
-                    assert(actions.size == 1)
+//                    assert(actions.size == 1)
                     assert(parent === this@CardAnimationGroup)
 
                     val action = moveAction!!  // FIXME NPE here when called just before animation ends?

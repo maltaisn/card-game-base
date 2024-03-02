@@ -1,3 +1,7 @@
+### v1.1.2
+
+- Dependencies update.
+
 ### v1.1.1
 - MCTS fix in selection phase
 

@@ -43,6 +43,7 @@ abstract class PrefEntryView<T : PrefEntry>(skin: Skin, val pref: T) : Table(ski
         }
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun onPreferenceEnabledStateChanged(pref: PrefEntry, enabled: Boolean) {
         val categoryEnabled = (parent as? PrefCategoryView)?.pref?.enabled ?: true
         this.enabled = categoryEnabled && enabled

@@ -18,15 +18,13 @@ package com.maltaisn.cardgame.prefs
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Preferences
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers.anyBoolean
-import org.mockito.ArgumentMatchers.anyFloat
+import org.mockito.ArgumentMatchers.*
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 import kotlin.test.*
 
 

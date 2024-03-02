@@ -10,7 +10,7 @@ dependencies {
     api(project(":core"))
     api(project(":pcard"))
 
-    implementation(kotlin("stdlib"))
+    implementation(kotlin("stdlib-jdk8"))
 
     implementation("com.badlogicgames.gdx:gdx:$gdxVersion")
 
@@ -25,8 +25,9 @@ dependencies {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_6
-    targetCompatibility = JavaVersion.VERSION_1_6
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
 }
 
 // Tasks to copy the card game assets to the tests module assets dir

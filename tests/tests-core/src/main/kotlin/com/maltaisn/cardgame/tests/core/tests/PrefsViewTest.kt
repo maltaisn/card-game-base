@@ -82,10 +82,12 @@ class PrefsViewTest(listener: CardGameListener) : SubmenuContentTest(listener) {
         prefs.save()
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun <T : Any> onPrefValueChanged(pref: GamePref<T>, value: T) {
         info { "Preference '${pref.key}' value changed." }
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun onPrefEnabledChanged(pref: PrefEntry, enabled: Boolean) {
         info { "Preference '${pref.key}' enabled state changed." }
     }

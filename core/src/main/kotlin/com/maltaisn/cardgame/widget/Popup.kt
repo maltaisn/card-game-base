@@ -94,6 +94,7 @@ class Popup(skin: Skin) : FboTable() {
                     dx = (it.width - width) / 2 - style.bodyOffsetX
                     dy = -(distance + height)
                 }
+                null -> {}
             }
             val actorPos = it.localToActorCoordinates(parent, vec2())
             x = actorPos.x + dx + translateX

@@ -608,7 +608,7 @@ abstract class CardContainer(val cardStyle: CardActor.CardStyle) : FboWidgetGrou
     }
 
 
-    override fun toString() = "[cards: $cards, visibility: ${visibility.toString().toLowerCase()}]"
+    override fun toString() = "[cards: $cards, visibility: ${visibility.toString().lowercase()}]"
 
 
     companion object {

@@ -8,7 +8,7 @@ buildscript {
     dependencies {
         classpath("com.android.tools.build:gradle:$androidGradlePluginVersion")
         classpath(kotlin("gradle-plugin", kotlinVersion))
-        classpath("org.jetbrains.dokka:dokka-gradle-plugin:0.10.0")
+        classpath("org.jetbrains.dokka:dokka-gradle-plugin:1.9.10")
     }
 }
 
@@ -17,7 +17,7 @@ plugins {
 }
 
 tasks.clean {
-    delete(rootProject.buildDir)
+    delete(rootProject.layout.buildDirectory)
 }
 
 allprojects {
@@ -25,7 +25,6 @@ allprojects {
         mavenLocal()
         mavenCentral()
         maven("https://oss.sonatype.org/content/repositories/snapshots/")
-        jcenter()
         google()
     }
 }

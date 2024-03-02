@@ -10,20 +10,21 @@ dependencies {
 
     implementation(project(":tests:tests-core"))
 
-    implementation(kotlin("stdlib"))
+    implementation(kotlin("stdlib-jdk8"))
 
     implementation("com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion")
     implementation("com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop")
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_6
-    targetCompatibility = JavaVersion.VERSION_1_6
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
 }
 
 tasks.register<JavaExec>("run") {
     dependsOn(tasks.build)
-    main = mainClassName
+    mainClass = mainClassName
     classpath = sourceSets.main.get().runtimeClasspath
     standardInput = System.`in`
     workingDir = assetsDir

@@ -1,5 +1,3 @@
-import org.jetbrains.dokka.gradle.DokkaTask
-
 plugins {
     kotlin("jvm")
     `maven-publish`
@@ -14,9 +12,9 @@ dependencies {
 
     api("com.maltaisn:msdf-gdx:$msdfVersion")
 
-    implementation(kotlin("stdlib"))
+    implementation(kotlin("stdlib-jdk8"))
 
-    implementation("com.badlogicgames.gdx:gdx:$gdxVersion")
+    api("com.badlogicgames.gdx:gdx:$gdxVersion")
 
     implementation("io.github.libktx:ktx-actors:$ktxVersion")
     implementation("io.github.libktx:ktx-assets:$ktxVersion")
@@ -28,13 +26,14 @@ dependencies {
 
     testImplementation(kotlin("test"))
     testImplementation(kotlin("test-junit"))
-    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:$mockitoKotlinVersion")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion")
 }
 
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_6
-    targetCompatibility = JavaVersion.VERSION_1_6
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
 }
 
 // Maven publishing
@@ -48,11 +47,6 @@ tasks.register<Jar>("javadocJar") {
     dependsOn(tasks.javadoc, tasks["dokkaJavadoc"])
     from(tasks.javadoc.get().destinationDir!!.path)
     archiveClassifier.set("javadoc")
-}
-
-tasks.create<DokkaTask>("dokkaJavadoc") {
-    outputFormat = "html"  // Use "javadoc" for standard style
-    outputDirectory = tasks.javadoc.get().destinationDir!!.path
 }
 
 publishing {
@@ -79,7 +73,6 @@ publishing {
             }
             from(components["java"])
             artifact(tasks["sourcesJar"])
-            //artifact(tasks["javadocJar"])
         }
     }
 }
