@@ -106,8 +106,8 @@ separator
 bounds:4,4,4,3
 split:1,1,0,3
 shadow-background
-bounds:958,162,2,2
-split:0,0,0,0
+bounds:26,4,3,3
+split:1,1,1,1
 slider-track
 bounds:878,76,26,26
 split:12,12,0,26
@@ -127,11 +127,11 @@ table-view-foreground
 bounds:1046,168,84,84
 split:41,41,41,41
 table-view-row-1
-bounds:1218,174,2,2
-split:0,0,0,0
+bounds:33,4,3,3
+split:1,1,1,1
 table-view-row-2
-bounds:838,100,2,2
-split:0,0,0,0
+bounds:19,4,3,3
+split:1,1,1,1
 table-view-separator
 bounds:832,100,2,2
 split:0,0,0,2
@@ -142,7 +142,7 @@ text-field-background-focused
 bounds:770,100,58,58
 split:29,27,30,26
 text-field-cursor
-bounds:1978,182,2,2
+bounds:838,100,2,2
 split:0,2,0,0
 text-field-selection
 bounds:770,94,2,2

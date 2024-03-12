@@ -1,6 +1,10 @@
+### v1.1.3
+- Fix blurred 9-patch images in `TableView` and shadow background.
+
 ### v1.1.2
 - Dependencies update.
 - Added Github icon.
+- Fix a few 9-patch images.
 
 ### v1.1.1
 - MCTS fix in selection phase
